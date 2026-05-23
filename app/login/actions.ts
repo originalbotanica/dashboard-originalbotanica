@@ -22,5 +22,26 @@ export async function loginAction(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
+
+  // If they're going to /dashboard but their profile is incomplete
+  // (no first_name), send them through profile-setup first. This
+  // catches users who confirmed via email but never filled in their
+  // first name (which can happen if Supabase stripped the redirect path).
+  if (redirectTo === "/dashboard") {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("first_name")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!profile?.first_name) {
+        redirect("/profile-setup");
+      }
+    }
+  }
+
   redirect(redirectTo);
 }

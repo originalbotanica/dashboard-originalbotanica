@@ -36,12 +36,20 @@ export default async function DashboardPage() {
   const sub = await getSubscriptionStatus(user.id);
   const trialLeft = trialDaysLeft(sub);
 
+  // The user's first name lives in the profiles table (set during
+  // profile-setup), not in Supabase auth metadata. Read it from there.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("first_name")
+    .eq("id", user.id)
+    .maybeSingle();
+
   // Time-of-day greeting in the user's locale. We'll wire i18n properly
   // later; for now, English-only.
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  const displayName = user.user_metadata?.first_name || "friend";
+  const displayName = profile?.first_name || "friend";
 
   return (
     <main className="flex-1">
