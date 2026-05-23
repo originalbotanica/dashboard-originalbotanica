@@ -1,0 +1,38 @@
+{
+  "brand": {
+    "name": "Original Botanica",
+    "tagline": "El Bronx, desde 1959"
+  },
+  "nav": {
+    "home": "Inicio",
+    "tarot": "Tarot",
+    "astrology": "Astrología",
+    "altar": "Altar",
+    "ancestors": "Ancestros",
+    "rituals": "Rituales",
+    "shop": "Tienda",
+    "account": "Mi cuenta",
+    "signin": "Iniciar sesión",
+    "signout": "Cerrar sesión"
+  },
+  "marketing": {
+    "hero_title": "Tu hogar espiritual, en línea.",
+    "hero_body": "Tarot diario. Astrología personal. Tu altar virtual. Una vela para quienes vinieron antes. Una biblioteca de rituales con sesenta y seis años de práctica en el Bronx.",
+    "cta_trial": "Comienza tu prueba gratis de 7 días",
+    "cta_signin": "Iniciar sesión"
+  },
+  "dashboard": {
+    "greeting_morning": "Buenos días",
+    "greeting_afternoon": "Buenas tardes",
+    "greeting_evening": "Buenas noches",
+    "section_today_card": "Tu carta de hoy",
+    "section_today_reading": "Lectura de hoy",
+    "section_your_altar": "Tu altar",
+    "section_a_ritual": "Un ritual para hoy",
+    "section_member_benefit": "Tu beneficio de miembro",
+    "discount_title": "10% de descuento en la botánica",
+    "discount_body": "Como miembro, tu descuento del 10% se aplica automáticamente al pagar cuando inicias sesión en originalbotanica.com.",
+    "shop_cta": "Visita la botánica",
+    "trial_days_left": "Te quedan {{days}} {{day_or_days}} en tu prueba"
+  }
+}

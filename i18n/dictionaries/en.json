@@ -1,0 +1,38 @@
+{
+  "brand": {
+    "name": "Original Botanica",
+    "tagline": "The Bronx, since 1959"
+  },
+  "nav": {
+    "home": "Home",
+    "tarot": "Tarot",
+    "astrology": "Astrology",
+    "altar": "Altar",
+    "ancestors": "Ancestors",
+    "rituals": "Rituals",
+    "shop": "Shop",
+    "account": "Account",
+    "signin": "Sign in",
+    "signout": "Sign out"
+  },
+  "marketing": {
+    "hero_title": "Your spiritual home, online.",
+    "hero_body": "Daily tarot. Personal astrology. Your virtual altar. A flame for those who came before. A library of rituals from sixty-six years of practice in the Bronx.",
+    "cta_trial": "Start 7-day free trial",
+    "cta_signin": "Sign in"
+  },
+  "dashboard": {
+    "greeting_morning": "Good morning",
+    "greeting_afternoon": "Good afternoon",
+    "greeting_evening": "Good evening",
+    "section_today_card": "Your card today",
+    "section_today_reading": "Today's reading",
+    "section_your_altar": "Your altar",
+    "section_a_ritual": "A ritual for today",
+    "section_member_benefit": "Your member benefit",
+    "discount_title": "10% off at the botanica",
+    "discount_body": "As a member, your 10% discount is applied automatically at checkout when you sign in to originalbotanica.com.",
+    "shop_cta": "Shop the botanica",
+    "trial_days_left": "{{days}} {{day_or_days}} left in your trial"
+  }
+}

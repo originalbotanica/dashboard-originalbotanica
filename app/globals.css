@@ -1,0 +1,267 @@
+@import "tailwindcss";
+
+/*
+ * Original Botanica Membership Dashboard — design tokens
+ *
+ * Lifted from the astrology and ancestors codebases so the membership
+ * inherits the same dark-warm-brown candlelit aesthetic instead of
+ * diverging into a new visual language.
+ *
+ * The brief, in one line: "Reverent and atmospheric — botanica heritage,
+ * not generic-cosmic purple."
+ *
+ * The dark mood IS the brand. No light-mode toggle.
+ */
+
+:root {
+  /* Surfaces — deep warm brown, near-black */
+  --background: #14100b;
+  --background-elevated: #1c1611;
+  --surface: #1a140f;
+  --surface-strong: #221a13;
+
+  /* Type — warm cream tones on the dark background */
+  --foreground: #f2e9d6;          /* primary cream */
+  --foreground-muted: #c9b896;    /* secondary cream/tan */
+  --foreground-subtle: #8e7e64;   /* tertiary muted */
+
+  /* Lines */
+  --border: #2d251c;
+  --border-strong: #4a3a2a;
+
+  /* Accents */
+  --accent: #e8ac7c;              /* warm amber-peach — primary CTA fill */
+  --accent-strong: #d4a24c;       /* deeper candle gold */
+  --accent-glow: rgba(232, 172, 124, 0.35);
+  --accent-foreground: #1a120a;   /* dark text on amber pills */
+
+  /* Semantic */
+  --ember: #d85748;               /* banner red / sub-label / sparingly */
+  --sage: #8aa37d;                /* quiet secondary accent */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-elevated: var(--background-elevated);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ember: var(--ember);
+  --color-sage: var(--sage);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  /* Subtle warm radial glow — the "candle in a dark chapel" feel. */
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(232, 172, 124, 0.06), transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(232, 172, 124, 0.04), transparent 55%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  letter-spacing: -0.005em;
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Reusable text styles — referenced from across the dashboard.
+ * Each one is a small, named typographic role rather than a free-form
+ * Tailwind soup, so the voice stays consistent.
+ * ───────────────────────────────────────────────────────────────────── */
+
+/* Display headings — hero copy, section titles */
+.display {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+  color: var(--foreground);
+}
+
+/* Quiet small caps — section eyebrows, sub-labels */
+.eyebrow {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--foreground-muted);
+  font-weight: 500;
+}
+
+/* Red sub-label — used beneath the Original Botanica logo */
+.sublabel {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ember);
+  font-weight: 700;
+}
+
+/* Nav links — caps, tracked */
+.nav-link {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* Italic display — used for invocations, ritual instructions,
+ * the "Today the moon enters Scorpio..." line on the dashboard hero. */
+.invocation {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  color: var(--foreground);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Buttons — pill shaped, two variants.
+ * ───────────────────────────────────────────────────────────────────── */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.8rem;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow: 0 6px 20px var(--accent-glow);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  background: var(--accent-strong);
+  box-shadow: 0 10px 28px var(--accent-glow);
+}
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.8rem;
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.btn-ghost:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Candle flame animation — lifted from the ancestors codebase.
+ * Used wherever a candle appears "lit" on the dashboard.
+ * (Just the keyframes here; the full layered-flame markup will live
+ *  with the <Candle /> component when we build it.)
+ * ───────────────────────────────────────────────────────────────────── */
+
+@keyframes candle-glow {
+  0%, 100% { filter: drop-shadow(0 0 32px rgba(232, 172, 124, 0.4)); }
+  50%      { filter: drop-shadow(0 0 52px rgba(232, 172, 124, 0.65)); }
+}
+.candle-glow {
+  animation: candle-glow 4s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Forms — used across login, signup, reset password, profile setup.
+ * ───────────────────────────────────────────────────────────────────── */
+
+.form-label {
+  display: block;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--foreground-muted);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.form-input::placeholder {
+  color: var(--foreground-subtle);
+}
+
+.form-error {
+  color: var(--ember);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.form-success {
+  color: var(--sage);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* Auth card — centered container for signup / login / reset / setup pages. */
+.auth-card {
+  width: 100%;
+  max-width: 28rem;
+  background: var(--background-elevated);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+}
+
+/* Convenience text-color utility classes referenced by the auth pages. */
+.text-foreground-muted { color: var(--foreground-muted); }
+.text-foreground-subtle { color: var(--foreground-subtle); }
+.text-accent { color: var(--accent); }
