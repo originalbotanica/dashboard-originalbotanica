@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
+import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
+import { isValidSign } from "@/lib/daily-horoscope/prompt";
 
 /**
  * The member dashboard — the daily devotional surface.
@@ -38,9 +40,10 @@ export default async function DashboardPage() {
 
   // The user's first name lives in the profiles table (set during
   // profile-setup), not in Supabase auth metadata. Read it from there.
+  // We also pull sun_sign so the hero invocation can be personalized.
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name")
+    .select("first_name, sun_sign")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -50,6 +53,15 @@ export default async function DashboardPage() {
   const greeting =
     hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const displayName = profile?.first_name || "friend";
+
+  // Today's horoscope, personalized to the member's sun sign. If the
+  // chart hasn't been computed yet (no sun_sign on profile) we show a
+  // generic invocation instead of forcing a heavy API call here.
+  const sunSign = profile?.sun_sign || null;
+  const dailyHoroscope =
+    sunSign && isValidSign(sunSign)
+      ? await getOrGenerateDailyHoroscope(sunSign).catch(() => null)
+      : null;
 
   return (
     <main className="flex-1">
@@ -73,10 +85,14 @@ export default async function DashboardPage() {
         </div>
 
         <h1 className="display text-4xl md:text-5xl max-w-xl">
-          Today the moon waxes in Scorpio.
+          {dailyHoroscope?.content.summary
+            ? dailyHoroscope.content.summary
+            : "Today the moon waxes in Scorpio."}
         </h1>
         <p className="invocation text-lg text-[var(--foreground-muted)] mt-4 max-w-md">
-          A good day for inward work.
+          {dailyHoroscope?.content.action
+            ? dailyHoroscope.content.action
+            : "A good day for inward work."}
         </p>
 
         {sub.isTrialing && trialLeft !== null && (
@@ -108,12 +124,30 @@ export default async function DashboardPage() {
         className="px-6 py-16 max-w-3xl mx-auto border-t border-[var(--border)]"
       >
         <p className="eyebrow mb-4">Today&apos;s reading</p>
-        <h2 className="display text-3xl mb-4">[Astrological note]</h2>
-        <p className="text-[var(--foreground-muted)] leading-relaxed">
-          [Placeholder — personalized to your chart. Comes from the Astrology
-          module once we port it in Phase 2.]
-        </p>
-        <Link href="/astrology" className="nav-link mt-6 inline-block text-[var(--accent)]">
+        {dailyHoroscope ? (
+          <>
+            <h2 className="display text-3xl mb-4 capitalize">
+              {sunSign}. Today the focus is {dailyHoroscope.content.focus}.
+            </h2>
+            <p className="text-[var(--foreground-muted)] leading-relaxed">
+              {dailyHoroscope.content.summary}
+            </p>
+          </>
+        ) : (
+          <>
+            <h2 className="display text-3xl mb-4">
+              Add your birth details to begin
+            </h2>
+            <p className="text-[var(--foreground-muted)] leading-relaxed">
+              Your daily reading is personal to your chart. Tell us your birth
+              date and city and the astrologer can begin.
+            </p>
+          </>
+        )}
+        <Link
+          href="/astrology"
+          className="nav-link mt-6 inline-block text-[var(--accent)]"
+        >
           Ask your astrologer →
         </Link>
       </section>

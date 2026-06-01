@@ -1,0 +1,134 @@
+import { createClient } from "@/utils/supabase/server";
+import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
+import { sanitizeStringsDeep } from "@/lib/llm/sanitize";
+import {
+  buildDailyHoroscopePrompt,
+  parseDailyHoroscope,
+  type DailyHoroscopeContent,
+  type Sign,
+} from "./prompt";
+
+/**
+ * Lazy-generate a daily horoscope for a sign.
+ *
+ * Cached per (sign, date) in the daily_horoscopes table. The first
+ * person to view a sign on a given day triggers generation; everyone
+ * after gets the cached row.
+ *
+ * Returns null only on a hard failure (Claude returns unparseable output,
+ * etc.). The caller can show a placeholder.
+ *
+ * PART 1 SCOPE
+ * No RAG product-recommendation system yet. Horoscopes generate without
+ * the inline [[Product|slug]] links. Part 2 brings the Voyage embeddings
+ * and ritual archive back online.
+ */
+
+export type DailyHoroscope = {
+  sign: Sign;
+  date: string;            // YYYY-MM-DD
+  content: DailyHoroscopeContent;
+  generated_at: string;
+  retrieved_product_slugs: string[];
+  retrieved_sources: unknown[];
+};
+
+export async function getOrGenerateDailyHoroscope(
+  sign: Sign,
+): Promise<DailyHoroscope | null> {
+  const supabase = await createClient();
+  const date = todayKey();
+
+  // Cache lookup
+  const { data: existing } = await supabase
+    .from("daily_horoscopes")
+    .select(
+      "sign, date, content, generated_at, retrieved_product_slugs, retrieved_sources",
+    )
+    .eq("sign", sign)
+    .eq("date", date)
+    .maybeSingle();
+
+  if (existing?.content) {
+    return {
+      sign: existing.sign as Sign,
+      date: existing.date,
+      content: existing.content as DailyHoroscopeContent,
+      generated_at: existing.generated_at,
+      retrieved_product_slugs:
+        (existing.retrieved_product_slugs as string[]) || [],
+      retrieved_sources: (existing.retrieved_sources as unknown[]) || [],
+    };
+  }
+
+  // Generate fresh.
+  const dateLabel = formatDateLabel(date);
+
+  const { system, user } = buildDailyHoroscopePrompt({
+    sign,
+    dateLabel,
+    // No retrievedRituals in Part 1.
+  });
+
+  const anthropic = getAnthropic();
+  const response = await anthropic.messages.create({
+    model: ASTROLOGER_MODEL,
+    max_tokens: 800,
+    system,
+    messages: [{ role: "user", content: user }],
+  });
+
+  const rawText = response.content
+    .map((block) => (block.type === "text" ? block.text : ""))
+    .join("\n");
+
+  const parsed = parseDailyHoroscope(rawText);
+  if (!parsed) {
+    console.error("Daily horoscope parse failed. Raw:", rawText.slice(0, 500));
+    return null;
+  }
+
+  // Defense in depth. Scrub em/en-dashes the prompt should have prevented.
+  const clean = sanitizeStringsDeep(parsed);
+
+  // Persist (idempotent; another concurrent request may have written first).
+  await supabase.from("daily_horoscopes").upsert(
+    {
+      sign,
+      date,
+      content: clean,
+      generated_at: new Date().toISOString(),
+      retrieved_product_slugs: [],
+      retrieved_sources: [],
+    },
+    { onConflict: "sign,date" },
+  );
+
+  return {
+    sign,
+    date,
+    content: clean,
+    generated_at: new Date().toISOString(),
+    retrieved_product_slugs: [],
+    retrieved_sources: [],
+  };
+}
+
+function todayKey(): string {
+  // Use US Eastern time so "today" tracks the botanica's hours, not UTC.
+  return new Date().toLocaleDateString("en-CA", {
+    timeZone: "America/New_York",
+  });
+}
+
+function formatDateLabel(yyyyMmDd: string): string {
+  const [y, m, d] = yyyyMmDd.split("-").map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
