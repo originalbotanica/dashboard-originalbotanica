@@ -63,22 +63,31 @@ export default async function DashboardPage() {
       >
         <MemberHeader />
 
-        {/* Background candle photograph, dimmed for legibility */}
+        {/* Clean atmospheric background — warm darkness + radial candle glow.
+            No photographic imagery competing with the foreground candle. */}
         <div className="absolute inset-0 -z-10">
-          <Image
-            src={`${OB_CDN}/spiritual-candles.png`}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover opacity-25"
-            style={{ objectPosition: "center" }}
-          />
+          {/* Base: deep warm brown gradient */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(ellipse at center, rgba(20,16,11,0.65) 0%, rgba(20,16,11,0.94) 75%, rgba(20,16,11,1) 100%)",
+                "radial-gradient(ellipse at 50% 45%, #2a1f15 0%, #1a130d 35%, #14100b 60%, #0d0a07 100%)",
+            }}
+          />
+          {/* Warm amber bloom behind the candle */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 48%, rgba(232,172,124,0.18) 0%, rgba(232,172,124,0.05) 22%, transparent 45%)",
+            }}
+          />
+          {/* Subtle vignette to deepen the edges */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%)",
             }}
           />
         </div>
