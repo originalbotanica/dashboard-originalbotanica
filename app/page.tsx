@@ -77,7 +77,14 @@ export default async function HomePage({
           />
         </div>
 
-        <p className="sublabel mb-6">Original Botanica</p>
+        <Image
+          src="/logo-original-botanica.svg"
+          alt="Original Botanica"
+          width={140}
+          height={100}
+          priority
+          className="h-auto w-[120px] md:w-[140px] mb-10"
+        />
         <h1 className="display text-5xl md:text-6xl mb-8 max-w-3xl leading-tight">
           Your spiritual home, online.
         </h1>
