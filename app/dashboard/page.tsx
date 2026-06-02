@@ -130,270 +130,180 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      {/* ── 2. Today's reading (astrology) — split layout ─────────────── */}
-      <section
-        aria-label="Today's astrological reading"
-        className="border-t border-[var(--border)]"
-      >
-        <div className="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="eyebrow mb-4">Today&apos;s reading</p>
-            {dailyHoroscope ? (
-              <>
-                <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
-                  {dailyHoroscope.content.action}
-                </h2>
-                <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
-                  Drawn from your {sunSign} placement. For a longer reading
-                  rooted in your full chart, speak with the astrologer.
-                </p>
-              </>
-            ) : (
-              <>
-                <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
-                  Your chart, your reading.
-                </h2>
-                <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
-                  Add your birth date and city to receive a daily reading
-                  personal to you, and to begin conversations with the
-                  astrologer.
-                </p>
-              </>
-            )}
-            <Link
-              href="/astrology"
-              className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
-            >
-              Ask your astrologer
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
-          <div className="relative aspect-[4/5] rounded-xl overflow-hidden border border-[var(--border)]">
-            <Image
-              src={`${OB_CDN}/cta-spiritual-services.jpg`}
-              alt=""
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(20,16,11,0) 50%, rgba(20,16,11,0.55) 100%)",
-              }}
-            />
-          </div>
-        </div>
-      </section>
+      {/* ── 2. Astrology — image left ─────────────────────────────────── */}
+      <ToolSection
+        eyebrow="Today's reading"
+        headline={
+          dailyHoroscope
+            ? dailyHoroscope.content.action
+            : "Your chart, your reading."
+        }
+        body={
+          dailyHoroscope
+            ? `Drawn from your ${sunSign} placement. For a longer reading rooted in your full chart, speak with the astrologer.`
+            : "Add your birth date and city to receive a daily reading personal to you, and to begin conversations with the astrologer."
+        }
+        href="/astrology"
+        linkLabel="Ask your astrologer"
+        imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+        imageSide="left"
+      />
 
-      {/* ── 3. Dreams — smoky liminal section ─────────────────────────── */}
-      <section
-        aria-label="Interpret a dream"
-        className="relative border-t border-[var(--border)] overflow-hidden"
-      >
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src={`${OB_CDN}/incense-smudges-resins.png`}
-            alt=""
-            fill
-            sizes="100vw"
-            className="object-cover opacity-25"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(20,16,11,0.7) 0%, rgba(20,16,11,0.95) 80%)",
-            }}
-          />
-        </div>
-        <div className="max-w-2xl mx-auto px-6 py-24 text-center">
-          <p className="eyebrow mb-4">Dreams</p>
-          <h2 className="display text-2xl md:text-3xl mb-4 leading-tight">
-            What did the night bring?
-          </h2>
-          <p className="invocation text-[var(--foreground-muted)] mb-8 max-w-md mx-auto leading-relaxed">
-            Describe a dream while it&apos;s still fresh. The interpretation
-            honors Lucum&iacute;, Espiritismo, folk Catholic, and Western
-            traditions. Every dream ends with a ritual.
-          </p>
-          <Link href="/dreams/new" className="btn-primary inline-flex">
-            Interpret a dream
-          </Link>
-        </div>
-      </section>
+      {/* ── 3. Dreams — image right ───────────────────────────────────── */}
+      <ToolSection
+        eyebrow="Dreams"
+        headline="What did the night bring?"
+        body="Describe a dream while it's still fresh. The interpretation honors Lucumí, Espiritismo, folk Catholic, and Western traditions. Every dream ends with a ritual."
+        href="/dreams/new"
+        linkLabel="Interpret a dream"
+        imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+        imageSide="right"
+      />
 
-      {/* ── 4. Today's card (tarot) — centered composition ────────────── */}
-      <section
-        aria-label="Today's tarot card"
-        className="border-t border-[var(--border)]"
-        style={{
-          background:
-            "radial-gradient(ellipse at center top, rgba(232,172,124,0.06) 0%, transparent 60%)",
-        }}
-      >
-        <div className="max-w-2xl mx-auto px-6 py-20 text-center">
-          <p className="eyebrow mb-4">Your card today</p>
-          <h2 className="display text-2xl md:text-3xl mb-3">
-            The card is waiting.
-          </h2>
-          <p className="invocation text-[var(--foreground-muted)] mb-8 max-w-md mx-auto">
-            Daily tarot arrives in Phase 2. One card, a paragraph of reading,
-            and a question to sit with.
-          </p>
-          <Link
-            href="/tarot"
-            className="btn-ghost inline-flex"
-          >
-            Pull a card
-          </Link>
-        </div>
-      </section>
+      {/* ── 4. Daily tarot — image left ───────────────────────────────── */}
+      <ToolSection
+        eyebrow="Your card today"
+        headline="The card is waiting."
+        body="Daily tarot arrives in Phase 2. One card, a paragraph of reading, and a question to sit with."
+        href="/tarot"
+        linkLabel="Pull a card"
+        imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
+        imageSide="left"
+      />
 
-      {/* ── 5. Your altar — two distinct surfaces ─────────────────────── */}
-      <section
-        aria-label="Your altar"
-        className="relative border-t border-[var(--border)] overflow-hidden"
-      >
-        <div className="max-w-5xl mx-auto px-6 py-20">
-          <p className="eyebrow mb-3 text-center">Your altar</p>
-          <h2 className="display text-3xl md:text-4xl mb-4 text-center max-w-xl mx-auto leading-tight">
-            Two surfaces, one practice.
-          </h2>
-          <p className="text-[var(--foreground-muted)] leading-relaxed text-center max-w-lg mx-auto mb-14">
-            Your altar travels with you. Light a candle for an intention. Keep
-            a flame for those who came before.
-          </p>
+      {/* ── 5. Virtual altar — image right ────────────────────────────── */}
+      <ToolSection
+        eyebrow="Virtual altar"
+        headline="Light a candle."
+        body="For an intention. For protection. For someone you love who needs the prayer. The candle burns at the botanica and on your altar surface here."
+        href="/altar/virtual"
+        linkLabel="Tend the altar"
+        imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
+        imageSide="right"
+      />
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Virtual altar card */}
-            <Link
-              href="/altar/virtual"
-              className="group relative aspect-[4/5] rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors"
-            >
-              <Image
-                src={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(20,16,11,0.15) 0%, rgba(20,16,11,0.9) 75%, rgba(20,16,11,0.98) 100%)",
-                }}
-              />
-              <div className="absolute inset-x-0 bottom-0 p-8 text-center">
-                <p className="eyebrow mb-2 text-[var(--accent)]">
-                  Virtual altar
-                </p>
-                <h3 className="display text-2xl md:text-3xl mb-3 leading-tight">
-                  Light a candle.
-                </h3>
-                <p className="text-[var(--foreground-muted)] text-sm leading-relaxed max-w-xs mx-auto">
-                  For an intention. For protection. For someone you love who
-                  needs the prayer.
-                </p>
-              </div>
-            </Link>
+      {/* ── 6. Ancestors altar — image left ───────────────────────────── */}
+      <ToolSection
+        eyebrow="Ancestors altar"
+        headline="A flame for those who came before."
+        body="Memorialize the ones you carry. Their names lit. Their stories with you. Share a private link with family so they can add their light."
+        href="/ancestors"
+        linkLabel="Visit your ancestors"
+        imageSrc={`${OB_CDN}/spiritual-candles.png`}
+        imageSide="left"
+      />
 
-            {/* Ancestors altar card */}
-            <Link
-              href="/ancestors"
-              className="group relative aspect-[4/5] rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors"
-            >
-              <Image
-                src={`${OB_CDN}/spiritual-candles.png`}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(20,16,11,0.15) 0%, rgba(20,16,11,0.9) 75%, rgba(20,16,11,0.98) 100%)",
-                }}
-              />
-              <div className="absolute inset-x-0 bottom-0 p-8 text-center">
-                <p className="eyebrow mb-2 text-[var(--accent)]">
-                  Ancestors altar
-                </p>
-                <h3 className="display text-2xl md:text-3xl mb-3 leading-tight">
-                  A flame for those who came before.
-                </h3>
-                <p className="text-[var(--foreground-muted)] text-sm leading-relaxed max-w-xs mx-auto">
-                  Memorialize the ones you carry. Their names lit. Their stories
-                  with you.
-                </p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* ── 7. Rituals library — image right ──────────────────────────── */}
+      <ToolSection
+        eyebrow="A ritual for today"
+        headline="The rituals library is coming."
+        body="Sixty-six years of practice in the Bronx, curated and searchable. For grief. For protection. For love that needs to land. Each ritual a real entry from the botanica's archive."
+        href="/rituals"
+        linkLabel="Browse the library"
+        imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+        imageSide="right"
+      />
 
-      {/* ── 6. A ritual for today — side-by-side with herbs imagery ───── */}
-      <section
-        aria-label="A ritual for today"
-        className="border-t border-[var(--border)]"
-      >
-        <div className="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-5 gap-10 items-center">
-          <div className="md:col-span-2 relative aspect-square rounded-xl overflow-hidden border border-[var(--border)]">
-            <Image
-              src={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
-              alt=""
-              fill
-              sizes="(max-width: 768px) 100vw, 40vw"
-              className="object-cover"
-            />
-          </div>
-          <div className="md:col-span-3">
-            <p className="eyebrow mb-4">A ritual for today</p>
-            <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
-              The rituals library is coming.
-            </h2>
-            <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
-              Sixty-six years of practice in the Bronx, curated and searchable.
-              For grief. For protection. For love that needs to land. Each
-              ritual a real entry from the botanica&apos;s archive.
-            </p>
-            <Link
-              href="/rituals"
-              className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
-            >
-              Browse the library
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 7. Member benefit — quiet card ────────────────────────────── */}
-      <section
-        aria-label="Your member benefit"
-        className="border-t border-[var(--border)] bg-[var(--background-elevated)]"
-      >
-        <div className="max-w-3xl mx-auto px-6 py-16 text-center">
-          <p className="eyebrow mb-3">A member benefit</p>
-          <h2 className="display text-2xl mb-3">10% off at the botanica</h2>
-          <p className="text-[var(--foreground-muted)] leading-relaxed max-w-lg mx-auto mb-8">
-            Sign in to originalbotanica.com with the same email and your
-            discount applies automatically at checkout.
-          </p>
-          <a
-            href="https://originalbotanica.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-ghost inline-flex"
-          >
-            Shop the botanica
-          </a>
-        </div>
-      </section>
+      {/* ── 8. Member benefit — image left ────────────────────────────── */}
+      <ToolSection
+        eyebrow="A member benefit"
+        headline="10% off at the botanica."
+        body="Sign in to originalbotanica.com with the same email and your discount applies automatically at checkout. Every candle, oil, herb, and bath."
+        href="https://originalbotanica.com"
+        linkLabel="Shop the botanica"
+        external
+        imageSrc={`${OB_CDN}/spiritual-baths-washes.png`}
+        imageSide="left"
+      />
     </main>
+  );
+}
+
+/**
+ * Editorial side-by-side tool section.
+ * Same structure for every tool: image on one side, eyebrow + headline +
+ * body + link on the other. The `imageSide` prop flips left/right so we
+ * can alternate down the page.
+ */
+function ToolSection({
+  eyebrow,
+  headline,
+  body,
+  href,
+  linkLabel,
+  imageSrc,
+  imageSide,
+  external = false,
+}: {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  href: string;
+  linkLabel: string;
+  imageSrc: string;
+  imageSide: "left" | "right";
+  external?: boolean;
+}) {
+  const imageBlock = (
+    <div className="md:col-span-2 relative aspect-square rounded-xl overflow-hidden border border-[var(--border)]">
+      <Image
+        src={imageSrc}
+        alt=""
+        fill
+        sizes="(max-width: 768px) 100vw, 40vw"
+        className="object-cover"
+      />
+    </div>
+  );
+  const textBlock = (
+    <div className="md:col-span-3">
+      <p className="eyebrow mb-4">{eyebrow}</p>
+      <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
+        {headline}
+      </h2>
+      <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
+        {body}
+      </p>
+      {external ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+        >
+          {linkLabel}
+          <span aria-hidden>→</span>
+        </a>
+      ) : (
+        <Link
+          href={href}
+          className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+        >
+          {linkLabel}
+          <span aria-hidden>→</span>
+        </Link>
+      )}
+    </div>
+  );
+
+  return (
+    <section
+      aria-label={eyebrow}
+      className="border-t border-[var(--border)]"
+    >
+      <div className="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-5 gap-10 items-center">
+        {imageSide === "left" ? (
+          <>
+            {imageBlock}
+            {textBlock}
+          </>
+        ) : (
+          <>
+            {textBlock}
+            {imageBlock}
+          </>
+        )}
+      </div>
+    </section>
   );
 }

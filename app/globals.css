@@ -325,10 +325,10 @@ h1, h2, h3, h4, h5, h6 {
 .candle-large .flame-blue      { width: 9px;  height: 18px; }
 .candle-large .flame-light-cast { width: 58px; height: 14px; }
 
-/* Photo overlay for the candle. Centered vertically on the candle body. */
+/* Photo overlay for the candle. Centered exactly mid-candle. */
 .candle-photo-overlay {
   position: absolute;
-  top: 55%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 62px;
