@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
 import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
@@ -7,93 +8,118 @@ import { isValidSign } from "@/lib/daily-horoscope/prompt";
 /**
  * The member dashboard — the daily devotional surface.
  *
- * Structure: vertical scroll, mobile-first, reads like a daily practice.
+ * Design language: candlelit, reverent, atmospheric. Like stepping into
+ * the botanica at dawn. Each section has its own visual treatment so
+ * the eye keeps moving instead of scanning identical cards.
  *
- *   1. Hero altar moment    — full-screen candle + today's invocation
- *   2. Today's card         — large tarot pull with a paragraph reading
- *   3. Today's reading      — personal astrological note for the day
- *   4. Your altar           — currently burning candles + ancestor flame
- *   5. A ritual for today   — one curated ritual by day/moon/season
- *   6. Your member benefit  — 10% discount, prominent but quiet
- *
- * In this scaffold each section is a PLACEHOLDER block. The real widgets
- * arrive across Phase 1 (Altar, Rituals stub), Phase 2 (Tarot, Astrology),
- * and Phase 3 (Ancestors).
- *
- * Middleware guarantees only authenticated users reach this route.
- * We still re-fetch the user here to render their name and gate the
- * page behind an active subscription if Phase 0 wiring is complete.
+ * Imagery comes from originalbotanica.com's CloudFront CDN (same shots
+ * used on the marketing site). Falls back gracefully if those URLs
+ * change later.
  */
+
+const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  // Middleware shouldn't let us get here without a user, but be defensive.
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   const sub = await getSubscriptionStatus(user.id);
   const trialLeft = trialDaysLeft(sub);
 
-  // The user's first name lives in the profiles table (set during
-  // profile-setup), not in Supabase auth metadata. Read it from there.
-  // We also pull sun_sign so the hero invocation can be personalized.
   const { data: profile } = await supabase
     .from("profiles")
     .select("first_name, sun_sign")
     .eq("id", user.id)
     .maybeSingle();
 
-  // Time-of-day greeting in the user's locale. We'll wire i18n properly
-  // later; for now, English-only.
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const displayName = profile?.first_name || "friend";
 
-  // Today's horoscope, personalized to the member's sun sign. If the
-  // chart hasn't been computed yet (no sun_sign on profile) we show a
-  // generic invocation instead of forcing a heavy API call here.
   const sunSign = profile?.sun_sign || null;
   const dailyHoroscope =
     sunSign && isValidSign(sunSign)
       ? await getOrGenerateDailyHoroscope(sunSign).catch(() => null)
       : null;
 
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <main className="flex-1">
-      {/* ── 1. Hero altar moment ──────────────────────────────────────── */}
+      {/* ── 1. Hero — candlelit invocation ────────────────────────────── */}
       <section
         aria-label="Today"
-        className="min-h-screen flex flex-col items-center justify-center text-center px-6 py-16"
+        className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-16 overflow-hidden"
       >
-        <p className="sublabel mb-4">{greeting}, {displayName}</p>
-
-        <div className="candle-glow my-8" aria-hidden>
-          {/* TODO: real candle SVG once we have it. Placeholder for now. */}
+        {/* Background candle photograph, dimmed for legibility */}
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src={`${OB_CDN}/spiritual-candles.png`}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover opacity-30"
+            style={{ objectPosition: "center" }}
+          />
+          {/* Warm vignette overlay to keep text readable on any image area */}
           <div
-            className="w-20 h-32 mx-auto rounded-md"
+            className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, #f6e8c8 0%, #e8d4a0 65%, #c9a86a 100%)",
-              boxShadow: "0 0 60px rgba(232, 172, 124, 0.5)",
+                "radial-gradient(ellipse at center, rgba(20,16,11,0.55) 0%, rgba(20,16,11,0.92) 75%, rgba(20,16,11,1) 100%)",
             }}
           />
         </div>
 
-        <h1 className="display text-4xl md:text-5xl max-w-xl">
-          {dailyHoroscope?.content.summary
-            ? dailyHoroscope.content.summary
-            : "Today the moon waxes in Scorpio."}
-        </h1>
-        <p className="invocation text-lg text-[var(--foreground-muted)] mt-4 max-w-md">
-          {dailyHoroscope?.content.action
-            ? dailyHoroscope.content.action
-            : "A good day for inward work."}
+        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">
+          {today}
         </p>
+        <p className="sublabel mb-10">{greeting}, {displayName}</p>
+
+        <div className="candle-glow mb-10" aria-hidden>
+          <Image
+            src="/white-candle.png"
+            alt=""
+            width={120}
+            height={200}
+            priority
+            className="h-auto"
+          />
+        </div>
+
+        {sunSign && dailyHoroscope ? (
+          <>
+            <h1 className="display text-3xl md:text-4xl max-w-xl leading-tight">
+              {sunSign}. Today the focus is{" "}
+              <span className="italic text-[var(--accent)]">
+                {dailyHoroscope.content.focus}
+              </span>
+              .
+            </h1>
+            <p className="invocation text-base md:text-lg text-[var(--foreground-muted)] mt-6 max-w-lg leading-relaxed">
+              {dailyHoroscope.content.summary}
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="display text-3xl md:text-4xl max-w-xl leading-tight">
+              Welcome to the practice.
+            </h1>
+            <p className="invocation text-base md:text-lg text-[var(--foreground-muted)] mt-6 max-w-lg leading-relaxed">
+              Add your birth details and the astrologer will read for you each
+              morning.
+            </p>
+          </>
+        )}
 
         {sub.isTrialing && trialLeft !== null && (
           <p className="eyebrow mt-12 text-[var(--accent)]">
@@ -102,107 +128,183 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      {/* ── 2. Today's card ──────────────────────────────────────────── */}
-      <section
-        aria-label="Today's tarot card"
-        className="px-6 py-16 max-w-3xl mx-auto border-t border-[var(--border)]"
-      >
-        <p className="eyebrow mb-4">Your card today</p>
-        <h2 className="display text-3xl mb-4">[Tarot card name]</h2>
-        <p className="text-[var(--foreground-muted)] leading-relaxed">
-          [Placeholder — a single paragraph of reading, pulled from the Tarot
-          tool once it&apos;s built in Phase 2. Tappable to deepen.]
-        </p>
-        <Link href="/tarot" className="nav-link mt-6 inline-block text-[var(--accent)]">
-          Pull a new card →
-        </Link>
-      </section>
-
-      {/* ── 3. Today's reading ───────────────────────────────────────── */}
+      {/* ── 2. Today's reading (astrology) — split layout ─────────────── */}
       <section
         aria-label="Today's astrological reading"
-        className="px-6 py-16 max-w-3xl mx-auto border-t border-[var(--border)]"
+        className="border-t border-[var(--border)]"
       >
-        <p className="eyebrow mb-4">Today&apos;s reading</p>
-        {dailyHoroscope ? (
-          <>
-            <h2 className="display text-3xl mb-4 capitalize">
-              {sunSign}. Today the focus is {dailyHoroscope.content.focus}.
-            </h2>
-            <p className="text-[var(--foreground-muted)] leading-relaxed">
-              {dailyHoroscope.content.summary}
-            </p>
-          </>
-        ) : (
-          <>
-            <h2 className="display text-3xl mb-4">
-              Add your birth details to begin
-            </h2>
-            <p className="text-[var(--foreground-muted)] leading-relaxed">
-              Your daily reading is personal to your chart. Tell us your birth
-              date and city and the astrologer can begin.
-            </p>
-          </>
-        )}
-        <Link
-          href="/astrology"
-          className="nav-link mt-6 inline-block text-[var(--accent)]"
-        >
-          Ask your astrologer →
-        </Link>
+        <div className="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="eyebrow mb-4">Today&apos;s reading</p>
+            {dailyHoroscope ? (
+              <>
+                <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
+                  {dailyHoroscope.content.action}
+                </h2>
+                <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
+                  Drawn from your {sunSign} placement. For a longer reading
+                  rooted in your full chart, speak with the astrologer.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
+                  Your chart, your reading.
+                </h2>
+                <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
+                  Add your birth date and city to receive a daily reading
+                  personal to you, and to begin conversations with the
+                  astrologer.
+                </p>
+              </>
+            )}
+            <Link
+              href="/astrology"
+              className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+            >
+              Ask your astrologer
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <div className="relative aspect-[4/5] rounded-xl overflow-hidden border border-[var(--border)]">
+            <Image
+              src={`${OB_CDN}/cta-spiritual-services.jpg`}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(20,16,11,0) 50%, rgba(20,16,11,0.55) 100%)",
+              }}
+            />
+          </div>
+        </div>
       </section>
 
-      {/* ── 4. Your altar ────────────────────────────────────────────── */}
+      {/* ── 3. Today's card (tarot) — centered composition ────────────── */}
+      <section
+        aria-label="Today's tarot card"
+        className="border-t border-[var(--border)]"
+        style={{
+          background:
+            "radial-gradient(ellipse at center top, rgba(232,172,124,0.06) 0%, transparent 60%)",
+        }}
+      >
+        <div className="max-w-2xl mx-auto px-6 py-20 text-center">
+          <p className="eyebrow mb-4">Your card today</p>
+          <h2 className="display text-2xl md:text-3xl mb-3">
+            The card is waiting.
+          </h2>
+          <p className="invocation text-[var(--foreground-muted)] mb-8 max-w-md mx-auto">
+            Daily tarot arrives in Phase 2. One card, a paragraph of reading,
+            and a question to sit with.
+          </p>
+          <Link
+            href="/tarot"
+            className="btn-ghost inline-flex"
+          >
+            Pull a card
+          </Link>
+        </div>
+      </section>
+
+      {/* ── 4. Your altar — full-bleed image with overlay ─────────────── */}
       <section
         aria-label="Your altar"
-        className="px-6 py-16 max-w-3xl mx-auto border-t border-[var(--border)]"
+        className="relative border-t border-[var(--border)] overflow-hidden"
       >
-        <p className="eyebrow mb-4">Your altar</p>
-        <h2 className="display text-3xl mb-4">No candles burning yet</h2>
-        <p className="text-[var(--foreground-muted)] leading-relaxed">
-          [Placeholder — list of currently lit candles + ancestor flame.
-          Built in Phase 1.]
-        </p>
-        <Link href="/altar" className="nav-link mt-6 inline-block text-[var(--accent)]">
-          Tend your altar →
-        </Link>
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover opacity-40"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(20,16,11,0.95) 0%, rgba(20,16,11,0.75) 50%, rgba(20,16,11,0.55) 100%)",
+            }}
+          />
+        </div>
+        <div className="max-w-3xl mx-auto px-6 py-24">
+          <p className="eyebrow mb-4">Your altar</p>
+          <h2 className="display text-3xl md:text-4xl mb-5 max-w-xl leading-tight">
+            No candles burning yet.
+          </h2>
+          <p className="text-[var(--foreground-muted)] leading-relaxed max-w-lg mb-8">
+            Light a candle for an intention. Add a flame for an ancestor. Your
+            altar travels with you, anywhere you carry the practice.
+          </p>
+          <Link href="/altar" className="btn-primary inline-flex">
+            Tend your altar
+          </Link>
+        </div>
       </section>
 
-      {/* ── 5. A ritual for today ────────────────────────────────────── */}
+      {/* ── 5. A ritual for today — side-by-side with herbs imagery ───── */}
       <section
         aria-label="A ritual for today"
-        className="px-6 py-16 max-w-3xl mx-auto border-t border-[var(--border)]"
+        className="border-t border-[var(--border)]"
       >
-        <p className="eyebrow mb-4">A ritual for today</p>
-        <h2 className="display text-3xl mb-4">[Ritual title]</h2>
-        <p className="text-[var(--foreground-muted)] leading-relaxed">
-          [Placeholder — one curated ritual surfaced by day-of-week, moon
-          phase, or season. Comes from the rituals library in Phase 3.]
-        </p>
-        <Link href="/rituals" className="nav-link mt-6 inline-block text-[var(--accent)]">
-          Browse the library →
-        </Link>
+        <div className="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-5 gap-10 items-center">
+          <div className="md:col-span-2 relative aspect-square rounded-xl overflow-hidden border border-[var(--border)]">
+            <Image
+              src={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 40vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="md:col-span-3">
+            <p className="eyebrow mb-4">A ritual for today</p>
+            <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
+              The rituals library is coming.
+            </h2>
+            <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
+              Sixty-six years of practice in the Bronx, curated and searchable.
+              For grief. For protection. For love that needs to land. Each
+              ritual a real entry from the botanica&apos;s archive.
+            </p>
+            <Link
+              href="/rituals"
+              className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+            >
+              Browse the library
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
+        </div>
       </section>
 
-      {/* ── 6. Member benefit ────────────────────────────────────────── */}
+      {/* ── 6. Member benefit — quiet card ────────────────────────────── */}
       <section
         aria-label="Your member benefit"
-        className="px-6 py-16 max-w-3xl mx-auto border-t border-[var(--border)]"
+        className="border-t border-[var(--border)] bg-[var(--background-elevated)]"
       >
-        <p className="eyebrow mb-4">Your member benefit</p>
-        <h2 className="display text-3xl mb-4">10% off at the botanica</h2>
-        <p className="text-[var(--foreground-muted)] leading-relaxed">
-          As a member, your 10% discount is applied automatically at
-          checkout when you sign in to originalbotanica.com.
-        </p>
-        <a
-          href="https://originalbotanica.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-ghost mt-6 inline-block"
-        >
-          Shop the botanica
-        </a>
+        <div className="max-w-3xl mx-auto px-6 py-16 text-center">
+          <p className="eyebrow mb-3">A member benefit</p>
+          <h2 className="display text-2xl mb-3">10% off at the botanica</h2>
+          <p className="text-[var(--foreground-muted)] leading-relaxed max-w-lg mx-auto mb-8">
+            Sign in to originalbotanica.com with the same email and your
+            discount applies automatically at checkout.
+          </p>
+          <a
+            href="https://originalbotanica.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost inline-flex"
+          >
+            Shop the botanica
+          </a>
+        </div>
       </section>
     </main>
   );
