@@ -45,9 +45,12 @@ export default function AncestorsToolPage() {
         your daily practice, not a one-time gesture.
       </p>
 
-      <div className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--accent)] pl-4 py-2 mt-12">
-        Coming soon. The ancestors tool is being woven into this membership.
-      </div>
+      <p className="eyebrow mb-3 mt-12">Share with family</p>
+      <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
+        Each memorial gets a private link you can send to family. They can
+        view the candle and add their own light. They do not need to be
+        members. Honoring is something the whole family can do together.
+      </p>
     </MarketingToolLayout>
   );
 }
