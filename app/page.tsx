@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { MarketingHeader } from "@/components/marketing-header";
 
 /**
  * Marketing homepage (logged out).
@@ -57,8 +58,9 @@ export default async function HomePage({
   // Case 3: logged out — marketing.
   return (
     <main className="flex-1">
+      <MarketingHeader />
       {/* Hero with candle backdrop */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-24 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-28 pb-24 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
             src={`${OB_CDN}/spiritual-candles.png`}
@@ -118,36 +120,43 @@ export default async function HomePage({
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard
+              href="/tools/astrology"
               imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
               title="Your astrologer"
               body="Trained on your chart. Speaks Western, Lucumí, Espiritismo, folk Catholic. Honest about hard transits."
             />
             <FeatureCard
+              href="/tools/dreams"
               imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
               title="Dream interpretation"
               body="Describe a dream while it's still fresh. Symbols read through the traditions. A small ritual to honor it."
             />
             <FeatureCard
+              href="/tools/tarot"
               imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
               title="Daily tarot"
               body="A card each morning, a paragraph of reading, a question to sit with."
             />
             <FeatureCard
+              href="/tools/virtual-altar"
               imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
               title="Virtual altar"
               body="Light a candle for an intention. For protection. For someone you love who needs the prayer."
             />
             <FeatureCard
+              href="/tools/ancestors"
               imageSrc={`${OB_CDN}/spiritual-candles.png`}
               title="Ancestors altar"
               body="A flame for those who came before. Memorialize the ones you carry. Their names lit, their stories with you."
             />
             <FeatureCard
+              href="/tools/rituals"
               imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
               title="Rituals library"
               body="Sixty-six years of practice in the Bronx. Searchable. For grief, protection, love that needs to land."
             />
             <FeatureCard
+              href="/tools/discount"
               imageSrc={`${OB_CDN}/spiritual-baths-washes.png`}
               title="Member discount"
               body="10% off everything at originalbotanica.com. Applied automatically at checkout."
@@ -192,17 +201,19 @@ export default async function HomePage({
 }
 
 function FeatureCard({
+  href,
   imageSrc,
   title,
   body,
 }: {
+  href: string;
   imageSrc: string;
   title: string;
   body: string;
 }) {
   return (
-    <div className="group">
-      <div className="relative aspect-[4/3] mb-5 rounded-xl overflow-hidden border border-[var(--border)]">
+    <Link href={href} className="group block">
+      <div className="relative aspect-[4/3] mb-5 rounded-xl overflow-hidden border border-[var(--border)] group-hover:border-[var(--accent)] transition-colors">
         <Image
           src={imageSrc}
           alt=""
@@ -218,10 +229,12 @@ function FeatureCard({
           }}
         />
       </div>
-      <h3 className="display text-xl mb-2">{title}</h3>
+      <h3 className="display text-xl mb-2 group-hover:text-[var(--accent)] transition-colors">
+        {title}
+      </h3>
       <p className="text-[var(--foreground-muted)] leading-relaxed text-sm">
         {body}
       </p>
-    </div>
+    </Link>
   );
 }
