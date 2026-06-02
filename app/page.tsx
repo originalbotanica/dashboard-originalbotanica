@@ -107,7 +107,7 @@ export default async function HomePage({
         <div className="max-w-5xl mx-auto px-6 py-24">
           <p className="eyebrow mb-3 text-center">What you join</p>
           <h2 className="display text-3xl md:text-4xl mb-16 text-center max-w-2xl mx-auto leading-tight">
-            Six tools. One practice.
+            Seven tools. One practice.
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard
@@ -127,8 +127,13 @@ export default async function HomePage({
             />
             <FeatureCard
               imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
-              title="Your altar"
-              body="Light a candle for an intention. A flame for those who came before. Travels with you."
+              title="Virtual altar"
+              body="Light a candle for an intention. For protection. For someone you love who needs the prayer."
+            />
+            <FeatureCard
+              imageSrc={`${OB_CDN}/spiritual-candles.png`}
+              title="Ancestors altar"
+              body="A flame for those who came before. Memorialize the ones you carry. Their names lit, their stories with you."
             />
             <FeatureCard
               imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}

@@ -251,39 +251,88 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 5. Your altar — full-bleed image with overlay ─────────────── */}
+      {/* ── 5. Your altar — two distinct surfaces ─────────────────────── */}
       <section
         aria-label="Your altar"
         className="relative border-t border-[var(--border)] overflow-hidden"
       >
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
-            alt=""
-            fill
-            sizes="100vw"
-            className="object-cover opacity-40"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(20,16,11,0.95) 0%, rgba(20,16,11,0.75) 50%, rgba(20,16,11,0.55) 100%)",
-            }}
-          />
-        </div>
-        <div className="max-w-3xl mx-auto px-6 py-24">
-          <p className="eyebrow mb-4">Your altar</p>
-          <h2 className="display text-3xl md:text-4xl mb-5 max-w-xl leading-tight">
-            No candles burning yet.
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <p className="eyebrow mb-3 text-center">Your altar</p>
+          <h2 className="display text-3xl md:text-4xl mb-4 text-center max-w-xl mx-auto leading-tight">
+            Two surfaces, one practice.
           </h2>
-          <p className="text-[var(--foreground-muted)] leading-relaxed max-w-lg mb-8">
-            Light a candle for an intention. Add a flame for an ancestor. Your
-            altar travels with you, anywhere you carry the practice.
+          <p className="text-[var(--foreground-muted)] leading-relaxed text-center max-w-lg mx-auto mb-14">
+            Your altar travels with you. Light a candle for an intention. Keep
+            a flame for those who came before.
           </p>
-          <Link href="/altar" className="btn-primary inline-flex">
-            Tend your altar
-          </Link>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Virtual altar card */}
+            <Link
+              href="/altar/virtual"
+              className="group relative aspect-[4/5] rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors"
+            >
+              <Image
+                src={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
+                alt=""
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(20,16,11,0.15) 0%, rgba(20,16,11,0.9) 75%, rgba(20,16,11,0.98) 100%)",
+                }}
+              />
+              <div className="absolute inset-x-0 bottom-0 p-8 text-center">
+                <p className="eyebrow mb-2 text-[var(--accent)]">
+                  Virtual altar
+                </p>
+                <h3 className="display text-2xl md:text-3xl mb-3 leading-tight">
+                  Light a candle.
+                </h3>
+                <p className="text-[var(--foreground-muted)] text-sm leading-relaxed max-w-xs mx-auto">
+                  For an intention. For protection. For someone you love who
+                  needs the prayer.
+                </p>
+              </div>
+            </Link>
+
+            {/* Ancestors altar card */}
+            <Link
+              href="/ancestors"
+              className="group relative aspect-[4/5] rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors"
+            >
+              <Image
+                src={`${OB_CDN}/spiritual-candles.png`}
+                alt=""
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(20,16,11,0.15) 0%, rgba(20,16,11,0.9) 75%, rgba(20,16,11,0.98) 100%)",
+                }}
+              />
+              <div className="absolute inset-x-0 bottom-0 p-8 text-center">
+                <p className="eyebrow mb-2 text-[var(--accent)]">
+                  Ancestors altar
+                </p>
+                <h3 className="display text-2xl md:text-3xl mb-3 leading-tight">
+                  A flame for those who came before.
+                </h3>
+                <p className="text-[var(--foreground-muted)] text-sm leading-relaxed max-w-xs mx-auto">
+                  Memorialize the ones you carry. Their names lit. Their stories
+                  with you.
+                </p>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 
