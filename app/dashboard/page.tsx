@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
 import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
 import { isValidSign } from "@/lib/daily-horoscope/prompt";
+import { MemberHeader } from "@/components/member-header";
 
 /**
  * The member dashboard — the daily devotional surface.
@@ -59,6 +60,7 @@ export default async function DashboardPage() {
         aria-label="Today"
         className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-16 overflow-hidden"
       >
+        <MemberHeader variant="transparent" />
         {/* Background candle photograph, dimmed for legibility */}
         <div className="absolute inset-0 -z-10">
           <Image
@@ -185,7 +187,44 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 3. Today's card (tarot) — centered composition ────────────── */}
+      {/* ── 3. Dreams — smoky liminal section ─────────────────────────── */}
+      <section
+        aria-label="Interpret a dream"
+        className="relative border-t border-[var(--border)] overflow-hidden"
+      >
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src={`${OB_CDN}/incense-smudges-resins.png`}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover opacity-25"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(20,16,11,0.7) 0%, rgba(20,16,11,0.95) 80%)",
+            }}
+          />
+        </div>
+        <div className="max-w-2xl mx-auto px-6 py-24 text-center">
+          <p className="eyebrow mb-4">Dreams</p>
+          <h2 className="display text-2xl md:text-3xl mb-4 leading-tight">
+            What did the night bring?
+          </h2>
+          <p className="invocation text-[var(--foreground-muted)] mb-8 max-w-md mx-auto leading-relaxed">
+            Describe a dream while it&apos;s still fresh. The interpretation
+            honors Lucum&iacute;, Espiritismo, folk Catholic, and Western
+            traditions. Every dream ends with a ritual.
+          </p>
+          <Link href="/dreams/new" className="btn-primary inline-flex">
+            Interpret a dream
+          </Link>
+        </div>
+      </section>
+
+      {/* ── 4. Today's card (tarot) — centered composition ────────────── */}
       <section
         aria-label="Today's tarot card"
         className="border-t border-[var(--border)]"
@@ -212,7 +251,7 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 4. Your altar — full-bleed image with overlay ─────────────── */}
+      {/* ── 5. Your altar — full-bleed image with overlay ─────────────── */}
       <section
         aria-label="Your altar"
         className="relative border-t border-[var(--border)] overflow-hidden"
@@ -248,7 +287,7 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 5. A ritual for today — side-by-side with herbs imagery ───── */}
+      {/* ── 6. A ritual for today — side-by-side with herbs imagery ───── */}
       <section
         aria-label="A ritual for today"
         className="border-t border-[var(--border)]"
@@ -284,7 +323,7 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 6. Member benefit — quiet card ────────────────────────────── */}
+      {/* ── 7. Member benefit — quiet card ────────────────────────────── */}
       <section
         aria-label="Your member benefit"
         className="border-t border-[var(--border)] bg-[var(--background-elevated)]"

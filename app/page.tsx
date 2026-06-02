@@ -107,18 +107,23 @@ export default async function HomePage({
         <div className="max-w-5xl mx-auto px-6 py-24">
           <p className="eyebrow mb-3 text-center">What you join</p>
           <h2 className="display text-3xl md:text-4xl mb-16 text-center max-w-2xl mx-auto leading-tight">
-            Five tools. One practice.
+            Six tools. One practice.
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <FeatureCard
-              imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
-              title="Daily tarot"
-              body="A card each morning, a paragraph of reading, a question to sit with."
-            />
             <FeatureCard
               imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
               title="Your astrologer"
               body="Trained on your chart. Speaks Western, Lucumí, Espiritismo, folk Catholic. Honest about hard transits."
+            />
+            <FeatureCard
+              imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+              title="Dream interpretation"
+              body="Describe a dream while it's still fresh. Symbols read through the traditions. A small ritual to honor it."
+            />
+            <FeatureCard
+              imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
+              title="Daily tarot"
+              body="A card each morning, a paragraph of reading, a question to sit with."
             />
             <FeatureCard
               imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
@@ -126,7 +131,7 @@ export default async function HomePage({
               body="Light a candle for an intention. A flame for those who came before. Travels with you."
             />
             <FeatureCard
-              imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+              imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
               title="Rituals library"
               body="Sixty-six years of practice in the Bronx. Searchable. For grief, protection, love that needs to land."
             />
@@ -134,11 +139,6 @@ export default async function HomePage({
               imageSrc={`${OB_CDN}/spiritual-baths-washes.png`}
               title="Member discount"
               body="10% off everything at originalbotanica.com. Applied automatically at checkout."
-            />
-            <FeatureCard
-              imageSrc={`${OB_CDN}/ritual-oils.png`}
-              title="In both languages"
-              body="English and Spanish. The voice of the house, however you grew up praying."
             />
           </div>
         </div>
