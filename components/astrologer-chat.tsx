@@ -1,18 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-/**
- * Strip the [[Display Name|product-slug]] markup back to plain text
- * (just "Display Name") since Part 1 doesn't have the RAG lookup
- * wired in. Part 2 will replace this with a real component that
- * renders inline product links to originalbotanica.com.
- */
-function stripProductMarkup(text: string): string {
-  return text.replace(/\[\[([^|\]]+)\|[a-z0-9_-]+\]\]/gi, "$1");
-}
+// Empty product lookup is fine for the chat: we render assistant
+// messages in "optimistic" mode, so any [[Name|slug]] markup links
+// to originalbotanica.com/<slug> even without a per-slug validation.
+// Claude is prompted not to invent slugs, so broken links are rare.
+const EMPTY_LOOKUP = buildProductLookup([]);
+const OB_BASE_URL = "https://originalbotanica.com";
 
 const STARTER_PROMPTS = [
   "What is my chart trying to teach me right now?",
@@ -197,7 +195,6 @@ function Welcome({
 
 function Message({ msg }: { msg: Msg }) {
   const isUser = msg.role === "user";
-  const content = isUser ? msg.content : stripProductMarkup(msg.content);
   return (
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
       <div
@@ -207,7 +204,18 @@ function Message({ msg }: { msg: Msg }) {
             : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)]"
         }`}
       >
-        {content || <span className="opacity-50">...</span>}
+        {isUser ? (
+          msg.content || <span className="opacity-50">...</span>
+        ) : msg.content ? (
+          <ProseBlock
+            text={msg.content}
+            lookup={EMPTY_LOOKUP}
+            optimisticBaseUrl={OB_BASE_URL}
+            className="leading-relaxed mb-3 last:mb-0"
+          />
+        ) : (
+          <span className="opacity-50">...</span>
+        )}
       </div>
     </div>
   );

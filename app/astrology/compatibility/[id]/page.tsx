@@ -4,6 +4,10 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { deleteCompatibilityAction } from "../actions";
 import type { CompatibilityContent } from "@/lib/compatibility/prompt";
+import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
+
+const EMPTY_LOOKUP = buildProductLookup([]);
+const OB_BASE_URL = "https://originalbotanica.com";
 
 export const metadata = {
   title: "Reading | Original Botanica",
@@ -71,8 +75,13 @@ export default async function CompatibilityReadingPage({
         </p>
 
         {/* Opening */}
-        <article className="text-[var(--foreground)] leading-relaxed text-lg whitespace-pre-wrap mb-14">
-          {content.opening}
+        <article className="text-[var(--foreground)] mb-14">
+          <ProseBlock
+            text={content.opening}
+            lookup={EMPTY_LOOKUP}
+            optimisticBaseUrl={OB_BASE_URL}
+            className="leading-relaxed text-lg mb-5 last:mb-0"
+          />
         </article>
 
         {/* Dynamics — three structured sections */}
@@ -82,9 +91,14 @@ export default async function CompatibilityReadingPage({
               {content.dynamics.map((d, i) => (
                 <div key={i}>
                   <p className="eyebrow mb-3 text-[var(--accent)]">{d.name}</p>
-                  <p className="text-[var(--foreground-muted)] leading-relaxed whitespace-pre-wrap">
-                    {d.body}
-                  </p>
+                  <div className="text-[var(--foreground-muted)]">
+                    <ProseBlock
+                      text={d.body}
+                      lookup={EMPTY_LOOKUP}
+                      optimisticBaseUrl={OB_BASE_URL}
+                      className="leading-relaxed mb-4 last:mb-0"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -101,9 +115,14 @@ export default async function CompatibilityReadingPage({
             <p className="invocation text-base text-[var(--accent)] mb-6">
               {content.shared_ritual.when}
             </p>
-            <p className="text-[var(--foreground-muted)] leading-relaxed whitespace-pre-wrap">
-              {content.shared_ritual.what}
-            </p>
+            <div className="text-[var(--foreground-muted)]">
+              <ProseBlock
+                text={content.shared_ritual.what}
+                lookup={EMPTY_LOOKUP}
+                optimisticBaseUrl={OB_BASE_URL}
+                className="leading-relaxed mb-4 last:mb-0"
+              />
+            </div>
           </section>
         )}
 

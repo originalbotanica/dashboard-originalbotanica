@@ -4,6 +4,14 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getOrGenerateMonthlyForecast } from "@/lib/forecast/generate";
+import {
+  ProseLine,
+  ProseBlock,
+  buildProductLookup,
+} from "@/lib/rag/render-prose";
+
+const EMPTY_LOOKUP = buildProductLookup([]);
+const OB_BASE_URL = "https://originalbotanica.com";
 
 export const metadata = {
   title: "Your monthly forecast | Original Botanica",
@@ -86,9 +94,14 @@ export default async function ForecastPage() {
           </div>
         ) : (
           <>
-            {/* Opening */}
-            <article className="prose-invocation text-[var(--foreground)] leading-relaxed text-lg whitespace-pre-wrap mb-16">
-              {forecast.content.opening}
+            {/* Opening — multi-paragraph prose with product links */}
+            <article className="text-[var(--foreground)] mb-16">
+              <ProseBlock
+                text={forecast.content.opening}
+                lookup={EMPTY_LOOKUP}
+                optimisticBaseUrl={OB_BASE_URL}
+                className="leading-relaxed text-lg mb-5 last:mb-0"
+              />
             </article>
 
             {/* Key dates */}
@@ -109,7 +122,11 @@ export default async function ForecastPage() {
                           </p>
                         </div>
                         <div className="col-span-12 md:col-span-9 text-[var(--foreground-muted)] leading-relaxed">
-                          {kd.what_to_do}
+                          <ProseLine
+                            text={kd.what_to_do}
+                            lookup={EMPTY_LOOKUP}
+                            optimisticBaseUrl={OB_BASE_URL}
+                          />
                         </div>
                       </li>
                     ))}
@@ -133,9 +150,14 @@ export default async function ForecastPage() {
               <p className="invocation text-base text-[var(--accent)] mb-6">
                 {forecast.content.ritual.when}
               </p>
-              <p className="text-[var(--foreground-muted)] leading-relaxed whitespace-pre-wrap">
-                {forecast.content.ritual.what}
-              </p>
+              <div className="text-[var(--foreground-muted)]">
+                <ProseBlock
+                  text={forecast.content.ritual.what}
+                  lookup={EMPTY_LOOKUP}
+                  optimisticBaseUrl={OB_BASE_URL}
+                  className="leading-relaxed mb-4 last:mb-0"
+                />
+              </div>
             </section>
           </>
         )}
@@ -160,9 +182,14 @@ function Terrain({ label, body }: { label: string; body: string }) {
   return (
     <div>
       <p className="eyebrow mb-3 text-[var(--accent)]">{label}</p>
-      <p className="text-[var(--foreground-muted)] leading-relaxed text-sm whitespace-pre-wrap">
-        {body}
-      </p>
+      <div className="text-[var(--foreground-muted)] text-sm">
+        <ProseBlock
+          text={body}
+          lookup={EMPTY_LOOKUP}
+          optimisticBaseUrl={OB_BASE_URL}
+          className="leading-relaxed mb-3 last:mb-0"
+        />
+      </div>
     </div>
   );
 }

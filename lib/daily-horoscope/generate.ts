@@ -2,6 +2,12 @@ import { createClient } from "@/utils/supabase/server";
 import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
 import { sanitizeStringsDeep } from "@/lib/llm/sanitize";
 import {
+  retrieveRituals,
+  formatRitualsForPrompt,
+  metadataFromRituals,
+} from "@/lib/rag/retrieve";
+import { formatCommonSuppliesForPrompt } from "@/lib/rag/common-supplies";
+import {
   buildDailyHoroscopePrompt,
   parseDailyHoroscope,
   type DailyHoroscopeContent,
@@ -64,10 +70,21 @@ export async function getOrGenerateDailyHoroscope(
   // Generate fresh.
   const dateLabel = formatDateLabel(date);
 
+  // RAG: retrieve archive rituals relevant to this sign's daily energy.
+  const ragQuery = `Daily ritual for ${sign}. Personal grounding, intention, simple practice.`;
+  const retrieved = await retrieveRituals(ragQuery, 2);
+  const ritualsContext = [
+    formatRitualsForPrompt(retrieved),
+    formatCommonSuppliesForPrompt(),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+  const ragMetadata = metadataFromRituals(retrieved);
+
   const { system, user } = buildDailyHoroscopePrompt({
     sign,
     dateLabel,
-    // No retrievedRituals in Part 1.
+    retrievedRituals: ritualsContext,
   });
 
   const anthropic = getAnthropic();
@@ -98,8 +115,8 @@ export async function getOrGenerateDailyHoroscope(
       date,
       content: clean,
       generated_at: new Date().toISOString(),
-      retrieved_product_slugs: [],
-      retrieved_sources: [],
+      retrieved_product_slugs: ragMetadata.product_slugs,
+      retrieved_sources: ragMetadata.sources,
     },
     { onConflict: "sign,date" },
   );
@@ -109,8 +126,8 @@ export async function getOrGenerateDailyHoroscope(
     date,
     content: clean,
     generated_at: new Date().toISOString(),
-    retrieved_product_slugs: [],
-    retrieved_sources: [],
+    retrieved_product_slugs: ragMetadata.product_slugs,
+    retrieved_sources: ragMetadata.sources,
   };
 }
 

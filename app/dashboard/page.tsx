@@ -6,6 +6,10 @@ import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
 import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberHeader } from "@/components/member-header";
 import { Candle } from "@/components/candle";
+import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
+
+const EMPTY_LOOKUP = buildProductLookup([]);
+const OB_BASE_URL = "https://originalbotanica.com";
 
 /**
  * The member dashboard — the daily devotional surface.
@@ -124,7 +128,11 @@ export default async function DashboardPage() {
               .
             </h1>
             <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-              {dailyHoroscope.content.summary}
+              <ProseLine
+                text={dailyHoroscope.content.summary}
+                lookup={EMPTY_LOOKUP}
+                optimisticBaseUrl={OB_BASE_URL}
+              />
             </p>
           </>
         ) : (
@@ -149,10 +157,16 @@ export default async function DashboardPage() {
       {/* ── 2. Astrology — image left ─────────────────────────────────── */}
       <ToolSection
         eyebrow="Today's reading"
-        headline={
-          dailyHoroscope
-            ? dailyHoroscope.content.action
-            : "Your chart, your reading."
+        headlineNode={
+          dailyHoroscope ? (
+            <ProseLine
+              text={dailyHoroscope.content.action}
+              lookup={EMPTY_LOOKUP}
+              optimisticBaseUrl={OB_BASE_URL}
+            />
+          ) : (
+            "Your chart, your reading."
+          )
         }
         body={
           dailyHoroscope
@@ -244,6 +258,7 @@ export default async function DashboardPage() {
 function ToolSection({
   eyebrow,
   headline,
+  headlineNode,
   body,
   href,
   linkLabel,
@@ -252,7 +267,8 @@ function ToolSection({
   external = false,
 }: {
   eyebrow: string;
-  headline: string;
+  headline?: string;
+  headlineNode?: React.ReactNode;
   body: string;
   href: string;
   linkLabel: string;
@@ -275,7 +291,7 @@ function ToolSection({
     <div className="md:col-span-3">
       <p className="eyebrow mb-4">{eyebrow}</p>
       <h2 className="display text-2xl md:text-3xl mb-5 leading-tight">
-        {headline}
+        {headlineNode ?? headline}
       </h2>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
         {body}

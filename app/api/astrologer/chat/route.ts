@@ -10,6 +10,11 @@ import {
 } from "@/lib/astrologer/usage";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { stripDashes } from "@/lib/llm/sanitize";
+import {
+  retrieveRituals,
+  formatRitualsForPrompt,
+} from "@/lib/rag/retrieve";
+import { formatCommonSuppliesForPrompt } from "@/lib/rag/common-supplies";
 
 /**
  * POST /api/astrologer/chat
@@ -145,8 +150,18 @@ export async function POST(request: Request) {
     }
   }
 
-  // Build the system prompt with the user's chart inline.
-  // No retrievedRituals param in Part 1 (RAG comes in Part 2).
+  // RAG: retrieve OB blog posts most relevant to the user's question.
+  // Failure here is non-fatal; the reading proceeds without it.
+  const retrieved = await retrieveRituals(userMessage, 3);
+  const ritualsContext = [
+    formatRitualsForPrompt(retrieved),
+    formatCommonSuppliesForPrompt(),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  // Build the system prompt with the user's chart and the retrieved
+  // archive context inline.
   const currentDate = new Date().toISOString().slice(0, 10);
   const system = buildSystemPrompt({
     firstName: context.firstName,
@@ -158,6 +173,7 @@ export async function POST(request: Request) {
     risingSign: context.chart.risingSign,
     placements: context.chart.placements,
     currentDate,
+    retrievedRituals: ritualsContext,
   });
 
   // Underage hard-stop (the prompt also has a guardrail, this is belt-and-suspenders)

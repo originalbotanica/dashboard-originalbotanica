@@ -9,6 +9,12 @@ import {
 import { loadAstrologerContext } from "@/lib/astrologer/context";
 import { sanitizeStringsDeep } from "@/lib/llm/sanitize";
 import {
+  retrieveRituals,
+  formatRitualsForPrompt,
+  metadataFromRituals,
+} from "@/lib/rag/retrieve";
+import { formatCommonSuppliesForPrompt } from "@/lib/rag/common-supplies";
+import {
   buildCompatibilityPrompt,
   parseCompatibility,
   type CompatibilityContent,
@@ -50,7 +56,18 @@ export async function createCompatibilityReading(args: {
   });
   if (!otherChart) return null;
 
-  // 3. Claude
+  // 3. RAG: retrieve archive rituals relevant to this pairing
+  const ragQuery = `Relationship rituals between ${subscriberCtx.chart.sunSign} and ${otherChart.sunSign}. ${args.relationshipNote || "Love, partnership, communication, healing."}`;
+  const retrieved = await retrieveRituals(ragQuery, 3);
+  const ritualsContext = [
+    formatRitualsForPrompt(retrieved),
+    formatCommonSuppliesForPrompt(),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+  const ragMetadata = metadataFromRituals(retrieved);
+
+  // 4. Claude
   const { system, user } = buildCompatibilityPrompt({
     subscriberFirstName: subscriberCtx.firstName,
     subscriberChart: {
@@ -67,7 +84,7 @@ export async function createCompatibilityReading(args: {
       placements: otherChart.placements,
     },
     relationshipNote: args.relationshipNote || null,
-    // No retrievedRituals in Part 2B
+    retrievedRituals: ritualsContext,
   });
 
   const anthropic = getAnthropic();
@@ -93,7 +110,7 @@ export async function createCompatibilityReading(args: {
 
   const clean = sanitizeStringsDeep(parsed);
 
-  // 4. Persist via admin client (server-only writes; subscribers can
+  // 5. Persist via admin client (server-only writes; subscribers can
   // also insert directly via RLS, but we use admin here so server-side
   // generation works regardless of auth context).
   const admin = createAdminClient();
@@ -109,8 +126,8 @@ export async function createCompatibilityReading(args: {
       other_chart_data: otherChart,
       content: clean,
       generated_at: new Date().toISOString(),
-      retrieved_product_slugs: [],
-      retrieved_sources: [],
+      retrieved_product_slugs: ragMetadata.product_slugs,
+      retrieved_sources: ragMetadata.sources,
     })
     .select("id")
     .single();

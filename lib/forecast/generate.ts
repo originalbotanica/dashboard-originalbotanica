@@ -8,6 +8,12 @@ import {
   type ForecastContent,
 } from "./prompt";
 import { sanitizeStringsDeep } from "@/lib/llm/sanitize";
+import {
+  retrieveRituals,
+  formatRitualsForPrompt,
+  metadataFromRituals,
+} from "@/lib/rag/retrieve";
+import { formatCommonSuppliesForPrompt } from "@/lib/rag/common-supplies";
 
 /**
  * Lazy-generate a monthly forecast for a user.
@@ -29,6 +35,7 @@ export type Forecast = {
   month: string; // 'YYYY-MM'
   content: ForecastContent;
   generated_at: string;
+  retrieved_product_slugs?: string[];
 };
 
 export async function getOrGenerateMonthlyForecast(
@@ -40,7 +47,7 @@ export async function getOrGenerateMonthlyForecast(
   // Cache lookup
   const { data: existing } = await supabase
     .from("forecasts")
-    .select("month, content, generated_at")
+    .select("month, content, generated_at, retrieved_product_slugs")
     .eq("user_id", userId)
     .eq("month", month)
     .maybeSingle();
@@ -50,6 +57,8 @@ export async function getOrGenerateMonthlyForecast(
       month: existing.month,
       content: existing.content as ForecastContent,
       generated_at: existing.generated_at,
+      retrieved_product_slugs:
+        (existing.retrieved_product_slugs as string[]) || [],
     };
   }
 
@@ -59,6 +68,17 @@ export async function getOrGenerateMonthlyForecast(
 
   const monthLabel = monthLabelFromKey(month);
 
+  // RAG: retrieve archive rituals matching the season + sign energy.
+  const ragQuery = `Monthly forecast and rituals for ${ctx.chart.sunSign} during ${monthLabel}. Love, work, spirit themes.`;
+  const retrieved = await retrieveRituals(ragQuery, 3);
+  const ritualsContext = [
+    formatRitualsForPrompt(retrieved),
+    formatCommonSuppliesForPrompt(),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+  const ragMetadata = metadataFromRituals(retrieved);
+
   const { system, user } = buildForecastPrompt({
     firstName: ctx.firstName,
     monthLabel,
@@ -66,7 +86,7 @@ export async function getOrGenerateMonthlyForecast(
     moonSign: ctx.chart.moonSign,
     risingSign: ctx.chart.risingSign,
     placements: ctx.chart.placements,
-    // No retrievedRituals in Part 2A; RAG comes in Part 2C.
+    retrievedRituals: ritualsContext,
   });
 
   const anthropic = getAnthropic();
@@ -99,8 +119,8 @@ export async function getOrGenerateMonthlyForecast(
       month,
       content: clean,
       generated_at: new Date().toISOString(),
-      retrieved_product_slugs: [],
-      retrieved_sources: [],
+      retrieved_product_slugs: ragMetadata.product_slugs,
+      retrieved_sources: ragMetadata.sources,
     },
     { onConflict: "user_id,month" },
   );
@@ -109,6 +129,7 @@ export async function getOrGenerateMonthlyForecast(
     month,
     content: clean,
     generated_at: new Date().toISOString(),
+    retrieved_product_slugs: ragMetadata.product_slugs,
   };
 }
 
