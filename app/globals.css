@@ -325,10 +325,10 @@ h1, h2, h3, h4, h5, h6 {
 .candle-large .flame-blue      { width: 9px;  height: 18px; }
 .candle-large .flame-light-cast { width: 58px; height: 14px; }
 
-/* Photo overlay for the candle on the memorial detail page. */
+/* Photo overlay for the candle. Centered vertically on the candle body. */
 .candle-photo-overlay {
   position: absolute;
-  top: 36%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 62px;
