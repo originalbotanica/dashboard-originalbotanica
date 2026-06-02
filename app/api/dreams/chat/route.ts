@@ -83,14 +83,15 @@ export async function POST(request: Request) {
     .maybeSingle();
   const firstName = profile?.first_name || "friend";
 
-  // Get or create the thread
-  let threadId = providedThreadId;
-  if (threadId) {
+  // Get or create the thread. Use a string-typed var so the streaming
+  // closure and response header below don't have to deal with `string | null`.
+  let threadId: string;
+  if (providedThreadId) {
     // Confirm the user owns this thread (RLS enforces it but verify)
     const { data: thread } = await supabase
       .from("dream_threads")
       .select("id")
-      .eq("id", threadId)
+      .eq("id", providedThreadId)
       .eq("user_id", user.id)
       .maybeSingle();
     if (!thread) {
@@ -99,6 +100,7 @@ export async function POST(request: Request) {
         { status: 404 },
       );
     }
+    threadId = providedThreadId;
   } else {
     // New thread. Title from this first message.
     const title = dreamTitleFromMessage(userMessage);
