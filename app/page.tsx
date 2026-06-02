@@ -82,9 +82,9 @@ export default async function HomePage({
           Your spiritual home, online.
         </h1>
         <p className="text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-12 max-w-2xl">
-          Daily tarot. Personal astrology. Your virtual altar. A flame for those
-          who came before. A library of rituals from sixty-six years of practice
-          in the Bronx.
+          Daily tarot. Personal astrology. Dream interpretation. Your virtual
+          altar. A flame for those who came before. A library of rituals from
+          sixty-six years of practice in the Bronx.
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
           <Link href="/signup" className="btn-primary">
