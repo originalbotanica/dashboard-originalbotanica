@@ -5,6 +5,7 @@ import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
 import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
 import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberHeader } from "@/components/member-header";
+import { Candle } from "@/components/candle";
 
 /**
  * The member dashboard — the daily devotional surface.
@@ -58,9 +59,10 @@ export default async function DashboardPage() {
       {/* ── 1. Hero — candlelit invocation ────────────────────────────── */}
       <section
         aria-label="Today"
-        className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-28 pb-16 overflow-hidden"
+        className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-24 overflow-hidden"
       >
         <MemberHeader />
+
         {/* Background candle photograph, dimmed for legibility */}
         <div className="absolute inset-0 -z-10">
           <Image
@@ -69,54 +71,59 @@ export default async function DashboardPage() {
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-30"
+            className="object-cover opacity-25"
             style={{ objectPosition: "center" }}
           />
-          {/* Warm vignette overlay to keep text readable on any image area */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(ellipse at center, rgba(20,16,11,0.55) 0%, rgba(20,16,11,0.92) 75%, rgba(20,16,11,1) 100%)",
+                "radial-gradient(ellipse at center, rgba(20,16,11,0.65) 0%, rgba(20,16,11,0.94) 75%, rgba(20,16,11,1) 100%)",
             }}
           />
         </div>
 
-        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">
-          {today}
-        </p>
-        <p className="sublabel mb-10">{greeting}, {displayName}</p>
+        {/* Centered logo, large and prominent */}
+        <Image
+          src="/logo-original-botanica.svg"
+          alt="Original Botanica"
+          width={180}
+          height={130}
+          priority
+          className="h-auto w-[140px] md:w-[180px] mb-10"
+        />
 
-        <div className="candle-glow mb-10" aria-hidden>
-          <Image
-            src="/white-candle.png"
-            alt=""
-            width={120}
-            height={200}
-            priority
-            className="h-auto"
-          />
+        {/* Date + personal greeting */}
+        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">{today}</p>
+        <p className="sublabel mb-14 text-base md:text-lg">
+          {greeting}, {displayName}
+        </p>
+
+        {/* Layered animated candle flame */}
+        <div className="mb-14" aria-hidden>
+          <Candle size="large" lit />
         </div>
 
+        {/* Today's invocation — daily horoscope or fallback */}
         {sunSign && dailyHoroscope ? (
           <>
-            <h1 className="display text-3xl md:text-4xl max-w-xl leading-tight">
+            <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
               {sunSign}. Today the focus is{" "}
               <span className="italic text-[var(--accent)]">
                 {dailyHoroscope.content.focus}
               </span>
               .
             </h1>
-            <p className="invocation text-base md:text-lg text-[var(--foreground-muted)] mt-6 max-w-lg leading-relaxed">
+            <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
               {dailyHoroscope.content.summary}
             </p>
           </>
         ) : (
           <>
-            <h1 className="display text-3xl md:text-4xl max-w-xl leading-tight">
+            <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
               Welcome to the practice.
             </h1>
-            <p className="invocation text-base md:text-lg text-[var(--foreground-muted)] mt-6 max-w-lg leading-relaxed">
+            <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
               Add your birth details and the astrologer will read for you each
               morning.
             </p>
@@ -124,7 +131,7 @@ export default async function DashboardPage() {
         )}
 
         {sub.isTrialing && trialLeft !== null && (
-          <p className="eyebrow mt-12 text-[var(--accent)]">
+          <p className="eyebrow mt-16 text-[var(--accent)]">
             {trialLeft} {trialLeft === 1 ? "day" : "days"} left in your trial
           </p>
         )}
