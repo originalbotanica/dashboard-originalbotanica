@@ -108,6 +108,18 @@ export default async function AstrologyHubPage() {
               >
                 Talk to your astrologer
               </Link>
+              <Link
+                href="/astrology/forecast"
+                className="btn-ghost inline-flex"
+              >
+                Monthly forecast
+              </Link>
+              <Link
+                href="/astrology/compatibility"
+                className="btn-ghost inline-flex"
+              >
+                Compatibility
+              </Link>
               <Link href="/astrology/chart" className="btn-ghost inline-flex">
                 View your chart
               </Link>
@@ -125,8 +137,6 @@ export default async function AstrologyHubPage() {
         <section className="mt-24 border-t border-[var(--border)] pt-12">
           <p className="eyebrow mb-4">Coming soon</p>
           <ul className="text-[var(--foreground-muted)] leading-relaxed space-y-2">
-            <li>Monthly forecast personalized to your chart</li>
-            <li>Compatibility readings between two charts</li>
             <li>Inline ritual and product recommendations from the botanica</li>
           </ul>
         </section>
