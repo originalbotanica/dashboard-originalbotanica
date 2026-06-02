@@ -60,7 +60,7 @@ export default async function DashboardPage() {
         aria-label="Today"
         className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-16 overflow-hidden"
       >
-        <MemberHeader variant="transparent" />
+        <MemberHeader />
         {/* Background candle photograph, dimmed for legibility */}
         <div className="absolute inset-0 -z-10">
           <Image
