@@ -1,0 +1,113 @@
+import { createClient } from "@/utils/supabase/server";
+
+/**
+ * Data access for the ritual library.
+ *
+ * All reads go through the user-scoped Supabase client, so Row Level
+ * Security applies: only published rituals are returned, and only to members
+ * with an active subscription (the rituals_select_published_for_members
+ * policy). The pipeline writes with the service role, which bypasses RLS.
+ */
+
+export type RitualMaterial = {
+  name: string;
+  url?: string | null;
+  slug?: string | null;
+};
+
+export type Ritual = {
+  slug: string;
+  title_en: string;
+  summary: string | null;
+  steps: string[];
+  purpose: string | null;
+  intention: string | null;
+  tradition: string | null;
+  difficulty: string | null;
+  best_day_of_week: number | null;
+  best_moon_phase: string | null;
+  materials: RitualMaterial[];
+  warnings: string | null;
+  image_url: string | null;
+  source_url: string | null;
+  source_type: string | null;
+  keywords: string[] | null;
+};
+
+const LIST_FIELDS =
+  "slug, title_en, summary, purpose, tradition, difficulty, image_url";
+
+/** Count of published rituals per purpose slug. */
+export async function getPurposeCounts(): Promise<Record<string, number>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rituals")
+    .select("purpose")
+    .not("published_at", "is", null);
+  if (error) return {};
+  const counts: Record<string, number> = {};
+  for (const row of (data ?? []) as { purpose: string | null }[]) {
+    if (row.purpose) counts[row.purpose] = (counts[row.purpose] || 0) + 1;
+  }
+  return counts;
+}
+
+/** Cards for one purpose shelf. */
+export async function listRitualsByPurpose(
+  purpose: string,
+): Promise<Pick<Ritual, "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url">[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rituals")
+    .select(LIST_FIELDS)
+    .eq("purpose", purpose)
+    .not("published_at", "is", null)
+    .order("title_en");
+  if (error) return [];
+  return (data ?? []) as never;
+}
+
+/** One full ritual by slug. */
+export async function getRitualBySlug(slug: string): Promise<Ritual | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rituals")
+    .select(
+      "slug, title_en, summary, steps, purpose, intention, tradition, difficulty, best_day_of_week, best_moon_phase, materials, warnings, image_url, source_url, source_type, keywords",
+    )
+    .eq("slug", slug)
+    .not("published_at", "is", null)
+    .maybeSingle();
+  if (error || !data) return null;
+  const r = data as Record<string, unknown>;
+  return {
+    ...(r as unknown as Ritual),
+    steps: Array.isArray(r.steps) ? (r.steps as string[]) : [],
+    materials: Array.isArray(r.materials) ? (r.materials as RitualMaterial[]) : [],
+  };
+}
+
+/** Free-text search over title + summary of published rituals. */
+export async function searchRituals(
+  q: string,
+): Promise<Pick<Ritual, "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url">[]> {
+  const term = q.trim();
+  if (!term) return [];
+  const supabase = await createClient();
+  const pattern = `%${term.replace(/[%_]/g, "")}%`;
+  const { data, error } = await supabase
+    .from("rituals")
+    .select(LIST_FIELDS)
+    .not("published_at", "is", null)
+    .or(`title_en.ilike.${pattern},summary.ilike.${pattern}`)
+    .order("title_en")
+    .limit(50);
+  if (error) return [];
+  return (data ?? []) as never;
+}
+
+/** Day-of-week label, 0=Sunday. */
+export function dayLabel(n: number | null): string | null {
+  if (n === null || n < 0 || n > 6) return null;
+  return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][n];
+}
