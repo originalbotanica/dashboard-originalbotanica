@@ -62,13 +62,39 @@ const supabase = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSessio
 const anthropic = new Anthropic({ apiKey: ANTHROPIC_KEY });
 
 // ---------- yt-dlp ----------
+// Resolve how to invoke yt-dlp: the standalone binary if on PATH, else the
+// pip module (python3 -m yt_dlp), which works after `pip3 install --user yt-dlp`.
+let YTDLP: string[] = ["yt-dlp"];
+
+// Authenticate so YouTube serves captions (it gates auto-captions behind a PO
+// token for anonymous requests). Prefer a pre-exported cookies file
+// (YT_COOKIES_FILE) so we read the keychain once, not per video; otherwise
+// fall back to reading the browser directly (YT_COOKIES_BROWSER=chrome|safari).
+const COOKIES_FILE = process.env.YT_COOKIES_FILE;
+const COOKIES_BROWSER = process.env.YT_COOKIES_BROWSER;
+const COOKIE_ARGS = COOKIES_FILE
+  ? ["--cookies", COOKIES_FILE]
+  : COOKIES_BROWSER
+    ? ["--cookies-from-browser", COOKIES_BROWSER]
+    : [];
+
+async function ytdlp(args: string[], opts?: { maxBuffer?: number }) {
+  return execFileAsync(YTDLP[0], [...YTDLP.slice(1), ...COOKIE_ARGS, ...args], opts);
+}
+
 async function ensureYtDlp(): Promise<void> {
   try {
     await execFileAsync("yt-dlp", ["--version"]);
-  } catch {
-    console.error("yt-dlp not found on PATH. Install it: brew install yt-dlp");
-    process.exit(1);
-  }
+    YTDLP = ["yt-dlp"];
+    return;
+  } catch {}
+  try {
+    await execFileAsync("python3", ["-m", "yt_dlp", "--version"]);
+    YTDLP = ["python3", "-m", "yt_dlp"];
+    return;
+  } catch {}
+  console.error("yt-dlp not found. Install it: pip3 install --user yt-dlp  (or brew install yt-dlp)");
+  process.exit(1);
 }
 
 type Video = { id: string; title: string; url: string };
@@ -78,7 +104,7 @@ async function listVideos(limit?: number): Promise<Video[]> {
   const args = ["--flat-playlist", "--print", "%(id)s\t%(title)s"];
   if (limit) args.push("--playlist-end", String(limit));
   args.push("--", CHANNEL);
-  const { stdout } = await execFileAsync("yt-dlp", args, { maxBuffer: 64 * 1024 * 1024 });
+  const { stdout } = await ytdlp(args, { maxBuffer: 64 * 1024 * 1024 });
   const videos: Video[] = [];
   for (const line of stdout.split("\n")) {
     const [id, ...rest] = line.split("\t");
@@ -93,8 +119,7 @@ async function listVideos(limit?: number): Promise<Video[]> {
 async function getTranscript(video: Video): Promise<{ text: string; description: string }> {
   const dir = mkdtempSync(join(tmpdir(), "yt-"));
   try {
-    await execFileAsync(
-      "yt-dlp",
+    await ytdlp(
       [
         "--skip-download",
         "--write-subs",
