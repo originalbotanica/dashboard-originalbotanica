@@ -381,6 +381,142 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ─────────────────────────────────────────────────────────────────────
+ * Daily tarot card — the flippable card on the member dashboard.
+ *
+ * The card face is drawn in CSS, not loaded as art, so it always matches
+ * the candlelit palette and never waits on an image. The card turns with a
+ * 3D flip: a back (shown first) and a front (the day's pull) share the same
+ * footprint, one rotated 180deg behind the other.
+ *
+ * Tarot proportion is roughly 3:5. We cap the width so it sits well in the
+ * dashboard's editorial column on every screen.
+ * ───────────────────────────────────────────────────────────────────── */
+
+.tarot-card {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 3 / 5;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  perspective: 1400px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tarot-card-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.tarot-card-inner.is-revealed {
+  transform: rotateY(180deg);
+}
+
+.tarot-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.9rem;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* Back of the card — what the member sees before they turn it. */
+.tarot-back {
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(232, 172, 124, 0.16) 0%, transparent 58%),
+    linear-gradient(160deg, #221a13 0%, #1a140f 55%, #14100b 100%);
+  border: 1px solid var(--border-strong);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 172, 124, 0.08),
+    0 18px 40px rgba(0, 0, 0, 0.45);
+}
+.tarot-back-frame {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(232, 172, 124, 0.28);
+  border-radius: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 1.5rem 1rem;
+}
+.tarot-back-star {
+  width: 64px;
+  height: 64px;
+  background: radial-gradient(circle at 50% 50%, rgba(232, 172, 124, 0.9) 0%, rgba(212, 162, 76, 0.5) 40%, transparent 70%);
+  /* An eight-point star, the botanica's small celestial mark. */
+  -webkit-mask: conic-gradient(from 0deg,
+      #000 0deg 12deg, transparent 12deg 33deg,
+      #000 33deg 57deg, transparent 57deg 78deg,
+      #000 78deg 102deg, transparent 102deg 123deg,
+      #000 123deg 147deg, transparent 147deg 168deg,
+      #000 168deg 192deg, transparent 192deg 213deg,
+      #000 213deg 237deg, transparent 237deg 258deg,
+      #000 258deg 282deg, transparent 282deg 303deg,
+      #000 303deg 327deg, transparent 327deg 348deg, #000 348deg 360deg);
+  mask: conic-gradient(from 0deg,
+      #000 0deg 12deg, transparent 12deg 33deg,
+      #000 33deg 57deg, transparent 57deg 78deg,
+      #000 78deg 102deg, transparent 102deg 123deg,
+      #000 123deg 147deg, transparent 147deg 168deg,
+      #000 168deg 192deg, transparent 192deg 213deg,
+      #000 213deg 237deg, transparent 237deg 258deg,
+      #000 258deg 282deg, transparent 282deg 303deg,
+      #000 303deg 327deg, transparent 327deg 348deg, #000 348deg 360deg);
+  animation: candle-glow 5s ease-in-out infinite;
+}
+.tarot-back-mark {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--foreground-muted);
+  text-align: center;
+}
+.tarot-back-hint {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--foreground-subtle);
+}
+
+/* Front of the card — the day's pull, the real image. Pre-rotated so the
+   flip lands on it. The Rider-Waite art fills the card; a soft caption sits
+   over the bottom edge. */
+.tarot-front {
+  transform: rotateY(180deg);
+  background: #15110c;
+  border: 1px solid var(--accent-strong);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 172, 124, 0.12),
+    0 18px 44px rgba(0, 0, 0, 0.5);
+  padding: 0;
+}
+.tarot-front-img {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Reduced-motion: skip the spin, just cross the faces. */
+@media (prefers-reduced-motion: reduce) {
+  .tarot-card-inner {
+    transition: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
  * Forms — used across login, signup, reset password, profile setup.
  * ───────────────────────────────────────────────────────────────────── */
 
