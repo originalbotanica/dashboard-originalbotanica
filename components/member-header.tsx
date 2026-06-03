@@ -39,14 +39,22 @@ export function MemberHeader({
             className="h-auto w-[60px] md:w-[70px]"
           />
         </Link>
-        <form action="/auth/signout" method="post">
-          <button
-            type="submit"
+        <nav className="flex items-center gap-5 md:gap-7">
+          <Link
+            href="/tarot"
             className="nav-link text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
           >
-            Sign out
-          </button>
-        </form>
+            Daily tarot
+          </Link>
+          <form action="/auth/signout" method="post">
+            <button
+              type="submit"
+              className="nav-link text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
+            >
+              Sign out
+            </button>
+          </form>
+        </nav>
       </div>
     </header>
   );
