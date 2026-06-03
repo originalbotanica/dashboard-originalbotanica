@@ -6,13 +6,7 @@ import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
 import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberHeader } from "@/components/member-header";
 import { Candle } from "@/components/candle";
-import { DailyTarotCard } from "@/components/daily-tarot-card";
-import {
-  drawDailyCardForUser,
-  botanicaDayKey,
-  tarotImagePath,
-} from "@/lib/tarot/deck";
-import { getOrGenerateDailyTarotReading } from "@/lib/daily-tarot/generate";
+import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
@@ -65,11 +59,9 @@ export default async function DashboardPage() {
     day: "numeric",
   });
 
-  // Today's tarot pull, unique to this member. Drawn on the server (seeded
-  // by user id + date) so the card is personal, holds steady through the day,
-  // and shows no hydration flicker. New York time, so it turns at local
-  // midnight like the horoscope.
-  const tarotCard = drawDailyCardForUser(user.id, botanicaDayKey());
+  // Label for the tarot teaser copy. The actual card draw and personalized
+  // reading happen on the dedicated /tarot page, so the dashboard stays light
+  // and costs no generation for members who do not open the pull.
   const tarotDateLabel = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -77,19 +69,6 @@ export default async function DashboardPage() {
     year: "numeric",
     timeZone: "America/New_York",
   });
-
-  // The personalized reading of that card. Generated once per member per day
-  // and cached. Falls back to the card's authored house reading if the
-  // generator is unavailable, so the card always has words.
-  const tarotReading = await getOrGenerateDailyTarotReading({
-    userId: user.id,
-    card: tarotCard,
-    firstName: profile?.first_name,
-    sunSign: profile?.sun_sign,
-    locale: profile?.locale,
-  }).catch(() => null);
-  const tarotInterpretation = tarotReading?.interpretation || tarotCard.reading;
-  const tarotQuestion = tarotReading?.question || tarotCard.question;
 
   return (
     <main className="flex-1">
@@ -223,14 +202,8 @@ export default async function DashboardPage() {
         imageSide="right"
       />
 
-      {/* ── 4. Daily tarot — the live card ────────────────────────────── */}
-      <DailyTarotCard
-        card={tarotCard}
-        dateLabel={tarotDateLabel}
-        imageSrc={tarotImagePath(tarotCard)}
-        reading={tarotInterpretation}
-        question={tarotQuestion}
-      />
+      {/* ── 4. Daily tarot — teaser linking to the dedicated pull page ─── */}
+      <DailyTarotTeaser dateLabel={tarotDateLabel} />
 
       {/* ── 5. Virtual altar — image right ────────────────────────────── */}
       <ToolSection
