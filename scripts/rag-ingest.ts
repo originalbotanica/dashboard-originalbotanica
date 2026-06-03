@@ -45,8 +45,10 @@ const USER_AGENT = "Mozilla/5.0 (Original Botanica Astrology RAG Ingest)";
 const VOYAGE_MODEL = "voyage-3.5"; // 1024 dim
 const VOYAGE_DIM = 1024;
 const EMBED_BATCH_SIZE = 16; // Voyage allows up to 128 per call
-const FETCH_CONCURRENCY = 3;
-const FETCH_RETRIES = 2;
+const FETCH_CONCURRENCY = 2; // OB.com rate-limits; keep it gentle
+const FETCH_RETRIES = 5; // retries on rate-limit (503/429)
+const RATE_LIMIT_STATUSES = new Set([429, 503, 502, 504]);
+const MAX_BACKOFF_MS = 8000;
 
 // ---------- env ----------
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -63,6 +65,38 @@ const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
 });
 
 // ---------- helpers ----------
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Fetch that survives OB.com's rate limiting. The site returns 503/429 under
+ * rapid load (the cause of the original 600→45 blog drop). On a rate-limit
+ * status we honor Retry-After when present, otherwise back off exponentially
+ * with jitter, up to FETCH_RETRIES times. Returns the final Response (which may
+ * still be non-OK) or null if a network error persisted through every attempt.
+ */
+async function politeFetch(url: string): Promise<Response | null> {
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt <= FETCH_RETRIES; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+      if (res.ok || !RATE_LIMIT_STATUSES.has(res.status)) return res;
+      // Rate-limited: wait and retry (unless we're out of attempts).
+      if (attempt === FETCH_RETRIES) return res;
+      const retryAfter = parseInt(res.headers.get("retry-after") || "0", 10);
+      const wait = retryAfter > 0
+        ? retryAfter * 1000
+        : Math.min(MAX_BACKOFF_MS, 600 * 2 ** attempt) + Math.random() * 400;
+      await sleep(wait);
+    } catch (e) {
+      lastErr = e;
+      if (attempt === FETCH_RETRIES) break;
+      await sleep(Math.min(MAX_BACKOFF_MS, 600 * 2 ** attempt) + Math.random() * 400);
+    }
+  }
+  if (lastErr) console.warn("fetch error:", url, (lastErr as Error).message);
+  return null;
+}
+
 async function fetchUrls(sitemapUrl: string): Promise<string[]> {
   const res = await fetch(sitemapUrl, { headers: { "User-Agent": USER_AGENT } });
   if (!res.ok) throw new Error(`sitemap ${sitemapUrl} → ${res.status}`);
@@ -268,19 +302,7 @@ async function ingestProducts(limit?: number, offset = 0): Promise<Set<string>> 
         skippedOther++;
         return;
       }
-      let res: Response | null = null;
-      for (let attempt = 0; attempt < FETCH_RETRIES + 1; attempt++) {
-        try {
-          res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
-          if (res.ok) break;
-          if (res.status === 404) break;
-          // Other status: wait and retry
-          await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
-        } catch (e) {
-          if (attempt === FETCH_RETRIES) throw e;
-          await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
-        }
-      }
+      const res = await politeFetch(url);
       if (!res || !res.ok) {
         if (res?.status === 404) skipped404++;
         else skippedOther++;
@@ -354,17 +376,33 @@ async function ingestBlog(knownProductSlugs: Set<string>, limit?: number, offset
   console.log("[blog] fetching and parsing posts...");
   const posts: ParsedPost[] = [];
   let fetched = 0;
+  const drops = { fetch: 0, noTitle: 0, shortBody: 0, noSlug: 0, error: 0 };
   await withConcurrency(subset, FETCH_CONCURRENCY, async (url) => {
     try {
       const slug = slugFromUrl(url);
-      if (!slug) return;
-      const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
-      if (!res.ok) return;
+      if (!slug) {
+        drops.noSlug++;
+        return;
+      }
+      const res = await politeFetch(url);
+      if (!res || !res.ok) {
+        drops.fetch++;
+        console.warn(`[blog] fetch drop (${res ? res.status : "network"}):`, url);
+        return;
+      }
       const html = await res.text();
       const title = extractTitle(html);
-      if (!title) return;
+      if (!title) {
+        drops.noTitle++;
+        console.warn("[blog] no-title drop:", url);
+        return;
+      }
       const body = extractBody(html);
-      if (body.length < 200) return; // skip empty stubs
+      if (body.length < 200) {
+        drops.shortBody++;
+        console.warn(`[blog] short-body drop (${body.length} chars):`, url);
+        return;
+      }
       posts.push({
         slug,
         url,
@@ -377,6 +415,7 @@ async function ingestBlog(knownProductSlugs: Set<string>, limit?: number, offset
         product_slugs: extractProductSlugs(html, knownProductSlugs),
       });
     } catch (err) {
+      drops.error++;
       console.warn("post fail:", url, (err as Error).message);
     } finally {
       fetched++;
@@ -384,6 +423,10 @@ async function ingestBlog(knownProductSlugs: Set<string>, limit?: number, offset
     }
   });
   console.log(`[blog] parsed ${posts.length} valid posts`);
+  console.log(
+    `[blog] drops → fetch:${drops.fetch} noTitle:${drops.noTitle} ` +
+    `shortBody:${drops.shortBody} noSlug:${drops.noSlug} error:${drops.error}`,
+  );
 
   console.log("[blog] embedding in batches of " + EMBED_BATCH_SIZE + "...");
   for (let i = 0; i < posts.length; i += EMBED_BATCH_SIZE) {
