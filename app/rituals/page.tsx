@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { PURPOSES, OB_CDN } from "@/lib/rituals/purposes";
-import { getPurposeCounts, searchRituals } from "@/lib/rituals/queries";
+import { getPurposeCounts, searchRituals, getSavedRitualIds } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
 
 export const metadata = {
@@ -35,9 +35,10 @@ export default async function RitualsLibraryPage({
   if (!sub.isActive) redirect("/tools/rituals");
 
   const query = (q || "").trim();
-  const [counts, results] = await Promise.all([
+  const [counts, results, savedIds] = await Promise.all([
     getPurposeCounts(),
     query ? searchRituals(query) : Promise.resolve([]),
+    getSavedRitualIds(user.id),
   ]);
 
   // Only show shelves that have at least one published ritual.
@@ -74,6 +75,16 @@ export default async function RitualsLibraryPage({
             aria-label="Search rituals"
           />
         </form>
+
+        <p className="mt-5">
+          <Link
+            href="/rituals/saved"
+            className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+          >
+            Your saved rituals
+            <span aria-hidden>→</span>
+          </Link>
+        </p>
       </section>
 
       {query ? (
@@ -94,7 +105,7 @@ export default async function RitualsLibraryPage({
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {results.map((r) => (
-                <RitualCard key={r.slug} ritual={r} />
+                <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} />
               ))}
             </div>
           )}

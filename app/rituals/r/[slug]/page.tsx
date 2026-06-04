@@ -3,7 +3,8 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getPurpose } from "@/lib/rituals/purposes";
-import { getRitualBySlug, dayLabel } from "@/lib/rituals/queries";
+import { getRitualBySlug, dayLabel, getSavedRitualIds } from "@/lib/rituals/queries";
+import { SaveRitualButton } from "@/components/save-ritual-button";
 
 export async function generateMetadata({
   params,
@@ -40,6 +41,7 @@ export default async function RitualDetailPage({
   const r = await getRitualBySlug(slug);
   if (!r) notFound();
 
+  const saved = (await getSavedRitualIds(user.id)).has(r.id);
   const purpose = r.purpose ? getPurpose(r.purpose) : undefined;
   const day = dayLabel(r.best_day_of_week);
   const backHref = purpose ? `/rituals/${purpose.slug}` : "/rituals";
@@ -67,6 +69,10 @@ export default async function RitualDetailPage({
           {r.difficulty ? <span className="eyebrow">{r.difficulty}</span> : null}
           {day ? <span className="eyebrow">Best on {day}</span> : null}
           {r.best_moon_phase ? <span className="eyebrow">{r.best_moon_phase} moon</span> : null}
+        </div>
+
+        <div className="mb-10">
+          <SaveRitualButton ritualId={r.id} initialSaved={saved} />
         </div>
 
         {r.summary ? (

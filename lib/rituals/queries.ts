@@ -16,6 +16,7 @@ export type RitualMaterial = {
 };
 
 export type Ritual = {
+  id: string;
   slug: string;
   title_en: string;
   summary: string | null;
@@ -35,7 +36,13 @@ export type Ritual = {
 };
 
 const LIST_FIELDS =
-  "slug, title_en, summary, purpose, tradition, difficulty, image_url";
+  "id, slug, title_en, summary, purpose, tradition, difficulty, image_url";
+
+/** The fields a ritual card needs. */
+export type RitualCardData = Pick<
+  Ritual,
+  "id" | "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url"
+>;
 
 /** Count of published rituals per purpose slug. */
 export async function getPurposeCounts(): Promise<Record<string, number>> {
@@ -55,7 +62,7 @@ export async function getPurposeCounts(): Promise<Record<string, number>> {
 /** Cards for one purpose shelf. */
 export async function listRitualsByPurpose(
   purpose: string,
-): Promise<Pick<Ritual, "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url">[]> {
+): Promise<RitualCardData[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("rituals")
@@ -73,7 +80,7 @@ export async function getRitualBySlug(slug: string): Promise<Ritual | null> {
   const { data, error } = await supabase
     .from("rituals")
     .select(
-      "slug, title_en, summary, steps, purpose, intention, tradition, difficulty, best_day_of_week, best_moon_phase, materials, warnings, image_url, source_url, source_type, keywords",
+      "id, slug, title_en, summary, steps, purpose, intention, tradition, difficulty, best_day_of_week, best_moon_phase, materials, warnings, image_url, source_url, source_type, keywords",
     )
     .eq("slug", slug)
     .not("published_at", "is", null)
@@ -88,9 +95,7 @@ export async function getRitualBySlug(slug: string): Promise<Ritual | null> {
 }
 
 /** Free-text search over title + summary of published rituals. */
-export async function searchRituals(
-  q: string,
-): Promise<Pick<Ritual, "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url">[]> {
+export async function searchRituals(q: string): Promise<RitualCardData[]> {
   const term = q.trim();
   if (!term) return [];
   const supabase = await createClient();
@@ -104,6 +109,36 @@ export async function searchRituals(
     .limit(50);
   if (error) return [];
   return (data ?? []) as never;
+}
+
+/** The set of ritual ids this member has saved. Used to show saved state. */
+export async function getSavedRitualIds(userId: string): Promise<Set<string>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("ritual_favorites")
+    .select("ritual_id")
+    .eq("user_id", userId);
+  if (error) return new Set();
+  return new Set((data ?? []).map((r: { ritual_id: string }) => r.ritual_id));
+}
+
+/** The member's saved rituals as cards, newest first. */
+export async function listSavedRituals(userId: string): Promise<RitualCardData[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("ritual_favorites")
+    .select(
+      "saved_at, rituals(id, slug, title_en, summary, purpose, tradition, difficulty, image_url)",
+    )
+    .eq("user_id", userId)
+    .order("saved_at", { ascending: false });
+  if (error) return [];
+  // Each row embeds its ritual; drop any whose ritual is gone/unpublished.
+  return (data ?? [])
+    .map((row: { rituals: RitualCardData | RitualCardData[] | null }) =>
+      Array.isArray(row.rituals) ? row.rituals[0] : row.rituals,
+    )
+    .filter((r): r is RitualCardData => !!r);
 }
 
 /** Day-of-week label, 0=Sunday. */

@@ -1,30 +1,15 @@
 import Link from "next/link";
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getPurpose } from "@/lib/rituals/purposes";
-import { listRitualsByPurpose, getSavedRitualIds } from "@/lib/rituals/queries";
+import { listSavedRituals } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ purpose: string }>;
-}) {
-  const { purpose } = await params;
-  const p = getPurpose(purpose);
-  return { title: p ? p.label : "Ritual library" };
-}
+export const metadata = {
+  title: "Your saved rituals",
+};
 
-export default async function PurposePage({
-  params,
-}: {
-  params: Promise<{ purpose: string }>;
-}) {
-  const { purpose } = await params;
-  const p = getPurpose(purpose);
-  if (!p) notFound();
-
+export default async function SavedRitualsPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -41,10 +26,7 @@ export default async function PurposePage({
   const sub = await getSubscriptionStatus(user.id);
   if (!sub.isActive) redirect("/tools/rituals");
 
-  const [rituals, savedIds] = await Promise.all([
-    listRitualsByPurpose(p.slug),
-    getSavedRitualIds(user.id),
-  ]);
+  const rituals = await listSavedRituals(user.id);
 
   return (
     <main className="min-h-screen">
@@ -53,29 +35,34 @@ export default async function PurposePage({
           <Link href="/rituals" className="nav-link text-[var(--accent)]">
             ← Library
           </Link>
-          <p className="sublabel text-xs">{p.label}</p>
+          <p className="sublabel text-xs">Saved rituals</p>
         </div>
       </header>
 
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-10">
-        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">Purpose</p>
+        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">Your shelf</p>
         <h1 className="display text-3xl md:text-5xl leading-tight mb-4">
-          {p.label}
+          Saved rituals
         </h1>
         <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl">
-          {p.blurb}
+          The rituals you have bookmarked, kept here for whenever you need them.
         </p>
       </section>
 
       <section className="max-w-5xl mx-auto px-6 pb-24">
         {rituals.length === 0 ? (
           <p className="text-[var(--foreground-muted)] leading-relaxed">
-            No rituals on this shelf yet.
+            You have not saved any rituals yet. Tap the bookmark on any ritual to
+            keep it here.{" "}
+            <Link href="/rituals" className="text-[var(--accent)]">
+              Browse the library
+            </Link>
+            .
           </p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rituals.map((r) => (
-              <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} />
+              <RitualCard key={r.slug} ritual={r} saved />
             ))}
           </div>
         )}

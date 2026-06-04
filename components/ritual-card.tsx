@@ -1,32 +1,34 @@
 import Link from "next/link";
 import { getPurpose } from "@/lib/rituals/purposes";
+import type { RitualCardData } from "@/lib/rituals/queries";
+import { SaveRitualButton } from "@/components/save-ritual-button";
 
 /**
  * A ritual card for purpose shelves and search results. Links to the ritual
- * detail page. Uses a plain img for the source image since blog og:images can
- * come from hosts not configured for next/image.
+ * detail page, with a bookmark toggle overlaid in the corner. The bookmark is
+ * a sibling of the link (not nested inside it), so saving never navigates.
+ * Uses a plain img for the source image since blog og:images can come from
+ * hosts not configured for next/image.
  */
 export function RitualCard({
   ritual,
+  saved = false,
 }: {
-  ritual: {
-    slug: string;
-    title_en: string;
-    summary: string | null;
-    purpose: string | null;
-    tradition: string | null;
-    difficulty: string | null;
-    image_url: string | null;
-  };
+  ritual: RitualCardData;
+  saved?: boolean;
 }) {
   const purpose = ritual.purpose ? getPurpose(ritual.purpose) : undefined;
   const tradition = ritual.tradition ? prettyTradition(ritual.tradition) : null;
 
   return (
-    <Link
-      href={`/rituals/r/${ritual.slug}`}
-      className="group flex flex-col rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors h-full"
-    >
+    <div className="relative h-full">
+      <div className="absolute top-3 right-3 z-10">
+        <SaveRitualButton ritualId={ritual.id} initialSaved={saved} variant="icon" />
+      </div>
+      <Link
+        href={`/rituals/r/${ritual.slug}`}
+        className="group flex flex-col rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors h-full"
+      >
       {ritual.image_url ? (
         <div className="relative aspect-[16/9] overflow-hidden bg-[var(--surface)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -52,7 +54,8 @@ export function RitualCard({
           ) : null}
         </div>
       </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
 
