@@ -106,7 +106,7 @@ async function listVideos(limit?: number): Promise<Video[]> {
   args.push("--", CHANNEL);
   const { stdout } = await ytdlp(args, { maxBuffer: 64 * 1024 * 1024 });
   const videos: Video[] = [];
-  for (const line of stdout.split("\n")) {
+  for (const line of String(stdout).split("\n")) {
     const [id, ...rest] = line.split("\t");
     if (id && id.trim()) {
       videos.push({ id: id.trim(), title: rest.join("\t").trim(), url: `https://www.youtube.com/watch?v=${id.trim()}` });
