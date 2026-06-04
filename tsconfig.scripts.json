@@ -1,0 +1,14 @@
+{
+  "//": "Type-checks the dev/ingestion scripts in development WITHOUT gating the production build. The main tsconfig.json excludes 'scripts' so a stray error in a one-off script can never fail `next build` / a Vercel deploy. Run via `npm run typecheck` (which checks the app and then this).",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "scripts/**/*.ts",
+    "lib/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
