@@ -1,7 +1,7 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
 
 export const metadata = {
-  title: "Virtual altar | Original Botanica",
+  title: "Virtual altar",
   description:
     "Light a candle from anywhere. For an intention. For protection. For someone you love who needs the prayer.",
 };

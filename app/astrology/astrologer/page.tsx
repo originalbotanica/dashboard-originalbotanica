@@ -5,7 +5,7 @@ import { getSubscriptionStatus } from "@/lib/subscription";
 import { AstrologerChat } from "@/components/astrologer-chat";
 
 export const metadata = {
-  title: "Your Astrologer | Original Botanica",
+  title: "Your Astrologer",
 };
 
 export default async function AstrologerPage() {

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
 export const metadata = {
-  title: "Virtual altar | Original Botanica",
+  title: "Virtual altar",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";

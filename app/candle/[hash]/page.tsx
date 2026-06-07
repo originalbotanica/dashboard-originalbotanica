@@ -30,7 +30,7 @@ export async function generateMetadata({
     .eq("hash", hash)
     .maybeSingle();
   if (!data?.is_public) {
-    return { title: "Memorial | Original Botanica" };
+    return { title: "Memorial" };
   }
   return {
     title: `In memory of ${data.name} | Original Botanica`,

@@ -1,7 +1,7 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
 
 export const metadata = {
-  title: "Ancestors altar | Original Botanica",
+  title: "Ancestors altar",
   description:
     "A flame for those who came before. Memorialize the ones you carry. Their names lit, their stories with you.",
 };

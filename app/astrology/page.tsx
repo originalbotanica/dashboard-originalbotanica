@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 
 export const metadata = {
-  title: "Astrology | Original Botanica",
+  title: "Astrology",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";

@@ -5,7 +5,7 @@ import { getSubscriptionStatus } from "@/lib/subscription";
 import { DreamChat } from "@/components/dream-chat";
 
 export const metadata = {
-  title: "Interpret a dream | Original Botanica",
+  title: "Interpret a dream",
 };
 
 export default async function NewDreamPage() {

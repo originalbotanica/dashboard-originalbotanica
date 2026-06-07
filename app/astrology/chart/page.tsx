@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { loadAstrologerContext } from "@/lib/astrologer/context";
 
 export const metadata = {
-  title: "Your Natal Chart | Original Botanica",
+  title: "Your Natal Chart",
 };
 
 /**

@@ -6,7 +6,7 @@ import { MemorialForm } from "@/components/memorial-form";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
 
 export const metadata = {
-  title: "Memorial | Original Botanica",
+  title: "Memorial",
 };
 
 /**

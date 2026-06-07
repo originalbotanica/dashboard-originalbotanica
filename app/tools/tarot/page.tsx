@@ -1,7 +1,7 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
 
 export const metadata = {
-  title: "Daily tarot | Original Botanica",
+  title: "Daily tarot",
   description:
     "A card each morning. A paragraph of reading. A question to sit with. Pulled fresh for the day you are actually living.",
 };

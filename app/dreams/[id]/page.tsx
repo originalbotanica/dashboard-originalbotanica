@@ -5,7 +5,7 @@ import { getSubscriptionStatus } from "@/lib/subscription";
 import { DreamChat } from "@/components/dream-chat";
 
 export const metadata = {
-  title: "Dream | Original Botanica",
+  title: "Dream",
 };
 
 /**

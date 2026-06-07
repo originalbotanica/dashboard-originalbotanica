@@ -10,7 +10,7 @@ const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
 
 export const metadata = {
-  title: "Reading | Original Botanica",
+  title: "Reading",
 };
 
 export default async function CompatibilityReadingPage({

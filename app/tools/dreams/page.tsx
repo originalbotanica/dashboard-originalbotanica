@@ -1,7 +1,7 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
 
 export const metadata = {
-  title: "Dream interpretation | Original Botanica",
+  title: "Dream interpretation",
   description:
     "Describe a dream while it's still fresh. Symbols read through Lucumí, Espiritismo, folk Catholic, and Western dream traditions. Every dream ends with a ritual.",
 };

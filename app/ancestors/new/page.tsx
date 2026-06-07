@@ -5,7 +5,7 @@ import { MemorialForm } from "@/components/memorial-form";
 import { createAncestorAction } from "../actions";
 
 export const metadata = {
-  title: "Add an ancestor | Original Botanica",
+  title: "Add an ancestor",
 };
 
 export default async function NewAncestorPage({

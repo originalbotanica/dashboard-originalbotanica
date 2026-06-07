@@ -1,7 +1,7 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
 
 export const metadata = {
-  title: "Rituals library | Original Botanica",
+  title: "Rituals library",
   description:
     "Sixty-six years of practice in the Bronx, curated and searchable. For grief, protection, love that needs to land.",
 };

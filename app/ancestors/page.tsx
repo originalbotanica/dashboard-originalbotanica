@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Candle } from "@/components/candle";
 
 export const metadata = {
-  title: "Ancestors altar | Original Botanica",
+  title: "Ancestors altar",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";

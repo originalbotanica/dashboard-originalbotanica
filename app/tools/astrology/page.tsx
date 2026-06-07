@@ -1,7 +1,7 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
 
 export const metadata = {
-  title: "Your astrologer | Original Botanica",
+  title: "Your astrologer",
   description:
     "An AI astrologer trained on your chart and the traditions Original Botanica has served since 1959. Western, Lucumí, Espiritismo, folk Catholic.",
 };

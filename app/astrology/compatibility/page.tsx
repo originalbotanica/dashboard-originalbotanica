@@ -6,7 +6,7 @@ import { getSubscriptionStatus } from "@/lib/subscription";
 import { createCompatibilityAction } from "./actions";
 
 export const metadata = {
-  title: "Compatibility | Original Botanica",
+  title: "Compatibility",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";

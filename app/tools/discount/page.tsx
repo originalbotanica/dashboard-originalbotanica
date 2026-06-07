@@ -1,7 +1,7 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
 
 export const metadata = {
-  title: "Member discount | Original Botanica",
+  title: "Member discount",
   description:
     "10% off everything at originalbotanica.com. Applied automatically at checkout when you sign in.",
 };

@@ -14,7 +14,7 @@ const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
 
 export const metadata = {
-  title: "Your monthly forecast | Original Botanica",
+  title: "Your monthly forecast",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
