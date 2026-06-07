@@ -36,16 +36,15 @@ export default function TarotToolPage() {
         keeps it open. You return to it as the day unfolds.
       </p>
 
-      <p className="eyebrow mb-3 mt-12">Pull anytime</p>
+      <p className="eyebrow mb-3 mt-12">Written for you</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        Beyond the morning card, you can pull a card for any question, any
-        moment. A decision waiting for clarity. A relationship asking
-        attention. The deck is always shuffled in your hand.
+        Your card is yours alone, drawn for you each day. The reading speaks
+        to you by name, colored by your sign, in English or Spanish. The same
+        card holds for you all day, and a new one waits at midnight.
       </p>
 
       <div className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--accent)] pl-4 py-2 mt-12">
-        Coming with the next release. The card you join with today will be
-        waiting tomorrow morning.
+        Live now for members. Your card is waiting on your dashboard.
       </div>
     </MarketingToolLayout>
   );

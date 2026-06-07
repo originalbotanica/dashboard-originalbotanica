@@ -40,14 +40,14 @@ export default function RitualsToolPage() {
 
       <p className="eyebrow mb-3 mt-12">Save your favorites</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        The rituals you return to most live in your saved shelf. The ones the
-        astrologer mentions in your readings appear there automatically.
+        Tap the bookmark on any ritual and it lives on your saved shelf.
         Build the practice you keep coming back to.
       </p>
 
       <div className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--accent)] pl-4 py-2 mt-12">
-        Coming soon. The library is being indexed from the botanica&apos;s
-        archives.
+        Live now for members. More than four hundred rituals from the
+        botanica&apos;s archive, organized by purpose: money drawing,
+        uncrossing, road opening, protection, love, and more.
       </div>
     </MarketingToolLayout>
   );

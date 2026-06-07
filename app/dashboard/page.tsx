@@ -229,9 +229,9 @@ export default async function DashboardPage() {
 
       {/* ── 7. Rituals library — image right ──────────────────────────── */}
       <ToolSection
-        eyebrow="A ritual for today"
-        headline="The rituals library is coming."
-        body="Sixty-six years of practice in the Bronx, curated and searchable. For grief. For protection. For love that needs to land. Each ritual a real entry from the botanica's archive."
+        eyebrow="The rituals library"
+        headline="More than four hundred rituals, organized by purpose."
+        body="Money drawing. Uncrossing. Road opening. Protection. Love that needs to land. Real workings from sixty-six years of practice, each with its steps, its supplies, and the day to do it. Search by your need and save the ones you return to."
         href="/rituals"
         linkLabel="Browse the library"
         imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
