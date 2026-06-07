@@ -9,6 +9,7 @@ import {
   ProseBlock,
   buildProductLookup,
 } from "@/lib/rag/render-prose";
+import { BotanicaRecs } from "@/components/botanica-recs";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
@@ -159,6 +160,14 @@ export default async function ForecastPage() {
                 />
               </div>
             </section>
+
+            {/* Inline ritual + product recommendations from the botanica */}
+            <BotanicaRecs
+              userId={user.id}
+              productSlugs={forecast.retrieved_product_slugs || []}
+              sourceSlugs={(forecast.retrieved_sources || []).map((s) => s.slug)}
+              heading="For this month's work"
+            />
           </>
         )}
 

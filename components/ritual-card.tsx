@@ -48,6 +48,9 @@ export function RitualCard({
           </p>
         ) : null}
         <div className="mt-auto pt-4 flex items-center gap-3 text-[var(--foreground-subtle)]">
+          {ritual.source_type === "youtube" ? (
+            <span className="eyebrow text-[var(--accent)]">▶ Video</span>
+          ) : null}
           {tradition ? <span className="eyebrow">{tradition}</span> : null}
           {ritual.difficulty ? (
             <span className="eyebrow">{ritual.difficulty}</span>

@@ -5,6 +5,7 @@ import { getSubscriptionStatus } from "@/lib/subscription";
 import { deleteCompatibilityAction } from "../actions";
 import type { CompatibilityContent } from "@/lib/compatibility/prompt";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
+import { BotanicaRecs } from "@/components/botanica-recs";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
@@ -39,7 +40,7 @@ export default async function CompatibilityReadingPage({
   const { data: reading } = await supabase
     .from("compatibility_readings")
     .select(
-      "id, other_name, other_birth_date, other_birth_city, relationship_note, content, created_at",
+      "id, other_name, other_birth_date, other_birth_city, relationship_note, content, created_at, retrieved_product_slugs, retrieved_sources",
     )
     .eq("id", id)
     .eq("user_id", user.id)
@@ -125,6 +126,16 @@ export default async function CompatibilityReadingPage({
             </div>
           </section>
         )}
+
+        {/* Inline ritual + product recommendations from the botanica */}
+        <BotanicaRecs
+          userId={user.id}
+          productSlugs={(reading.retrieved_product_slugs as string[]) || []}
+          sourceSlugs={(
+            (reading.retrieved_sources as Array<{ slug: string }>) || []
+          ).map((s) => s.slug)}
+          heading="For the two of you"
+        />
 
         {/* Footer actions */}
         <div className="mt-16 pt-8 border-t border-[var(--border)] flex gap-4 flex-wrap items-center">

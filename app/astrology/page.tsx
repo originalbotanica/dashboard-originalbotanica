@@ -135,10 +135,12 @@ export default async function AstrologyHubPage() {
         )}
 
         <section className="mt-24 border-t border-[var(--border)] pt-12">
-          <p className="eyebrow mb-4">Coming soon</p>
-          <ul className="text-[var(--foreground-muted)] leading-relaxed space-y-2">
-            <li>Inline ritual and product recommendations from the botanica</li>
-          </ul>
+          <p className="eyebrow mb-4">Woven through your readings</p>
+          <p className="text-[var(--foreground-muted)] leading-relaxed max-w-2xl">
+            Every reading draws on the botanica&apos;s archive. Where a ritual
+            or supply fits, it appears with the reading: rituals link into the
+            library, supplies link to the shelves at the botanica.
+          </p>
         </section>
       </section>
     </main>

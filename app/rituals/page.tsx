@@ -3,7 +3,12 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { PURPOSES, OB_CDN } from "@/lib/rituals/purposes";
-import { getPurposeCounts, searchRituals, getSavedRitualIds } from "@/lib/rituals/queries";
+import {
+  getPurposeCounts,
+  searchRituals,
+  getSavedRitualIds,
+  getPurposeCovers,
+} from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
 
 export const metadata = {
@@ -35,10 +40,11 @@ export default async function RitualsLibraryPage({
   if (!sub.isActive) redirect("/tools/rituals");
 
   const query = (q || "").trim();
-  const [counts, results, savedIds] = await Promise.all([
+  const [counts, results, savedIds, covers] = await Promise.all([
     getPurposeCounts(),
     query ? searchRituals(query) : Promise.resolve([]),
     getSavedRitualIds(user.id),
+    getPurposeCovers(),
   ]);
 
   // Only show shelves that have at least one published ritual.
@@ -127,7 +133,7 @@ export default async function RitualsLibraryPage({
                   <div className="relative aspect-[4/3] overflow-hidden bg-[var(--surface)]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={`${OB_CDN}${p.image}`}
+                      src={covers[p.slug] || `${OB_CDN}${p.image}`}
                       alt=""
                       className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                     />

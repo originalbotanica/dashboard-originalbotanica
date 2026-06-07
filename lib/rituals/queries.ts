@@ -36,12 +36,12 @@ export type Ritual = {
 };
 
 const LIST_FIELDS =
-  "id, slug, title_en, summary, purpose, tradition, difficulty, image_url";
+  "id, slug, title_en, summary, purpose, tradition, difficulty, image_url, source_type";
 
 /** The fields a ritual card needs. */
 export type RitualCardData = Pick<
   Ritual,
-  "id" | "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url"
+  "id" | "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url" | "source_type"
 >;
 
 /** Count of published rituals per purpose slug. */
@@ -111,6 +111,48 @@ export async function searchRituals(q: string): Promise<RitualCardData[]> {
   return (data ?? []) as never;
 }
 
+/**
+ * A representative cover image per purpose, drawn from each shelf's own
+ * rituals so every shelf looks distinct and authentic. Falls back to the
+ * purpose's static image in the UI when a shelf has no imagery yet.
+ */
+export async function getPurposeCovers(): Promise<Record<string, string>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rituals")
+    .select("purpose, image_url")
+    .not("published_at", "is", null)
+    .not("image_url", "is", null)
+    .order("title_en");
+  if (error) return {};
+  const covers: Record<string, string> = {};
+  for (const row of (data ?? []) as { purpose: string | null; image_url: string | null }[]) {
+    if (row.purpose && row.image_url && !covers[row.purpose]) {
+      covers[row.purpose] = row.image_url;
+    }
+  }
+  return covers;
+}
+
+/**
+ * Published library rituals matching a list of slugs. Blog-sourced rituals
+ * share their slug with the source post, so this maps a reading's retrieved
+ * sources to in-app library entries.
+ */
+export async function getLibraryRitualsBySlugs(
+  slugs: string[],
+): Promise<RitualCardData[]> {
+  if (!slugs || slugs.length === 0) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rituals")
+    .select(LIST_FIELDS)
+    .in("slug", slugs)
+    .not("published_at", "is", null);
+  if (error) return [];
+  return (data ?? []) as never;
+}
+
 /** The set of ritual ids this member has saved. Used to show saved state. */
 export async function getSavedRitualIds(userId: string): Promise<Set<string>> {
   const supabase = await createClient();
@@ -128,16 +170,17 @@ export async function listSavedRituals(userId: string): Promise<RitualCardData[]
   const { data, error } = await supabase
     .from("ritual_favorites")
     .select(
-      "saved_at, rituals(id, slug, title_en, summary, purpose, tradition, difficulty, image_url)",
+      "saved_at, rituals(id, slug, title_en, summary, purpose, tradition, difficulty, image_url, source_type)",
     )
     .eq("user_id", userId)
     .order("saved_at", { ascending: false });
   if (error) return [];
   // Each row embeds its ritual; drop any whose ritual is gone/unpublished.
-  return (data ?? [])
-    .map((row: { rituals: RitualCardData | RitualCardData[] | null }) =>
-      Array.isArray(row.rituals) ? row.rituals[0] : row.rituals,
-    )
+  const rows = (data ?? []) as unknown as Array<{
+    rituals: RitualCardData | RitualCardData[] | null;
+  }>;
+  return rows
+    .map((row) => (Array.isArray(row.rituals) ? row.rituals[0] : row.rituals))
     .filter((r): r is RitualCardData => !!r);
 }
 

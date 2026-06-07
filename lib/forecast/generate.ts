@@ -36,6 +36,7 @@ export type Forecast = {
   content: ForecastContent;
   generated_at: string;
   retrieved_product_slugs?: string[];
+  retrieved_sources?: Array<{ slug: string; url: string; title: string }>;
 };
 
 export async function getOrGenerateMonthlyForecast(
@@ -47,7 +48,9 @@ export async function getOrGenerateMonthlyForecast(
   // Cache lookup
   const { data: existing } = await supabase
     .from("forecasts")
-    .select("month, content, generated_at, retrieved_product_slugs")
+    .select(
+      "month, content, generated_at, retrieved_product_slugs, retrieved_sources",
+    )
     .eq("user_id", userId)
     .eq("month", month)
     .maybeSingle();
@@ -59,6 +62,8 @@ export async function getOrGenerateMonthlyForecast(
       generated_at: existing.generated_at,
       retrieved_product_slugs:
         (existing.retrieved_product_slugs as string[]) || [],
+      retrieved_sources:
+        (existing.retrieved_sources as Forecast["retrieved_sources"]) || [],
     };
   }
 
@@ -130,6 +135,7 @@ export async function getOrGenerateMonthlyForecast(
     content: clean,
     generated_at: new Date().toISOString(),
     retrieved_product_slugs: ragMetadata.product_slugs,
+    retrieved_sources: ragMetadata.sources,
   };
 }
 

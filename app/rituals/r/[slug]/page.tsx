@@ -75,6 +75,18 @@ export default async function RitualDetailPage({
           <SaveRitualButton ritualId={r.id} initialSaved={saved} />
         </div>
 
+        {/* Hero image — the source post's art or the video thumbnail. */}
+        {r.image_url ? (
+          <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-[var(--border)] mb-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={r.image_url}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
+        ) : null}
+
         {r.summary ? (
           <p className="invocation text-lg text-[var(--foreground)] leading-relaxed mb-10">
             {r.summary}
@@ -143,7 +155,9 @@ export default async function RitualDetailPage({
               rel="noopener noreferrer"
               className="text-[var(--accent)] hover:underline"
             >
-              Read the full original
+              {r.source_type === "youtube"
+                ? "Watch the original video"
+                : "Read the full original"}
             </a>
             .
           </p>
