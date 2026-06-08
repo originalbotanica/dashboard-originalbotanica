@@ -7,6 +7,8 @@ import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberHeader } from "@/components/member-header";
 import { Candle } from "@/components/candle";
 import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
+import { getMoon, moonGuidance } from "@/lib/astrology/moon";
+import { MoonPhase } from "@/components/moon-phase";
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
@@ -69,6 +71,10 @@ export default async function DashboardPage() {
     year: "numeric",
     timeZone: "America/New_York",
   });
+
+  // Tonight's moon — a small daily touchpoint. Pure calculation, no API.
+  const moon = getMoon();
+  const moonGuide = moonGuidance(moon.bucket);
 
   return (
     <main className="flex-1">
@@ -164,6 +170,39 @@ export default async function DashboardPage() {
             {trialLeft} {trialLeft === 1 ? "day" : "days"} left in your trial
           </p>
         )}
+      </section>
+
+      {/* ── Tonight's moon — compact daily touchpoint ─────────────────── */}
+      <section aria-label="Tonight's moon" className="border-t border-[var(--border)]">
+        <Link
+          href="/astrology/moon"
+          className="group block max-w-5xl mx-auto px-6 py-10"
+        >
+          <div className="flex items-center gap-5 md:gap-8">
+            <div className="shrink-0">
+              <MoonPhase
+                illumination={moon.illumination}
+                waxing={moon.waxing}
+                size={64}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="eyebrow mb-1 text-[var(--foreground-muted)]">
+                Tonight&apos;s moon
+              </p>
+              <p className="display text-xl md:text-2xl leading-tight">
+                {moon.phaseName} · {moon.illuminationPct}% lit
+              </p>
+              <p className="text-[var(--foreground-muted)] text-sm leading-relaxed mt-1">
+                {moonGuide.title}
+              </p>
+            </div>
+            <span className="nav-link text-[var(--accent)] hidden sm:inline-flex items-center gap-2 shrink-0">
+              The lunar guide
+              <span aria-hidden>→</span>
+            </span>
+          </div>
+        </Link>
       </section>
 
       {/* ── 2. Astrology — image left ─────────────────────────────────── */}

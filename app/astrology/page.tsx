@@ -123,6 +123,9 @@ export default async function AstrologyHubPage() {
               <Link href="/astrology/chart" className="btn-ghost inline-flex">
                 View your chart
               </Link>
+              <Link href="/astrology/moon" className="btn-ghost inline-flex">
+                Tonight&apos;s moon
+              </Link>
             </div>
 
             {!sub.isActive && (

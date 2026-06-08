@@ -153,6 +153,23 @@ export async function getLibraryRitualsBySlugs(
   return (data ?? []) as never;
 }
 
+/** Published rituals tagged for a given moon phase (new|waxing|full|waning). */
+export async function getRitualsByMoonPhase(
+  phase: string,
+  limit = 3,
+): Promise<RitualCardData[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rituals")
+    .select(LIST_FIELDS)
+    .eq("best_moon_phase", phase)
+    .not("published_at", "is", null)
+    .order("title_en")
+    .limit(limit);
+  if (error) return [];
+  return (data ?? []) as never;
+}
+
 /** The set of ritual ids this member has saved. Used to show saved state. */
 export async function getSavedRitualIds(userId: string): Promise<Set<string>> {
   const supabase = await createClient();
