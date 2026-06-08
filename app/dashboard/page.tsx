@@ -248,9 +248,9 @@ export default async function DashboardPage() {
       <ToolSection
         eyebrow="Virtual altar"
         headline="Light a candle."
-        body="For an intention. For protection. For someone you love who needs the prayer. The candle burns at the botanica and on your altar surface here."
+        body="For an intention. For protection. For someone you love who needs the prayer. Choose your candle, write your petition, and let it burn on your altar. Add it to the community altar so others hold the intention with you."
         href="/altar/virtual"
-        linkLabel="Tend the altar"
+        linkLabel="Light a candle"
         imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
         imageSide="right"
       />

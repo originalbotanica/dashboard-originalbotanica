@@ -1,0 +1,76 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/utils/supabase/server";
+import { DESIRES, COLORS, DURATIONS } from "@/lib/altar/altar";
+
+/** Light a candle: insert into `candles` for the current member. */
+export async function lightCandleAction(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return redirect("/login");
+
+  const candle_type = String(formData.get("candle_type") || "");
+  const candle_color = String(formData.get("candle_color") || "white");
+  const intention = String(formData.get("intention") || "").trim();
+  const petition = String(formData.get("petition") || "").trim();
+  const days = parseInt(String(formData.get("days") || "7"), 10);
+  const is_public = formData.get("is_public") === "on";
+
+  if (!DESIRES.some((d) => d.slug === candle_type)) {
+    return redirect("/altar/virtual/new?error=Please%20choose%20an%20intention");
+  }
+  if (!intention) {
+    return redirect("/altar/virtual/new?error=Please%20add%20a%20dedication");
+  }
+  const color = COLORS.some((c) => c.slug === candle_color) ? candle_color : "white";
+  const dur = DURATIONS.some((d) => d.days === days) ? days : 7;
+  const expires_at = new Date(Date.now() + dur * 86_400_000).toISOString();
+
+  const { data, error } = await supabase
+    .from("candles")
+    .insert({
+      user_id: user.id,
+      candle_type,
+      candle_color: color,
+      intention: intention.slice(0, 200),
+      petition: petition ? petition.slice(0, 2000) : null,
+      is_public,
+      lit_at: new Date().toISOString(),
+      expires_at,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    return redirect(
+      `/altar/virtual/new?error=${encodeURIComponent(error.message)}`,
+    );
+  }
+
+  revalidatePath("/altar/virtual");
+  redirect(`/altar/virtual/${data.id}`);
+}
+
+/** Extinguish (archive) a candle the member owns. */
+export async function extinguishCandleAction(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return redirect("/login");
+
+  const id = String(formData.get("id") || "");
+  if (id) {
+    await supabase
+      .from("candles")
+      .update({ archived_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("user_id", user.id);
+  }
+  revalidatePath("/altar/virtual");
+  redirect("/altar/virtual");
+}
