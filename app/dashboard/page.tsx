@@ -320,7 +320,7 @@ function ToolSection({
   external?: boolean;
 }) {
   const imageBlock = (
-    <div className="md:col-span-2 relative aspect-square rounded-xl overflow-hidden border border-[var(--border)]">
+    <div className="md:col-span-2 relative aspect-square rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--surface)]">
       <Image
         src={imageSrc}
         alt=""
