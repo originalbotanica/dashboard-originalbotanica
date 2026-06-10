@@ -1,15 +1,26 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
-import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
+import {
+  getOrGenerateDailyHoroscope,
+  type DailyHoroscope,
+} from "@/lib/daily-horoscope/generate";
 import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberHeader } from "@/components/member-header";
 import { Candle } from "@/components/candle";
 import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
 import { getMoon, moonGuidance } from "@/lib/astrology/moon";
+import { getTodaysSky } from "@/lib/astrology/sky";
 import { MoonPhase } from "@/components/moon-phase";
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
+
+export const metadata = {
+  title: "Your practice today",
+  description:
+    "Today's reading, tonight's moon, your daily card, and the work of the day.",
+};
 
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
@@ -50,10 +61,14 @@ export default async function DashboardPage() {
   const displayName = profile?.first_name || "friend";
 
   const sunSign = profile?.sun_sign || null;
-  const dailyHoroscope =
+  // One shared promise, NOT awaited here: the hero and the astrology section
+  // both read it behind Suspense boundaries, so the page shell paints
+  // instantly and the one cold generation each morning streams in. Sharing
+  // the promise means Claude is called once, not once per section.
+  const horoscopePromise: Promise<DailyHoroscope | null> =
     sunSign && isValidSign(sunSign)
-      ? await getOrGenerateDailyHoroscope(sunSign).catch(() => null)
-      : null;
+      ? getOrGenerateDailyHoroscope(sunSign).catch(() => null)
+      : Promise.resolve(null);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -75,6 +90,7 @@ export default async function DashboardPage() {
   // Tonight's moon — a small daily touchpoint. Pure calculation, no API.
   const moon = getMoon();
   const moonGuide = moonGuidance(moon.bucket);
+  const sky = getTodaysSky();
 
   return (
     <main className="flex-1">
@@ -135,35 +151,24 @@ export default async function DashboardPage() {
           <Candle size="large" lit />
         </div>
 
-        {/* Today's invocation — daily horoscope or fallback */}
-        {sunSign && dailyHoroscope ? (
-          <>
-            <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-              {sunSign}. Today the focus is{" "}
-              <span className="italic text-[var(--accent)]">
-                {dailyHoroscope.content.focus}
-              </span>
-              .
-            </h1>
-            <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-              <ProseLine
-                text={dailyHoroscope.content.summary}
-                lookup={EMPTY_LOOKUP}
-                optimisticBaseUrl={OB_BASE_URL}
-              />
-            </p>
-          </>
-        ) : (
-          <>
-            <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-              Welcome to the practice.
-            </h1>
-            <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-              Add your birth details and the astrologer will read for you each
-              morning.
-            </p>
-          </>
-        )}
+        {/* Today's invocation — daily horoscope or fallback. Streams in
+            behind Suspense so the hero never blocks on generation. */}
+        <Suspense
+          fallback={
+            <>
+              <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
+                {sunSign ? `${sunSign}.` : "Welcome to the practice."}
+              </h1>
+              <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed animate-pulse">
+                {sunSign
+                  ? "The astrologer is reading for you..."
+                  : "Add your birth details and the astrologer will read for you each morning."}
+              </p>
+            </>
+          }
+        >
+          <HeroInvocation sunSign={sunSign} horoscopePromise={horoscopePromise} />
+        </Suspense>
 
         {sub.isTrialing && trialLeft !== null && (
           <p className="eyebrow mt-16 text-[var(--accent)]">
@@ -191,7 +196,7 @@ export default async function DashboardPage() {
                 Tonight&apos;s moon
               </p>
               <p className="display text-xl md:text-2xl leading-tight">
-                {moon.phaseName} · {moon.illuminationPct}% lit
+                {moon.phaseName} in {sky.moonSign} · {moon.illuminationPct}% lit
               </p>
               <p className="text-[var(--foreground-muted)] text-sm leading-relaxed mt-1">
                 {moonGuide.title}
@@ -206,29 +211,21 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── 2. Astrology — image left ─────────────────────────────────── */}
-      <ToolSection
-        eyebrow="Today's reading"
-        headlineNode={
-          dailyHoroscope ? (
-            <ProseLine
-              text={dailyHoroscope.content.action}
-              lookup={EMPTY_LOOKUP}
-              optimisticBaseUrl={OB_BASE_URL}
-            />
-          ) : (
-            "Your chart, your reading."
-          )
+      <Suspense
+        fallback={
+          <ToolSection
+            eyebrow="Today's reading"
+            headline="Your chart, your reading."
+            body="The astrologer is reading for you. For a longer reading rooted in your full chart, speak with the astrologer."
+            href="/astrology"
+            linkLabel="Ask your astrologer"
+            imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+            imageSide="left"
+          />
         }
-        body={
-          dailyHoroscope
-            ? `Drawn from your ${sunSign} placement. For a longer reading rooted in your full chart, speak with the astrologer.`
-            : "Add your birth date and city to receive a daily reading personal to you, and to begin conversations with the astrologer."
-        }
-        href="/astrology"
-        linkLabel="Ask your astrologer"
-        imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
-        imageSide="left"
-      />
+      >
+        <AstrologySection sunSign={sunSign} horoscopePromise={horoscopePromise} />
+      </Suspense>
 
       {/* ── 3. Dreams — image right ───────────────────────────────────── */}
       <ToolSection
@@ -289,6 +286,104 @@ export default async function DashboardPage() {
         imageSide="left"
       />
     </main>
+  );
+}
+
+/**
+ * The hero's daily invocation. Awaits the shared horoscope promise behind
+ * Suspense. When generation fails the member sees an honest note instead of
+ * a silent generic welcome.
+ */
+async function HeroInvocation({
+  sunSign,
+  horoscopePromise,
+}: {
+  sunSign: string | null;
+  horoscopePromise: Promise<DailyHoroscope | null>;
+}) {
+  const dailyHoroscope = await horoscopePromise;
+  if (sunSign && dailyHoroscope) {
+    return (
+      <>
+        <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
+          {sunSign}. Today the focus is{" "}
+          <span className="italic text-[var(--accent)]">
+            {dailyHoroscope.content.focus}
+          </span>
+          .
+        </h1>
+        <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
+          <ProseLine
+            text={dailyHoroscope.content.summary}
+            lookup={EMPTY_LOOKUP}
+            optimisticBaseUrl={OB_BASE_URL}
+          />
+        </p>
+      </>
+    );
+  }
+  if (sunSign) {
+    return (
+      <>
+        <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
+          {sunSign}. The candle is lit.
+        </h1>
+        <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
+          Today&apos;s reading could not be drawn just now. Refresh in a
+          moment, or ask the astrologer directly.
+        </p>
+      </>
+    );
+  }
+  return (
+    <>
+      <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
+        Welcome to the practice.
+      </h1>
+      <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
+        Add your birth details and the astrologer will read for you each
+        morning.
+      </p>
+    </>
+  );
+}
+
+/**
+ * The astrology tool section, personalized with today's action once the
+ * shared horoscope promise resolves.
+ */
+async function AstrologySection({
+  sunSign,
+  horoscopePromise,
+}: {
+  sunSign: string | null;
+  horoscopePromise: Promise<DailyHoroscope | null>;
+}) {
+  const dailyHoroscope = await horoscopePromise;
+  return (
+    <ToolSection
+      eyebrow="Today's reading"
+      headlineNode={
+        dailyHoroscope ? (
+          <ProseLine
+            text={dailyHoroscope.content.action}
+            lookup={EMPTY_LOOKUP}
+            optimisticBaseUrl={OB_BASE_URL}
+          />
+        ) : (
+          "Your chart, your reading."
+        )
+      }
+      body={
+        dailyHoroscope
+          ? `Drawn from your ${sunSign} placement. For a longer reading rooted in your full chart, speak with the astrologer.`
+          : "Add your birth date and city to receive a daily reading personal to you, and to begin conversations with the astrologer."
+      }
+      href="/astrology"
+      linkLabel="Ask your astrologer"
+      imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+      imageSide="left"
+    />
   );
 }
 

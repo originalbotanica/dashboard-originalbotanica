@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getMoon, moonGuidance } from "@/lib/astrology/moon";
+import { getTodaysSky } from "@/lib/astrology/sky";
 import { getRitualsByMoonPhase, getSavedRitualIds } from "@/lib/rituals/queries";
 import { MoonPhase } from "@/components/moon-phase";
 import { RitualCard } from "@/components/ritual-card";
@@ -28,6 +29,7 @@ export default async function MoonGuidePage() {
 
   const moon = getMoon();
   const guide = moonGuidance(moon.bucket);
+  const sky = getTodaysSky();
   const [rituals, savedIds] = await Promise.all([
     getRitualsByMoonPhase(moon.bucket, 3),
     getSavedRitualIds(user.id),
@@ -55,8 +57,13 @@ export default async function MoonGuidePage() {
             {moon.illuminationPct}% illuminated {moon.waxing ? "and waxing" : "and waning"}
           </p>
           <h1 className="display text-3xl md:text-5xl leading-tight">
-            {moon.phaseName}
+            {moon.phaseName} in {sky.moonSign}
           </h1>
+          {sky.aspect && (
+            <p className="eyebrow mt-3 text-[var(--foreground-muted)]">
+              Moon {sky.aspect.name} Sun. {sky.aspect.meaning}
+            </p>
+          )}
           <p className="invocation text-lg md:text-xl text-[var(--foreground)] mt-5 max-w-2xl">
             {guide.title}
           </p>

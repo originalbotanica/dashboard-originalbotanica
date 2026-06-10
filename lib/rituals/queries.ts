@@ -94,10 +94,41 @@ export async function getRitualBySlug(slug: string): Promise<Ritual | null> {
   };
 }
 
-/** Free-text search over title + summary of published rituals. */
+/**
+ * Free-text search over published rituals.
+ *
+ * Two passes run in parallel and merge:
+ *  1. Keyword: ilike over title + summary. Exact words rank first.
+ *  2. Semantic: the same Voyage embeddings the readings use, so a search
+ *     like "my husband left" finds reconciliation rituals even when the
+ *     words never appear. Blog-sourced rituals share their slug with the
+ *     embedded source post, which is the bridge between the two tables.
+ *
+ * Semantic failure is graceful: if the embedding call errors, the keyword
+ * results stand alone, exactly as before.
+ */
 export async function searchRituals(q: string): Promise<RitualCardData[]> {
   const term = q.trim();
   if (!term) return [];
+
+  const [keyword, semantic] = await Promise.all([
+    keywordSearchRituals(term),
+    semanticSearchRituals(term).catch(() => [] as RitualCardData[]),
+  ]);
+
+  const seen = new Set(keyword.map((r) => r.id));
+  const merged = [...keyword];
+  for (const r of semantic) {
+    if (!seen.has(r.id)) {
+      seen.add(r.id);
+      merged.push(r);
+    }
+  }
+  return merged.slice(0, 50);
+}
+
+/** Keyword pass: case-insensitive match on title + summary. */
+async function keywordSearchRituals(term: string): Promise<RitualCardData[]> {
   const supabase = await createClient();
   const pattern = `%${term.replace(/[%_]/g, "")}%`;
   const { data, error } = await supabase
@@ -109,6 +140,22 @@ export async function searchRituals(q: string): Promise<RitualCardData[]> {
     .limit(50);
   if (error) return [];
   return (data ?? []) as never;
+}
+
+/** Semantic pass: embed the query, match posts, map to library rituals. */
+async function semanticSearchRituals(term: string): Promise<RitualCardData[]> {
+  // Lazy import keeps the rituals module free of the RAG dependency for
+  // callers that never search.
+  const { retrieveRituals } = await import("@/lib/rag/retrieve");
+  const retrieved = await retrieveRituals(term, 9);
+  if (retrieved.length === 0) return [];
+  const slugs = retrieved.map((r) => r.slug);
+  const rituals = await getLibraryRitualsBySlugs(slugs);
+  // Preserve retrieval order (most relevant first).
+  const rank = new Map(slugs.map((s, i) => [s, i]));
+  return rituals
+    .slice()
+    .sort((a, b) => (rank.get(a.slug) ?? 99) - (rank.get(b.slug) ?? 99));
 }
 
 /**

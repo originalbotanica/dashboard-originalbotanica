@@ -1,8 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
+import { getTodaysSky } from "@/lib/astrology/sky";
+import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
+import { isValidSign, type Sign } from "@/lib/daily-horoscope/prompt";
+import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
+
+const EMPTY_LOOKUP = buildProductLookup([]);
+const OB_BASE_URL = "https://originalbotanica.com";
 
 export const metadata = {
   title: "Astrology",
@@ -39,6 +47,9 @@ export default async function AstrologyHubPage() {
   const hasBirthData = !!profile.birth_date && !!profile.birth_place;
   const hasChart = !!profile.sun_sign;
 
+  // Today's sky, computed locally. No API, nothing to wait on.
+  const sky = getTodaysSky();
+
   return (
     <main className="min-h-screen relative">
       {/* Atmospheric backdrop */}
@@ -74,6 +85,13 @@ export default async function AstrologyHubPage() {
         <h1 className="display text-4xl md:text-5xl mb-6 leading-tight">
           {profile.first_name}, your chart awaits.
         </h1>
+
+        {/* Today's sky: one quiet line, computed locally. */}
+        <p className="eyebrow mb-8 text-[var(--foreground-muted)]">
+          Today&apos;s sky: Moon in {sky.moonSign},{" "}
+          {sky.waxing ? "waxing" : "waning"}. Sun in {sky.sunSign}.
+          {sky.aspect ? ` Moon ${sky.aspect.name} Sun. ${sky.aspect.meaning}` : ""}
+        </p>
 
         {!hasBirthData ? (
           <>
@@ -137,6 +155,24 @@ export default async function AstrologyHubPage() {
           </>
         )}
 
+        {/* Today's horoscope for the member's sign. Cached per sign per day,
+            so this is usually instant; Suspense keeps the page fast on the
+            one cold generation each morning. */}
+        {hasChart && profile.sun_sign && isValidSign(profile.sun_sign) && (
+          <section className="mt-20 border-t border-[var(--border)] pt-12">
+            <p className="eyebrow mb-6">Today for {profile.sun_sign}</p>
+            <Suspense
+              fallback={
+                <p className="invocation text-[var(--foreground-muted)] animate-pulse">
+                  Reading today&apos;s sky for {profile.sun_sign}...
+                </p>
+              }
+            >
+              <HubHoroscope sign={profile.sun_sign} />
+            </Suspense>
+          </section>
+        )}
+
         <section className="mt-24 border-t border-[var(--border)] pt-12">
           <p className="eyebrow mb-4">Woven through your readings</p>
           <p className="text-[var(--foreground-muted)] leading-relaxed max-w-2xl">
@@ -147,5 +183,46 @@ export default async function AstrologyHubPage() {
         </section>
       </section>
     </main>
+  );
+}
+
+/**
+ * The member's daily horoscope, rendered on the hub. Streams in behind a
+ * Suspense boundary so the hub never waits on generation.
+ */
+async function HubHoroscope({ sign }: { sign: Sign }) {
+  const horoscope = await getOrGenerateDailyHoroscope(sign).catch(() => null);
+  if (!horoscope) {
+    return (
+      <p className="text-[var(--foreground-muted)] leading-relaxed">
+        Today&apos;s reading could not be drawn just now. Refresh in a moment,
+        or ask the astrologer directly.
+      </p>
+    );
+  }
+  return (
+    <div className="max-w-2xl">
+      <h2 className="display text-2xl md:text-3xl leading-tight mb-4">
+        The focus is{" "}
+        <span className="italic text-[var(--accent)]">
+          {horoscope.content.focus}
+        </span>
+        .
+      </h2>
+      <p className="text-[var(--foreground-muted)] leading-relaxed mb-4">
+        <ProseLine
+          text={horoscope.content.summary}
+          lookup={EMPTY_LOOKUP}
+          optimisticBaseUrl={OB_BASE_URL}
+        />
+      </p>
+      <p className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--accent)] pl-4 py-1">
+        <ProseLine
+          text={horoscope.content.action}
+          lookup={EMPTY_LOOKUP}
+          optimisticBaseUrl={OB_BASE_URL}
+        />
+      </p>
+    </div>
   );
 }

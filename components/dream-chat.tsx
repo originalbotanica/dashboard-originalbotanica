@@ -121,8 +121,10 @@ export function DreamChat({
             ))}
             {streaming &&
               messages[messages.length - 1]?.role === "assistant" && (
-                <p className="text-xs text-[var(--foreground-subtle)] italic">
-                  Reading the dream...
+                <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse">
+                  {messages[messages.length - 1].content
+                    ? "Still reading..."
+                    : "Reading the dream..."}
                 </p>
               )}
           </div>
@@ -218,7 +220,11 @@ function Message({ msg }: { msg: Msg }) {
             : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)]"
         }`}
       >
-        {msg.content || <span className="opacity-50">...</span>}
+        {msg.content || (
+          <span className="opacity-50 animate-pulse" aria-label="Waiting for the reading">
+            ...
+          </span>
+        )}
       </div>
     </div>
   );

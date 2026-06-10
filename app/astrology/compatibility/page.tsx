@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { createCompatibilityAction } from "./actions";
+import { PendingSubmit } from "@/components/pending-submit";
 
 export const metadata = {
   title: "Compatibility",
@@ -169,9 +170,11 @@ export default async function CompatibilityHubPage({
               placeholder="e.g. We've been dating six months. The chemistry is real but we communicate badly."
             />
           </div>
-          <button type="submit" className="btn-primary mt-2">
-            Read the dynamic
-          </button>
+          <PendingSubmit
+            label="Read the dynamic"
+            pendingLabel="Reading the charts..."
+            className="btn-primary mt-2"
+          />
           <p className="text-xs text-[var(--foreground-subtle)]">
             Takes about 15 seconds while the charts are read.
           </p>
