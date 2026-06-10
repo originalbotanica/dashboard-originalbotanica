@@ -14,6 +14,7 @@ export function buildForecastPrompt(args: {
   risingSign: string | null;
   placements: Array<{ name: string; sign: string; house?: number }>;
   retrievedRituals?: string; // Optional RAG context from OB blog corpus
+  lunarEvents?: string; // Computed real new/full moons for the month
 }): { system: string; user: string } {
   const placementLines = args.placements
     .map((p) =>
@@ -73,7 +74,12 @@ You will output a single JSON object with this exact shape. No markdown fences, 
   }
 }
 
-Provide 3 to 5 key_dates. Make them real astrological events that fall within ${args.monthLabel}, interpreted for ${args.firstName}'s chart. If you don't know the exact date of a transit, use a plausible day in the month rather than fabricating precision.
+Provide 3 to 5 key_dates. Make them real astrological events that fall within ${args.monthLabel}, interpreted for ${args.firstName}'s chart. If you don't know the exact date of a transit, use a plausible day in the month rather than fabricating precision.${
+    args.lunarEvents
+      ? `
+THE MONTH'S REAL LUNAR EVENTS (computed, trust these over your own dates): ${args.lunarEvents}. Use these exact dates and signs for the new and full moons among your key_dates.`
+      : ""
+  }
 
 RITUAL GROUNDING
 When the rituals from the Original Botanica archive (below) match this month's energy, name the specific products mentioned in those rituals. Wrap each real product reference in this format: [[Product Name|product-slug]]. The slug must exactly match a slug from the archive below. Example: [[Florida Water|florida-water]].

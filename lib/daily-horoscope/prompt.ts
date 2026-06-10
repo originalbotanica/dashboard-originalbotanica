@@ -26,6 +26,7 @@ export function buildDailyHoroscopePrompt(args: {
   sign: Sign;
   dateLabel: string;   // e.g. "Saturday, May 16, 2026"
   retrievedRituals?: string; // Optional RAG context from OB blog corpus
+  skyContext?: string; // Computed real sky for today (moon sign, phase, aspect)
 }): { system: string; user: string } {
   const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.
 
@@ -44,7 +45,7 @@ FORMATTING (STRICT)
 CONTEXT
 - This is a daily horoscope for everyone with ${args.sign} as their Sun sign.
 - Date: ${args.dateLabel}.
-- You may reference the actual sky for this date if you know it (current Moon sign, notable transits). If unsure, speak to ${args.sign}'s archetypal terrain on a day like this rather than fabricating astronomical precision.
+${args.skyContext ? `- TODAY'S ACTUAL SKY (computed, trust this over your own guess): ${args.skyContext} If you reference the Moon or its phase, use exactly these placements. Do not invent other transits.` : `- You may reference the actual sky for this date if you know it (current Moon sign, notable transits). If unsure, speak to ${args.sign}'s archetypal terrain on a day like this rather than fabricating astronomical precision.`}
 
 GUARDRAILS
 - No medical, legal, or financial advice.

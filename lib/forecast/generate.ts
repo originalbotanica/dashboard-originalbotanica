@@ -7,6 +7,7 @@ import {
   parseForecast,
   type ForecastContent,
 } from "./prompt";
+import { lunarEventsForMonth } from "@/lib/astrology/sky";
 import { sanitizeStringsDeep } from "@/lib/llm/sanitize";
 import {
   retrieveRituals,
@@ -73,6 +74,16 @@ export async function getOrGenerateMonthlyForecast(
 
   const monthLabel = monthLabelFromKey(month);
 
+  // Real lunar events for the month, computed locally, so the forecast's
+  // key dates anchor to the actual new and full moons.
+  const [yearNum, monthNum] = month.split("-").map(Number);
+  const lunarEvents = lunarEventsForMonth(yearNum, monthNum)
+    .map(
+      (e) =>
+        `${e.kind === "new" ? "New Moon" : "Full Moon"} in ${e.sign} on ${monthLabel.split(" ")[0]} ${e.day}`,
+    )
+    .join("; ");
+
   // RAG: retrieve archive rituals matching the season + sign energy.
   const ragQuery = `Monthly forecast and rituals for ${ctx.chart.sunSign} during ${monthLabel}. Love, work, spirit themes.`;
   const retrieved = await retrieveRituals(ragQuery, 3);
@@ -92,6 +103,7 @@ export async function getOrGenerateMonthlyForecast(
     risingSign: ctx.chart.risingSign,
     placements: ctx.chart.placements,
     retrievedRituals: ritualsContext,
+    lunarEvents,
   });
 
   const anthropic = getAnthropic();

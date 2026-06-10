@@ -172,7 +172,9 @@ export default async function DashboardPage() {
 
         {sub.isTrialing && trialLeft !== null && (
           <p className="eyebrow mt-16 text-[var(--accent)]">
-            {trialLeft} {trialLeft === 1 ? "day" : "days"} left in your trial
+            {trialLeft === 0
+              ? "Your trial ends today"
+              : `${trialLeft} ${trialLeft === 1 ? "day" : "days"} left in your trial`}
           </p>
         )}
       </section>

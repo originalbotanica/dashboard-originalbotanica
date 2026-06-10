@@ -140,6 +140,69 @@ export type TodaysSky = {
   aspect: SkyAspect | null;
 };
 
+export type LunarEvent = {
+  kind: "new" | "full";
+  /** Day of month, 1-31, in US Eastern time. */
+  day: number;
+  /** The sign the moon stands in at the event. */
+  sign: ZodiacSign;
+};
+
+/**
+ * Real new and full moon dates for a month, computed from sun-moon
+ * elongation. Used to anchor the forecast's key dates so the lunar events
+ * it names are the actual ones.
+ */
+export function lunarEventsForMonth(year: number, month: number): LunarEvent[] {
+  const events: LunarEvent[] = [];
+  // Scan hourly so the event lands on the right Eastern calendar day and
+  // the moon's sign is read at the event itself, not hours later.
+  const start = Date.UTC(year, month - 1, 1);
+  const end = Date.UTC(year, month, 1);
+  let prev = elongation(new Date(start - 3_600_000));
+  for (let t = start; t < end; t += 3_600_000) {
+    const d = new Date(t);
+    const cur = elongation(d);
+    const easternDay = Number(
+      d.toLocaleDateString("en-US", {
+        day: "numeric",
+        timeZone: "America/New_York",
+      }),
+    );
+    const easternMonth = Number(
+      d.toLocaleDateString("en-US", {
+        month: "numeric",
+        timeZone: "America/New_York",
+      }),
+    );
+    if (easternMonth === month) {
+      // New moon: elongation wraps past 360 back toward 0.
+      if (cur < prev) {
+        events.push({
+          kind: "new",
+          day: easternDay,
+          sign: signOfLongitude(moonLongitude(d)),
+        });
+      }
+      // Full moon: elongation crosses 180.
+      if (prev < 180 && cur >= 180) {
+        events.push({
+          kind: "full",
+          day: easternDay,
+          sign: signOfLongitude(moonLongitude(d)),
+        });
+      }
+    }
+    prev = cur;
+  }
+  return events;
+}
+
+/** Moon's elongation from the sun, 0..360 degrees. */
+function elongation(date: Date): number {
+  return norm360(moonLongitude(date) - sunLongitude(date));
+}
+
 export function getTodaysSky(date: Date = new Date()): TodaysSky {
   const sunLon = sunLongitude(date);
   const moonLon = moonLongitude(date);

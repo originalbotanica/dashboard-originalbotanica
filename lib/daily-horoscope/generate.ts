@@ -7,6 +7,8 @@ import {
   metadataFromRituals,
 } from "@/lib/rag/retrieve";
 import { formatCommonSuppliesForPrompt } from "@/lib/rag/common-supplies";
+import { getMoon } from "@/lib/astrology/moon";
+import { getTodaysSky } from "@/lib/astrology/sky";
 import {
   buildDailyHoroscopePrompt,
   parseDailyHoroscope,
@@ -81,10 +83,21 @@ export async function getOrGenerateDailyHoroscope(
     .join("\n\n");
   const ragMetadata = metadataFromRituals(retrieved);
 
+  // Ground the reading in the real sky so the horoscope never contradicts
+  // the computed "today's sky" line shown elsewhere in the app.
+  const sky = getTodaysSky();
+  const moon = getMoon();
+  const skyContext = `Moon in ${sky.moonSign} (${moon.phaseName.toLowerCase()}, ${
+    sky.waxing ? "waxing" : "waning"
+  }). Sun in ${sky.sunSign}.${
+    sky.aspect ? ` Moon ${sky.aspect.name} Sun.` : ""
+  }`;
+
   const { system, user } = buildDailyHoroscopePrompt({
     sign,
     dateLabel,
     retrievedRituals: ritualsContext,
+    skyContext,
   });
 
   const anthropic = getAnthropic();
