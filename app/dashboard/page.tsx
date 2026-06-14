@@ -97,7 +97,7 @@ export default async function DashboardPage() {
       {/* ── 1. Hero — candlelit invocation ────────────────────────────── */}
       <section
         aria-label="Today"
-        className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-24 overflow-hidden"
+        className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-6 pt-24 pb-24 overflow-hidden"
       >
         <MemberHeader />
 

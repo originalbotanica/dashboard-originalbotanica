@@ -100,7 +100,7 @@ export function AstrologerChat({
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto pr-2"
-        style={{ minHeight: "400px", maxHeight: "calc(100vh - 320px)" }}
+        style={{ minHeight: "240px", maxHeight: "calc(100dvh - 300px)" }}
       >
         {isEmpty ? (
           <Welcome firstName={firstName} onPick={send} />
@@ -198,7 +198,7 @@ function Message({ msg }: { msg: Msg }) {
   return (
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
       <div
-        className={`max-w-[85%] rounded-lg px-4 py-3 leading-relaxed whitespace-pre-wrap ${
+        className={`max-w-[85%] rounded-lg px-4 py-3 leading-relaxed whitespace-pre-wrap break-words ${
           isUser
             ? "bg-[var(--accent)] text-[var(--accent-foreground)]"
             : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)]"
