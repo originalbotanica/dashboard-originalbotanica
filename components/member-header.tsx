@@ -39,14 +39,22 @@ export function MemberHeader({
             className="h-auto w-[60px] md:w-[70px]"
           />
         </Link>
-        <form action="/auth/signout" method="post">
-          <button
-            type="submit"
+        <div className="flex items-center gap-6">
+          <Link
+            href="/account"
             className="nav-link text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
           >
-            Sign out
-          </button>
-        </form>
+            Account
+          </Link>
+          <form action="/auth/signout" method="post">
+            <button
+              type="submit"
+              className="nav-link text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
+            >
+              Sign out
+            </button>
+          </form>
+        </div>
       </div>
     </header>
   );
