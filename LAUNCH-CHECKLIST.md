@@ -8,7 +8,14 @@ A running list of pre-launch items. Tags:
 
 ## Member 10% store discount — Stripe ↔ Craft sync
 
-**Status:** Blocked on the `members` user group (see Step 1).
+**Status:** Approved 2026-06-15 — build the sync. Keep the "applied automatically at
+checkout" copy exactly as-is; it becomes true once this ships (no copy change needed).
+Blocked on the `members` user group (Step 1).
+
+**Scope note:** this is NOT just the customer group. It's the group + discount rule (quick,
+sub-steps) PLUS the Stripe ↔ Craft sync (the real work). The sync is what makes the discount
+automatic; the group is just the container it fills.
+
 **Goal:** Active subscribers automatically get 10% off at originalbotanica.com.
 The discount turns ON when they subscribe and OFF when they cancel — no coupon codes.
 
@@ -58,6 +65,9 @@ stronger acquisition; removed automatically if they don't convert.)
 ## Membership-side (us) launch items
 
 - Ritual library: link every product in every ritual to originalbotanica.com (opens in new
-  tab) — _in progress_.
+  tab) — ✓ done (shipped).
+- Account page with subscription management (Stripe billing portal + subscribe flow) — ✓ done (shipped).
+- Natal chart wheel: capture SVG to our storage + render on parchment — ✓ done (shipped).
+- Mobile pass across the dashboard and chat tools — ✓ done (shipped).
 - Photographic saint candles on the virtual altar (optional polish).
 - Show chat usage caps to members before they hit the limit.
