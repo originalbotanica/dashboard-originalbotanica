@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import {
   getNatalChart,
   geocode,
@@ -52,6 +53,7 @@ export async function loadAstrologerContext(
       profile.birth_time,
       profile.birth_place,
     );
+    chart = await captureChartWheel(userId, chart);
     await supabase
       .from("profiles")
       .update({
@@ -101,6 +103,63 @@ async function computeChart(
   };
 
   return await getNatalChart(input);
+}
+
+const CHART_BUCKET = "chart-wheels";
+
+/**
+ * Capture the AstrologyAPI wheel SVG into our own Supabase Storage at
+ * generation time — while its temporary URL is still alive — and point the
+ * chart at that permanent copy.
+ *
+ * AstrologyAPI's chart_url is ephemeral: a cached link goes 403 within days,
+ * which left the chart page showing an empty box. A copy on our side never
+ * expires and is always served with the correct image/svg+xml content type.
+ *
+ * Best-effort: if the fetch or upload fails we keep the original URL and let
+ * the <ChartWheel> component hide a broken image rather than break the page.
+ */
+async function captureChartWheel(
+  userId: string,
+  chart: ChartData,
+): Promise<ChartData> {
+  const sourceUrl = chart.chartImageUrl;
+  if (!sourceUrl) return chart;
+
+  try {
+    const res = await fetch(sourceUrl);
+    if (!res.ok) return chart;
+    const bytes = await res.arrayBuffer();
+
+    const admin = createAdminClient();
+
+    // Create the bucket once (public read) if it isn't there yet.
+    const { data: bucket } = await admin.storage.getBucket(CHART_BUCKET);
+    if (!bucket) {
+      await admin.storage.createBucket(CHART_BUCKET, { public: true });
+    }
+
+    const path = `${userId}.svg`;
+    const { error: uploadErr } = await admin.storage
+      .from(CHART_BUCKET)
+      .upload(path, bytes, {
+        contentType: "image/svg+xml",
+        upsert: true,
+      });
+    if (uploadErr) {
+      console.error("captureChartWheel upload error:", uploadErr);
+      return chart;
+    }
+
+    const { data: pub } = admin.storage.from(CHART_BUCKET).getPublicUrl(path);
+    if (!pub?.publicUrl) return chart;
+
+    // Cache-bust so a regenerated wheel replaces the old one in browsers.
+    return { ...chart, chartImageUrl: `${pub.publicUrl}?v=${Date.now()}` };
+  } catch (err) {
+    console.error("captureChartWheel error:", err);
+    return chart;
+  }
 }
 
 function isMinor(birthDate: string): boolean {
