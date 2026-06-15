@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getPurpose } from "@/lib/rituals/purposes";
 import { getRitualBySlug, dayLabel, getSavedRitualIds } from "@/lib/rituals/queries";
+import { materialUrl } from "@/lib/rituals/material-link";
 import { SaveRitualButton } from "@/components/save-ritual-button";
 
 export async function generateMetadata({
@@ -100,18 +101,14 @@ export default async function RitualDetailPage({
             <ul className="space-y-2">
               {r.materials.map((m, i) => (
                 <li key={i} className="text-[var(--foreground-muted)] leading-relaxed">
-                  {m.url ? (
-                    <a
-                      href={m.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[var(--accent)] hover:underline"
-                    >
-                      {m.name}
-                    </a>
-                  ) : (
-                    m.name
-                  )}
+                  <a
+                    href={materialUrl(m)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--accent)] hover:underline"
+                  >
+                    {m.name}
+                  </a>
                 </li>
               ))}
             </ul>
