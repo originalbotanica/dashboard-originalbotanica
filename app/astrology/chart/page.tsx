@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { loadAstrologerContext } from "@/lib/astrologer/context";
+import { ChartWheel } from "@/components/chart-wheel";
 
 export const metadata = {
   title: "Your Natal Chart",
@@ -83,18 +83,7 @@ export default async function ChartPage() {
           </div>
         )}
 
-        {chart.chartImageUrl && (
-          <div className="rounded-lg overflow-hidden border border-[var(--border)] bg-[var(--surface)] p-4 mb-12 flex justify-center">
-            <Image
-              src={chart.chartImageUrl}
-              alt="Your natal chart wheel"
-              width={520}
-              height={520}
-              unoptimized
-              className="max-w-full h-auto"
-            />
-          </div>
-        )}
+        {chart.chartImageUrl && <ChartWheel src={chart.chartImageUrl} />}
 
         <section className="mb-12">
           <p className="eyebrow mb-3">Big three</p>
