@@ -33,8 +33,13 @@ export async function POST(request: Request) {
   }
 
   const stripe = getStripe();
+  // Prefer the request's own origin so the post-checkout redirect always
+  // returns to the same deployment the member is on (robust even if the
+  // NEXT_PUBLIC_SITE_URL env var is unset or stale).
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://members.originalbotanica.com";
+    request.headers.get("origin") ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://members.originalbotanica.com";
 
   // Look up the user's existing Stripe customer ID, if any.
   const { data: existingSub } = await supabase

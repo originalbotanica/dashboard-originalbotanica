@@ -57,5 +57,7 @@ export async function saveProfileAction(formData: FormData) {
   }
 
   revalidatePath("/dashboard");
-  redirect("/dashboard");
+  // Next step of onboarding: start the free trial (Stripe checkout).
+  // Already-subscribed members are bounced straight to the dashboard there.
+  redirect("/subscribe");
 }
