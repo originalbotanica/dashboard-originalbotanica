@@ -63,6 +63,11 @@ stronger acquisition; removed automatically if they don't convert.)
   Supabase sender is test-only and rate-limited ("email rate limit exceeded" on repeat signups);
   required so new members reliably get confirmation + password-reset emails. Also fix the product
   title typo "Basil Balm of Gilead Buds" in Craft (corrected in dashboard data only).
+- **[Lighthaus / Stripe]** Point the Stripe webhook at the LIVE deployment URL for both
+  test and live modes (e.g. `https://dashboard-originalbotanica.vercel.app/api/stripe/webhook`
+  until the custom domain is live). The webhook is what records a subscription after checkout —
+  if it points at the not-yet-live `members.originalbotanica.com`, a 4242 test checkout will
+  succeed but the dashboard will still show "inactive" because the trial never registered.
 - _(add new items here as they surface)_
 
 ---
