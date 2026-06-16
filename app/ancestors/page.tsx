@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { Candle } from "@/components/candle";
+import { MemberNav } from "@/components/member-nav";
 
 export const metadata = {
   title: "Ancestors altar",
@@ -61,14 +62,7 @@ export default async function AncestorsHubPage() {
         />
       </div>
 
-      <header className="border-b border-[var(--border)]">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="nav-link text-[var(--accent)]">
-            ← Dashboard
-          </Link>
-          <p className="sublabel text-xs">Ancestors altar</p>
-        </div>
-      </header>
+      <MemberNav />
 
       <section className="max-w-5xl mx-auto px-6 pt-20 pb-24">
         <p className="eyebrow mb-4 text-center">Ancestors altar</p>

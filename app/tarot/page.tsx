@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { DailyTarotCard } from "@/components/daily-tarot-card";
@@ -62,14 +62,7 @@ export default async function TarotPullPage() {
 
   return (
     <main className="min-h-screen">
-      <header className="border-b border-[var(--border)]">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="nav-link text-[var(--accent)]">
-            ← Dashboard
-          </Link>
-          <p className="sublabel text-xs">Daily tarot</p>
-        </div>
-      </header>
+      <MemberNav />
 
       <div className="max-w-5xl mx-auto px-6 pt-16 text-center">
         <p className="eyebrow mb-3 text-[var(--foreground-muted)]">{dateLabel}</p>

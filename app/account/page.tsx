@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
@@ -54,14 +54,7 @@ export default async function AccountPage() {
 
   return (
     <main className="min-h-screen">
-      <header className="border-b border-[var(--border)]">
-        <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="nav-link text-[var(--accent)]">
-            ← Dashboard
-          </Link>
-          <p className="sublabel text-xs">Account</p>
-        </div>
-      </header>
+      <MemberNav />
 
       <section className="max-w-2xl mx-auto px-6 pt-16 pb-24">
         <p className="eyebrow mb-3 text-[var(--foreground-muted)]">

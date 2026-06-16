@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { MemberNav } from "@/components/member-nav";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import {
@@ -67,14 +68,7 @@ export default async function VirtualAltarPage({
         />
       </div>
 
-      <header className="border-b border-[var(--border)]">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="nav-link text-[var(--accent)]">
-            ← Dashboard
-          </Link>
-          <p className="sublabel text-xs">Virtual altar</p>
-        </div>
-      </header>
+      <MemberNav />
 
       <section className="max-w-5xl mx-auto px-6 pt-20 pb-12 text-center">
         <p className="eyebrow mb-4">The virtual altar</p>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
@@ -52,14 +53,7 @@ export default async function RitualsLibraryPage({
 
   return (
     <main className="min-h-screen">
-      <header className="border-b border-[var(--border)]">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="nav-link text-[var(--accent)]">
-            ← Dashboard
-          </Link>
-          <p className="sublabel text-xs">Ritual library</p>
-        </div>
-      </header>
+      <MemberNav />
 
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-10">
         <p className="eyebrow mb-3 text-[var(--foreground-muted)]">The archive</p>
