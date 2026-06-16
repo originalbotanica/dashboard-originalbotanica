@@ -142,7 +142,7 @@ function CandleGrid({ candles }: { candles: Candle[] }) {
             href={`/altar/virtual/${c.id}`}
             className="group flex flex-col items-center text-center"
           >
-            <AltarCandle color={c.candle_color} />
+            <AltarCandle candleSlug={c.candle_color} />
             <p className="display text-sm mt-5 group-hover:text-[var(--accent)] transition-colors line-clamp-2">
               {c.intention}
             </p>

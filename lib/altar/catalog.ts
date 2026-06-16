@@ -1,0 +1,207 @@
+/**
+ * Virtual altar catalog — pure, client-safe data.
+ *
+ * Mirrors the live altar.originalbotanica.com flow: choose a desire, then a
+ * specific prepared candle for that desire. The 12 desires and their candles
+ * match the live site one-for-one. Candle photos were copied from the live
+ * altar into our own Supabase Storage (bucket: candle-art) so they never
+ * depend on that site staying up.
+ *
+ * No server imports here, so this module is safe to use from client
+ * components (the light-a-candle picker).
+ */
+
+const CANDLE_ART_BASE =
+  "https://beeayiskwueqnugithaw.supabase.co/storage/v1/object/public/candle-art";
+
+export function candleImageUrl(slug: string): string {
+  return `${CANDLE_ART_BASE}/${slug}.jpg`;
+}
+
+export type CandleArt = {
+  slug: string; // also the stored candle id and the image filename
+  name: string;
+  tagline: string;
+};
+
+export type Desire = {
+  slug: string;
+  label: string;
+  purpose: string; // maps to a ritual-library purpose for recommendations
+  candles: CandleArt[];
+};
+
+export const DESIRES: Desire[] = [
+  {
+    slug: "money-wealth",
+    label: "Money & Wealth",
+    purpose: "money-drawing",
+    candles: [
+      { slug: "money-drawing", name: "Money Drawing Candle", tagline: "To draw money to you" },
+      { slug: "better-business", name: "Better Business Candle", tagline: "To bring money to your business" },
+      { slug: "ruda", name: "Ruda Candle", tagline: "For money owed" },
+      { slug: "don-dinero", name: "Mr. Money (Don Dinero) Candle", tagline: "For freedom from money problems" },
+      { slug: "fast-money", name: "Fast Money Candle", tagline: "For fast money" },
+    ],
+  },
+  {
+    slug: "love-attraction",
+    label: "Love & Attraction",
+    purpose: "love-drawing",
+    candles: [
+      { slug: "chuparrosa", name: "Chuparrosa Candle", tagline: "To attract your soulmate" },
+      { slug: "love-spice", name: "Love Spice Candle", tagline: "To spice up your sex life" },
+      { slug: "love-drawing", name: "Love Drawing (Amor) Candle", tagline: "To draw love to you" },
+      { slug: "adam-eve", name: "Adam & Eve Candle", tagline: "To bring back a lost love" },
+      { slug: "come-to-me", name: "Come to Me (Ven a Mi) Candle", tagline: "To attract a lover" },
+    ],
+  },
+  {
+    slug: "protection",
+    label: "Protection",
+    purpose: "protection",
+    candles: [
+      { slug: "indian-tobacco", name: "Indian Tobacco Candle", tagline: "Protection from evil" },
+      { slug: "san-deshacedor", name: "San Deshacedor Candle", tagline: "Protection from enemies" },
+      { slug: "saint-michael", name: "Saint Michael Candle", tagline: "To be protected by St. Michael" },
+      { slug: "jinx-removing", name: "Jinx Removing Candle", tagline: "Protection from hexes, jinxes, and curses" },
+      { slug: "guided-spirits", name: "Guided Spirits Protection Candle", tagline: "To be protected by your spirit guides" },
+    ],
+  },
+  {
+    slug: "open-road",
+    label: "Open Road",
+    purpose: "road-opening",
+    candles: [
+      { slug: "open-road", name: "Open Road Candle", tagline: "To open your road" },
+      { slug: "elegua", name: "Elegua Candle", tagline: "To protect your path" },
+      { slug: "saint-clare", name: "Saint Clare Candle", tagline: "To unlock your future" },
+      { slug: "blockbreaker", name: "Blockbreaker Candle", tagline: "To remove a block" },
+      { slug: "unlock-my-path", name: "Unlock My Path Candle", tagline: "To clear all obstacles" },
+    ],
+  },
+  {
+    slug: "luck-gambling",
+    label: "Luck & Gambling",
+    purpose: "gambling-luck",
+    candles: [
+      { slug: "fast-luck", name: "Fast Luck Candle", tagline: "For luck in gambling" },
+      { slug: "lotto", name: "Lotto Candle", tagline: "To win the lottery" },
+      { slug: "black-cat", name: "Black Cat Candle", tagline: "To break bad luck" },
+      { slug: "lucky-7-11", name: "Lucky 7/11 Candle", tagline: "For winning ways" },
+      { slug: "bingo", name: "Bingo Candle", tagline: "To win in bingo" },
+    ],
+  },
+  {
+    slug: "spiritual-cleansing",
+    label: "Spiritual Cleansing",
+    purpose: "cleansing",
+    candles: [
+      { slug: "psalm-23", name: "23rd Psalm Candle", tagline: "For spiritual cleansing and healing" },
+      { slug: "indian-house-blessing", name: "Indian House Blessing Candle", tagline: "For house blessing and cleansing" },
+      { slug: "run-devil-run", name: "Run Devil Run Candle", tagline: "For removing evil spirits and demons" },
+      { slug: "forgive-cleanse", name: "Forgive, Burn & Cleanse Candle", tagline: "For realigning your chakras" },
+      { slug: "lords-prayer", name: "Lord's Prayer Candle", tagline: "To petition the Lord to answer your prayers" },
+    ],
+  },
+  {
+    slug: "health",
+    label: "Health",
+    purpose: "healing",
+    candles: [
+      { slug: "saint-lazarus", name: "Saint Lazarus Candle", tagline: "For healing" },
+      { slug: "gregorio-hernandez", name: "Dr. Gregorio Hernandez Candle", tagline: "For family health concerns" },
+      { slug: "fruit-of-life", name: "Fruit of Life Candle", tagline: "For fertility and pregnancy" },
+      { slug: "healthy-ways", name: "Healthy Ways Candle", tagline: "For good health" },
+      { slug: "remove-obstacles", name: "Remove Obstacles Candle", tagline: "For weight loss" },
+    ],
+  },
+  {
+    slug: "go-away-evil",
+    label: "Go Away Evil",
+    purpose: "banishing",
+    candles: [
+      { slug: "go-away-evil", name: "Go Away Evil Candle", tagline: "To remove and banish evil" },
+      { slug: "black-list", name: "Black List Candle", tagline: "To protect from enemies" },
+      { slug: "saint-alex", name: "Saint Alex Candle", tagline: "To chase away evil spirits" },
+      { slug: "uncrossing", name: "Uncrossing Candle", tagline: "To uncross evil" },
+      { slug: "domination", name: "Domination Candle", tagline: "To dominate enemies" },
+    ],
+  },
+  {
+    slug: "success-prosperity",
+    label: "Success & Prosperity",
+    purpose: "manifestation",
+    candles: [
+      { slug: "success", name: "Success Candle", tagline: "For career and job success" },
+      { slug: "bayberry", name: "Bayberry Candle", tagline: "For success in school" },
+      { slug: "steady-work", name: "Steady Work Candle", tagline: "To find a job" },
+      { slug: "buddha", name: "Buddha Candle", tagline: "For financial abundance" },
+      { slug: "chango-macho", name: "Chango Macho Candle", tagline: "For luck and prosperity" },
+    ],
+  },
+  {
+    slug: "win-in-court",
+    label: "Win in Court",
+    purpose: "court-case",
+    candles: [
+      { slug: "court-case", name: "Court Case Candle", tagline: "To win your court case" },
+      { slug: "law-stay-away", name: "Law Stay Away Candle", tagline: "To keep the law away" },
+      { slug: "high-john", name: "High John the Conqueror Candle", tagline: "For the justice you deserve" },
+      { slug: "ochosi", name: "Ochosi Orisha Candle", tagline: "For immigration problems" },
+      { slug: "just-judge", name: "Just Judge Candle", tagline: "For favor from the judge" },
+    ],
+  },
+  {
+    slug: "reverse-magic",
+    label: "Reverse Magic",
+    purpose: "uncrossing",
+    candles: [
+      { slug: "reversible", name: "Reversible Multicolor Candle", tagline: "To reverse a hex, jinx, or curse" },
+      { slug: "double-action-evil-eye", name: "Double Action Evil Eye Candle", tagline: "To reverse evil" },
+      { slug: "double-action-money", name: "Double Action Money Candle", tagline: "To reverse money problems" },
+      { slug: "double-action-heart", name: "Double Action Heart Candle", tagline: "To reverse love problems" },
+      { slug: "condition", name: "Condition Candle", tagline: "To reverse a crossed condition" },
+    ],
+  },
+  {
+    slug: "peace",
+    label: "Peace",
+    purpose: "blessing-peace",
+    candles: [
+      { slug: "peace-in-the-home", name: "Peace In The Home Candle", tagline: "For peace in the home" },
+      { slug: "peace", name: "Peace Candle", tagline: "For a peaceful relationship" },
+      { slug: "remember-honor", name: "Remember, Burn & Honor Tribute Candle", tagline: "To remember and honor a loved one" },
+      { slug: "white-candle", name: "White Candle", tagline: "For a tranquil life" },
+      { slug: "birthday-blessings", name: "Birthday Blessings Candle", tagline: "For birthday health and happiness" },
+    ],
+  },
+];
+
+export type Duration = { days: number; label: string };
+export const DURATIONS: Duration[] = [
+  { days: 7, label: "7 days" },
+  { days: 14, label: "14 days" },
+  { days: 30, label: "30 days" },
+];
+
+const CANDLE_INDEX = new Map<string, { candle: CandleArt; desire: Desire }>();
+for (const d of DESIRES) for (const c of d.candles) CANDLE_INDEX.set(c.slug, { candle: c, desire: d });
+
+export function getDesire(slug: string | null): Desire | undefined {
+  return slug ? DESIRES.find((d) => d.slug === slug) : undefined;
+}
+export function getCandleArt(slug: string | null): CandleArt | undefined {
+  return slug ? CANDLE_INDEX.get(slug)?.candle : undefined;
+}
+export function desireForCandle(slug: string | null): Desire | undefined {
+  return slug ? CANDLE_INDEX.get(slug)?.desire : undefined;
+}
+
+/** Days remaining before a candle burns out (null if no expiry). */
+export function daysLeft(expires_at: string | null): number | null {
+  if (!expires_at) return null;
+  const ms = new Date(expires_at).getTime() - Date.now();
+  if (ms <= 0) return 0;
+  return Math.ceil(ms / 86_400_000);
+}

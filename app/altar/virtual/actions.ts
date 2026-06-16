@@ -3,7 +3,12 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
-import { DESIRES, COLORS, DURATIONS } from "@/lib/altar/altar";
+import {
+  DESIRES,
+  DURATIONS,
+  getCandleArt,
+  desireForCandle,
+} from "@/lib/altar/altar";
 
 /** Light a candle: insert into `candles` for the current member. */
 export async function lightCandleAction(formData: FormData) {
@@ -13,8 +18,8 @@ export async function lightCandleAction(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return redirect("/login");
 
-  const candle_type = String(formData.get("candle_type") || "");
-  const candle_color = String(formData.get("candle_color") || "white");
+  const candle_type = String(formData.get("candle_type") || ""); // desire slug
+  const candle_color = String(formData.get("candle_color") || ""); // candle slug
   const intention = String(formData.get("intention") || "").trim();
   const petition = String(formData.get("petition") || "").trim();
   const days = parseInt(String(formData.get("days") || "7"), 10);
@@ -23,10 +28,16 @@ export async function lightCandleAction(formData: FormData) {
   if (!DESIRES.some((d) => d.slug === candle_type)) {
     return redirect("/altar/virtual/new?error=Please%20choose%20an%20intention");
   }
+  // The candle must exist and belong to the chosen desire.
+  if (
+    !getCandleArt(candle_color) ||
+    desireForCandle(candle_color)?.slug !== candle_type
+  ) {
+    return redirect("/altar/virtual/new?error=Please%20choose%20a%20candle");
+  }
   if (!intention) {
     return redirect("/altar/virtual/new?error=Please%20add%20a%20dedication");
   }
-  const color = COLORS.some((c) => c.slug === candle_color) ? candle_color : "white";
   const dur = DURATIONS.some((d) => d.days === days) ? days : 7;
   const expires_at = new Date(Date.now() + dur * 86_400_000).toISOString();
 
@@ -35,7 +46,7 @@ export async function lightCandleAction(formData: FormData) {
     .insert({
       user_id: user.id,
       candle_type,
-      candle_color: color,
+      candle_color,
       intention: intention.slice(0, 200),
       petition: petition ? petition.slice(0, 2000) : null,
       is_public,

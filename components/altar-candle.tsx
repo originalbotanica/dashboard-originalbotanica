@@ -1,40 +1,37 @@
-import { getColor } from "@/lib/altar/altar";
+import { candleImageUrl, getCandleArt } from "@/lib/altar/catalog";
 
 /**
- * A lit glass candle for the virtual altar, tinted to the chosen color.
+ * A prepared prayer candle for the virtual altar, shown as its product photo
+ * (copied from the live altar into our candle-art storage). Mirrors the live
+ * altar.originalbotanica.com candles instead of a generic CSS glass.
  *
- * Drawn in CSS (glass body + layered flame) so any color works and it never
- * waits on an image. Reuses the flame-flicker keyframes from globals.css.
- * The .altarc-* styles live in globals.css.
+ * `candleSlug` is the stored candle id (in the candle_color column). Unknown
+ * slugs fall back to a plain white candle so legacy rows still render.
  */
 export function AltarCandle({
-  color,
+  candleSlug,
   size = "wall",
 }: {
-  color: string | null;
+  candleSlug: string | null;
   size?: "wall" | "hero";
 }) {
-  const c = getColor(color);
+  const art = getCandleArt(candleSlug);
+  const slug = art ? candleSlug! : "white-candle";
+  const name = art ? art.name : "Prayer candle";
+  const px = size === "hero" ? 208 : 132;
+
   return (
-    <span
-      className={`altarc ${size === "hero" ? "altarc-hero" : ""}`}
-      style={
-        {
-          ["--glass" as string]: c.hex,
-          ["--wax" as string]: c.wax,
-        } as React.CSSProperties
-      }
-      aria-hidden
-    >
-      <span className="altarc-flame">
-        <span className="altarc-halo" />
-        <span className="altarc-outer" />
-        <span className="altarc-inner" />
-      </span>
-      <span className="altarc-glass">
-        <span className="altarc-pool" />
-        <span className="altarc-label" />
-      </span>
+    <span className="inline-block" aria-hidden={art ? undefined : true}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={candleImageUrl(slug)}
+        alt={name}
+        width={px}
+        height={px}
+        loading="lazy"
+        className="rounded-xl object-cover candle-glow"
+        style={{ width: px, height: px }}
+      />
     </span>
   );
 }

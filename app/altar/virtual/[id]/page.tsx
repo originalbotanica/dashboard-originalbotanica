@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getCandle, getDesire, daysLeft } from "@/lib/altar/altar";
+import { getCandle, getDesire, getCandleArt, daysLeft } from "@/lib/altar/altar";
 import { AltarCandle } from "@/components/altar-candle";
 import { listRitualsByPurpose, getSavedRitualIds } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
@@ -52,6 +52,7 @@ export default async function CandleDetailPage({
   const isOwner = !!owned;
 
   const desire = getDesire(candle.candle_type);
+  const art = getCandleArt(candle.candle_color);
   const left = daysLeft(candle.expires_at);
 
   const [rituals, savedIds] = await Promise.all([
@@ -72,10 +73,15 @@ export default async function CandleDetailPage({
 
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-12 text-center">
         <div className="flex justify-center mb-10">
-          <AltarCandle color={candle.candle_color} size="hero" />
+          <AltarCandle candleSlug={candle.candle_color} size="hero" />
         </div>
 
         {desire ? <p className="eyebrow mb-3">{desire.label}</p> : null}
+        {art ? (
+          <p className="text-[var(--foreground-muted)] text-sm mb-3">
+            {art.name} · {art.tagline}
+          </p>
+        ) : null}
         <h1 className="display text-3xl md:text-4xl leading-tight mb-4 max-w-2xl mx-auto">
           {candle.intention}
         </h1>
