@@ -20,7 +20,7 @@ export async function signupAction(formData: FormData) {
     return redirect("/signup?error=Password%20must%20be%20at%20least%208%20characters");
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -33,9 +33,13 @@ export async function signupAction(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  // The signup trigger we installed in Supabase auto-creates a `profiles`
-  // row. After they confirm their email, the callback route routes them
-  // to /profile-setup to fill in name + (optional) birth chart details.
+  // Email confirmation is off, so signUp returns a session and the member is
+  // signed in immediately — take them straight into onboarding (the auto
+  // profiles-row trigger has created their row). If confirmation is ever
+  // turned back on, signUp returns no session, so fall back to verify-by-email.
+  if (data.session) {
+    redirect("/profile-setup");
+  }
   redirect(
     "/login?message=Check%20your%20email%20to%20confirm%20your%20account.",
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
 import {
@@ -55,6 +56,10 @@ export default async function DashboardPage() {
     .select("first_name, sun_sign, locale")
     .eq("id", user.id)
     .maybeSingle();
+
+  // Don't let an incomplete profile land on a bare "friend" dashboard —
+  // finish onboarding first. (Tool pages already do this.)
+  if (!profile?.first_name) redirect("/profile-setup");
 
   const hour = new Date().getHours();
   const greeting =
