@@ -81,14 +81,14 @@ export function StartMembershipButtons() {
           disabled={loading !== null}
           className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading === "monthly" ? "Starting..." : "Monthly · $24.99/mo"}
+          {loading === "monthly" ? "Starting..." : "Monthly · $24.95/mo"}
         </button>
         <button
           onClick={() => start("annual")}
           disabled={loading !== null}
           className="btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading === "annual" ? "Starting..." : "Annual · $199/yr"}
+          {loading === "annual" ? "Starting..." : "Annual · $199.95/yr"}
         </button>
       </div>
       {error && <p className="form-error mt-3">{error}</p>}

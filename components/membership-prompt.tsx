@@ -12,8 +12,8 @@ import type { SubscriptionStatus } from "@/lib/subscription";
  * - Active and healthy: nothing.
  */
 function pricePhrase(plan: SubscriptionStatus["plan"]): string {
-  if (plan === "annual") return "$199/year";
-  if (plan === "monthly") return "$24.99/month";
+  if (plan === "annual") return "$199.95/year";
+  if (plan === "monthly") return "$24.95/month";
   return "your plan";
 }
 function fmtDate(d: Date | null): string | null {

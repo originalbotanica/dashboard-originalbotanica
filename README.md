@@ -7,7 +7,7 @@ The unified spiritual membership platform for Original Botanica — one login, o
 
 ## What this is
 
-A subscription-based spiritual dashboard for Original Botanica subscribers. Members pay $24.99/mo (or $199/yr with 33% savings) for:
+A subscription-based spiritual dashboard for Original Botanica subscribers. Members pay $24.95/mo (or $199.95/yr with 33% savings) for:
 
 1. **Daily Tarot** — daily card pull, spreads, AI interpretation, journaling
 2. **Astrology** — birth chart, daily horoscope, monthly forecast, AI astrologer chat, compatibility, specialized reports
