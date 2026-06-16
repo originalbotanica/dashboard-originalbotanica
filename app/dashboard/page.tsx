@@ -9,6 +9,7 @@ import {
 } from "@/lib/daily-horoscope/generate";
 import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberHeader } from "@/components/member-header";
+import { MembershipPrompt } from "@/components/membership-prompt";
 import { Candle } from "@/components/candle";
 import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
 import { getMoon, moonGuidance } from "@/lib/astrology/moon";
@@ -170,13 +171,7 @@ export default async function DashboardPage() {
           <HeroInvocation sunSign={sunSign} horoscopePromise={horoscopePromise} />
         </Suspense>
 
-        {sub.isTrialing && trialLeft !== null && (
-          <p className="eyebrow mt-16 text-[var(--accent)]">
-            {trialLeft === 0
-              ? "Your trial ends today"
-              : `${trialLeft} ${trialLeft === 1 ? "day" : "days"} left in your trial`}
-          </p>
-        )}
+        <MembershipPrompt sub={sub} trialLeft={trialLeft} />
       </section>
 
       {/* ── Tonight's moon — compact daily touchpoint ─────────────────── */}
