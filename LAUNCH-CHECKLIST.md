@@ -58,6 +58,11 @@ stronger acquisition; removed automatically if they don't convert.)
 - **[Lighthaus]** Point `members.originalbotanica.com` at the Vercel deployment. The app is
   live at `dashboard-originalbotanica.vercel.app`; the custom domain currently errors.
 - **[Lighthaus]** Connect Mailchimp e-commerce to Craft Commerce (noted as a developer task).
+- **[Lighthaus]** Set up custom SMTP for Supabase auth emails (Authentication → Emails → SMTP)
+  with a real provider (Resend / SendGrid / Postmark) + a verified sending domain. The built-in
+  Supabase sender is test-only and rate-limited ("email rate limit exceeded" on repeat signups);
+  required so new members reliably get confirmation + password-reset emails. Also fix the product
+  title typo "Basil Balm of Gilead Buds" in Craft (corrected in dashboard data only).
 - _(add new items here as they surface)_
 
 ---
