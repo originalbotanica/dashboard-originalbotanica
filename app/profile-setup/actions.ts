@@ -36,6 +36,12 @@ export async function saveProfileAction(formData: FormData) {
   if (locale !== "en" && locale !== "es") {
     return redirect("/profile-setup?error=Invalid%20language");
   }
+  if (!birth_date_raw) {
+    return redirect("/profile-setup?error=Your%20date%20of%20birth%20is%20required");
+  }
+  if (!birth_place_raw) {
+    return redirect("/profile-setup?error=Your%20city%20of%20birth%20is%20required");
+  }
 
   const updates: Record<string, string | null> = {
     first_name,

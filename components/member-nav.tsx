@@ -91,7 +91,7 @@ export function MemberNav({
             <div className="absolute right-0 mt-3 w-60 rounded-lg border border-[var(--border-strong)] bg-[var(--background-elevated)] py-1 shadow-xl overflow-hidden">
               <Link
                 href="/account"
-                className="nav-link block px-5 py-3 text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
+                className="nav-link block w-full text-left px-5 py-3 text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
               >
                 Account &amp; billing
               </Link>

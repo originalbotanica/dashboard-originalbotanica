@@ -61,9 +61,8 @@ export default async function ProfileSetupPage({
           Welcome to the practice.
         </h1>
         <p className="text-foreground-muted text-center text-sm mb-8 max-w-md mx-auto">
-          A few details so we can personalize your experience.
-          Birth chart details are optional &mdash; you can fill them in later
-          when you visit Astrology.
+          A few details so we can personalize your daily horoscope, your birth
+          chart, and your readings. Birth time is the only optional part.
         </p>
 
         <form action={saveProfileAction} className="flex flex-col gap-5">
@@ -92,34 +91,35 @@ export default async function ProfileSetupPage({
             </select>
           </div>
 
-          <details className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
-            <summary className="cursor-pointer text-sm text-[var(--foreground-muted)]">
-              Birth chart details <span className="text-[var(--foreground-subtle)]">(optional)</span>
-            </summary>
-            <div className="mt-4 flex flex-col gap-5">
-              <div>
-                <label htmlFor="birth_date" className="form-label">Date of birth</label>
-                <input id="birth_date" name="birth_date" type="date" className="form-input" />
-              </div>
-              <div>
-                <label htmlFor="birth_time" className="form-label">
-                  Time of birth{" "}
-                  <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">(if known)</span>
-                </label>
-                <input id="birth_time" name="birth_time" type="time" className="form-input" />
-              </div>
-              <div>
-                <label htmlFor="birth_place" className="form-label">City of birth</label>
-                <input
-                  id="birth_place"
-                  name="birth_place"
-                  type="text"
-                  className="form-input"
-                  placeholder="e.g. The Bronx, New York"
-                />
-              </div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 flex flex-col gap-5">
+            <p className="form-label" style={{ marginBottom: 0 }}>Birth details</p>
+            <div>
+              <label htmlFor="birth_date" className="form-label">Date of birth</label>
+              <input id="birth_date" name="birth_date" type="date" required className="form-input" />
             </div>
-          </details>
+            <div>
+              <label htmlFor="birth_place" className="form-label">City of birth</label>
+              <input
+                id="birth_place"
+                name="birth_place"
+                type="text"
+                required
+                className="form-input"
+                placeholder="e.g. The Bronx, New York"
+              />
+            </div>
+            <div>
+              <label htmlFor="birth_time" className="form-label">
+                Time of birth{" "}
+                <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">(if you know it)</span>
+              </label>
+              <input id="birth_time" name="birth_time" type="time" className="form-input" />
+              <p className="text-xs text-[var(--foreground-subtle)] mt-2">
+                Optional. Your rising sign and houses are more precise with it,
+                but your reading works fine without it.
+              </p>
+            </div>
+          </div>
 
           {params.error && <p className="form-error">{params.error}</p>}
 
