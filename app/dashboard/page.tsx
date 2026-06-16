@@ -8,7 +8,7 @@ import {
   type DailyHoroscope,
 } from "@/lib/daily-horoscope/generate";
 import { isValidSign } from "@/lib/daily-horoscope/prompt";
-import { MemberHeader } from "@/components/member-header";
+import { MemberNav } from "@/components/member-nav";
 import { MembershipPrompt } from "@/components/membership-prompt";
 import { Candle } from "@/components/candle";
 import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
@@ -100,7 +100,7 @@ export default async function DashboardPage() {
         aria-label="Today"
         className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-6 pt-24 pb-24 overflow-hidden"
       >
-        <MemberHeader />
+        <MemberNav variant="floating" />
 
         {/* Clean atmospheric background — warm darkness + radial candle glow.
             No photographic imagery competing with the foreground candle. */}
