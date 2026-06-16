@@ -88,17 +88,21 @@ export function MemberNav({
             Account ▾
           </button>
           {acctOpen && (
-            <div className="absolute right-0 mt-3 w-44 rounded-lg border border-[var(--border-strong)] bg-[var(--background-elevated)] py-2 shadow-xl">
+            <div className="absolute right-0 mt-3 w-60 rounded-lg border border-[var(--border-strong)] bg-[var(--background-elevated)] py-1 shadow-xl overflow-hidden">
               <Link
                 href="/account"
-                className="block px-4 py-2 text-sm text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)]"
+                className="nav-link block px-5 py-3 text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
               >
                 Account &amp; billing
               </Link>
-              <form action="/auth/signout" method="post">
+              <form
+                action="/auth/signout"
+                method="post"
+                className="border-t border-[var(--border)]"
+              >
                 <button
                   type="submit"
-                  className="block w-full text-left px-4 py-2 text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface)]"
+                  className="nav-link block w-full text-left px-5 py-3 text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
                 >
                   Sign out
                 </button>
@@ -144,7 +148,7 @@ export function MemberNav({
                 Account &amp; billing
               </Link>
               <form action="/auth/signout" method="post">
-                <button type="submit" className="nav-link py-2 text-[var(--foreground-muted)]">
+                <button type="submit" className="nav-link py-2 block text-[var(--foreground)]">
                   Sign out
                 </button>
               </form>
