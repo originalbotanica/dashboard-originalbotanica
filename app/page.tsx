@@ -103,7 +103,10 @@ export default async function HomePage({
             Sign in
           </Link>
         </div>
-        <p className="eyebrow mt-16 text-[var(--foreground-subtle)]">
+        <p className="text-sm text-[var(--foreground-muted)] mt-6">
+          $24.95/month or $199.95/year. 7 days free, cancel anytime.
+        </p>
+        <p className="eyebrow mt-12 text-[var(--foreground-subtle)]">
           The Bronx, since 1959
         </p>
       </section>
@@ -188,8 +191,9 @@ export default async function HomePage({
             Try it for seven days.
           </h2>
           <p className="text-[var(--foreground-muted)] leading-relaxed mb-10 max-w-lg mx-auto">
-            No charge until day eight. Cancel any time. The chart, the
-            astrologer, the altar, all open the moment you join.
+            Then $24.95/month, or $199.95/year. No charge until day eight.
+            Cancel any time. The chart, the astrologer, the altar, all open the
+            moment you join.
           </p>
           <Link href="/signup" className="btn-primary inline-flex">
             Start your trial
