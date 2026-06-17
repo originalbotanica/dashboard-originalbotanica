@@ -1,34 +1,35 @@
 import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { DailyTarotCard } from "@/components/daily-tarot-card";
+import { TarotDrawSwitch } from "@/components/tarot-draw-switch";
 import {
   drawDailyCardForUser,
   botanicaDayKey,
   tarotImagePath,
 } from "@/lib/tarot/deck";
+import { drawWheelForUser } from "@/lib/tarot/wheel-deck";
 import { getOrGenerateDailyTarotReading } from "@/lib/daily-tarot/generate";
 
 export const metadata = {
   title: "Your daily tarot",
   description:
-    "Pull your card for today. Shuffle the deck, turn the card, and read it in the voice of the house.",
+    "Pull your card for today, your way — shuffle the deck or spin the wheel.",
 };
 
 /**
  * The dedicated daily tarot pull.
  *
- * Reached from the dashboard teaser. This is where the ritual happens: the
- * member shuffles the deck, the card waits face down, they turn it, and
- * behind it is the real Rider-Waite image with a reading written for them
- * today.
- *
- * The card is drawn per member per day (deterministic) and the personalized
- * reading is generated and cached here on first view of the day. The shuffle
- * is the ritual flourish before the reveal; the card it lands on is already
- * decided, so a shuffle never changes today's pull.
+ * TESTING PHASE: both draws are wired and selectable via TarotDrawSwitch so
+ * the team can compare the shuffle deck (current live) and the spinning wheel
+ * before launch. The card is drawn per member per day (deterministic) for
+ * both. Once a winner is chosen, render the chosen draw directly and remove
+ * the switch (see step 4 of the rollout).
  */
-export default async function TarotPullPage() {
+export default async function TarotPullPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ draw?: string }>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -42,8 +43,10 @@ export default async function TarotPullPage() {
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
 
-  const card = drawDailyCardForUser(user.id, botanicaDayKey());
+  const dayKey = botanicaDayKey();
 
+  // Shuffle deck (current live): 78-card deck, personalized reading, RWS art.
+  const card = drawDailyCardForUser(user.id, dayKey);
   const reading = await getOrGenerateDailyTarotReading({
     userId: user.id,
     card,
@@ -51,9 +54,11 @@ export default async function TarotPullPage() {
     sunSign: profile.sun_sign,
     locale: profile.locale,
   }).catch(() => null);
-
   const interpretation = reading?.interpretation || card.reading;
   const question = reading?.question || card.question;
+
+  // Spinning wheel: Chris's 21-card deck with upright/reversed readings.
+  const wheel = drawWheelForUser(user.id, dayKey);
 
   const dateLabel = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -62,6 +67,10 @@ export default async function TarotPullPage() {
     year: "numeric",
     timeZone: "America/New_York",
   });
+
+  const draw = (await searchParams)?.draw;
+  const fromQuery = draw === "wheel" || draw === "shuffle";
+  const initialMode: "shuffle" | "wheel" = draw === "wheel" ? "wheel" : "shuffle";
 
   return (
     <main className="min-h-screen">
@@ -73,17 +82,27 @@ export default async function TarotPullPage() {
           Your card for today.
         </h1>
         <p className="invocation text-[var(--foreground-muted)] mt-5 max-w-xl mx-auto leading-relaxed">
-          Take a breath. When you are ready, shuffle the deck.
+          Take a breath. When you are ready, draw your card.
         </p>
       </div>
 
-      {/* The interactive pull: shuffle the deck, then turn the card. */}
-      <DailyTarotCard
-        card={card}
-        dateLabel={dateLabel}
-        imageSrc={tarotImagePath(card)}
-        reading={interpretation}
-        question={question}
+      <TarotDrawSwitch
+        initialMode={initialMode}
+        fromQuery={fromQuery}
+        shuffle={{
+          card,
+          dateLabel,
+          imageSrc: tarotImagePath(card),
+          reading: interpretation,
+          question,
+        }}
+        wheel={{
+          index: wheel.index,
+          reversed: wheel.reversed,
+          reading: wheel.reading,
+          dayKey,
+          dateLabel,
+        }}
       />
     </main>
   );
