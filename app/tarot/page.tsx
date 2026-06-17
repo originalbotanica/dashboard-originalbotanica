@@ -12,18 +12,21 @@ import { getOrGenerateDailyTarotReading } from "@/lib/daily-tarot/generate";
 export const metadata = {
   title: "Your daily tarot",
   description:
-    "Pull your card for today. One card, a reading in the voice of the house, and a question to sit with.",
+    "Pull your card for today. Shuffle the deck, turn the card, and read it in the voice of the house.",
 };
 
 /**
  * The dedicated daily tarot pull.
  *
  * Reached from the dashboard teaser. This is where the ritual happens: the
- * card waits face down, the member turns it, and behind it is the real
- * Rider-Waite image with a reading written for them today.
+ * member shuffles the deck, the card waits face down, they turn it, and
+ * behind it is the real Rider-Waite image with a reading written for them
+ * today.
  *
  * The card is drawn per member per day (deterministic) and the personalized
- * reading is generated and cached here on first view of the day.
+ * reading is generated and cached here on first view of the day. The shuffle
+ * is the ritual flourish before the reveal; the card it lands on is already
+ * decided, so a shuffle never changes today's pull.
  */
 export default async function TarotPullPage() {
   const supabase = await createClient();
@@ -70,11 +73,11 @@ export default async function TarotPullPage() {
           Your card for today.
         </h1>
         <p className="invocation text-[var(--foreground-muted)] mt-5 max-w-xl mx-auto leading-relaxed">
-          Take a breath. When you are ready, turn the card.
+          Take a breath. When you are ready, shuffle the deck.
         </p>
       </div>
 
-      {/* The interactive pull. Tap the card to reveal its meaning. */}
+      {/* The interactive pull: shuffle the deck, then turn the card. */}
       <DailyTarotCard
         card={card}
         dateLabel={dateLabel}
