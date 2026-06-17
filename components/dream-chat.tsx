@@ -11,6 +11,43 @@ import { materialUrl } from "@/lib/rituals/material-link";
 // closing brackets arrive.
 const SUPPLY_RE = /\[\[([^\][]+)\]\]/g;
 
+// A handful of slow-rising embers for the atmospheric backdrop. Fixed values
+// (no Math.random) so server and client render identically — no hydration
+// mismatch. Each: horizontal position, rise duration, start delay, size.
+const MOTES = [
+  { left: "8%", dur: "11s", delay: "0s", size: 4 },
+  { left: "18%", dur: "14s", delay: "5s", size: 3 },
+  { left: "27%", dur: "9s", delay: "2s", size: 5 },
+  { left: "39%", dur: "13s", delay: "7s", size: 3 },
+  { left: "48%", dur: "10s", delay: "1s", size: 4 },
+  { left: "58%", dur: "15s", delay: "4s", size: 3 },
+  { left: "67%", dur: "9.5s", delay: "8s", size: 5 },
+  { left: "76%", dur: "12s", delay: "3s", size: 4 },
+  { left: "85%", dur: "13.5s", delay: "6s", size: 3 },
+  { left: "93%", dur: "10.5s", delay: "1.5s", size: 4 },
+];
+
+function DreamBackdrop() {
+  return (
+    <div className="dream-backdrop" aria-hidden="true">
+      <div className="dream-glow" />
+      {MOTES.map((m, i) => (
+        <span
+          key={i}
+          className="dream-mote"
+          style={{
+            left: m.left,
+            width: m.size,
+            height: m.size,
+            animationDuration: m.dur,
+            animationDelay: m.delay,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function renderDreamContent(content: string) {
   const nodes: React.ReactNode[] = [];
   let last = 0;
@@ -140,10 +177,11 @@ export function DreamChat({
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="relative flex flex-col flex-1 min-h-0">
+      <DreamBackdrop />
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto pr-2"
+        className="relative z-10 flex-1 overflow-y-auto pr-2"
         style={{ minHeight: "240px", maxHeight: "calc(100dvh - 300px)" }}
       >
         {isEmpty ? (
@@ -154,11 +192,10 @@ export function DreamChat({
               <Message key={i} msg={m} />
             ))}
             {streaming &&
-              messages[messages.length - 1]?.role === "assistant" && (
-                <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse">
-                  {messages[messages.length - 1].content
-                    ? "Still reading..."
-                    : "Reading the dream..."}
+              messages[messages.length - 1]?.role === "assistant" &&
+              messages[messages.length - 1].content && (
+                <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse mt-1">
+                  Still reading…
                 </p>
               )}
           </div>
@@ -168,7 +205,7 @@ export function DreamChat({
       {error && <p className="form-error mt-3">{error}</p>}
 
       <form
-        className="mt-6 border-t border-[var(--border)] pt-4"
+        className="relative z-10 mt-6 border-t border-[var(--border)] pt-4"
         onSubmit={(e) => {
           e.preventDefault();
           send(input);
@@ -244,28 +281,37 @@ function Welcome({
 }
 
 function Message({ msg }: { msg: Msg }) {
-  const isUser = msg.role === "user";
-  return (
-    <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
-      <div
-        className={`max-w-[85%] rounded-lg px-4 py-3 leading-relaxed whitespace-pre-wrap break-words ${
-          isUser
-            ? "bg-[var(--accent)] text-[var(--accent-foreground)]"
-            : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)]"
-        }`}
-      >
-        {msg.content ? (
-          isUser ? (
-            msg.content
-          ) : (
-            renderDreamContent(msg.content)
-          )
-        ) : (
-          <span className="opacity-50 animate-pulse" aria-label="Waiting for the reading">
-            ...
-          </span>
-        )}
+  // The dreamer's own words stay as a quiet bubble, right-aligned. The
+  // reading is set as serif prose with no bubble, each paragraph settling in
+  // gently over the candlelit backdrop. Paragraphs are keyed by index, so as
+  // the reading streams a finished paragraph animates in once and is not
+  // replayed when later text arrives.
+  if (msg.role === "user") {
+    return (
+      <div className="flex justify-end">
+        <div className="max-w-[85%] rounded-lg px-4 py-3 leading-relaxed whitespace-pre-wrap break-words bg-[var(--accent)] text-[var(--accent-foreground)]">
+          {msg.content}
+        </div>
       </div>
+    );
+  }
+
+  if (!msg.content) {
+    return (
+      <p className="dream-line opacity-60 animate-pulse" aria-label="Reading the dream">
+        Reading the dream…
+      </p>
+    );
+  }
+
+  const paragraphs = msg.content.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  return (
+    <div className="max-w-[44rem]">
+      {paragraphs.map((p, i) => (
+        <p key={i} className="dream-line">
+          {renderDreamContent(p)}
+        </p>
+      ))}
     </div>
   );
 }

@@ -744,3 +744,69 @@ h1, h2, h3, h4, h5, h6 {
 .text-foreground-muted { color: var(--foreground-muted); }
 .text-foreground-subtle { color: var(--foreground-subtle); }
 .text-accent { color: var(--accent); }
+
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Dream interpreter — atmospheric reveal. The reading sits over a living
+ * candlelit backdrop (a soft glow and slow-rising embers), and each line
+ * settles in as serif prose, easing up out of a gentle blur. The motion is
+ * purely decorative, so reduced-motion users get a calm, static version.
+ * ───────────────────────────────────────────────────────────────────── */
+.dream-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.dream-glow {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: min(72%, 440px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 172, 124, 0.16) 0%, transparent 65%);
+  animation: dream-glow 7s ease-in-out infinite;
+}
+.dream-mote {
+  position: absolute;
+  bottom: -10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(232, 172, 124, 0.6);
+  animation: dream-rise linear infinite;
+}
+@keyframes dream-glow {
+  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.08); }
+}
+@keyframes dream-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.55; }
+  100% { transform: translateY(-360px); opacity: 0; }
+}
+.dream-line {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.18rem;
+  line-height: 1.78;
+  color: var(--foreground);
+  margin: 0 0 1.1rem;
+  animation: dream-settle 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.dream-line:last-child { margin-bottom: 0; }
+.dream-line a {
+  color: var(--accent);
+  border-bottom: 1px solid rgba(232, 172, 124, 0.45);
+}
+.dream-line a:hover { border-bottom-color: var(--accent); }
+@keyframes dream-settle {
+  from { opacity: 0; transform: translateY(12px); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dream-glow, .dream-mote { animation: none; }
+  .dream-line { animation: none; }
+}
