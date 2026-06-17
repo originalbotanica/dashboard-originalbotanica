@@ -2,6 +2,40 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { materialUrl } from "@/lib/rituals/material-link";
+
+// Supplies the reading recommends arrive wrapped in [[ ]]. Turn each into a
+// link to its originalbotanica.com page (matching the rituals library), so
+// the closing ritual is shoppable. Plain text and household items are left
+// untouched. Incomplete markers (mid-stream) simply render as text until the
+// closing brackets arrive.
+const SUPPLY_RE = /\[\[([^\][]+)\]\]/g;
+
+function renderDreamContent(content: string) {
+  const nodes: React.ReactNode[] = [];
+  let last = 0;
+  let key = 0;
+  let m: RegExpExecArray | null;
+  SUPPLY_RE.lastIndex = 0;
+  while ((m = SUPPLY_RE.exec(content)) !== null) {
+    if (m.index > last) nodes.push(content.slice(last, m.index));
+    const name = m[1].trim();
+    nodes.push(
+      <a
+        key={key++}
+        href={materialUrl({ name })}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[var(--accent)] hover:underline"
+      >
+        {name}
+      </a>,
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < content.length) nodes.push(content.slice(last));
+  return nodes;
+}
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -220,7 +254,13 @@ function Message({ msg }: { msg: Msg }) {
             : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)]"
         }`}
       >
-        {msg.content || (
+        {msg.content ? (
+          isUser ? (
+            msg.content
+          ) : (
+            renderDreamContent(msg.content)
+          )
+        ) : (
           <span className="opacity-50 animate-pulse" aria-label="Waiting for the reading">
             ...
           </span>
