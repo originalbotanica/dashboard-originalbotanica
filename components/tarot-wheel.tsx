@@ -32,7 +32,7 @@ const RADIUS = `calc(${WHEEL} * 0.355)`;
 const CARD_W = `calc(${WHEEL} * 0.16)`;
 const HUB = `calc(${WHEEL} * 0.26)`;
 const PRESENT_W = "min(74vw, 380px)"; // the big center-stage card
-const SLOT_W = "min(64vw, 300px)"; // the resting card
+const SLOT_W = "min(50vw, 200px)"; // the resting card (kept small so card + reading fit on screen together)
 
 type Phase = "ready" | "spinning" | "stopping" | "present" | "revealed";
 type Draw = { index: number; reversed: boolean; reading: string };
@@ -126,8 +126,11 @@ export function TarotWheel({
       window.setTimeout(() => {
         const el = revealRef.current;
         if (!el) return;
-        const y = el.getBoundingClientRect().top + window.scrollY - 28;
-        smoothScrollTo(y, 500);
+        const r = el.getBoundingClientRect();
+        smoothScrollTo(
+          r.top + window.scrollY + r.height / 2 - window.innerHeight / 2,
+          500,
+        );
       }, 60);
       return;
     }
@@ -158,18 +161,16 @@ export function TarotWheel({
     el.style.transform =
       "translate(-50%, -50%) perspective(1100px) scale(1.06) rotateX(-11deg) rotateY(8deg)";
 
-    const timers: number[] = [];
+    // Center the whole card + reading block in the viewport right away (the
+    // reading is laid out, just faded) so the card flies to an on-screen slot
+    // and the settled card + reading need no scrolling.
+    const block = revealRef.current;
+    if (block) {
+      const r = block.getBoundingClientRect();
+      smoothScrollTo(r.top + window.scrollY + r.height / 2 - vh / 2, 600);
+    }
 
-    // Bring the resting layout into frame while the card holds at center.
-    timers.push(
-      window.setTimeout(() => {
-        const slot = slotRef.current;
-        if (!slot) return;
-        const r = slot.getBoundingClientRect();
-        const slotCenterAbs = r.top + window.scrollY + r.height / 2;
-        smoothScrollTo(slotCenterAbs - vh * 0.58, 550);
-      }, 1150),
-    );
+    const timers: number[] = [];
 
     // Glide down and shrink into the slot.
     timers.push(
@@ -190,6 +191,22 @@ export function TarotWheel({
     timers.push(window.setTimeout(() => setPhase("revealed"), 2720));
 
     return () => timers.forEach(clearTimeout);
+  }, [phase]);
+
+  // Once settled, guarantee the card + reading sit centered in the viewport
+  // (no scrolling needed), regardless of how the presentation landed.
+  useEffect(() => {
+    if (phase !== "revealed") return;
+    const id = window.setTimeout(() => {
+      const block = revealRef.current;
+      if (!block) return;
+      const r = block.getBoundingClientRect();
+      smoothScrollTo(
+        r.top + window.scrollY + r.height / 2 - window.innerHeight / 2,
+        350,
+      );
+    }, 60);
+    return () => clearTimeout(id);
   }, [phase]);
 
   const loop = useCallback((ts: number) => {
@@ -481,12 +498,20 @@ function smoothScrollTo(targetY: number, duration = 700): void {
   if (Math.abs(dist) < 4) return;
   const start = performance.now();
   const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+  let settled = false;
   const step = (now: number) => {
+    if (settled) return;
     const p = Math.min(1, (now - start) / duration);
     scroller.scrollTop = startY + dist * easeOutCubic(p);
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
+  // Guarantee the final position even where requestAnimationFrame is throttled
+  // or suspended (some embedded/automated browsers); a no-op for normal ones.
+  window.setTimeout(() => {
+    settled = true;
+    scroller.scrollTop = targetY;
+  }, duration + 90);
 }
 
 function SpeakerOn() {
