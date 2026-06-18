@@ -8,33 +8,33 @@ import { WHEEL_DECK } from "@/lib/tarot/wheel-deck";
  *
  * The 21 hand-painted Major Arcana cards ring a center button. The member
  * taps Spin to set the wheel turning, then taps Stop when the moment feels
- * right; the wheel eases to a halt and the card turns face up, its reading —
- * upright or upside down — shown beneath as the page glides the card into
- * view. His music plays while it turns, with a mute toggle.
+ * right; the wheel eases to a halt. The chosen card then lifts out into the
+ * CENTER of the screen, tilting toward the viewer in 3D, holds for a beat,
+ * then glides down and settles into its slot as the reading appears beneath.
+ * His music plays while it turns, with a mute toggle.
  *
  * ── TESTING MODE (preview branch only) ───────────────────────────────────
- * For evaluation, the once-a-day lock is OFF: the wheel can be spun any
- * number of times, and each spin lands on a fresh RANDOM card + orientation
- * so the team can see the full range of cards and readings. Before launch
- * (step 4) this reverts to the real behavior: one deterministic card per
- * member per day, locked after the first pull. The deterministic draw still
- * arrives in props (index/reversed/reading) and seeds the first view.
+ * The once-a-day lock is OFF: the wheel can be spun any number of times, and
+ * each spin lands on a fresh RANDOM card + orientation so the team can review
+ * the full deck. At launch (step 4) this reverts to one deterministic card
+ * per member per day, locked after the first pull.
  */
 
-const STEP = 360 / WHEEL_DECK.length; // degrees between cards
-const SPIN_SPEED = 0.75; // degrees per millisecond while free-spinning
-const LAND_MS = 3600; // deceleration time once Stop is tapped
-const LAND_SPINS = 3; // extra full turns during the slow-down
+const STEP = 360 / WHEEL_DECK.length;
+const SPIN_SPEED = 0.75;
+const LAND_MS = 3600;
+const LAND_SPINS = 3;
 const MUSIC_SRC = "/tarot-wheel/sounds/background-full.mp3";
 const MUTE_KEY = "ob-tarot-muted";
 
-// Wheel sizing — large enough to read the card art in the ring.
 const WHEEL = "min(94vw, 640px)";
 const RADIUS = `calc(${WHEEL} * 0.355)`;
 const CARD_W = `calc(${WHEEL} * 0.16)`;
 const HUB = `calc(${WHEEL} * 0.26)`;
+const PRESENT_W = "min(74vw, 380px)"; // the big center-stage card
+const SLOT_W = "min(64vw, 300px)"; // the resting card
 
-type Phase = "ready" | "spinning" | "stopping" | "revealed";
+type Phase = "ready" | "spinning" | "stopping" | "present" | "revealed";
 type Draw = { index: number; reversed: boolean; reading: string };
 
 export function TarotWheel({
@@ -43,11 +43,9 @@ export function TarotWheel({
   reading,
   dateLabel,
 }: {
-  /** Zero-based index (0..20) of the card to land on (seeds the first view). */
   index: number;
   reversed: boolean;
   reading: string;
-  /** New-York day key — unused in testing mode, kept for the real behavior. */
   dayKey: string;
   dateLabel: string;
 }) {
@@ -58,6 +56,8 @@ export function TarotWheel({
 
   const ringRef = useRef<HTMLDivElement | null>(null);
   const revealRef = useRef<HTMLDivElement | null>(null);
+  const slotRef = useRef<HTMLDivElement | null>(null);
+  const presentRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rotationRef = useRef(0);
   const rafRef = useRef<number | null>(null);
@@ -115,27 +115,82 @@ export function TarotWheel({
     }, 120);
   };
 
-  const scrollRevealIntoView = () => {
-    // Glide the reveal into view first; the card then deals out (0.55s delay)
-    // where the member can watch it. Transforms don't affect layout, so the
-    // measurement is stable even though the card is mid-animation.
-    window.setTimeout(() => {
-      const el = revealRef.current;
-      if (!el) return;
-      const y = el.getBoundingClientRect().top + window.scrollY - 28;
-      smoothScrollTo(y, 600);
-    }, 60);
-  };
-
-  const settle = useCallback(() => {
-    setPhase("revealed");
-    fadeOutMusic();
-    scrollRevealIntoView();
-  }, []);
-
   const reducedMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+  const settle = useCallback(() => {
+    fadeOutMusic();
+    if (reducedMotion()) {
+      setPhase("revealed");
+      window.setTimeout(() => {
+        const el = revealRef.current;
+        if (!el) return;
+        const y = el.getBoundingClientRect().top + window.scrollY - 28;
+        smoothScrollTo(y, 500);
+      }, 60);
+      return;
+    }
+    // Card lifts out to center screen (3D), then flies down into its slot.
+    setPhase("present");
+  }, []);
+
+  // Choreography for the center-stage presentation, run once the overlay and
+  // the resting slot are in the DOM (phase === "present").
+  useEffect(() => {
+    if (phase !== "present") return;
+    const el = presentRef.current;
+    if (!el) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Start small, tilted away, transparent — then tilt out toward the viewer.
+    el.style.transition = "none";
+    el.style.opacity = "0";
+    el.style.transform =
+      "translate(-50%, -50%) perspective(1100px) scale(0.5) rotateX(48deg) rotateZ(-6deg)";
+    void el.offsetWidth;
+    el.style.transition =
+      "transform 0.9s cubic-bezier(0.2,0.75,0.2,1), opacity 0.5s ease";
+    el.style.opacity = "1";
+    // Settle at center holding a clear 3D tilt — the card looks dimensional,
+    // leaning toward the viewer — before it flattens on the way down.
+    el.style.transform =
+      "translate(-50%, -50%) perspective(1100px) scale(1.06) rotateX(-11deg) rotateY(8deg)";
+
+    const timers: number[] = [];
+
+    // Bring the resting layout into frame while the card holds at center.
+    timers.push(
+      window.setTimeout(() => {
+        const slot = slotRef.current;
+        if (!slot) return;
+        const r = slot.getBoundingClientRect();
+        const slotCenterAbs = r.top + window.scrollY + r.height / 2;
+        smoothScrollTo(slotCenterAbs - vh * 0.58, 550);
+      }, 1150),
+    );
+
+    // Glide down and shrink into the slot.
+    timers.push(
+      window.setTimeout(() => {
+        const slot = slotRef.current;
+        if (!slot || !presentRef.current) return;
+        const r = slot.getBoundingClientRect();
+        const dx = r.left + r.width / 2 - vw / 2;
+        const dy = r.top + r.height / 2 - vh / 2;
+        const k = r.width / presentRef.current.offsetWidth;
+        presentRef.current.style.transition =
+          "transform 0.8s cubic-bezier(0.4,0,0.15,1)";
+        presentRef.current.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) perspective(1100px) scale(${k}) rotateX(0deg) rotateY(0deg)`;
+      }, 1900),
+    );
+
+    // Hand off to the resting card + reading.
+    timers.push(window.setTimeout(() => setPhase("revealed"), 2720));
+
+    return () => timers.forEach(clearTimeout);
+  }, [phase]);
 
   const loop = useCallback((ts: number) => {
     if (phaseRef.current !== "spinning") return;
@@ -147,11 +202,9 @@ export function TarotWheel({
     rafRef.current = requestAnimationFrame(loop);
   }, []);
 
-  // Works from "ready" or "revealed" so the member can keep spinning (testing).
   const beginSpin = useCallback(() => {
-    if (phase === "spinning" || phase === "stopping") return;
+    if (phase === "spinning" || phase === "stopping" || phase === "present") return;
 
-    // Testing: pick a fresh random card + orientation each spin.
     const ri = Math.floor(Math.random() * WHEEL_DECK.length);
     const rrev = Math.random() < 0.5;
     const c = WHEEL_DECK[ri];
@@ -165,7 +218,6 @@ export function TarotWheel({
       return;
     }
 
-    // If coming back from a reveal, glide up to the wheel first.
     if (phase === "revealed") smoothScrollTo(0, 450);
 
     setPhase("spinning");
@@ -210,18 +262,11 @@ export function TarotWheel({
         ? stop
         : undefined;
 
+  const hubBusy = phase === "stopping" || phase === "present";
+  const showReveal = phase === "present" || phase === "revealed";
+
   return (
     <section aria-label="Your tarot wheel" className="border-t border-[var(--border)]">
-      <style>{`
-        @keyframes tarot-deal {
-          0%   { opacity: 0; transform: perspective(1100px) translateY(-140px) scale(0.40) rotateX(52deg); }
-          30%  { opacity: 1; }
-          60%  { transform: perspective(1100px) translateY(-14px) scale(1.16) rotateX(-9deg) rotateY(5deg); }
-          100% { opacity: 1; transform: perspective(1100px) translateY(0) scale(1) rotateX(0deg) rotateY(0deg); }
-        }
-        .tarot-deal { animation: tarot-deal 1.15s cubic-bezier(0.2,0.72,0.2,1) 0.55s both; transform-origin: center bottom; }
-        @media (prefers-reduced-motion: reduce) { .tarot-deal { animation: none; } }
-      `}</style>
       <div className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center">
         {/* The wheel. */}
         <div
@@ -233,7 +278,6 @@ export function TarotWheel({
             "--r": RADIUS,
           }}
         >
-          {/* Pointer at the top, marking the card. */}
           <span
             aria-hidden
             className="absolute left-1/2 -top-1 z-20"
@@ -248,12 +292,7 @@ export function TarotWheel({
             }}
           />
 
-          {/* The rotating ring of cards. */}
-          <div
-            ref={ringRef}
-            className="absolute inset-0"
-            style={{ willChange: "transform" }}
-          >
+          <div ref={ringRef} className="absolute inset-0" style={{ willChange: "transform" }}>
             {WHEEL_DECK.map((c, i) => (
               <img
                 key={c.id}
@@ -275,11 +314,10 @@ export function TarotWheel({
             ))}
           </div>
 
-          {/* Center hub — Spin, then Stop (and Spin again in testing). */}
           <button
             type="button"
             onClick={onHubClick}
-            disabled={phase === "stopping"}
+            disabled={hubBusy}
             aria-label={
               phase === "spinning"
                 ? "Stop the wheel"
@@ -294,9 +332,8 @@ export function TarotWheel({
               height: HUB,
               background: "radial-gradient(circle at 50% 38%, #2a2118, #14100b 78%)",
               border: "1px solid var(--border)",
-              boxShadow:
-                "0 0 28px rgba(232,172,124,0.28), inset 0 0 18px rgba(0,0,0,0.6)",
-              cursor: phase === "stopping" ? "default" : "pointer",
+              boxShadow: "0 0 28px rgba(232,172,124,0.28), inset 0 0 18px rgba(0,0,0,0.6)",
+              cursor: hubBusy ? "default" : "pointer",
             }}
           >
             <span
@@ -311,7 +348,7 @@ export function TarotWheel({
             >
               {phase === "spinning"
                 ? "Stop"
-                : phase === "stopping"
+                : phase === "stopping" || phase === "present"
                   ? "…"
                   : phase === "revealed"
                     ? "Spin\nagain"
@@ -319,7 +356,6 @@ export function TarotWheel({
             </span>
           </button>
 
-          {/* Mute toggle. */}
           <button
             type="button"
             onClick={toggleMute}
@@ -341,7 +377,7 @@ export function TarotWheel({
         </div>
 
         {/* Prompt — guides the Spin, then the Stop. */}
-        {phase !== "revealed" ? (
+        {phase === "ready" || phase === "spinning" || phase === "stopping" ? (
           <p className="invocation text-[var(--foreground-muted)] mt-8 text-center max-w-md leading-relaxed">
             {phase === "spinning"
               ? "When the right vibe hits, click the center again to stop the wheel."
@@ -351,14 +387,18 @@ export function TarotWheel({
           </p>
         ) : null}
 
-        {/* The reveal. */}
-        {phase === "revealed" ? (
+        {/* Resting reveal: card slot + reading. Present phase keeps it laid
+            out (card hidden, reading faded) so the flying card can land. */}
+        {showReveal ? (
           <div
             ref={revealRef}
             className="mt-12 w-full flex flex-col items-center text-center"
             style={{ scrollMarginTop: "1.5rem" }}
           >
-            <div className="tarot-deal" style={{ width: "min(64vw, 300px)" }}>
+            <div
+              ref={slotRef}
+              style={{ width: SLOT_W, visibility: phase === "revealed" ? "visible" : "hidden" }}
+            >
               <img
                 src={card.image}
                 alt={card.name}
@@ -372,21 +412,59 @@ export function TarotWheel({
                 }}
               />
             </div>
-            <p className="eyebrow mt-7 mb-2 text-[var(--accent)]">
-              {draw.reversed ? "Upside down" : "Upright"}
-            </p>
-            <h2 className="display text-2xl md:text-4xl leading-tight mb-5">
-              {card.name}
-            </h2>
-            <p className="text-[var(--foreground-muted)] leading-relaxed max-w-xl text-lg">
-              {draw.reading}
-            </p>
-            <p className="eyebrow mt-9 text-[var(--foreground-subtle)]">
-              Testing mode · tap “Spin again” to keep drawing
-            </p>
+            <div
+              style={{
+                opacity: phase === "revealed" ? 1 : 0,
+                transition: "opacity 0.55s ease 0.15s",
+              }}
+            >
+              <p className="eyebrow mt-7 mb-2 text-[var(--accent)]">
+                {draw.reversed ? "Upside down" : "Upright"}
+              </p>
+              <h2 className="display text-2xl md:text-4xl leading-tight mb-5">
+                {card.name}
+              </h2>
+              <p className="text-[var(--foreground-muted)] leading-relaxed max-w-xl text-lg mx-auto">
+                {draw.reading}
+              </p>
+              <p className="eyebrow mt-9 text-[var(--foreground-subtle)]">
+                Testing mode · tap “Spin again” to keep drawing
+              </p>
+            </div>
           </div>
         ) : null}
       </div>
+
+      {/* The card lifted out to center screen, in 3D, during "present". */}
+      {phase === "present" ? (
+        <div
+          ref={presentRef}
+          aria-hidden
+          style={{
+            position: "fixed",
+            left: "50%",
+            top: "50%",
+            zIndex: 60,
+            width: PRESENT_W,
+            pointerEvents: "none",
+            transformOrigin: "center center",
+            willChange: "transform, opacity",
+          }}
+        >
+          <img
+            src={card.image}
+            alt=""
+            draggable={false}
+            style={{
+              width: "100%",
+              display: "block",
+              borderRadius: "14px",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.75)",
+              transform: draw.reversed ? "rotate(180deg)" : "none",
+            }}
+          />
+        </div>
+      ) : null}
     </section>
   );
 }
