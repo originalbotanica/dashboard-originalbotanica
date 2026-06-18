@@ -6,16 +6,19 @@ import { WHEEL_DECK } from "@/lib/tarot/wheel-deck";
 /**
  * The Tarot Wheel — the daily pull, as Chris's spinning wheel.
  *
- * The 21 hand-painted Major Arcana cards ring a center button. Like the
- * original, the member taps Spin to set the wheel turning, then taps Stop
- * when the moment feels right; the wheel then eases to a halt on the card
- * drawn for them today (the draw is decided on the server, seeded by member +
- * date, so the result is the same no matter when they hit Stop). His music
- * plays while it turns, with a mute toggle. When it lands, the card turns
- * face up and its reading — upright or upside down — appears beneath, and the
- * page eases down so the card and its reading sit front and center.
+ * The 21 hand-painted Major Arcana cards ring a center button. The member
+ * taps Spin to set the wheel turning, then taps Stop when the moment feels
+ * right; the wheel eases to a halt and the card turns face up, its reading —
+ * upright or upside down — shown beneath as the page glides the card into
+ * view. His music plays while it turns, with a mute toggle.
  *
- * One spin a day. Come back tomorrow turns the wheel again.
+ * ── TESTING MODE (preview branch only) ───────────────────────────────────
+ * For evaluation, the once-a-day lock is OFF: the wheel can be spun any
+ * number of times, and each spin lands on a fresh RANDOM card + orientation
+ * so the team can see the full range of cards and readings. Before launch
+ * (step 4) this reverts to the real behavior: one deterministic card per
+ * member per day, locked after the first pull. The deterministic draw still
+ * arrives in props (index/reversed/reading) and seeds the first view.
  */
 
 const STEP = 360 / WHEEL_DECK.length; // degrees between cards
@@ -32,34 +35,34 @@ const CARD_W = `calc(${WHEEL} * 0.16)`;
 const HUB = `calc(${WHEEL} * 0.26)`;
 
 type Phase = "ready" | "spinning" | "stopping" | "revealed";
+type Draw = { index: number; reversed: boolean; reading: string };
 
 export function TarotWheel({
   index,
   reversed,
   reading,
-  dayKey,
   dateLabel,
 }: {
-  /** Zero-based index (0..20) of the card to land on. */
+  /** Zero-based index (0..20) of the card to land on (seeds the first view). */
   index: number;
   reversed: boolean;
   reading: string;
-  /** New-York day key, e.g. "2026-06-16". Keys the once-a-day lock. */
+  /** New-York day key — unused in testing mode, kept for the real behavior. */
   dayKey: string;
   dateLabel: string;
 }) {
-  const card = WHEEL_DECK[index];
-  const doneKey = `ob-tarot-wheel:${dayKey}`;
-
   const [phase, setPhase] = useState<Phase>("ready");
   const [muted, setMuted] = useState(false);
+  const [draw, setDraw] = useState<Draw>({ index, reversed, reading });
+  const card = WHEEL_DECK[draw.index];
 
   const ringRef = useRef<HTMLDivElement | null>(null);
   const revealRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const rotationRef = useRef(0); // current wheel angle, degrees
+  const rotationRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef(0);
+  const pendingIndexRef = useRef(index);
   const phaseRef = useRef<Phase>("ready");
   phaseRef.current = phase;
 
@@ -69,27 +72,18 @@ export function TarotWheel({
     }
   };
 
-  // On load: restore the mute preference, and if the member already spun
-  // today, show their card straight away (no second spin), wheel parked on it.
   useEffect(() => {
     try {
       setMuted(localStorage.getItem(MUTE_KEY) === "1");
-      if (localStorage.getItem(doneKey)) {
-        rotationRef.current = -index * STEP;
-        applyRotation();
-        setPhase("revealed");
-      }
     } catch {
-      /* localStorage may be unavailable; fall back to a fresh spin. */
+      /* ignore */
     }
-  }, [doneKey, index]);
+  }, []);
 
-  // Keep the audio element's muted state in sync.
   useEffect(() => {
     if (audioRef.current) audioRef.current.muted = muted;
   }, [muted]);
 
-  // Stop the animation loop if the component goes away mid-spin.
   useEffect(
     () => () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -121,30 +115,25 @@ export function TarotWheel({
     }, 120);
   };
 
-  const settle = useCallback(() => {
-    setPhase("revealed");
-    try {
-      localStorage.setItem(doneKey, String(index));
-    } catch {
-      /* ignore */
-    }
-    fadeOutMusic();
-    // Ease the page down so the card and its reading are front and center.
-    // We animate the scroll ourselves: native smooth scrolling is unreliable
-    // here, so a short eased tween guarantees the gentle glide every time.
+  const scrollRevealIntoView = () => {
     window.setTimeout(() => {
       const el = revealRef.current;
       if (!el) return;
       const y = el.getBoundingClientRect().top + window.scrollY - 28;
       smoothScrollTo(y, 700);
     }, 400);
-  }, [doneKey, index]);
+  };
+
+  const settle = useCallback(() => {
+    setPhase("revealed");
+    fadeOutMusic();
+    scrollRevealIntoView();
+  }, []);
 
   const reducedMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-  // Free-spin loop — runs until the member taps Stop.
   const loop = useCallback((ts: number) => {
     if (phaseRef.current !== "spinning") return;
     if (!lastTsRef.current) lastTsRef.current = ts;
@@ -155,16 +144,26 @@ export function TarotWheel({
     rafRef.current = requestAnimationFrame(loop);
   }, []);
 
-  const spin = useCallback(() => {
-    if (phase !== "ready") return;
+  // Works from "ready" or "revealed" so the member can keep spinning (testing).
+  const beginSpin = useCallback(() => {
+    if (phase === "spinning" || phase === "stopping") return;
 
-    // Reduced motion: skip the animation, just reveal today's card.
+    // Testing: pick a fresh random card + orientation each spin.
+    const ri = Math.floor(Math.random() * WHEEL_DECK.length);
+    const rrev = Math.random() < 0.5;
+    const c = WHEEL_DECK[ri];
+    pendingIndexRef.current = ri;
+    setDraw({ index: ri, reversed: rrev, reading: rrev ? c.reversed : c.upright });
+
     if (reducedMotion()) {
-      rotationRef.current = -index * STEP;
+      rotationRef.current = -ri * STEP;
       applyRotation();
       settle();
       return;
     }
+
+    // If coming back from a reveal, glide up to the wheel first.
+    if (phase === "revealed") smoothScrollTo(0, 450);
 
     setPhase("spinning");
     try {
@@ -181,18 +180,15 @@ export function TarotWheel({
     if (ringRef.current) ringRef.current.style.transition = "none";
     lastTsRef.current = 0;
     rafRef.current = requestAnimationFrame(loop);
-  }, [phase, index, muted, loop, settle]);
+  }, [phase, muted, loop, settle]);
 
   const stop = useCallback(() => {
     if (phase !== "spinning") return;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     setPhase("stopping");
 
-    // Advance to the next alignment of today's card under the pointer, plus a
-    // few full turns, then ease out. The result is fixed; Stop only chooses
-    // the moment, not the card.
     const current = rotationRef.current;
-    const base = -index * STEP;
+    const base = -pendingIndexRef.current * STEP;
     const remainder = (((current - base) % 360) + 360) % 360;
     const target = current + (360 - remainder) + 360 * LAND_SPINS;
 
@@ -202,10 +198,14 @@ export function TarotWheel({
       applyRotation();
     }
     window.setTimeout(settle, LAND_MS + 80);
-  }, [phase, index, settle]);
+  }, [phase, settle]);
 
   const onHubClick =
-    phase === "ready" ? spin : phase === "spinning" ? stop : undefined;
+    phase === "ready" || phase === "revealed"
+      ? beginSpin
+      : phase === "spinning"
+        ? stop
+        : undefined;
 
   return (
     <section aria-label="Your tarot wheel" className="border-t border-[var(--border)]">
@@ -220,7 +220,7 @@ export function TarotWheel({
             "--r": RADIUS,
           }}
         >
-          {/* Pointer at the top, marking the card of the day. */}
+          {/* Pointer at the top, marking the card. */}
           <span
             aria-hidden
             className="absolute left-1/2 -top-1 z-20"
@@ -262,17 +262,17 @@ export function TarotWheel({
             ))}
           </div>
 
-          {/* Center hub — Spin, then Stop. */}
+          {/* Center hub — Spin, then Stop (and Spin again in testing). */}
           <button
             type="button"
             onClick={onHubClick}
-            disabled={phase === "stopping" || phase === "revealed"}
+            disabled={phase === "stopping"}
             aria-label={
-              phase === "ready"
-                ? "Spin the wheel for today's card"
-                : phase === "spinning"
-                  ? "Stop the wheel"
-                  : "Today's card has been drawn"
+              phase === "spinning"
+                ? "Stop the wheel"
+                : phase === "revealed"
+                  ? "Spin again"
+                  : "Spin the wheel"
             }
             className="absolute left-1/2 top-1/2 z-10 rounded-full flex items-center justify-center text-center"
             style={{
@@ -283,8 +283,7 @@ export function TarotWheel({
               border: "1px solid var(--border)",
               boxShadow:
                 "0 0 28px rgba(232,172,124,0.28), inset 0 0 18px rgba(0,0,0,0.6)",
-              cursor:
-                phase === "ready" || phase === "spinning" ? "pointer" : "default",
+              cursor: phase === "stopping" ? "default" : "pointer",
             }}
           >
             <span
@@ -302,7 +301,7 @@ export function TarotWheel({
                 : phase === "stopping"
                   ? "…"
                   : phase === "revealed"
-                    ? "Tarot\nToday"
+                    ? "Spin\nagain"
                     : "Spin"}
             </span>
           </button>
@@ -354,21 +353,20 @@ export function TarotWheel({
                 width: "min(64vw, 300px)",
                 borderRadius: "12px",
                 boxShadow: "0 12px 48px rgba(0,0,0,0.6)",
-                transform: reversed ? "rotate(180deg)" : "none",
+                transform: draw.reversed ? "rotate(180deg)" : "none",
               }}
             />
             <p className="eyebrow mt-7 mb-2 text-[var(--accent)]">
-              {reversed ? "Upside down" : "Upright"}
+              {draw.reversed ? "Upside down" : "Upright"}
             </p>
             <h2 className="display text-2xl md:text-4xl leading-tight mb-5">
               {card.name}
             </h2>
             <p className="text-[var(--foreground-muted)] leading-relaxed max-w-xl text-lg">
-              {reading}
+              {draw.reading}
             </p>
             <p className="eyebrow mt-9 text-[var(--foreground-subtle)]">
-              Your card for {dayName(dateLabel)} · come back tomorrow to turn the
-              wheel again
+              Testing mode · tap “Spin again” to keep drawing
             </p>
           </div>
         ) : null}
@@ -395,12 +393,6 @@ function smoothScrollTo(targetY: number, duration = 700): void {
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
-}
-
-/** "Wednesday, June 3, 2026" -> "Wednesday". Falls back to "today". */
-function dayName(dateLabel: string): string {
-  const first = dateLabel.split(",")[0]?.trim();
-  return first || "today";
 }
 
 function SpeakerOn() {
