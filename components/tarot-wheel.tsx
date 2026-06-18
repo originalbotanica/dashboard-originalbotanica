@@ -116,12 +116,15 @@ export function TarotWheel({
   };
 
   const scrollRevealIntoView = () => {
+    // Glide the reveal into view first; the card then deals out (0.55s delay)
+    // where the member can watch it. Transforms don't affect layout, so the
+    // measurement is stable even though the card is mid-animation.
     window.setTimeout(() => {
       const el = revealRef.current;
       if (!el) return;
       const y = el.getBoundingClientRect().top + window.scrollY - 28;
-      smoothScrollTo(y, 700);
-    }, 400);
+      smoothScrollTo(y, 600);
+    }, 60);
   };
 
   const settle = useCallback(() => {
@@ -209,6 +212,16 @@ export function TarotWheel({
 
   return (
     <section aria-label="Your tarot wheel" className="border-t border-[var(--border)]">
+      <style>{`
+        @keyframes tarot-deal {
+          0%   { opacity: 0; transform: perspective(1100px) translateY(-140px) scale(0.40) rotateX(52deg); }
+          30%  { opacity: 1; }
+          60%  { transform: perspective(1100px) translateY(-14px) scale(1.16) rotateX(-9deg) rotateY(5deg); }
+          100% { opacity: 1; transform: perspective(1100px) translateY(0) scale(1) rotateX(0deg) rotateY(0deg); }
+        }
+        .tarot-deal { animation: tarot-deal 1.15s cubic-bezier(0.2,0.72,0.2,1) 0.55s both; transform-origin: center bottom; }
+        @media (prefers-reduced-motion: reduce) { .tarot-deal { animation: none; } }
+      `}</style>
       <div className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center">
         {/* The wheel. */}
         <div
@@ -345,17 +358,20 @@ export function TarotWheel({
             className="mt-12 w-full flex flex-col items-center text-center"
             style={{ scrollMarginTop: "1.5rem" }}
           >
-            <img
-              src={card.image}
-              alt={card.name}
-              draggable={false}
-              style={{
-                width: "min(64vw, 300px)",
-                borderRadius: "12px",
-                boxShadow: "0 12px 48px rgba(0,0,0,0.6)",
-                transform: draw.reversed ? "rotate(180deg)" : "none",
-              }}
-            />
+            <div className="tarot-deal" style={{ width: "min(64vw, 300px)" }}>
+              <img
+                src={card.image}
+                alt={card.name}
+                draggable={false}
+                style={{
+                  width: "100%",
+                  display: "block",
+                  borderRadius: "12px",
+                  boxShadow: "0 12px 48px rgba(0,0,0,0.6)",
+                  transform: draw.reversed ? "rotate(180deg)" : "none",
+                }}
+              />
+            </div>
             <p className="eyebrow mt-7 mb-2 text-[var(--accent)]">
               {draw.reversed ? "Upside down" : "Upright"}
             </p>
