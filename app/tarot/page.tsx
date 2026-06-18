@@ -1,35 +1,23 @@
 import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { TarotDrawSwitch } from "@/components/tarot-draw-switch";
-import {
-  drawDailyCardForUser,
-  botanicaDayKey,
-  tarotImagePath,
-} from "@/lib/tarot/deck";
-import { drawWheelForUser } from "@/lib/tarot/wheel-deck";
-import { getOrGenerateDailyTarotReading } from "@/lib/daily-tarot/generate";
+import { TarotWheel } from "@/components/tarot-wheel";
+import { drawWheelForUser, botanicaDayKey } from "@/lib/tarot/wheel-deck";
 
 export const metadata = {
   title: "Your daily tarot",
   description:
-    "Pull your card for today, your way — shuffle the deck or spin the wheel.",
+    "Spin the wheel for your card today. One card a day, drawn for you, with its reading upright or upside down.",
 };
 
 /**
- * The dedicated daily tarot pull.
+ * The dedicated daily tarot pull — Chris's spinning wheel.
  *
- * TESTING PHASE: both draws are wired and selectable via TarotDrawSwitch so
- * the team can compare the shuffle deck (current live) and the spinning wheel
- * before launch. The card is drawn per member per day (deterministic) for
- * both. Once a winner is chosen, render the chosen draw directly and remove
- * the switch (see step 4 of the rollout).
+ * The card and its orientation are drawn per member per day (deterministic,
+ * seeded by user id + date), so the wheel always lands on today's card and it
+ * holds steady from morning to night. One pull a day.
  */
-export default async function TarotPullPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ draw?: string }>;
-}) {
+export default async function TarotPullPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -38,27 +26,13 @@ export default async function TarotPullPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, sun_sign, locale")
+    .select("first_name")
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
 
   const dayKey = botanicaDayKey();
-
-  // Shuffle deck (current live): 78-card deck, personalized reading, RWS art.
-  const card = drawDailyCardForUser(user.id, dayKey);
-  const reading = await getOrGenerateDailyTarotReading({
-    userId: user.id,
-    card,
-    firstName: profile.first_name,
-    sunSign: profile.sun_sign,
-    locale: profile.locale,
-  }).catch(() => null);
-  const interpretation = reading?.interpretation || card.reading;
-  const question = reading?.question || card.question;
-
-  // Spinning wheel: Chris's 21-card deck with upright/reversed readings.
-  const wheel = drawWheelForUser(user.id, dayKey);
+  const draw = drawWheelForUser(user.id, dayKey);
 
   const dateLabel = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -67,10 +41,6 @@ export default async function TarotPullPage({
     year: "numeric",
     timeZone: "America/New_York",
   });
-
-  const draw = (await searchParams)?.draw;
-  const fromQuery = draw === "wheel" || draw === "shuffle";
-  const initialMode: "shuffle" | "wheel" = draw === "wheel" ? "wheel" : "shuffle";
 
   return (
     <main className="min-h-screen">
@@ -82,27 +52,16 @@ export default async function TarotPullPage({
           Your card for today.
         </h1>
         <p className="invocation text-[var(--foreground-muted)] mt-5 max-w-xl mx-auto leading-relaxed">
-          Take a breath. When you are ready, draw your card.
+          Take a breath. When you are ready, spin the wheel.
         </p>
       </div>
 
-      <TarotDrawSwitch
-        initialMode={initialMode}
-        fromQuery={fromQuery}
-        shuffle={{
-          card,
-          dateLabel,
-          imageSrc: tarotImagePath(card),
-          reading: interpretation,
-          question,
-        }}
-        wheel={{
-          index: wheel.index,
-          reversed: wheel.reversed,
-          reading: wheel.reading,
-          dayKey,
-          dateLabel,
-        }}
+      <TarotWheel
+        index={draw.index}
+        reversed={draw.reversed}
+        reading={draw.reading}
+        dayKey={dayKey}
+        dateLabel={dateLabel}
       />
     </main>
   );
