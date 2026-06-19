@@ -64,6 +64,7 @@ export function TarotWheel({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rotationRef = useRef(0);
   const rafRef = useRef<number | null>(null);
+  const fadeRef = useRef<number | null>(null);
   const lastTsRef = useRef(0);
   const phaseRef = useRef<Phase>("ready");
   phaseRef.current = phase;
@@ -92,12 +93,32 @@ export function TarotWheel({
     if (audioRef.current) audioRef.current.muted = muted;
   }, [muted]);
 
-  useEffect(
-    () => () => {
+  // Fully stop and release the music. Used on fade-out, before a new spin,
+  // and on unmount so the loop never outlives the page.
+  const stopAudio = useCallback(() => {
+    if (fadeRef.current) {
+      clearInterval(fadeRef.current);
+      fadeRef.current = null;
+    }
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      try {
+        audio.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+      audioRef.current = null;
+    }
+  }, []);
+
+  // Leaving the tarot page mid-spin must stop the music (and the animation).
+  useEffect(() => {
+    return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    },
-    [],
-  );
+      stopAudio();
+    };
+  }, [stopAudio]);
 
   const toggleMute = useCallback(() => {
     setMuted((m) => {
@@ -111,17 +132,32 @@ export function TarotWheel({
     });
   }, []);
 
-  const fadeOutMusic = () => {
+  const fadeOutMusic = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    const fade = setInterval(() => {
-      if (audio.volume > 0.06) audio.volume = Math.max(0, audio.volume - 0.06);
-      else {
-        audio.pause();
-        clearInterval(fade);
+    if (fadeRef.current) clearInterval(fadeRef.current);
+    fadeRef.current = window.setInterval(() => {
+      const a = audioRef.current;
+      if (!a) {
+        if (fadeRef.current) clearInterval(fadeRef.current);
+        fadeRef.current = null;
+        return;
+      }
+      if (a.volume > 0.06) {
+        a.volume = Math.max(0, a.volume - 0.06);
+      } else {
+        if (fadeRef.current) clearInterval(fadeRef.current);
+        fadeRef.current = null;
+        a.pause();
+        try {
+          a.currentTime = 0;
+        } catch {
+          /* ignore */
+        }
+        audioRef.current = null;
       }
     }, 120);
-  };
+  }, []);
 
   const reducedMotion = () =>
     typeof window !== "undefined" &&
@@ -257,9 +293,11 @@ export function TarotWheel({
     }
 
     setPhase("spinning");
+    stopAudio(); // release any prior loop before starting a fresh one
     try {
       const audio = new Audio(MUSIC_SRC);
       audio.loop = true;
+      audio.preload = "auto";
       audio.muted = muted;
       audio.volume = 0.6;
       audio.play().catch(() => {});
@@ -271,7 +309,7 @@ export function TarotWheel({
     if (ringRef.current) ringRef.current.style.transition = "none";
     lastTsRef.current = 0;
     rafRef.current = requestAnimationFrame(loop);
-  }, [phase, index, muted, loop, settle]);
+  }, [phase, index, muted, loop, settle, stopAudio]);
 
   const stop = useCallback(() => {
     if (phase !== "spinning") return;
