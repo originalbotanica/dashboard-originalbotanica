@@ -136,7 +136,8 @@ export default async function HomePage({
             />
             <FeatureCard
               href="/tools/tarot"
-              imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
+              imageSrc="/tarot-wheel/wheel_full.png"
+              imageFit="contain"
               title="Daily tarot"
               body="Spin the wheel for your card today — one of 21 hand-painted cards, upright or upside down, with its meaning to carry."
             />
@@ -209,11 +210,13 @@ function FeatureCard({
   imageSrc,
   title,
   body,
+  imageFit = "cover",
 }: {
   href: string;
   imageSrc: string;
   title: string;
   body: string;
+  imageFit?: "cover" | "contain";
 }) {
   return (
     <Link href={href} className="group block">
@@ -223,7 +226,7 @@ function FeatureCard({
           alt=""
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className={`${imageFit === "contain" ? "object-contain p-4" : "object-cover"} transition-transform duration-500 group-hover:scale-105`}
         />
         <div
           className="absolute inset-0"
