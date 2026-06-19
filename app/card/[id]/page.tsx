@@ -37,11 +37,7 @@ export async function generateMetadata({
   return {
     title,
     description: found.reading,
-    openGraph: {
-      title,
-      description: found.reading,
-      images: [{ url: found.card.image }],
-    },
+    openGraph: { title, description: found.reading },
     twitter: { card: "summary_large_image", title, description: found.reading },
   };
 }

@@ -16,6 +16,8 @@ import { usePathname } from "next/navigation";
 
 const STORE = "https://originalbotanica.com";
 const CONTACT = "mailto:info@originalbotanica.com";
+const PHONE_TEL = "tel:+17183679589";
+const PHONE_DISPLAY = "(718) 367-9589";
 
 const TOOL_LINKS: { label: string; href: string }[] = [
   { label: "Tarot", href: "/tools/tarot" },
@@ -66,6 +68,12 @@ export function SiteFooter() {
               className="nav-link text-xs text-[var(--foreground-subtle)] hover:text-[var(--accent)]"
             >
               Contact
+            </a>
+            <a
+              href={PHONE_TEL}
+              className="nav-link text-xs text-[var(--foreground-subtle)] hover:text-[var(--accent)]"
+            >
+              {PHONE_DISPLAY}
             </a>
           </nav>
         </div>
@@ -148,6 +156,11 @@ export function SiteFooter() {
               <li>
                 <a href={CONTACT} className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]">
                   Contact
+                </a>
+              </li>
+              <li>
+                <a href={PHONE_TEL} className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]">
+                  Call {PHONE_DISPLAY}
                 </a>
               </li>
             </ul>

@@ -45,7 +45,11 @@ export default function CancellationPage() {
         <a href="mailto:info@originalbotanica.com" className="text-[var(--accent)] hover:underline">
           info@originalbotanica.com
         </a>{" "}
-        and a person from the botanica will help you.
+        or call{" "}
+        <a href="tel:+17183679589" className="text-[var(--accent)] hover:underline">
+          (718) 367-9589
+        </a>
+        , and a person from the botanica will help you.
       </p>
     </LegalShell>
   );

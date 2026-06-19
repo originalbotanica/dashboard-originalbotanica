@@ -138,7 +138,7 @@ export default async function HomePage({
               href="/tools/tarot"
               imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
               title="Daily tarot"
-              body="A card each morning, a paragraph of reading, a question to sit with."
+              body="Spin the wheel for your card today — one of 21 hand-painted cards, upright or upside down, with its meaning to carry."
             />
             <FeatureCard
               href="/tools/virtual-altar"
