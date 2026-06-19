@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { WHEEL_DECK } from "@/lib/tarot/wheel-deck";
+import { ShareCardButton } from "./share-card-button";
 
 /**
  * The Tarot Wheel — the daily pull, as Chris's spinning wheel.
@@ -203,10 +204,17 @@ export function TarotWheel({
     return () => timers.forEach(clearTimeout);
   }, [phase]);
 
-  // Once settled, guarantee the card + reading sit centered in the viewport.
+  // Once settled, guarantee the card + reading sit centered in the viewport —
+  // including the return visit, where the page mounts already-revealed and the
+  // big wheel images can still be loading (which shifts layout). We re-center
+  // on a few ticks and on window load so the final position is correct even on
+  // a cold load with slow images. After the animated reveal, images are already
+  // loaded, so the first pass lands it and the rest are no-ops.
   useEffect(() => {
     if (phase !== "revealed") return;
-    const id = window.setTimeout(() => {
+    let cancelled = false;
+    const center = () => {
+      if (cancelled) return;
       const block = revealRef.current;
       if (!block) return;
       const r = block.getBoundingClientRect();
@@ -214,8 +222,18 @@ export function TarotWheel({
         r.top + window.scrollY + r.height / 2 - window.innerHeight / 2,
         350,
       );
-    }, 60);
-    return () => clearTimeout(id);
+    };
+    const timers = [
+      window.setTimeout(center, 80),
+      window.setTimeout(center, 550),
+      window.setTimeout(center, 1200),
+    ];
+    if (document.readyState !== "complete") window.addEventListener("load", center);
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+      window.removeEventListener("load", center);
+    };
   }, [phase]);
 
   const loop = useCallback((ts: number) => {
@@ -437,6 +455,13 @@ export function TarotWheel({
               <p className="text-[var(--foreground-muted)] leading-relaxed max-w-xl text-lg mx-auto">
                 {reading}
               </p>
+              <div className="mt-8 flex justify-center">
+                <ShareCardButton
+                  cardId={card.id}
+                  cardName={card.name}
+                  reversed={reversed}
+                />
+              </div>
               <p className="eyebrow mt-9 text-[var(--foreground-subtle)]">
                 Your card for {dayName(dateLabel)} · come back tomorrow to turn the
                 wheel again

@@ -37,6 +37,10 @@ export default async function ChartPage() {
   if (!context) redirect("/astrology");
 
   const { chart, birthDate, birthCity, birthTime, isUnderEighteen } = context;
+  // Rising and houses depend on the time of birth. Without it the chart engine
+  // falls back to noon, which would make Rising/houses look exact when they are
+  // really a guess — so we hide them rather than present a guess as fact.
+  const hasTime = Boolean(birthTime);
 
   // Group placements into Big Three vs the rest
   const bigThreeNames = new Set(["Sun", "Moon", "Ascendant"]);
@@ -63,10 +67,17 @@ export default async function ChartPage() {
         <p className="text-[var(--foreground-muted)] mb-10">
           Born {formatDate(birthDate)}
           {birthTime ? ` at ${birthTime}` : ""} in {birthCity}.
-          {!birthTime && (
+          {!hasTime && (
             <span className="block text-sm mt-1 text-[var(--foreground-subtle)]">
-              Birth time unknown. Sun and Moon are accurate. Rising and houses
-              are not available without it.
+              Birth time not set, so your Sun and Moon are exact, but your Rising
+              and house placements need your time of birth and aren&apos;t shown.{" "}
+              <Link
+                href="/profile-setup"
+                className="text-[var(--accent)] hover:underline"
+              >
+                Add your birth time
+              </Link>{" "}
+              for the full chart.
             </span>
           )}
           {chart.isMocked && (
@@ -99,7 +110,7 @@ export default async function ChartPage() {
             <li className="flex justify-between border-b border-[var(--border)] pb-3">
               <span className="text-[var(--foreground-muted)]">Rising</span>
               <span className="display text-xl">
-                {chart.risingSign ?? "—"}
+                {hasTime ? (chart.risingSign ?? "—") : "—"}
               </span>
             </li>
           </ul>
@@ -114,7 +125,7 @@ export default async function ChartPage() {
                   <span>{p.name}</span>
                   <span>
                     {p.sign}
-                    {p.house != null ? ` · ${ordinal(p.house)} house` : ""}
+                    {hasTime && p.house != null ? ` · ${ordinal(p.house)} house` : ""}
                   </span>
                 </li>
               ))}
