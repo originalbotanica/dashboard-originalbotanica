@@ -114,6 +114,11 @@ export default async function PublicCardPage({
           <p className="text-xs text-[var(--foreground-subtle)] mt-3">
             $24.95/month or $199.95/year. Cancel anytime.
           </p>
+          <p className="text-sm mt-5">
+            <Link href="/gift" className="text-[var(--accent)] hover:underline">
+              Or give a membership as a gift →
+            </Link>
+          </p>
         </div>
       </section>
 

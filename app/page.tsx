@@ -106,6 +106,11 @@ export default async function HomePage({
         <p className="text-sm text-[var(--foreground-muted)] mt-6">
           $24.95/month or $199.95/year. 7 days free, cancel anytime.
         </p>
+        <p className="text-sm mt-3">
+          <Link href="/gift" className="text-[var(--accent)] hover:underline">
+            Or give it as a gift →
+          </Link>
+        </p>
         <p className="eyebrow mt-12 text-[var(--foreground-subtle)]">
           The Bronx, since 1959
         </p>
@@ -199,6 +204,11 @@ export default async function HomePage({
           <Link href="/signup" className="btn-primary inline-flex">
             Start your trial
           </Link>
+          <p className="text-sm mt-5">
+            <Link href="/gift" className="text-[var(--accent)] hover:underline">
+              Or give a membership as a gift →
+            </Link>
+          </p>
         </div>
       </section>
     </main>
