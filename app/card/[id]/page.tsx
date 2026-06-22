@@ -18,7 +18,11 @@ function resolve(id: string, r?: string) {
   const card = WHEEL_DECK.find((c) => c.id === id);
   if (!card) return null;
   const reversed = r === "1";
-  return { card, reversed, reading: reversed ? card.reversed : card.upright };
+  // A side may be a single fortune or a list; show the first as the canonical
+  // reading on the shared card so the link is stable.
+  const side = reversed ? card.reversed : card.upright;
+  const reading = Array.isArray(side) ? side[0] : side;
+  return { card, reversed, reading };
 }
 
 export async function generateMetadata({

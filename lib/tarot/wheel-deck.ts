@@ -22,10 +22,13 @@ export type WheelCard = {
   name: string;
   /** Public path to the card art. */
   image: string;
-  /** The upright reading, in the artist's voice. */
-  upright: string;
-  /** The reversed ("upside down") reading. */
-  reversed: string;
+  /**
+   * The upright reading(s), in the artist's voice. May be a single fortune or
+   * a list of fortunes for variety — the daily draw picks one (stable per day).
+   */
+  upright: string | string[];
+  /** The reversed ("upside down") reading(s). Single fortune or a list. */
+  reversed: string | string[];
 };
 
 export const WHEEL_DECK: WheelCard[] = [
@@ -241,10 +244,20 @@ export function drawWheelForUser(
   // A separate seed for orientation so it is independent of which card lands.
   const reversed = hashString(`${userId}:${dayKey}:orientation`) % 2 === 1;
   const card = WHEEL_DECK[index];
+
+  // Each side may hold a single fortune or a list. When it's a list, pick one
+  // deterministically for the day (a separate seed), so the same card can
+  // deliver a fresh fortune on a later day without ever changing mid-day.
+  const pool = reversed
+    ? Array.isArray(card.reversed) ? card.reversed : [card.reversed]
+    : Array.isArray(card.upright) ? card.upright : [card.upright];
+  const fortuneIndex =
+    pool.length > 1 ? hashString(`${userId}:${dayKey}:fortune`) % pool.length : 0;
+
   return {
     card,
     index,
     reversed,
-    reading: reversed ? card.reversed : card.upright,
+    reading: pool[fortuneIndex],
   };
 }
