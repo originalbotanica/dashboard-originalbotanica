@@ -48,11 +48,11 @@ export default async function TarotPullPage() {
 
       <div className="max-w-5xl mx-auto px-6 pt-16 text-center">
         <p className="eyebrow mb-3 text-[var(--foreground-muted)]">{dateLabel}</p>
-        <h1 className="display text-3xl md:text-5xl leading-tight">
-          Your card for today.
+        <h1 className="display text-3xl md:text-5xl leading-tight tracking-wide">
+          TAROT TODAY
         </h1>
         <p className="invocation text-[var(--foreground-muted)] mt-5 max-w-xl mx-auto leading-relaxed">
-          Take a breath. When you are ready, spin the wheel.
+          Take a deep cleansing breath &amp; spin the Tarot Fortune Wheel.
         </p>
       </div>
 

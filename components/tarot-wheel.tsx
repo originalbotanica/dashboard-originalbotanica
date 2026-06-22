@@ -93,6 +93,25 @@ export function TarotWheel({
     if (audioRef.current) audioRef.current.muted = muted;
   }, [muted]);
 
+  // Preload the music while the wheel is ready, so it starts the exact moment
+  // the member spins — no load latency between the turn and the first note.
+  useEffect(() => {
+    if (phase !== "ready") return;
+    if (audioRef.current) return;
+    if (reducedMotion()) return;
+    try {
+      const audio = new Audio(MUSIC_SRC);
+      audio.loop = true;
+      audio.preload = "auto";
+      audio.muted = muted;
+      audio.volume = 0.6;
+      audio.load();
+      audioRef.current = audio;
+    } catch {
+      /* audio is optional */
+    }
+  }, [phase, muted]);
+
   // Fully stop and release the music. Used on fade-out, before a new spin,
   // and on unmount so the loop never outlives the page.
   const stopAudio = useCallback(() => {
@@ -205,7 +224,7 @@ export function TarotWheel({
       "translate(-50%, -50%) perspective(1100px) scale(0.5) rotateX(48deg) rotateZ(-6deg)";
     void el.offsetWidth;
     el.style.transition =
-      "transform 0.9s cubic-bezier(0.2,0.75,0.2,1), opacity 0.5s ease";
+      "transform 1.6s cubic-bezier(0.2,0.75,0.2,1), opacity 0.7s ease";
     el.style.opacity = "1";
     el.style.transform =
       "translate(-50%, -50%) perspective(1100px) scale(1.06) rotateX(-11deg) rotateY(8deg)";
@@ -216,7 +235,7 @@ export function TarotWheel({
     const block = revealRef.current;
     if (block) {
       const r = block.getBoundingClientRect();
-      smoothScrollTo(r.top + window.scrollY + r.height / 2 - vh / 2, 600);
+      smoothScrollTo(r.top + window.scrollY + r.height / 2 - vh / 2, 900);
     }
 
     const timers: number[] = [];
@@ -230,12 +249,12 @@ export function TarotWheel({
         const dy = r.top + r.height / 2 - window.innerHeight / 2;
         const k = r.width / presentRef.current.offsetWidth;
         presentRef.current.style.transition =
-          "transform 0.8s cubic-bezier(0.4,0,0.15,1)";
+          "transform 1.5s cubic-bezier(0.4,0,0.15,1)";
         presentRef.current.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) perspective(1100px) scale(${k}) rotateX(0deg) rotateY(0deg)`;
-      }, 1900),
+      }, 2500),
     );
 
-    timers.push(window.setTimeout(() => setPhase("revealed"), 2720));
+    timers.push(window.setTimeout(() => setPhase("revealed"), 4150));
 
     return () => timers.forEach(clearTimeout);
   }, [phase]);
@@ -293,15 +312,25 @@ export function TarotWheel({
     }
 
     setPhase("spinning");
-    stopAudio(); // release any prior loop before starting a fresh one
+    // Music begins the instant the wheel turns. The track is preloaded while
+    // the wheel sits ready (see the preload effect), so play() fires with no
+    // network wait and the sound is in step with the very first rotation.
     try {
-      const audio = new Audio(MUSIC_SRC);
-      audio.loop = true;
-      audio.preload = "auto";
+      let audio = audioRef.current;
+      if (!audio) {
+        audio = new Audio(MUSIC_SRC);
+        audio.loop = true;
+        audio.preload = "auto";
+        audioRef.current = audio;
+      }
       audio.muted = muted;
       audio.volume = 0.6;
+      try {
+        audio.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
       audio.play().catch(() => {});
-      audioRef.current = audio;
     } catch {
       /* audio is optional */
     }
@@ -309,7 +338,7 @@ export function TarotWheel({
     if (ringRef.current) ringRef.current.style.transition = "none";
     lastTsRef.current = 0;
     rafRef.current = requestAnimationFrame(loop);
-  }, [phase, index, muted, loop, settle, stopAudio]);
+  }, [phase, index, muted, loop, settle]);
 
   const stop = useCallback(() => {
     if (phase !== "spinning") return;
@@ -451,7 +480,7 @@ export function TarotWheel({
               ? "When the right vibe hits, click the center again to stop the wheel."
               : phase === "stopping"
                 ? "The wheel is settling…"
-                : "One card waits for you today. Touch the center to spin the wheel."}
+                : "When the right vibe hits, stop the wheel to reveal your tarot fortune for today."}
           </p>
         ) : null}
 
