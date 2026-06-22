@@ -287,6 +287,30 @@ export default async function DashboardPage() {
         imageSrc={`${OB_CDN}/spiritual-baths-washes.png`}
         imageSide="left"
       />
+
+      {/* ── Gift a membership — a warm, distinct closing callout ───────── */}
+      <section
+        aria-label="Give the gift of guidance"
+        className="border-t border-[var(--border)]"
+      >
+        <div className="max-w-3xl mx-auto px-6 py-20 text-center">
+          <p className="eyebrow mb-4 text-[var(--foreground-muted)]">
+            Give the gift of guidance
+          </p>
+          <h2 className="display text-2xl md:text-4xl leading-tight mb-5">
+            Know someone walking a hard road?
+          </h2>
+          <p className="text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-xl mx-auto">
+            Give them a season at the botanica — daily tarot, dream
+            interpretation, a place to honor their ancestors, and a spiritualist
+            to talk with. A gift for a new practitioner, a grieving friend, or
+            anyone who could use a little light.
+          </p>
+          <Link href="/gift" className="btn-primary inline-flex">
+            Gift a membership
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }

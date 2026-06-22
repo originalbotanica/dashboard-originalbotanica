@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
@@ -135,6 +136,17 @@ export default async function AccountPage() {
             <StartMembershipButtons />
           </div>
         )}
+
+        <div className="border-t border-[var(--border)] pt-8 mb-8">
+          <p className="eyebrow mb-3 text-[var(--foreground-muted)]">Give a gift</p>
+          <p className="text-[var(--foreground-muted)] leading-relaxed mb-4">
+            Know someone who could use a little guidance? Give them a season at
+            the botanica.
+          </p>
+          <Link href="/gift" className="btn-ghost inline-flex">
+            Gift a membership
+          </Link>
+        </div>
 
         <div className="border-t border-[var(--border)] pt-8">
           <form action="/auth/signout" method="post">
