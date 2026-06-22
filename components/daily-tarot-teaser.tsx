@@ -1,11 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 
 /**
  * The dashboard teaser for the daily tarot card.
  *
- * Shows the card face down and invites the member to pull it. The reveal
- * itself does not happen here. Tapping the card or the button carries them
- * to the dedicated /tarot page, where the ritual of turning the card lives.
+ * Shows the tarot wheel and invites the member to pull their card. The spin
+ * and the reveal happen on the dedicated /tarot page, where the ritual of
+ * turning the wheel lives.
  *
  * Server component, no client JS: it is just a styled link. The actual card
  * draw and the personalized reading are generated on the /tarot page, so a
@@ -15,21 +16,22 @@ export function DailyTarotTeaser({ dateLabel }: { dateLabel: string }) {
   return (
     <section aria-label="Your card today" className="border-t border-[var(--border)]">
       <div className="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
-        {/* Face-down card — links to the pull page. */}
+        {/* The tarot wheel — links to the pull page. */}
         <div className="md:col-span-2 flex justify-center">
           <Link
             href="/tarot"
-            className="tarot-card"
+            className="group block w-full max-w-[320px]"
             aria-label="Go to your daily tarot pull"
           >
-            <span className="tarot-card-inner">
-              <span className="tarot-face tarot-back">
-                <span className="tarot-back-frame">
-                  <span className="tarot-back-star" />
-                  <span className="tarot-back-mark">Original Botanica</span>
-                  <span className="tarot-back-hint">Pull your card</span>
-                </span>
-              </span>
+            <Image
+              src="/tarot-wheel/wheel_full.png"
+              alt="The Original Botanica tarot wheel"
+              width={320}
+              height={323}
+              className="w-full h-auto drop-shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition-transform duration-700 ease-out group-hover:scale-[1.04] group-hover:rotate-12"
+            />
+            <span className="mt-5 block text-center text-[0.62rem] tracking-[0.24em] uppercase text-[var(--foreground-subtle)]">
+              Pull your card
             </span>
           </Link>
         </div>
