@@ -82,5 +82,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // The daily tarot must never be served from the browser's back/forward
+  // cache or disk cache — a stale copy would show a previous day's card with a
+  // locked wheel. no-store also opts the page out of bfcache entirely.
+  if (pathname.startsWith("/tarot")) {
+    supabaseResponse.headers.set("Cache-Control", "no-store, must-revalidate");
+  }
+
   return supabaseResponse;
 }

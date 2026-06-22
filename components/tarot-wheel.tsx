@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { WHEEL_DECK } from "@/lib/tarot/wheel-deck";
+import { WHEEL_DECK, botanicaDayKey } from "@/lib/tarot/wheel-deck";
 import { ShareCardButton } from "./share-card-button";
 
 /**
@@ -74,6 +74,57 @@ export function TarotWheel({
       ringRef.current.style.transform = `rotate(${rotationRef.current}deg)`;
     }
   };
+
+  // Self-heal a stale page. If this view was served for an earlier day —
+  // restored from the browser's back/forward cache, a long-open tab, or a
+  // cached document — reload once (cache-busted) to fetch today's card, so a
+  // member never sees an old card with a locked wheel.
+  useEffect(() => {
+    let today: string;
+    try {
+      today = botanicaDayKey();
+    } catch {
+      return;
+    }
+    if (today === dayKey) {
+      // Tidy: drop locks from previous days so storage doesn't accumulate.
+      try {
+        for (const k of Object.keys(localStorage)) {
+          if (k.startsWith("ob-tarot-wheel:") && k !== doneKey) {
+            localStorage.removeItem(k);
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    // Stale render — force a fresh fetch, once, with a cache-busting param.
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("d") !== today) {
+        url.searchParams.set("d", today);
+        window.location.replace(url.toString());
+      }
+    } catch {
+      window.location.reload();
+    }
+  }, [dayKey, doneKey]);
+
+  // Also catch back/forward-cache restores, where React effects don't re-run.
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => {
+      try {
+        if (e.persisted && botanicaDayKey() !== dayKey) {
+          window.location.reload();
+        }
+      } catch {
+        /* ignore */
+      }
+    };
+    window.addEventListener("pageshow", onShow);
+    return () => window.removeEventListener("pageshow", onShow);
+  }, [dayKey]);
 
   // On load: restore mute, and if today's card was already pulled, show it.
   useEffect(() => {
