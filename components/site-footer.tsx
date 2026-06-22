@@ -121,6 +121,14 @@ export function SiteFooter() {
                   Buy spiritual products
                 </a>
               </li>
+              <li>
+                <Link
+                  href="/gift"
+                  className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]"
+                >
+                  Gift a membership
+                </Link>
+              </li>
             </ul>
           </div>
 

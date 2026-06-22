@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { fulfillGiftPaid } from "@/lib/gift-fulfill";
 
 /**
  * Stripe webhook handler.
@@ -47,9 +48,21 @@ export async function POST(request: Request) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+
+        // Gift purchase (one-time payment) — fulfill and email.
+        const giftId = session.metadata?.gift_id ?? null;
+        if (giftId) {
+          const paymentIntentId =
+            typeof session.payment_intent === "string"
+              ? session.payment_intent
+              : (session.payment_intent?.id ?? null);
+          await fulfillGiftPaid(giftId, paymentIntentId);
+          break;
+        }
+
+        // Membership subscription checkout.
         const userId = session.metadata?.supabase_user_id ?? null;
         const subscriptionId = session.subscription as string | null;
-
         if (subscriptionId) {
           const sub = await stripe.subscriptions.retrieve(subscriptionId);
           await upsertSubscription(sub, userId);

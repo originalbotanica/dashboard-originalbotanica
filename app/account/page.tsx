@@ -48,6 +48,8 @@ export default async function AccountPage() {
       : "Active";
   } else if (sub.rawStatus === "past_due") {
     statusLine = "Payment past due";
+  } else if (sub.rawStatus === "gift") {
+    statusLine = "Gift membership — active";
   } else {
     statusLine = "No active membership";
   }
@@ -105,7 +107,17 @@ export default async function AccountPage() {
           </dl>
         </div>
 
-        {sub.isActive ? (
+        {sub.rawStatus === "gift" ? (
+          <div className="mb-12">
+            <h2 className="display text-2xl mb-3">Your gift membership is active.</h2>
+            <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
+              Every tool is open to you{renews ? ` through ${renews}` : ""}. When your
+              gift ends, you can continue your membership any time — your altar,
+              ancestors, and saved rituals will be here waiting.
+            </p>
+            <StartMembershipButtons />
+          </div>
+        ) : sub.isActive ? (
           <div className="mb-12">
             <p className="text-[var(--foreground-muted)] leading-relaxed mb-5">
               Update your payment method, change or cancel your plan, and view

@@ -44,8 +44,9 @@ export function priceIdFor(plan: PlanKey): string {
 /**
  * Human-readable plan name for emails, receipts, account UI.
  */
-export function planLabel(plan: PlanKey | null): string {
+export function planLabel(plan: PlanKey | "gift" | null): string {
   if (plan === "annual") return "Annual ($199.95/year)";
   if (plan === "monthly") return "Monthly ($24.95/month)";
+  if (plan === "gift") return "Gift membership";
   return "No active plan";
 }
