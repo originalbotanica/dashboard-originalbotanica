@@ -176,8 +176,8 @@ export function SiteFooter() {
         </div>
 
         <div className="border-t border-[var(--border)] mt-12 pt-6 text-center">
-          <p className="text-xs text-[var(--foreground-subtle)]">
-            © {year} Original Botanica. All rights reserved.{" "}
+          <p className="text-sm md:text-base text-[var(--foreground-muted)] tracking-wide">
+            Copyright © {year} Original Botanica. All Rights Reserved.{" "}
             <a href={STORE} className="hover:text-[var(--accent)]">
               originalbotanica.com
             </a>
