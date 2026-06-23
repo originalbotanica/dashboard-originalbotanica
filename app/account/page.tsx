@@ -148,6 +148,15 @@ export default async function AccountPage() {
           </Link>
         </div>
 
+        <p className="text-xs text-[var(--foreground-subtle)] mb-8">
+          Your readings, dreams, and ancestors are private to your account. See
+          our{" "}
+          <Link href="/privacy" className="underline hover:text-[var(--accent)]">
+            privacy policy
+          </Link>
+          .
+        </p>
+
         <div className="border-t border-[var(--border)] pt-8">
           <form action="/auth/signout" method="post">
             <button

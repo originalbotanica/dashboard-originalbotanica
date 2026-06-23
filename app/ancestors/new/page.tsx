@@ -43,9 +43,13 @@ export default async function NewAncestorPage({
         <h1 className="display text-3xl md:text-4xl mb-4 leading-tight">
           Who are you remembering?
         </h1>
-        <p className="text-[var(--foreground-muted)] leading-relaxed mb-10">
+        <p className="text-[var(--foreground-muted)] leading-relaxed mb-4">
           Only their name is required. Everything else lets you say more
           when you visit their candle later.
+        </p>
+        <p className="text-sm text-[var(--foreground-subtle)] mb-10">
+          This memorial is private to your account. Nothing is shared unless you
+          create a family link yourself.
         </p>
 
         {params.error && <p className="form-error mb-6">{params.error}</p>}

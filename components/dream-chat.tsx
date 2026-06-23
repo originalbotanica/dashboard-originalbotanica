@@ -243,6 +243,9 @@ export function DreamChat({
         <p className="text-xs text-[var(--foreground-subtle)] mt-2">
           Press Enter to send. Shift+Enter for a new line.
         </p>
+        <p className="text-xs text-[var(--foreground-subtle)] mt-1">
+          Your dreams are private to your account.
+        </p>
       </form>
     </div>
   );
