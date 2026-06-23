@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useT } from "./locale-provider";
 
 /**
  * Route-aware site footer.
  *
  * - Full footer on the public/marketing surfaces (landing, /tools/*, account,
  *   shared card pages) — brand, navigation, shop, and legal links.
- * - Slim footer everywhere else (the immersive member tools, auth/onboarding) —
- *   just copyright + legal, so it never crowds the ritual screens but the
- *   Privacy/Terms links are always one tap away.
- * - Hidden on auth callback routes.
+ * - Slim footer everywhere else (the immersive member tools, auth/onboarding).
+ * - Hidden on auth callback routes. Labels localized (EN/ES).
  */
 
 const STORE = "https://originalbotanica.com";
@@ -19,23 +18,24 @@ const CONTACT = "mailto:info@originalbotanica.com";
 const PHONE_TEL = "tel:+17183679589";
 const PHONE_DISPLAY = "(718) 367-9589";
 
-const TOOL_LINKS: { label: string; href: string }[] = [
-  { label: "Tarot", href: "/tools/tarot" },
-  { label: "Astrology", href: "/tools/astrology" },
-  { label: "Dreams", href: "/tools/dreams" },
-  { label: "Virtual altar", href: "/tools/virtual-altar" },
-  { label: "Ancestors", href: "/tools/ancestors" },
-  { label: "Rituals", href: "/tools/rituals" },
+const TOOL_LINKS: { key: string; href: string }[] = [
+  { key: "nav.tarot", href: "/tools/tarot" },
+  { key: "nav.astrology", href: "/tools/astrology" },
+  { key: "nav.dreams", href: "/tools/dreams" },
+  { key: "nav.altar", href: "/tools/virtual-altar" },
+  { key: "nav.ancestors", href: "/tools/ancestors" },
+  { key: "nav.rituals", href: "/tools/rituals" },
 ];
 
-const LEGAL_LINKS: { label: string; href: string }[] = [
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-  { label: "Cancellation & refunds", href: "/cancellation" },
+const LEGAL_LINKS: { key: string; href: string }[] = [
+  { key: "footer.privacy", href: "/privacy" },
+  { key: "footer.terms", href: "/terms" },
+  { key: "footer.cancellation", href: "/cancellation" },
 ];
 
 export function SiteFooter() {
   const pathname = usePathname() || "/";
+  const t = useT();
   if (pathname.startsWith("/auth")) return null;
 
   const isFull =
@@ -60,14 +60,14 @@ export function SiteFooter() {
                 href={l.href}
                 className="nav-link text-xs text-[var(--foreground-subtle)] hover:text-[var(--accent)]"
               >
-                {l.label}
+                {t(l.key)}
               </Link>
             ))}
             <a
               href={CONTACT}
               className="nav-link text-xs text-[var(--foreground-subtle)] hover:text-[var(--accent)]"
             >
-              Contact
+              {t("footer.contact")}
             </a>
             <a
               href={PHONE_TEL}
@@ -89,13 +89,13 @@ export function SiteFooter() {
             Original Botanica
           </Link>
           <p className="eyebrow mt-3 text-[var(--foreground-subtle)]">
-            Spiritual products · the Bronx, since 1959
+            {t("footer.tagline")}
           </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left">
           <div>
-            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">Explore</p>
+            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">{t("footer.explore")}</p>
             <ul className="space-y-2.5">
               {TOOL_LINKS.map((l) => (
                 <li key={l.href}>
@@ -103,7 +103,7 @@ export function SiteFooter() {
                     href={l.href}
                     className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]"
                   >
-                    {l.label}
+                    {t(l.key)}
                   </Link>
                 </li>
               ))}
@@ -111,14 +111,14 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">Shop</p>
+            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">{t("footer.shop")}</p>
             <ul className="space-y-2.5">
               <li>
                 <a
                   href={STORE}
                   className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]"
                 >
-                  Buy spiritual products
+                  {t("footer.shopProducts")}
                 </a>
               </li>
               <li>
@@ -126,30 +126,30 @@ export function SiteFooter() {
                   href="/gift"
                   className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]"
                 >
-                  Gift a membership
+                  {t("footer.giftMembership")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">Account</p>
+            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">{t("footer.account")}</p>
             <ul className="space-y-2.5">
               <li>
                 <Link href="/account" className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]">
-                  My account
+                  {t("footer.myAccount")}
                 </Link>
               </li>
               <li>
                 <Link href="/login" className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]">
-                  Sign in
+                  {t("footer.signIn")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">Legal</p>
+            <p className="eyebrow mb-4 text-[var(--foreground-subtle)]">{t("footer.legal")}</p>
             <ul className="space-y-2.5">
               {LEGAL_LINKS.map((l) => (
                 <li key={l.href}>
@@ -157,18 +157,18 @@ export function SiteFooter() {
                     href={l.href}
                     className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]"
                   >
-                    {l.label}
+                    {t(l.key)}
                   </Link>
                 </li>
               ))}
               <li>
                 <a href={CONTACT} className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]">
-                  Contact
+                  {t("footer.contact")}
                 </a>
               </li>
               <li>
                 <a href={PHONE_TEL} className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]">
-                  Call {PHONE_DISPLAY}
+                  {t("footer.callPhone", { phone: PHONE_DISPLAY })}
                 </a>
               </li>
             </ul>

@@ -96,6 +96,30 @@ export default async function DashboardPage() {
   const moonGuide = moonGuidance(moon.bucket);
   const sky = getTodaysSky();
 
+  const PHASE_KEYS: Record<string, string> = {
+    "New Moon": "moon.phaseNew",
+    "Waxing Crescent": "moon.phaseWaxingCrescent",
+    "First Quarter": "moon.phaseFirstQuarter",
+    "Waxing Gibbous": "moon.phaseWaxingGibbous",
+    "Full Moon": "moon.phaseFull",
+    "Waning Gibbous": "moon.phaseWaningGibbous",
+    "Last Quarter": "moon.phaseLastQuarter",
+    "Waning Crescent": "moon.phaseWaningCrescent",
+  };
+  const GUIDE_KEYS: Record<string, string> = {
+    new: "moon.guideNew",
+    waxing: "moon.guideWaxing",
+    full: "moon.guideFull",
+    waning: "moon.guideWaning",
+  };
+  const moonPhaseLabel = PHASE_KEYS[moon.phaseName]
+    ? tr(PHASE_KEYS[moon.phaseName])
+    : moon.phaseName;
+  const moonSignLabel = tr("sign." + String(sky.moonSign).toLowerCase());
+  const moonGuideTitle = GUIDE_KEYS[moon.bucket]
+    ? tr(GUIDE_KEYS[moon.bucket])
+    : moonGuide.title;
+
   return (
     <main className="flex-1">
       {/* ── 1. Hero — candlelit invocation ────────────────────────────── */}
@@ -161,12 +185,12 @@ export default async function DashboardPage() {
           fallback={
             <>
               <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-                {sunSign ? `${sunSign}.` : "Welcome to the practice."}
+                {sunSign ? `${sunSign}.` : tr("dash.heroWelcomeTitle")}
               </h1>
               <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed animate-pulse">
                 {sunSign
-                  ? "The astrologer is reading for you..."
-                  : "Add your birth details and the astrologer will read for you each morning."}
+                  ? tr("dash.heroReadingFor")
+                  : tr("dash.heroWelcomeBody")}
               </p>
             </>
           }
@@ -174,7 +198,7 @@ export default async function DashboardPage() {
           <HeroInvocation sunSign={sunSign} horoscopePromise={horoscopePromise} />
         </Suspense>
 
-        <MembershipPrompt sub={sub} trialLeft={trialLeft} />
+        <MembershipPrompt sub={sub} trialLeft={trialLeft} locale={locale} />
       </section>
 
       {/* ── Tonight's moon — compact daily touchpoint ─────────────────── */}
@@ -196,10 +220,11 @@ export default async function DashboardPage() {
                 {tr("dash.moonEyebrow")}
               </p>
               <p className="display text-xl md:text-2xl leading-tight">
-                {moon.phaseName} in {sky.moonSign} · {moon.illuminationPct}% lit
+                {moonPhaseLabel} {tr("moon.in")} {moonSignLabel} · {moon.illuminationPct}
+                {tr("moon.litSuffix")}
               </p>
               <p className="text-[var(--foreground-muted)] text-sm leading-relaxed mt-1">
-                {moonGuide.title}
+                {moonGuideTitle}
               </p>
             </div>
             <span className="nav-link text-[var(--accent)] hidden sm:inline-flex items-center gap-2 shrink-0">
@@ -214,11 +239,11 @@ export default async function DashboardPage() {
       <Suspense
         fallback={
           <ToolSection
-            eyebrow="Today's reading"
-            headline="Your chart, your reading."
-            body="The astrologer is reading for you. For a longer reading rooted in your full chart, speak with the astrologer."
+            eyebrow={tr("dash.astroEyebrow")}
+            headline={tr("dash.astroHeadline")}
+            body={tr("dash.astroBodyFallback")}
             href="/astrology"
-            linkLabel="Ask your astrologer"
+            linkLabel={tr("dash.astroLink")}
             imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
             imageSide="left"
           />
@@ -323,6 +348,8 @@ async function HeroInvocation({
   horoscopePromise: Promise<DailyHoroscope | null>;
 }) {
   const dailyHoroscope = await horoscopePromise;
+  const locale = await getLocale();
+  const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
   if (sunSign && dailyHoroscope) {
     return (
       <>
@@ -347,11 +374,10 @@ async function HeroInvocation({
     return (
       <>
         <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-          {sunSign}. The candle is lit.
+          {tr("dash.heroSignCandle", { sign: sunSign })}
         </h1>
         <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-          Today&apos;s reading could not be drawn just now. Refresh in a
-          moment, or ask the astrologer directly.
+          {tr("dash.heroSignError")}
         </p>
       </>
     );
@@ -359,11 +385,10 @@ async function HeroInvocation({
   return (
     <>
       <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-        Welcome to the practice.
+        {tr("dash.heroWelcomeTitle")}
       </h1>
       <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-        Add your birth details and the astrologer will read for you each
-        morning.
+        {tr("dash.heroWelcomeBody")}
       </p>
     </>
   );
@@ -381,9 +406,11 @@ async function AstrologySection({
   horoscopePromise: Promise<DailyHoroscope | null>;
 }) {
   const dailyHoroscope = await horoscopePromise;
+  const locale = await getLocale();
+  const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
   return (
     <ToolSection
-      eyebrow="Today's reading"
+      eyebrow={tr("dash.astroEyebrow")}
       headlineNode={
         dailyHoroscope ? (
           <ProseLine
@@ -392,16 +419,16 @@ async function AstrologySection({
             optimisticBaseUrl={OB_BASE_URL}
           />
         ) : (
-          "Your chart, your reading."
+          tr("dash.astroHeadline")
         )
       }
       body={
         dailyHoroscope
-          ? `Drawn from your ${sunSign} placement. For a longer reading rooted in your full chart, speak with the astrologer.`
-          : "Add your birth date and city to receive a daily reading personal to you, and to begin conversations with the astrologer."
+          ? tr("dash.astroBodyFrom", { sign: sunSign ?? "" })
+          : tr("dash.astroBodyAdd")
       }
       href="/astrology"
-      linkLabel="Ask your astrologer"
+      linkLabel={tr("dash.astroLink")}
       imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
       imageSide="left"
     />
