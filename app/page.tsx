@@ -3,16 +3,62 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { MarketingHeader } from "@/components/marketing-header";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 /**
- * Marketing homepage (logged out).
- *
- * Visual treatment matches the member dashboard. Candle photograph as
- * a backdrop, minimal text on a warm vignette. The whole page reads
- * like an invocation, not a SaaS landing.
+ * Marketing homepage (logged out). Sells the membership and drives the
+ * 7-day free trial. Dark, candlelit, mobile-first, EN/ES. One primary CTA.
  */
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
+
+const OG_IMAGE = `${OB_CDN}/Banners/original-botanica.png`;
+const OG_DESC =
+  "A 7-day free trial into Original Botanica's spiritual membership: daily tarot, your birth chart, dream interpretation, a virtual altar, an ancestors altar, 400+ rituals — plus 10% off everything at the botanica. A real Bronx botanica, serving practitioners since 1959.";
+
+export const metadata = {
+  title: "Your spiritual home, online",
+  description: OG_DESC,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Original Botanica — your spiritual home, online",
+    description: OG_DESC,
+    url: "/",
+    type: "website",
+    images: [{ url: OG_IMAGE, width: 1200, height: 800, alt: "Original Botanica" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Original Botanica — your spiritual home, online",
+    description: OG_DESC,
+    images: [OG_IMAGE],
+  },
+};
+
+/** Real customer testimonials from originalbotanica.com/testimonials (brand proof). */
+const TESTIMONIALS: { quote: string; name: string }[] = [
+  {
+    quote:
+      "I felt like a child opening up Christmas gifts. I LOVE what I have… the herbs are green and fresh. I had no clue about this Botanica. WOW!",
+    name: "Keisha H.",
+  },
+  {
+    quote:
+      "I love this shop! Thank you for providing excellent customer service online. I do hope to stop in the actual physical store someday.",
+    name: "Charity B.",
+  },
+  {
+    quote:
+      "I order supplies from Original to stock my store as well as for personal use. They have THE best candles! Highly recommend!",
+    name: "Leslie Y.",
+  },
+  {
+    quote:
+      "These products from Original Botanica are the best. This is the only Botanica shop I will ever purchase from.",
+    name: "Eileen O.",
+  },
+];
 
 export default async function HomePage({
   searchParams,
@@ -56,11 +102,15 @@ export default async function HomePage({
   }
 
   // Case 3: logged out — marketing.
+  const locale = await getLocale();
+  const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
+
   return (
     <main className="flex-1">
       <MarketingHeader />
-      {/* Hero with candle backdrop */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-28 pb-24 overflow-hidden">
+
+      {/* ── Hero ──────────────────────────────────────────────────────── */}
+      <section className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-6 pt-28 pb-20 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
             src={`${OB_CDN}/spiritual-candles.png`}
@@ -85,96 +135,195 @@ export default async function HomePage({
           width={140}
           height={100}
           priority
-          className="h-auto w-[120px] md:w-[140px] mb-10"
+          className="h-auto w-[110px] md:w-[140px] mb-8"
         />
-        <h1 className="display text-5xl md:text-6xl mb-8 max-w-3xl leading-tight">
-          Your spiritual home, online.
+        <h1 className="display text-4xl md:text-6xl mb-6 max-w-3xl leading-tight">
+          {tr("lp.heroTitle")}
         </h1>
-        <p className="text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-12 max-w-2xl">
-          Daily tarot. Personal astrology. Dream interpretation. Your virtual
-          altar. A flame for those who came before. A library of rituals from
-          sixty-six years of practice in the Bronx.
+        <p className="text-base md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-2xl">
+          {tr("lp.heroSub")}
         </p>
-        <div className="flex flex-wrap gap-4 justify-center">
-          <Link href="/signup" className="btn-primary">
-            Start 7-day free trial
-          </Link>
-          <Link href="/login" className="btn-ghost">
-            Sign in
-          </Link>
-        </div>
-        <p className="text-sm text-[var(--foreground-muted)] mt-6">
-          $24.95/month or $199.95/year. 7 days free, cancel anytime.
+        <p className="text-sm text-[var(--foreground-subtle)] mb-9 max-w-xl leading-relaxed">
+          {tr("lp.heroWhoFor")}
+        </p>
+        <Link href="/signup" className="btn-primary text-base">
+          {tr("lp.heroCta")}
+        </Link>
+        <p className="text-sm text-[var(--foreground-muted)] mt-5">
+          {tr("lp.heroMicro")}
         </p>
         <p className="text-sm mt-3">
           <Link href="/gift" className="text-[var(--accent)] hover:underline">
-            Or give it as a gift →
+            {tr("lp.heroGift")}
           </Link>
         </p>
         <p className="eyebrow mt-12 text-[var(--foreground-subtle)]">
-          The Bronx, since 1959
+          {tr("lp.heroTrust")}
         </p>
       </section>
 
-      {/* What's inside — three-up with imagery */}
+      {/* ── The 10% discount — headline benefit ───────────────────────── */}
+      <section className="border-t border-[var(--border)]">
+        <div className="max-w-3xl mx-auto px-6 py-20 md:py-24 text-center">
+          <p className="eyebrow mb-4 text-[var(--accent)]">{tr("lp.discountEyebrow")}</p>
+          <h2 className="display text-3xl md:text-4xl mb-5 leading-tight">
+            {tr("lp.discountTitle")}
+          </h2>
+          <p className="text-[var(--foreground-muted)] leading-relaxed mb-6 max-w-xl mx-auto">
+            {tr("lp.discountBody")}
+          </p>
+          <p className="text-sm text-[var(--foreground-subtle)] max-w-md mx-auto">
+            {tr("lp.discountTerms")}
+          </p>
+        </div>
+      </section>
+
+      {/* ── The tools ─────────────────────────────────────────────────── */}
       <section
-        aria-label="What's inside the membership"
+        aria-label={tr("lp.toolsTitle")}
         className="border-t border-[var(--border)]"
       >
-        <div className="max-w-5xl mx-auto px-6 py-24">
-          <p className="eyebrow mb-3 text-center">What you join</p>
-          <h2 className="display text-3xl md:text-4xl mb-16 text-center max-w-2xl mx-auto leading-tight">
-            Seven tools. One practice.
+        <div className="max-w-5xl mx-auto px-6 py-20 md:py-24">
+          <p className="eyebrow mb-3 text-center">{tr("lp.toolsEyebrow")}</p>
+          <h2 className="display text-3xl md:text-4xl mb-14 text-center max-w-2xl mx-auto leading-tight">
+            {tr("lp.toolsTitle")}
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <FeatureCard
-              href="/tools/astrology"
-              imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
-              title="Your astrologer"
-              body="Trained on your chart. Speaks Western, Lucumí, Espiritismo, folk Catholic. Honest about hard transits."
-            />
-            <FeatureCard
-              href="/tools/dreams"
-              imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
-              title="Dream interpretation"
-              body="Describe a dream while it's still fresh. Symbols read through the traditions. A small ritual to honor it."
-            />
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
             <FeatureCard
               href="/tools/tarot"
               imageSrc="/tarot-wheel/wheel_full.png"
               imageFit="contain"
-              title="Daily tarot"
-              body="Spin the wheel for your card today — one of 21 hand-painted cards, upright or upside down, with its meaning to carry."
+              title={tr("lp.toolTarotTitle")}
+              body={tr("lp.toolTarotBody")}
+            />
+            <FeatureCard
+              href="/tools/astrology"
+              imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+              title={tr("lp.toolAstroTitle")}
+              body={tr("lp.toolAstroBody")}
+            />
+            <FeatureCard
+              href="/tools/dreams"
+              imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+              title={tr("lp.toolDreamsTitle")}
+              body={tr("lp.toolDreamsBody")}
             />
             <FeatureCard
               href="/tools/virtual-altar"
               imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
-              title="Virtual altar"
-              body="Light a candle for an intention. For protection. For someone you love who needs the prayer."
+              title={tr("lp.toolAltarTitle")}
+              body={tr("lp.toolAltarBody")}
             />
             <FeatureCard
               href="/tools/ancestors"
               imageSrc={`${OB_CDN}/spiritual-candles.png`}
-              title="Ancestors altar"
-              body="A flame for those who came before. Memorialize the ones you carry. Their names lit, their stories with you."
+              title={tr("lp.toolAncestorsTitle")}
+              body={tr("lp.toolAncestorsBody")}
             />
             <FeatureCard
               href="/tools/rituals"
               imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
-              title="Rituals library"
-              body="Sixty-six years of practice in the Bronx. Searchable. For grief, protection, love that needs to land."
+              title={tr("lp.toolRitualsTitle")}
+              body={tr("lp.toolRitualsBody")}
             />
-            <FeatureCard
-              href="/tools/discount"
-              imageSrc={`${OB_CDN}/spiritual-baths-washes.png`}
-              title="Member discount"
-              body="10% off everything at originalbotanica.com. Applied automatically at checkout."
-            />
+          </div>
+          <div className="text-center mt-14">
+            <Link href="/signup" className="btn-primary text-base">
+              {tr("lp.heroCta")}
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Closing CTA on warm backdrop */}
+      {/* ── Heritage / authenticity ───────────────────────────────────── */}
+      <section className="border-t border-[var(--border)]">
+        <div className="max-w-5xl mx-auto px-6 py-20 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="eyebrow mb-4 text-[var(--accent)]">{tr("lp.heritageEyebrow")}</p>
+            <h2 className="display text-3xl md:text-4xl mb-5 leading-tight">
+              {tr("lp.heritageTitle")}
+            </h2>
+            <p className="text-[var(--foreground-muted)] leading-relaxed">
+              {tr("lp.heritageBody")}
+            </p>
+          </div>
+          <div>
+            {/* PLACEHOLDER: drop /public/heritage/building-then-now.jpg (the
+                A&P -> Eligio's Botanica -> Original Products composite). Shows
+                automatically once the file is present. */}
+            <div
+              className="aspect-[4/3] rounded-xl border border-[var(--border)] overflow-hidden bg-[var(--surface)] flex items-end"
+              style={{
+                backgroundImage: "url('/heritage/building-then-now.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <span className="text-[10px] tracking-[0.2em] uppercase text-[var(--foreground-subtle)] m-3 px-2 py-1 rounded bg-[rgba(20,16,11,0.6)]">
+                {tr("lp.heritageCaption")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ──────────────────────────────────────────────── */}
+      <section className="border-t border-[var(--border)]">
+        <div className="max-w-5xl mx-auto px-6 py-20 md:py-24">
+          <p className="eyebrow mb-3 text-center">{tr("lp.testimonialsEyebrow")}</p>
+          <h2 className="display text-3xl md:text-4xl mb-3 text-center max-w-2xl mx-auto leading-tight">
+            {tr("lp.testimonialsTitle")}
+          </h2>
+          <p className="text-sm text-[var(--foreground-subtle)] text-center mb-14">
+            {tr("lp.testimonialsNote")}
+          </p>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {TESTIMONIALS.map((tm) => (
+              <figure
+                key={tm.name}
+                className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6"
+              >
+                <blockquote className="invocation text-[var(--foreground)] leading-relaxed">
+                  “{tm.quote}”
+                </blockquote>
+                <figcaption className="eyebrow mt-4 text-[var(--accent)]">
+                  {tm.name}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ / objections ──────────────────────────────────────────── */}
+      <section className="border-t border-[var(--border)]">
+        <div className="max-w-2xl mx-auto px-6 py-20 md:py-24">
+          <p className="eyebrow mb-3 text-center">{tr("lp.faqEyebrow")}</p>
+          <h2 className="display text-3xl md:text-4xl mb-12 text-center leading-tight">
+            {tr("lp.faqTitle")}
+          </h2>
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <details
+                key={n}
+                className="group border border-[var(--border)] rounded-lg bg-[var(--surface)] px-5 py-4"
+              >
+                <summary className="flex items-center justify-between cursor-pointer list-none text-[var(--foreground)] font-medium">
+                  {tr(`lp.faqQ${n}`)}
+                  <span className="text-[var(--accent)] ml-4 transition-transform group-open:rotate-45" aria-hidden>
+                    +
+                  </span>
+                </summary>
+                <p className="text-[var(--foreground-muted)] leading-relaxed mt-3 text-sm">
+                  {tr(`lp.faqA${n}`)}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA ─────────────────────────────────────────────────── */}
       <section className="relative border-t border-[var(--border)] overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
@@ -194,19 +343,17 @@ export default async function HomePage({
         </div>
         <div className="max-w-2xl mx-auto px-6 py-24 text-center">
           <h2 className="display text-3xl md:text-4xl mb-6 leading-tight">
-            Try it for seven days.
+            {tr("lp.finalTitle")}
           </h2>
           <p className="text-[var(--foreground-muted)] leading-relaxed mb-10 max-w-lg mx-auto">
-            Then $24.95/month, or $199.95/year. No charge until day eight.
-            Cancel any time. The chart, the astrologer, the altar, all open the
-            moment you join.
+            {tr("lp.finalBody")}
           </p>
-          <Link href="/signup" className="btn-primary inline-flex">
-            Start your trial
+          <Link href="/signup" className="btn-primary inline-flex text-base">
+            {tr("lp.heroCta")}
           </Link>
           <p className="text-sm mt-5">
             <Link href="/gift" className="text-[var(--accent)] hover:underline">
-              Or give a membership as a gift →
+              {tr("lp.heroGift")}
             </Link>
           </p>
         </div>
