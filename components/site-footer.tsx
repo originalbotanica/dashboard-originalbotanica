@@ -50,11 +50,8 @@ export function SiteFooter() {
     return (
       <footer className="border-t border-[var(--border)] mt-auto">
         <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-          <p className="text-sm text-[var(--foreground-muted)] tracking-wide">
-            Copyright © {year} Original Botanica. All Rights Reserved.{" "}
-            <a href={STORE} className="hover:text-[var(--accent)]">
-              originalbotanica.com
-            </a>
+          <p className="text-xs text-[var(--foreground-subtle)]">
+            © {year} Original Botanica · the Bronx, since 1959
           </p>
           <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {LEGAL_LINKS.map((l) => (
@@ -179,8 +176,8 @@ export function SiteFooter() {
         </div>
 
         <div className="border-t border-[var(--border)] mt-12 pt-6 text-center">
-          <p className="text-sm md:text-base text-[var(--foreground-muted)] tracking-wide">
-            Copyright © {year} Original Botanica. All Rights Reserved.{" "}
+          <p className="text-xs text-[var(--foreground-subtle)]">
+            © {year} Original Botanica. All rights reserved.{" "}
             <a href={STORE} className="hover:text-[var(--accent)]">
               originalbotanica.com
             </a>
