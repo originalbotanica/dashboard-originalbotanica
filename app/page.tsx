@@ -140,11 +140,8 @@ export default async function HomePage({
         <h1 className="display text-4xl md:text-6xl mb-6 max-w-3xl leading-tight">
           {tr("lp.heroTitle")}
         </h1>
-        <p className="text-base md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-2xl">
+        <p className="text-base md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-9 max-w-2xl">
           {tr("lp.heroSub")}
-        </p>
-        <p className="text-sm text-[var(--foreground-subtle)] mb-9 max-w-xl leading-relaxed">
-          {tr("lp.heroWhoFor")}
         </p>
         <Link href="/signup" className="btn-primary text-base">
           {tr("lp.heroCta")}
