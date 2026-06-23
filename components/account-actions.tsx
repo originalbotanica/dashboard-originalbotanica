@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "./locale-provider";
 
 /**
  * Client-side billing actions for the account page.
@@ -11,6 +12,7 @@ import { useState } from "react";
 
 /** Opens the Stripe Billing Portal (update card, change plan, cancel, invoices). */
 export function ManageBillingButton() {
+  const t = useT();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,13 +23,13 @@ export function ManageBillingButton() {
       const res = await fetch("/api/stripe/portal", { method: "POST" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.url) {
-        setError(data.error || "Could not open the billing portal. Try again.");
+        setError(data.error || t("account.errPortal"));
         setLoading(false);
         return;
       }
       window.location.href = data.url;
     } catch {
-      setError("Something went wrong. Try again.");
+      setError(t("account.errGeneric"));
       setLoading(false);
     }
   }
@@ -39,7 +41,7 @@ export function ManageBillingButton() {
         disabled={loading}
         className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Opening..." : "Manage billing"}
+        {loading ? t("account.opening") : t("account.manageBilling")}
       </button>
       {error && <p className="form-error mt-3">{error}</p>}
     </div>
@@ -48,6 +50,7 @@ export function ManageBillingButton() {
 
 /** Starts Stripe Checkout for a chosen plan (7-day trial). */
 export function StartMembershipButtons() {
+  const t = useT();
   const [loading, setLoading] = useState<null | "monthly" | "annual">(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,13 +65,13 @@ export function StartMembershipButtons() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.url) {
-        setError(data.error || "Could not start checkout. Try again.");
+        setError(data.error || t("account.errCheckout"));
         setLoading(null);
         return;
       }
       window.location.href = data.url;
     } catch {
-      setError("Something went wrong. Try again.");
+      setError(t("account.errGeneric"));
       setLoading(null);
     }
   }
@@ -81,14 +84,14 @@ export function StartMembershipButtons() {
           disabled={loading !== null}
           className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading === "monthly" ? "Starting..." : "Monthly · $24.95/mo"}
+          {loading === "monthly" ? t("account.starting") : t("account.monthly")}
         </button>
         <button
           onClick={() => start("annual")}
           disabled={loading !== null}
           className="btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading === "annual" ? "Starting..." : "Annual · $199.95/yr"}
+          {loading === "annual" ? t("account.starting") : t("account.annual")}
         </button>
       </div>
       {error && <p className="form-error mt-3">{error}</p>}

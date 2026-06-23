@@ -17,6 +17,8 @@ import { getMoon, moonGuidance } from "@/lib/astrology/moon";
 import { getTodaysSky } from "@/lib/astrology/sky";
 import { MoonPhase } from "@/components/moon-phase";
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Your practice today",
@@ -61,9 +63,16 @@ export default async function DashboardPage() {
   // finish onboarding first. (Tool pages already do this.)
   if (!profile?.first_name) redirect("/profile-setup");
 
+  const locale = await getLocale();
+  const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
+
   const hour = new Date().getHours();
   const greeting =
-    hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    hour < 12
+      ? tr("dash.greetingMorning")
+      : hour < 18
+        ? tr("dash.greetingAfternoon")
+        : tr("dash.greetingEvening");
   const displayName = profile?.first_name || "friend";
 
   const sunSign = profile?.sun_sign || null;
@@ -76,21 +85,10 @@ export default async function DashboardPage() {
       ? getOrGenerateDailyHoroscope(sunSign).catch(() => null)
       : Promise.resolve(null);
 
-  const today = new Date().toLocaleDateString("en-US", {
+  const today = new Date().toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
-  });
-
-  // Label for the tarot teaser copy. The actual card draw and personalized
-  // reading happen on the dedicated /tarot page, so the dashboard stays light
-  // and costs no generation for members who do not open the pull.
-  const tarotDateLabel = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "America/New_York",
   });
 
   // Tonight's moon — a small daily touchpoint. Pure calculation, no API.
@@ -195,7 +193,7 @@ export default async function DashboardPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="eyebrow mb-1 text-[var(--foreground-muted)]">
-                Tonight&apos;s moon
+                {tr("dash.moonEyebrow")}
               </p>
               <p className="display text-xl md:text-2xl leading-tight">
                 {moon.phaseName} in {sky.moonSign} · {moon.illuminationPct}% lit
@@ -205,7 +203,7 @@ export default async function DashboardPage() {
               </p>
             </div>
             <span className="nav-link text-[var(--accent)] hidden sm:inline-flex items-center gap-2 shrink-0">
-              The lunar guide
+              {tr("dash.lunarGuide")}
               <span aria-hidden>→</span>
             </span>
           </div>
@@ -231,58 +229,58 @@ export default async function DashboardPage() {
 
       {/* ── 3. Dreams — image right ───────────────────────────────────── */}
       <ToolSection
-        eyebrow="Dreams"
-        headline="What did the night bring?"
-        body="Describe a dream while it's still fresh. The interpretation honors Lucumí, Espiritismo, folk Catholic, and Western traditions. Every dream ends with a ritual."
+        eyebrow={tr("dash.dreamsEyebrow")}
+        headline={tr("dash.dreamsHeadline")}
+        body={tr("dash.dreamsBody")}
         href="/dreams/new"
-        linkLabel="Interpret a dream"
+        linkLabel={tr("dash.dreamsLink")}
         imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
         imageSide="right"
       />
 
       {/* ── 4. Daily tarot — teaser linking to the dedicated pull page ─── */}
-      <DailyTarotTeaser dateLabel={tarotDateLabel} />
+      <DailyTarotTeaser />
 
       {/* ── 5. Virtual altar — image right ────────────────────────────── */}
       <ToolSection
-        eyebrow="Virtual altar"
-        headline="Light a candle."
-        body="For an intention. For protection. For someone you love who needs the prayer. Choose your candle, write your petition, and let it burn on your altar. Add it to the community altar so others hold the intention with you."
+        eyebrow={tr("dash.altarEyebrow")}
+        headline={tr("dash.altarHeadline")}
+        body={tr("dash.altarBody")}
         href="/altar/virtual"
-        linkLabel="Light a candle"
+        linkLabel={tr("dash.altarLink")}
         imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
         imageSide="right"
       />
 
       {/* ── 6. Ancestors altar — image left ───────────────────────────── */}
       <ToolSection
-        eyebrow="Ancestors altar"
-        headline="A flame for those who came before."
-        body="Memorialize the ones you carry. Their names lit. Their stories with you. Share a private link with family so they can add their light."
+        eyebrow={tr("dash.ancestorsEyebrow")}
+        headline={tr("dash.ancestorsHeadline")}
+        body={tr("dash.ancestorsBody")}
         href="/ancestors"
-        linkLabel="Visit your ancestors"
+        linkLabel={tr("dash.ancestorsLink")}
         imageSrc={`${OB_CDN}/spiritual-candles.png`}
         imageSide="left"
       />
 
       {/* ── 7. Rituals library — image right ──────────────────────────── */}
       <ToolSection
-        eyebrow="The rituals library"
-        headline="More than four hundred rituals, organized by purpose."
-        body="Money drawing. Uncrossing. Road opening. Protection. Love that needs to land. Real workings from sixty-six years of practice, each with its steps, its supplies, and the day to do it. Search by your need and save the ones you return to."
+        eyebrow={tr("dash.ritualsEyebrow")}
+        headline={tr("dash.ritualsHeadline")}
+        body={tr("dash.ritualsBody")}
         href="/rituals"
-        linkLabel="Browse the library"
+        linkLabel={tr("dash.ritualsLink")}
         imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
         imageSide="right"
       />
 
       {/* ── 8. Member benefit — image left ────────────────────────────── */}
       <ToolSection
-        eyebrow="A member benefit"
-        headline="10% off at the botanica."
-        body="Sign in to originalbotanica.com with the same email and your discount applies automatically at checkout. Every candle, oil, herb, and bath."
+        eyebrow={tr("dash.benefitEyebrow")}
+        headline={tr("dash.benefitHeadline")}
+        body={tr("dash.benefitBody")}
         href="https://originalbotanica.com"
-        linkLabel="Shop the botanica"
+        linkLabel={tr("dash.benefitLink")}
         external
         imageSrc={`${OB_CDN}/spiritual-baths-washes.png`}
         imageSide="left"
@@ -295,19 +293,16 @@ export default async function DashboardPage() {
       >
         <div className="max-w-3xl mx-auto px-6 py-20 text-center">
           <p className="eyebrow mb-4 text-[var(--foreground-muted)]">
-            Give the gift of guidance
+            {tr("dash.giftEyebrow")}
           </p>
           <h2 className="display text-2xl md:text-4xl leading-tight mb-5">
-            Know someone walking a hard road?
+            {tr("dash.giftHeadline")}
           </h2>
           <p className="text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-xl mx-auto">
-            Give them a season at the botanica — daily tarot, dream
-            interpretation, a place to honor their ancestors, and a spiritualist
-            to talk with. A gift for a new practitioner, a grieving friend, or
-            anyone who could use a little light.
+            {tr("dash.giftBody")}
           </p>
           <Link href="/gift" className="btn-primary inline-flex">
-            Gift a membership
+            {tr("dash.giftCta")}
           </Link>
         </div>
       </section>

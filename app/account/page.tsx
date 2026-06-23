@@ -3,7 +3,8 @@ import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
-import { planLabel } from "@/lib/stripe";
+import { getLocale } from "@/lib/i18n/server";
+import { t, type Locale } from "@/lib/i18n/dictionary";
 import {
   ManageBillingButton,
   StartMembershipButtons,
@@ -11,13 +12,20 @@ import {
 
 export const metadata = { title: "Your account" };
 
-function formatDate(d: Date | null): string | null {
+function formatDate(d: Date | null, locale: Locale): string | null {
   if (!d) return null;
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+}
+
+function planLabelKey(plan: string | null): string | null {
+  if (plan === "monthly") return "account.planMonthly";
+  if (plan === "annual") return "account.planAnnual";
+  if (plan === "gift") return "account.planGift";
+  return null;
 }
 
 export default async function AccountPage() {
@@ -27,6 +35,9 @@ export default async function AccountPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const locale = await getLocale();
+  const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("first_name")
@@ -35,25 +46,29 @@ export default async function AccountPage() {
 
   const sub = await getSubscriptionStatus(user.id);
   const trialLeft = trialDaysLeft(sub);
-  const renews = formatDate(sub.currentPeriodEnd);
+  const renews = formatDate(sub.currentPeriodEnd, locale);
 
   let statusLine: string;
   if (sub.isTrialing) {
     statusLine =
       trialLeft === 0
-        ? "Free trial — ends today"
-        : `Free trial — ${trialLeft} ${trialLeft === 1 ? "day" : "days"} left`;
+        ? tr("account.statusTrialToday")
+        : trialLeft === 1
+          ? tr("account.statusTrialDay")
+          : tr("account.statusTrialDays", { n: trialLeft ?? 0 });
   } else if (sub.rawStatus === "active") {
     statusLine = sub.cancelAtPeriodEnd
-      ? "Active — cancels at period end"
-      : "Active";
+      ? tr("account.statusActiveCancel")
+      : tr("account.statusActive");
   } else if (sub.rawStatus === "past_due") {
-    statusLine = "Payment past due";
+    statusLine = tr("account.statusPastDue");
   } else if (sub.rawStatus === "gift") {
-    statusLine = "Gift membership — active";
+    statusLine = tr("account.statusGift");
   } else {
-    statusLine = "No active membership";
+    statusLine = tr("account.statusNone");
   }
+
+  const planKey = planLabelKey(sub.plan);
 
   return (
     <main className="min-h-screen">
@@ -61,46 +76,46 @@ export default async function AccountPage() {
 
       <section className="max-w-2xl mx-auto px-6 pt-16 pb-24">
         <p className="eyebrow mb-3 text-[var(--foreground-muted)]">
-          Your account
+          {tr("account.eyebrow")}
         </p>
         <h1 className="display text-3xl md:text-4xl leading-tight mb-2">
           {profile?.first_name
-            ? `${profile.first_name}'s membership`
-            : "Your membership"}
+            ? tr("account.membershipOf", { name: profile.first_name })
+            : tr("account.yourMembership")}
         </h1>
         <p className="text-[var(--foreground-muted)] mb-10 break-words">
           {user.email}
         </p>
 
         <div className="border border-[var(--border)] rounded-xl bg-[var(--surface)] p-6 mb-10">
-          <p className="eyebrow mb-4">Membership</p>
+          <p className="eyebrow mb-4">{tr("account.membership")}</p>
           <dl className="space-y-3">
             <div className="flex justify-between gap-4">
-              <dt className="text-[var(--foreground-muted)]">Status</dt>
+              <dt className="text-[var(--foreground-muted)]">{tr("account.status")}</dt>
               <dd className="text-[var(--foreground)] text-right">
                 {statusLine}
               </dd>
             </div>
-            {sub.plan && (
+            {planKey && (
               <div className="flex justify-between gap-4">
-                <dt className="text-[var(--foreground-muted)]">Plan</dt>
+                <dt className="text-[var(--foreground-muted)]">{tr("account.plan")}</dt>
                 <dd className="text-[var(--foreground)] text-right">
-                  {planLabel(sub.plan)}
+                  {tr(planKey)}
                 </dd>
               </div>
             )}
             {sub.isTrialing && sub.trialEnd && (
               <div className="flex justify-between gap-4">
-                <dt className="text-[var(--foreground-muted)]">Trial ends</dt>
+                <dt className="text-[var(--foreground-muted)]">{tr("account.trialEnds")}</dt>
                 <dd className="text-[var(--foreground)] text-right">
-                  {formatDate(sub.trialEnd)}
+                  {formatDate(sub.trialEnd, locale)}
                 </dd>
               </div>
             )}
             {!sub.isTrialing && sub.isActive && renews && (
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--foreground-muted)]">
-                  {sub.cancelAtPeriodEnd ? "Ends" : "Renews"}
+                  {sub.cancelAtPeriodEnd ? tr("account.ends") : tr("account.renews")}
                 </dt>
                 <dd className="text-[var(--foreground)] text-right">{renews}</dd>
               </div>
@@ -110,49 +125,47 @@ export default async function AccountPage() {
 
         {sub.rawStatus === "gift" ? (
           <div className="mb-12">
-            <h2 className="display text-2xl mb-3">Your gift membership is active.</h2>
+            <h2 className="display text-2xl mb-3">{tr("account.giftTitle")}</h2>
             <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
-              Every tool is open to you{renews ? ` through ${renews}` : ""}. When your
-              gift ends, you can continue your membership any time — your altar,
-              ancestors, and saved rituals will be here waiting.
+              {renews
+                ? tr("account.giftBodyThrough", { date: renews })
+                : tr("account.giftBody")}
             </p>
             <StartMembershipButtons />
           </div>
         ) : sub.isActive ? (
           <div className="mb-12">
             <p className="text-[var(--foreground-muted)] leading-relaxed mb-5">
-              Update your payment method, change or cancel your plan, and view
-              past invoices in the secure billing portal.
+              {tr("account.manageIntro")}
             </p>
             <ManageBillingButton />
           </div>
         ) : (
           <div className="mb-12">
-            <h2 className="display text-2xl mb-3">Begin your membership.</h2>
+            <h2 className="display text-2xl mb-3">{tr("account.beginTitle")}</h2>
             <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">
-              Seven days free, then your plan. Cancel anytime. Every tool opens
-              the moment you join.
+              {tr("account.beginBody")}
             </p>
             <StartMembershipButtons />
           </div>
         )}
 
         <div className="border-t border-[var(--border)] pt-8 mb-8">
-          <p className="eyebrow mb-3 text-[var(--foreground-muted)]">Give a gift</p>
+          <p className="eyebrow mb-3 text-[var(--foreground-muted)]">
+            {tr("account.giveGiftEyebrow")}
+          </p>
           <p className="text-[var(--foreground-muted)] leading-relaxed mb-4">
-            Know someone who could use a little guidance? Give them a season at
-            the botanica.
+            {tr("account.giveGiftBody")}
           </p>
           <Link href="/gift" className="btn-ghost inline-flex">
-            Gift a membership
+            {tr("account.giftCta")}
           </Link>
         </div>
 
         <p className="text-xs text-[var(--foreground-subtle)] mb-8">
-          Your readings, dreams, and ancestors are private to your account. See
-          our{" "}
+          {tr("account.privacyNote")}{" "}
           <Link href="/privacy" className="underline hover:text-[var(--accent)]">
-            privacy policy
+            {tr("account.privacyLink")}
           </Link>
           .
         </p>
@@ -163,7 +176,7 @@ export default async function AccountPage() {
               type="submit"
               className="nav-link text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
             >
-              Sign out
+              {tr("account.signOut")}
             </button>
           </form>
         </div>
