@@ -3,6 +3,8 @@ import { Lora, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteFooter } from "@/components/site-footer";
+import { LocaleProvider } from "@/components/locale-provider";
+import { getLocale } from "@/lib/i18n/server";
 import "./globals.css";
 
 /*
@@ -72,19 +74,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${lora.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-body">
-        {children}
-        <SiteFooter />
+        <LocaleProvider locale={locale}>
+          {children}
+          <SiteFooter />
+        </LocaleProvider>
         <Analytics />
         <SpeedInsights />
       </body>

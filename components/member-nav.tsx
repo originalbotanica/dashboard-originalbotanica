@@ -4,22 +4,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useT } from "./locale-provider";
+import { LanguageToggle } from "./language-toggle";
 
 /**
  * Shared top navigation for signed-in member pages.
  * Logo (home), the tools across the top, and an account menu on the right.
- * Collapses to a hamburger menu on mobile.
+ * Collapses to a hamburger menu on mobile. Labels are localized (EN/ES).
  *
  * variant "floating" sits fixed over hero imagery (dashboard);
  * "bordered" is a solid bar for the tool pages.
  */
 const TOOLS = [
-  { href: "/tarot", label: "Tarot" },
-  { href: "/astrology", label: "Astrology" },
-  { href: "/dreams", label: "Dreams" },
-  { href: "/altar/virtual", label: "Altar" },
-  { href: "/ancestors", label: "Ancestors" },
-  { href: "/rituals", label: "Rituals" },
+  { href: "/tarot", key: "nav.tarot" },
+  { href: "/astrology", key: "nav.astrology" },
+  { href: "/dreams", key: "nav.dreams" },
+  { href: "/altar/virtual", key: "nav.altar" },
+  { href: "/ancestors", key: "nav.ancestors" },
+  { href: "/rituals", key: "nav.rituals" },
 ];
 
 export function MemberNav({
@@ -30,6 +32,7 @@ export function MemberNav({
   const pathname = usePathname() || "";
   const [menuOpen, setMenuOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
+  const t = useT();
 
   const wrapper =
     variant === "floating"
@@ -60,55 +63,58 @@ export function MemberNav({
 
         {/* Desktop tools */}
         <nav className="hidden md:flex items-center gap-6">
-          {TOOLS.map((t) => (
+          {TOOLS.map((tool) => (
             <Link
-              key={t.href}
-              href={t.href}
+              key={tool.href}
+              href={tool.href}
               className={`nav-link transition-colors ${
-                isActive(t.href)
+                isActive(tool.href)
                   ? "text-[var(--accent)]"
                   : "text-[var(--foreground)] hover:text-[var(--accent)]"
               }`}
             >
-              {t.label}
+              {t(tool.key)}
             </Link>
           ))}
         </nav>
 
-        {/* Desktop account menu */}
-        <div className="hidden md:block relative shrink-0">
-          <button
-            type="button"
-            onClick={() => setAcctOpen((v) => !v)}
-            onBlur={() => setTimeout(() => setAcctOpen(false), 150)}
-            className="nav-link text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
-            aria-haspopup="true"
-            aria-expanded={acctOpen}
-          >
-            Account ▾
-          </button>
-          {acctOpen && (
-            <div className="absolute right-0 mt-3 w-60 rounded-lg border border-[var(--border-strong)] bg-[var(--background-elevated)] py-1 shadow-xl overflow-hidden">
-              <Link
-                href="/account"
-                className="nav-link block w-full text-left px-5 py-3 text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
-              >
-                Account &amp; billing
-              </Link>
-              <form
-                action="/auth/signout"
-                method="post"
-                className="border-t border-[var(--border)]"
-              >
-                <button
-                  type="submit"
+        {/* Desktop language toggle + account menu */}
+        <div className="hidden md:flex items-center gap-5 shrink-0">
+          <LanguageToggle />
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setAcctOpen((v) => !v)}
+              onBlur={() => setTimeout(() => setAcctOpen(false), 150)}
+              className="nav-link text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
+              aria-haspopup="true"
+              aria-expanded={acctOpen}
+            >
+              {t("nav.account")} ▾
+            </button>
+            {acctOpen && (
+              <div className="absolute right-0 mt-3 w-60 rounded-lg border border-[var(--border-strong)] bg-[var(--background-elevated)] py-1 shadow-xl overflow-hidden">
+                <Link
+                  href="/account"
                   className="nav-link block w-full text-left px-5 py-3 text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
                 >
-                  Sign out
-                </button>
-              </form>
-            </div>
-          )}
+                  {t("nav.accountBilling")}
+                </Link>
+                <form
+                  action="/auth/signout"
+                  method="post"
+                  className="border-t border-[var(--border)]"
+                >
+                  <button
+                    type="submit"
+                    className="nav-link block w-full text-left px-5 py-3 text-[var(--foreground)] hover:text-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
+                  >
+                    {t("nav.signOut")}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Mobile hamburger */}
@@ -119,7 +125,7 @@ export function MemberNav({
           aria-label="Menu"
           aria-expanded={menuOpen}
         >
-          {menuOpen ? "Close" : "Menu"}
+          {menuOpen ? t("nav.close") : t("nav.menu")}
         </button>
       </div>
 
@@ -127,16 +133,16 @@ export function MemberNav({
       {menuOpen && (
         <div className="md:hidden border-t border-[var(--border)] bg-[var(--background-elevated)] px-6 py-4">
           <nav className="flex flex-col gap-1">
-            {TOOLS.map((t) => (
+            {TOOLS.map((tool) => (
               <Link
-                key={t.href}
-                href={t.href}
+                key={tool.href}
+                href={tool.href}
                 onClick={() => setMenuOpen(false)}
                 className={`nav-link py-2 ${
-                  isActive(t.href) ? "text-[var(--accent)]" : "text-[var(--foreground)]"
+                  isActive(tool.href) ? "text-[var(--accent)]" : "text-[var(--foreground)]"
                 }`}
               >
-                {t.label}
+                {t(tool.key)}
               </Link>
             ))}
             <div className="border-t border-[var(--border)] mt-2 pt-2">
@@ -145,13 +151,16 @@ export function MemberNav({
                 onClick={() => setMenuOpen(false)}
                 className="nav-link py-2 block text-[var(--foreground)]"
               >
-                Account &amp; billing
+                {t("nav.accountBilling")}
               </Link>
               <form action="/auth/signout" method="post">
                 <button type="submit" className="nav-link py-2 block text-[var(--foreground)]">
-                  Sign out
+                  {t("nav.signOut")}
                 </button>
               </form>
+              <div className="pt-3">
+                <LanguageToggle />
+              </div>
             </div>
           </nav>
         </div>
