@@ -248,21 +248,22 @@ export default async function HomePage({
             </p>
           </div>
           <div>
-            {/* PLACEHOLDER: drop /public/heritage/building-then-now.jpg (the
-                A&P -> Eligio's Botanica -> Original Products composite). Shows
-                automatically once the file is present. */}
+            {/* The building over the decades: A&P → Botanica Eligio's
+                Supplies → Original Products, on Webster Ave in the Bronx. */}
             <div
-              className="aspect-[4/3] rounded-xl border border-[var(--border)] overflow-hidden bg-[var(--surface)] flex items-end"
+              role="img"
+              aria-label={tr("lp.heritageCaption")}
+              className="aspect-[4/3] rounded-xl border border-[var(--border)] overflow-hidden bg-[var(--surface)]"
               style={{
-                backgroundImage: "url('/heritage/building-then-now.jpg')",
-                backgroundSize: "cover",
+                backgroundImage: "url('/heritage/building-then-now.png')",
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
               }}
-            >
-              <span className="text-[10px] tracking-[0.2em] uppercase text-[var(--foreground-subtle)] m-3 px-2 py-1 rounded bg-[rgba(20,16,11,0.6)]">
-                {tr("lp.heritageCaption")}
-              </span>
-            </div>
+            />
+            <p className="text-xs text-[var(--foreground-subtle)] mt-3 text-center">
+              {tr("lp.heritageCaption")}
+            </p>
           </div>
         </div>
       </section>
