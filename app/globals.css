@@ -378,33 +378,36 @@ h1, h2, h3, h4, h5, h6 {
 /* Landing feature-strip: each tool icon sits in a glowing gold medallion
    that lifts and brightens on hover, so the row reads rich, not generic. */
 .feat-badge {
+  /* --tc = tool color (hex), --tg = same as "r,g,b" for rgba() glows */
+  --tc: var(--accent);
+  --tg: 232, 172, 124;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 60px;
   height: 60px;
   border-radius: 9999px;
-  border: 1px solid rgba(232, 172, 124, 0.45);
+  border: 1px solid rgba(var(--tg), 0.5);
   background: radial-gradient(
-    circle at 50% 38%,
-    rgba(232, 172, 124, 0.2) 0%,
-    rgba(232, 172, 124, 0.05) 60%,
+    circle at 50% 36%,
+    rgba(var(--tg), 0.28) 0%,
+    rgba(var(--tg), 0.07) 60%,
     transparent 100%
   );
   box-shadow:
-    0 0 16px rgba(232, 172, 124, 0.12),
-    inset 0 0 10px rgba(232, 172, 124, 0.06);
+    0 0 18px rgba(var(--tg), 0.18),
+    inset 0 0 11px rgba(var(--tg), 0.1);
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
     border-color 0.25s ease;
 }
 .group:hover .feat-badge {
-  border-color: var(--accent);
+  border-color: var(--tc);
   box-shadow:
-    0 0 28px rgba(232, 172, 124, 0.38),
-    inset 0 0 12px rgba(232, 172, 124, 0.12);
-  transform: translateY(-3px) scale(1.05);
+    0 0 30px rgba(var(--tg), 0.5),
+    inset 0 0 13px rgba(var(--tg), 0.2);
+  transform: translateY(-3px) scale(1.06);
 }
 @media (prefers-reduced-motion: reduce) {
   .group:hover .feat-badge {
