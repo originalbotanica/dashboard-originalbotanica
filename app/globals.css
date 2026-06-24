@@ -375,6 +375,43 @@ h1, h2, h3, h4, h5, h6 {
   50%  { opacity: 1;   transform: translateX(-50%) scaleY(1.1); }
   100% { opacity: 0.6; transform: translateX(-50%) scaleY(0.9); }
 }
+/* Landing feature-strip: each tool icon sits in a glowing gold medallion
+   that lifts and brightens on hover, so the row reads rich, not generic. */
+.feat-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 9999px;
+  border: 1px solid rgba(232, 172, 124, 0.45);
+  background: radial-gradient(
+    circle at 50% 38%,
+    rgba(232, 172, 124, 0.2) 0%,
+    rgba(232, 172, 124, 0.05) 60%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 16px rgba(232, 172, 124, 0.12),
+    inset 0 0 10px rgba(232, 172, 124, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.group:hover .feat-badge {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 28px rgba(232, 172, 124, 0.38),
+    inset 0 0 12px rgba(232, 172, 124, 0.12);
+  transform: translateY(-3px) scale(1.05);
+}
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .feat-badge {
+    transform: none;
+  }
+}
+
 /* Each word of a streamed reading drifts up and fades into place, so the
    reading "floats on" rather than looking typed. Mount-once: a word
    animates the first time it appears and is never replayed. */
