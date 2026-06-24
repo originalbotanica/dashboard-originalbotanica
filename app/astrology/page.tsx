@@ -9,6 +9,7 @@ import { getTodaysSky } from "@/lib/astrology/sky";
 import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
 import { isValidSign, type Sign } from "@/lib/daily-horoscope/prompt";
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
+import { ZodiacWheel } from "@/components/zodiac-wheel";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
@@ -74,7 +75,9 @@ export default async function AstrologyHubPage() {
 
       <MemberNav />
 
-      <section className="max-w-3xl mx-auto px-6 pt-24 pb-20">
+      <section className="max-w-5xl mx-auto px-6 pt-24 pb-20">
+        <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-14 items-center">
+          <div className="max-w-2xl">
         <p className="eyebrow mb-4">Astrology</p>
         <h1 className="display text-4xl md:text-5xl mb-6 leading-tight">
           {profile.first_name}, your chart awaits.
@@ -148,6 +151,14 @@ export default async function AstrologyHubPage() {
             )}
           </>
         )}
+          </div>
+
+          <div className="flex justify-center lg:justify-end">
+            <ZodiacWheel className="w-60 h-60 sm:w-72 sm:h-72 lg:w-80 lg:h-80" />
+          </div>
+        </div>
+
+        <div className="max-w-3xl">
 
         {/* Today's horoscope for the member's sign. Cached per sign per day,
             so this is usually instant; Suspense keeps the page fast on the
@@ -175,6 +186,7 @@ export default async function AstrologyHubPage() {
             library, supplies link to the shelves at the botanica.
           </p>
         </section>
+        </div>
       </section>
     </main>
   );

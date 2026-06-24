@@ -375,6 +375,21 @@ h1, h2, h3, h4, h5, h6 {
   50%  { opacity: 1;   transform: translateX(-50%) scaleY(1.1); }
   100% { opacity: 0.6; transform: translateX(-50%) scaleY(0.9); }
 }
+/* Slow, ambient rotation for the decorative zodiac wheel. */
+@keyframes zodiac-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.zodiac-spin {
+  animation: zodiac-spin 140s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zodiac-spin {
+    animation: none;
+  }
+}
+
 @keyframes flame-halo-breathe {
   0%   { opacity: 0.6; }
   100% { opacity: 1; }
