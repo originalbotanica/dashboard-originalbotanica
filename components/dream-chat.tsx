@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { materialUrl } from "@/lib/rituals/material-link";
+import { usePacedReveal } from "@/components/use-paced-reveal";
 
 // Supplies the reading recommends arrive wrapped in [[ ]]. Turn each into a
 // link to its originalbotanica.com page (matching the rituals library), so
@@ -98,6 +99,27 @@ export function DreamChat({
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const pendingNavRef = useRef<string | null>(null);
+
+  // Reveal the reading gently rather than dumping tokens as they arrive.
+  const reveal = usePacedReveal(
+    (text) =>
+      setMessages((m) => {
+        const next = m.slice();
+        if (next[next.length - 1]?.role === "assistant") {
+          next[next.length - 1] = { role: "assistant", content: text };
+        }
+        return next;
+      }),
+    () => {
+      setStreaming(false);
+      const nav = pendingNavRef.current;
+      if (nav) {
+        pendingNavRef.current = null;
+        router.replace(`/dreams/${nav}`);
+      }
+    },
+  );
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -115,6 +137,7 @@ export function DreamChat({
     setMessages((m) => [...m, { role: "user", content: trimmed }]);
     setStreaming(true);
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
+    reveal.reset();
 
     try {
       const res = await fetch("/api/dreams/chat", {
@@ -154,22 +177,17 @@ export function DreamChat({
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
         buf += chunk;
-        setMessages((m) => {
-          const next = m.slice();
-          next[next.length - 1] = { role: "assistant", content: buf };
-          return next;
-        });
+        reveal.push(buf);
       }
 
-      // After the first message in a fresh thread, navigate to the
-      // permanent URL so refresh / bookmark / back button work.
-      if (!threadId && newThreadId) {
-        router.replace(`/dreams/${newThreadId}`);
-      }
+      // Navigate to the permanent thread URL only once the reveal has
+      // settled (handled in onSettled), so the reading isn't cut short.
+      pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
+      reveal.finish();
     } catch (err) {
+      reveal.reset();
       setError(err instanceof Error ? err.message : "Unexpected error");
       setMessages((m) => m.slice(0, -1));
-    } finally {
       setStreaming(false);
     }
   }

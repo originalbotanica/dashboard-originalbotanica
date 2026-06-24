@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
+import { usePacedReveal } from "@/components/use-paced-reveal";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -32,6 +33,20 @@ export function AstrologerChat({
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Reveal the streamed reading at a calm, deliberate pace rather than
+  // dumping tokens the instant they arrive.
+  const reveal = usePacedReveal(
+    (text) =>
+      setMessages((m) => {
+        const next = m.slice();
+        if (next[next.length - 1]?.role === "assistant") {
+          next[next.length - 1] = { role: "assistant", content: text };
+        }
+        return next;
+      }),
+    () => setStreaming(false),
+  );
+
   useEffect(() => {
     scrollRef.current?.scrollTo({
       top: scrollRef.current.scrollHeight,
@@ -48,6 +63,7 @@ export function AstrologerChat({
     setMessages((m) => [...m, { role: "user", content: trimmed }]);
     setStreaming(true);
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
+    reveal.reset();
 
     try {
       const res = await fetch("/api/astrologer/chat", {
@@ -79,16 +95,14 @@ export function AstrologerChat({
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
         buf += chunk;
-        setMessages((m) => {
-          const next = m.slice();
-          next[next.length - 1] = { role: "assistant", content: buf };
-          return next;
-        });
+        reveal.push(buf);
       }
+      // Let the paced reveal catch up; it turns streaming off when settled.
+      reveal.finish();
     } catch (err) {
+      reveal.reset();
       setError(err instanceof Error ? err.message : "Unexpected error");
       setMessages((m) => m.slice(0, -1));
-    } finally {
       setStreaming(false);
     }
   }
