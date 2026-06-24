@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { MarketingHeader } from "@/components/marketing-header";
+import { FeatureStrip } from "@/components/feature-strip";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
 
@@ -137,12 +138,28 @@ export default async function HomePage({
           priority
           className="h-auto w-[110px] md:w-[140px] mb-8"
         />
-        <h1 className="display text-4xl md:text-6xl mb-6 max-w-3xl leading-tight">
+        <h1 className="display text-4xl md:text-6xl mb-5 max-w-3xl leading-tight">
           {tr("lp.heroTitle")}
         </h1>
-        <p className="text-base md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-9 max-w-2xl">
-          {tr("lp.heroSub")}
+        <p className="invocation text-lg md:text-2xl text-[var(--foreground)] leading-relaxed mb-9 max-w-2xl">
+          {tr("lp.heroHook")}
         </p>
+
+        <FeatureStrip
+          items={[
+            { key: "tarot", label: tr("lp.featTarot") },
+            { key: "astrology", label: tr("lp.featAstrology") },
+            { key: "dreams", label: tr("lp.featDreams") },
+            { key: "altar", label: tr("lp.featAltar") },
+            { key: "ancestors", label: tr("lp.featAncestors") },
+            { key: "rituals", label: tr("lp.featRituals") },
+          ]}
+        />
+
+        <p className="text-sm md:text-base text-[var(--foreground-muted)] leading-relaxed mb-9 max-w-xl">
+          {tr("lp.heroWhy")}
+        </p>
+
         <Link href="/signup" className="btn-primary text-base">
           {tr("lp.heroCta")}
         </Link>
