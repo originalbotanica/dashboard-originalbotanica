@@ -23,6 +23,7 @@ const TOOLS = [
   { href: "/altar/virtual", key: "nav.altar" },
   { href: "/ancestors", key: "nav.ancestors" },
   { href: "/rituals", key: "nav.rituals" },
+  { href: "/calendar", key: "nav.calendar" },
 ];
 
 export function MemberNav({

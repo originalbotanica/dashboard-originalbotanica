@@ -1,0 +1,130 @@
+"use client";
+
+import { useState } from "react";
+import { Candle } from "@/components/candle";
+import { lightCandleAction } from "@/app/altar/virtual/actions";
+import { DURATIONS } from "@/lib/altar/catalog";
+import { t, type Locale } from "@/lib/i18n/dictionary";
+
+/**
+ * Light a saint / Orisha candle. One candle, themed in the saint's color —
+ * no desire picker. The member taps the wick to light it (the flame ignites
+ * and burns), then writes a dedication and places it on the altar.
+ */
+export function SaintCandleLighter({
+  slug,
+  name,
+  color,
+  intention,
+  locale,
+}: {
+  slug: string;
+  name: string;
+  color: string;
+  intention: string;
+  locale: Locale;
+}) {
+  const [lit, setLit] = useState(false);
+
+  return (
+    <div className="flex flex-col items-center">
+      <div
+        className="relative"
+        style={{
+          filter: lit ? `drop-shadow(0 0 34px ${color}aa)` : "none",
+          transition: "filter 1s ease",
+        }}
+      >
+        <Candle size="large" lit={lit} alt={name} />
+        {!lit && (
+          <button
+            type="button"
+            onClick={() => setLit(true)}
+            aria-label={t(locale, "saint.tapHint")}
+            className="absolute left-1/2 -translate-x-1/2 rounded-full"
+            style={{ top: -16, width: 96, height: 110, cursor: "pointer", background: "transparent" }}
+          />
+        )}
+      </div>
+
+      <p
+        className="invocation text-[var(--foreground-muted)] mt-6 text-center max-w-sm leading-relaxed"
+        style={{ color: lit ? color : undefined, transition: "color .6s ease" }}
+      >
+        {lit ? t(locale, "saint.litHint") : t(locale, "saint.tapHint")}
+      </p>
+
+      <form
+        action={lightCandleAction}
+        className="w-full max-w-md mt-10 space-y-8"
+        style={{
+          opacity: lit ? 1 : 0.4,
+          pointerEvents: lit ? "auto" : "none",
+          transition: "opacity .6s ease",
+        }}
+      >
+        <input type="hidden" name="candle_type" value="saints" />
+        <input type="hidden" name="candle_color" value={slug} />
+
+        <div>
+          <label htmlFor="intention" className="form-label">
+            {t(locale, "saint.dedication")}
+          </label>
+          <input
+            id="intention"
+            name="intention"
+            type="text"
+            required
+            maxLength={200}
+            defaultValue={intention}
+            className="form-input"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="petition" className="form-label">
+            {t(locale, "saint.petition")}{" "}
+            <span className="normal-case text-[var(--foreground-subtle)]">
+              {t(locale, "saint.optional")}
+            </span>
+          </label>
+          <textarea
+            id="petition"
+            name="petition"
+            rows={4}
+            maxLength={2000}
+            placeholder={t(locale, "saint.petitionPlaceholder")}
+            className="form-input"
+          />
+        </div>
+
+        <fieldset>
+          <legend className="form-label mb-3">{t(locale, "saint.duration")}</legend>
+          <div className="flex flex-wrap gap-3">
+            {DURATIONS.map((d, i) => (
+              <label key={d.days} className="altar-choice altar-choice-sm">
+                <input type="radio" name="days" value={d.days} defaultChecked={i === 0} />
+                <span>{d.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" name="is_public" defaultChecked className="mt-1" />
+          <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
+            {t(locale, "saint.public")}
+          </span>
+        </label>
+
+        <button
+          type="submit"
+          disabled={!lit}
+          className="btn-primary inline-flex disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {t(locale, "saint.place")}
+        </button>
+      </form>
+    </div>
+  );
+}

@@ -1,4 +1,5 @@
 import { lunarEventsForMonth, sunLongitude } from "@/lib/astrology/sky";
+import { getSaintCandle } from "@/lib/altar/catalog";
 
 /**
  * The spiritual calendar.
@@ -252,18 +253,25 @@ function solarCrossing(year: number, targetLon: number): number | null {
 }
 
 function feastEventsForYear(year: number): CalEvent[] {
-  return FEASTS.map((f) => ({
-    id: `${f.id}-${year}`,
-    y: year,
-    m: f.m,
-    d: f.d,
-    type: "feast" as const,
-    title: f.title,
-    en: f.en,
-    es: f.es,
-    color: f.color,
-    action: f.action,
-  }));
+  return FEASTS.map((f) => {
+    // If this feast has a dedicated saint/Orisha candle, send the action
+    // straight to that candle (skips the desire picker).
+    const action = getSaintCandle(f.id)
+      ? { ...f.action, href: `/altar/saint/${f.id}` }
+      : f.action;
+    return {
+      id: `${f.id}-${year}`,
+      y: year,
+      m: f.m,
+      d: f.d,
+      type: "feast" as const,
+      title: f.title,
+      en: f.en,
+      es: f.es,
+      color: f.color,
+      action,
+    };
+  });
 }
 
 function lunarEventsForRange(
@@ -349,6 +357,44 @@ export function addDays(day: { y: number; m: number; d: number }, n: number) {
   const t = Date.UTC(day.y, day.m - 1, day.d, 12) + n * 86_400_000;
   const dt = new Date(t);
   return { y: dt.getUTCFullYear(), m: dt.getUTCMonth() + 1, d: dt.getUTCDate() };
+}
+
+// ── Novenas (nine-day observances leading to a feast) ──────────────────────
+const NOVENAS: Array<{ feastId: string; m: number; d: number; name: string; color: string }> = [
+  { feastId: "caridad", m: 9, d: 8, name: "Ochún · La Caridad", color: "#e8c34a" },
+  { feastId: "mercedes", m: 9, d: 24, name: "Obatalá · Las Mercedes", color: "#efe7d6" },
+  { feastId: "barbara", m: 12, d: 4, name: "Changó · Santa Bárbara", color: "#f0552f" },
+  { feastId: "lazaro", m: 12, d: 17, name: "Babalú-Ayé · San Lázaro", color: "#9b7bd0" },
+];
+
+export type ActiveNovena = {
+  name: string;
+  day: number;
+  total: number;
+  color: string;
+  href: string;
+};
+
+/** If a nine-day novena is running today (ending on its feast), which one. */
+export function getActiveNovena(
+  today: { y: number; m: number; d: number },
+): ActiveNovena | null {
+  for (const n of NOVENAS) {
+    for (const yr of [today.y, today.y - 1, today.y + 1]) {
+      const feast = { y: yr, m: n.m, d: n.d };
+      const start = addDays(feast, -8);
+      if (key(today) >= key(start) && key(today) <= key(feast)) {
+        const day =
+          Math.round(
+            (Date.UTC(today.y, today.m - 1, today.d) -
+              Date.UTC(start.y, start.m - 1, start.d)) /
+              86_400_000,
+          ) + 1;
+        return { name: n.name, day, total: 9, color: n.color, href: `/altar/saint/${n.feastId}` };
+      }
+    }
+  }
+  return null;
 }
 
 /** The next upcoming events from today (inclusive), up to `limit`. */

@@ -5,6 +5,7 @@ import {
   easternToday,
   getObservancesFor,
   getUpcoming,
+  getActiveNovena,
   addDays,
   type CalEvent,
 } from "@/lib/calendar/events";
@@ -26,6 +27,7 @@ export async function CalendarToday() {
   const isToday = todays.length > 0;
   const line = locale === "es" ? event.es : event.en;
   const ctaLabel = locale === "es" ? event.action.es : event.action.en;
+  const novena = getActiveNovena(today);
 
   return (
     <section
@@ -72,6 +74,23 @@ export async function CalendarToday() {
                 {t(locale, "cal.viewAll")}
               </Link>
             </div>
+
+            {novena && (
+              <Link
+                href={novena.href}
+                className="mt-4 inline-flex items-center gap-2 text-sm rounded-lg border px-3 py-2"
+                style={{ borderColor: `${novena.color}66`, color: novena.color }}
+              >
+                <span
+                  aria-hidden
+                  className="rounded-full"
+                  style={{ width: 8, height: 8, background: novena.color }}
+                />
+                {t(locale, "cal.novena", { name: novena.name })} ·{" "}
+                {t(locale, "cal.novenaDay", { n: novena.day, total: novena.total })}
+                <span aria-hidden>→</span>
+              </Link>
+            )}
           </div>
         </div>
       </div>

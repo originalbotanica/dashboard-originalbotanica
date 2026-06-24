@@ -4,7 +4,15 @@ import { MemberNav } from "@/components/member-nav";
 import { createClient } from "@/utils/supabase/server";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
-import { easternToday, getUpcoming, type CalEvent } from "@/lib/calendar/events";
+import {
+  easternToday,
+  getUpcoming,
+  getEventsBetween,
+  getActiveNovena,
+  addDays,
+  type CalEvent,
+} from "@/lib/calendar/events";
+import { CalendarMonthGrid } from "@/components/calendar-month-grid";
 
 export const metadata = {
   title: "The spiritual calendar",
@@ -32,6 +40,10 @@ export default async function CalendarPage() {
   const todayKey = today.y * 10000 + today.m * 100 + today.d;
   const events = getUpcoming(today, 120, 40);
 
+  const gridFrom = { y: today.y, m: today.m, d: 1 };
+  const gridEvents = getEventsBetween(gridFrom, addDays(gridFrom, 280));
+  const novena = getActiveNovena(today);
+
   // Group by month for headers.
   const groups: { label: string; items: CalEvent[] }[] = [];
   for (const e of events) {
@@ -54,9 +66,30 @@ export default async function CalendarPage() {
         <h1 className="display text-4xl md:text-5xl leading-tight mb-4">
           {t(locale, "cal.pageTitle")}
         </h1>
-        <p className="text-[var(--foreground-muted)] leading-relaxed max-w-2xl mb-12">
+        <p className="text-[var(--foreground-muted)] leading-relaxed max-w-2xl mb-8">
           {t(locale, "cal.pageIntro")}
         </p>
+
+        {novena && (
+          <Link
+            href={novena.href}
+            className="flex items-center gap-3 rounded-xl border px-4 py-3 mb-10 text-sm"
+            style={{ borderColor: `${novena.color}66`, color: novena.color }}
+          >
+            <span
+              aria-hidden
+              className="rounded-full"
+              style={{ width: 9, height: 9, background: novena.color, boxShadow: `0 0 10px ${novena.color}` }}
+            />
+            {t(locale, "cal.novena", { name: novena.name })} ·{" "}
+            {t(locale, "cal.novenaDay", { n: novena.day, total: novena.total })}
+            <span aria-hidden className="ml-auto">→</span>
+          </Link>
+        )}
+
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 md:p-7 mb-14">
+          <CalendarMonthGrid events={gridEvents} today={today} locale={locale} />
+        </div>
 
         {groups.length === 0 ? (
           <p className="text-[var(--foreground-muted)]">{t(locale, "cal.empty")}</p>

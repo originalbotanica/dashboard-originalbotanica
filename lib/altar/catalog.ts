@@ -22,6 +22,11 @@ export type CandleArt = {
   slug: string; // also the stored candle id and the image filename
   name: string;
   tagline: string;
+  /** Saint/Orisha candles render as a themed glass candle (this color +
+   *  animated flame) instead of a product photo. Set only for saint candles. */
+  saintColor?: string;
+  /** Default dedication suggested when lighting this saint candle. */
+  saintIntention?: string;
 };
 
 export type Desire = {
@@ -176,7 +181,32 @@ export const DESIRES: Desire[] = [
       { slug: "birthday-blessings", name: "Birthday Blessings Candle", tagline: "For birthday health and happiness" },
     ],
   },
+  {
+    slug: "saints",
+    label: "Saints & Orishas",
+    purpose: "protection",
+    candles: [
+      { slug: "reyes", name: "Three Kings", tagline: "Blessings for the year ahead", saintColor: "#e8ac7c", saintIntention: "Blessings for the year ahead" },
+      { slug: "candelaria", name: "La Candelaria · Oyá", tagline: "Courage through change", saintColor: "#b98cf0", saintIntention: "Honoring Oyá — courage through change" },
+      { slug: "san-antonio", name: "San Antonio · Eleguá", tagline: "Open the roads", saintColor: "#f0552f", saintIntention: "Honoring Eleguá — open my roads" },
+      { slug: "san-juan", name: "San Juan Bautista", tagline: "Cleansing and renewal", saintColor: "#7bb6f2", saintIntention: "Cleansing and renewal on San Juan" },
+      { slug: "santiago", name: "Santiago · Oggún", tagline: "Strength for the work", saintColor: "#5aa06a", saintIntention: "Honoring Oggún — strength for the work" },
+      { slug: "regla", name: "La Virgen de Regla · Yemayá", tagline: "Protection and healing", saintColor: "#3f7bd8", saintIntention: "Honoring Yemayá — protection and healing" },
+      { slug: "caridad", name: "La Caridad · Ochún", tagline: "Love and abundance", saintColor: "#e8c34a", saintIntention: "Honoring Ochún — love and abundance" },
+      { slug: "mercedes", name: "Las Mercedes · Obatalá", tagline: "Peace and clarity", saintColor: "#efe7d6", saintIntention: "Honoring Obatalá — peace and clarity" },
+      { slug: "san-miguel", name: "San Miguel Arcángel", tagline: "Protection over you and your home", saintColor: "#7bb6f2", saintIntention: "San Miguel — protect me and mine" },
+      { slug: "san-francisco", name: "San Francisco · Orula", tagline: "Wisdom and guidance", saintColor: "#cda94f", saintIntention: "Honoring Orula — wisdom and guidance" },
+      { slug: "barbara", name: "Santa Bárbara · Changó", tagline: "Courage and victory", saintColor: "#f0552f", saintIntention: "Honoring Changó — courage and victory" },
+      { slug: "lazaro", name: "San Lázaro · Babalú-Ayé", tagline: "Health and healing", saintColor: "#9b7bd0", saintIntention: "Honoring Babalú-Ayé — health and healing" },
+    ],
+  },
 ];
+
+/** Saint/Orisha candle by slug (the "saints" category), or undefined. */
+export function getSaintCandle(slug: string | null): CandleArt | undefined {
+  const art = slug ? CANDLE_INDEX.get(slug)?.candle : undefined;
+  return art?.saintColor ? art : undefined;
+}
 
 export type Duration = { days: number; label: string };
 export const DURATIONS: Duration[] = [
