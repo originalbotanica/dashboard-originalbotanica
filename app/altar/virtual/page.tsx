@@ -11,6 +11,7 @@ import {
   type Candle,
 } from "@/lib/altar/altar";
 import { AltarCandle } from "@/components/altar-candle";
+import { Candle as FlameCandle } from "@/components/candle";
 
 export const metadata = {
   title: "Virtual altar",
@@ -75,10 +76,13 @@ export default async function VirtualAltarPage({
         <h1 className="display text-4xl md:text-5xl mb-5 max-w-2xl mx-auto leading-tight">
           Light a candle. Set your prayer aloft.
         </h1>
-        <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-xl mx-auto mb-10">
+        <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-xl mx-auto mb-8">
           A sacred space where intention meets the flame. Light your candle, and
           let the collective energy of the community hold it with you.
         </p>
+        <div className="flex justify-center mb-10" aria-hidden>
+          <FlameCandle size="large" lit />
+        </div>
         <Link href="/altar/virtual/new" className="btn-primary inline-flex">
           Light a candle
         </Link>
