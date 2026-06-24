@@ -70,7 +70,7 @@ export function usePacedReveal(
         // Slow, meditative base pace, easing faster only if the model gets
         // well ahead so the reveal never lags too far behind a long answer.
         const backlog = target - shown;
-        const cps = Math.min(70, Math.max(12, backlog * 0.5));
+        const cps = Math.min(45, Math.max(6, backlog * 0.3));
         shown = Math.min(target, shown + (cps * dt) / 1000);
         shownRef.current = shown;
         onTickRef.current(
