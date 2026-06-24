@@ -5,6 +5,12 @@ import { redirect } from "next/navigation";
 import { randomBytes } from "crypto";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { containsProhibitedLanguage } from "@/lib/moderation";
+
+/** How many new memorials a member may add in a rolling 24-hour window.
+ *  Memorials are lasting records, so this is purely an anti-spam guard;
+ *  it's generous enough that honoring loved ones is never blocked. */
+const ANCESTOR_DAILY_LIMIT = 5;
 
 /**
  * Server actions for the Ancestors altar.
@@ -37,6 +43,30 @@ export async function createAncestorAction(formData: FormData) {
 
   if (!name) {
     return redirect("/ancestors/new?error=Please%20enter%20a%20name");
+  }
+  if (containsProhibitedLanguage(name, dedication)) {
+    return redirect(
+      "/ancestors/new?error=" +
+        encodeURIComponent(
+          "Please keep the name and dedication respectful of this sacred space.",
+        ),
+    );
+  }
+
+  // Gentle daily rate limit on new memorials (anti-spam only).
+  const since = new Date(Date.now() - 86_400_000).toISOString();
+  const { count: addedToday } = await supabase
+    .from("ancestors")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .gte("added_at", since);
+  if ((addedToday ?? 0) >= ANCESTOR_DAILY_LIMIT) {
+    return redirect(
+      "/ancestors/new?error=" +
+        encodeURIComponent(
+          `You've added ${ANCESTOR_DAILY_LIMIT} memorials today. Please return tomorrow to honor another.`,
+        ),
+    );
   }
 
   // Try a few hashes in case of (extremely unlikely) collision.

@@ -33,6 +33,25 @@ export type Candle = {
 const CANDLE_FIELDS =
   "id, candle_type, candle_color, intention, petition, is_public, lit_at, expires_at";
 
+/** How many candles a member may light in a rolling 24-hour window.
+ *  Generous enough that sincere use never hits it; low enough to stop
+ *  spam on the shared community wall. */
+export const ALTAR_DAILY_LIMIT = 5;
+
+/** Count candles this member has lit in the last 24 hours (counts
+ *  extinguished/burned-out ones too, so light-then-relight can't be
+ *  used to evade the limit). */
+export async function candlesLitInLast24h(userId: string): Promise<number> {
+  const supabase = await createClient();
+  const since = new Date(Date.now() - 86_400_000).toISOString();
+  const { count } = await supabase
+    .from("candles")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("lit_at", since);
+  return count ?? 0;
+}
+
 /** The member's own currently-burning candles. */
 export async function listMyCandles(userId: string): Promise<Candle[]> {
   const supabase = await createClient();

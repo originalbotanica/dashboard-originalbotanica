@@ -8,7 +8,10 @@ import {
   DURATIONS,
   getCandleArt,
   desireForCandle,
+  candlesLitInLast24h,
+  ALTAR_DAILY_LIMIT,
 } from "@/lib/altar/altar";
+import { containsProhibitedLanguage } from "@/lib/moderation";
 
 /** Light a candle: insert into `candles` for the current member. */
 export async function lightCandleAction(formData: FormData) {
@@ -38,6 +41,26 @@ export async function lightCandleAction(formData: FormData) {
   if (!intention) {
     return redirect("/altar/virtual/new?error=Please%20add%20a%20dedication");
   }
+  if (containsProhibitedLanguage(intention, petition)) {
+    return redirect(
+      "/altar/virtual/new?error=" +
+        encodeURIComponent(
+          "Please keep your dedication respectful of this sacred space.",
+        ),
+    );
+  }
+
+  // Gentle daily rate limit to keep the community wall free of spam.
+  const litToday = await candlesLitInLast24h(user.id);
+  if (litToday >= ALTAR_DAILY_LIMIT) {
+    return redirect(
+      "/altar/virtual/new?error=" +
+        encodeURIComponent(
+          `You've lit ${ALTAR_DAILY_LIMIT} candles today. Please return tomorrow to light another — your prayers are heard.`,
+        ),
+    );
+  }
+
   const dur = DURATIONS.some((d) => d.days === days) ? days : 7;
   const expires_at = new Date(Date.now() + dur * 86_400_000).toISOString();
 
