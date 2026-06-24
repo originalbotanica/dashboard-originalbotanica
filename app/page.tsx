@@ -64,6 +64,11 @@ const TESTIMONIALS: { quote: string; name: string }[] = [
       "The part regulars love most: your membership takes 10% off everything at originalbotanica.com — even what's already on sale. For anyone who shops the botanica, it pays for itself in a couple of orders.",
     name: "Carmen",
   },
+  {
+    quote:
+      "I wrote down a dream that had been sitting with me for weeks. The interpretation finally gave it meaning, and a small ritual to lay it to rest. I slept easier that night.",
+    name: "Rosa",
+  },
 ];
 
 export default async function HomePage({
