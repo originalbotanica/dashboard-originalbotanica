@@ -9,9 +9,9 @@ export const metadata = { title: "Light a candle" };
 export default async function LightCandlePage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; intention?: string }>;
 }) {
-  const { error } = await searchParams;
+  const { error, intention } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -52,7 +52,7 @@ export default async function LightCandlePage({
 
         {error ? <p className="form-error mb-8">{error}</p> : null}
 
-        <LightCandleForm />
+        <LightCandleForm initialIntention={intention} />
       </section>
     </main>
   );

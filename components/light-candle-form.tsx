@@ -14,7 +14,11 @@ import {
  * The light-a-candle picker, mirroring the live altar flow:
  *   1. choose a desire   2. choose a candle   3. write the dedication.
  */
-export function LightCandleForm() {
+export function LightCandleForm({
+  initialIntention,
+}: {
+  initialIntention?: string;
+}) {
   const [desire, setDesire] = useState<Desire | null>(null);
   const [candle, setCandle] = useState<CandleArt | null>(null);
 
@@ -118,6 +122,7 @@ export function LightCandleForm() {
           type="text"
           required
           maxLength={200}
+          defaultValue={initialIntention}
           placeholder="For my mother's healing"
           className="form-input"
         />

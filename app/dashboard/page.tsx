@@ -12,6 +12,7 @@ import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberNav } from "@/components/member-nav";
 import { MembershipPrompt } from "@/components/membership-prompt";
 import { Candle } from "@/components/candle";
+import { CalendarToday } from "@/components/calendar-today";
 import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
 import { getMoon, moonGuidance } from "@/lib/astrology/moon";
 import { getTodaysSky } from "@/lib/astrology/sky";
@@ -200,6 +201,9 @@ export default async function DashboardPage() {
 
         <MembershipPrompt sub={sub} trialLeft={trialLeft} locale={locale} />
       </section>
+
+      {/* ── Today on the spiritual calendar ───────────────────────────── */}
+      <CalendarToday />
 
       {/* ── Tonight's moon — compact daily touchpoint ─────────────────── */}
       <section aria-label="Tonight's moon" className="border-t border-[var(--border)]">

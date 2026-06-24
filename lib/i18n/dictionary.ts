@@ -32,6 +32,16 @@ const en: Dict = {
   "nav.signOut": "Sign out",
   "nav.menu": "Menu",
   "nav.close": "Close",
+  "nav.calendar": "Calendar",
+  "cal.todayEyebrow": "Today on the calendar",
+  "cal.upcomingEyebrow": "Coming up",
+  "cal.viewAll": "View the calendar",
+  "cal.today": "Today",
+  "cal.tomorrow": "Tomorrow",
+  "cal.inDays": "in {n} days",
+  "cal.pageTitle": "The spiritual calendar",
+  "cal.pageIntro": "Saint and Orisha feast days, the new and full moons, the turning of the seasons — and what to do with each.",
+  "cal.empty": "Nothing marked in this window. Come back as the moon turns.",
   "lang.label": "Language",
 
   // account page
@@ -257,6 +267,16 @@ const es: Dict = {
   "nav.signOut": "Cerrar sesión",
   "nav.menu": "Menú",
   "nav.close": "Cerrar",
+  "nav.calendar": "Calendario",
+  "cal.todayEyebrow": "Hoy en el calendario",
+  "cal.upcomingEyebrow": "Próximamente",
+  "cal.viewAll": "Ver el calendario",
+  "cal.today": "Hoy",
+  "cal.tomorrow": "Mañana",
+  "cal.inDays": "en {n} días",
+  "cal.pageTitle": "El calendario espiritual",
+  "cal.pageIntro": "Días de santos y Orishas, las lunas nuevas y llenas, el cambio de las estaciones — y qué hacer con cada uno.",
+  "cal.empty": "Nada marcado en este período. Vuelve con el cambio de luna.",
   "lang.label": "Idioma",
 
   // account page
