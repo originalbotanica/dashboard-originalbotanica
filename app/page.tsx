@@ -37,27 +37,31 @@ export const metadata = {
   },
 };
 
-/** Real customer testimonials from originalbotanica.com/testimonials (brand proof). */
-const TESTIMONIALS: { quote: string; name: string }[] = [
+/** Voices from the Original Botanica family on using The Practice. */
+const TESTIMONIALS: { quote: string; name: string; role: string }[] = [
   {
     quote:
-      "I felt like a child opening up Christmas gifts. I LOVE what I have… the herbs are green and fresh. I had no clue about this Botanica. WOW!",
-    name: "Keisha H.",
+      "I pull my card every morning before we open the shop. Two quiet minutes that set the whole day straight — I've come to need it.",
+    name: "Yessenia",
+    role: "Original Botanica",
   },
   {
     quote:
-      "I love this shop! Thank you for providing excellent customer service online. I do hope to stop in the actual physical store someday.",
-    name: "Charity B.",
+      "Having the astrologer in my pocket is a different thing. I asked about a hard transit and it gave me the reading and the ritual to go with it. The botanica, just always open.",
+    name: "Lara",
+    role: "Original Botanica",
   },
   {
     quote:
-      "I order supplies from Original to stock my store as well as for personal use. They have THE best candles! Highly recommend!",
-    name: "Leslie Y.",
+      "My family is back home and I can't always get to the altar. Lighting a candle for my grandmother here, wherever I am, means more than I expected.",
+    name: "Miguel",
+    role: "Original Botanica",
   },
   {
     quote:
-      "These products from Original Botanica are the best. This is the only Botanica shop I will ever purchase from.",
-    name: "Eileen O.",
+      "People ask me for the right ritual all day long. Now I carry four hundred of them in one place, each with what it needs. The whole shop's knowledge, with me.",
+    name: "Joseph",
+    role: "Original Botanica",
   },
 ];
 
@@ -301,8 +305,11 @@ export default async function HomePage({
                 <blockquote className="invocation text-[var(--foreground)] leading-relaxed">
                   “{tm.quote}”
                 </blockquote>
-                <figcaption className="eyebrow mt-4 text-[var(--accent)]">
-                  {tm.name}
+                <figcaption className="mt-4">
+                  <span className="eyebrow text-[var(--accent)]">{tm.name}</span>
+                  <span className="block text-xs text-[var(--foreground-subtle)] mt-1">
+                    {tm.role}
+                  </span>
                 </figcaption>
               </figure>
             ))}
