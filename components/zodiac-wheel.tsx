@@ -1,155 +1,187 @@
 /**
- * Decorative zodiac wheel — a self-contained SVG used as the hero graphic
- * on the Astrology hub. No data, no API: it renders identically for every
- * member, so it never slows the page or depends on birth details.
+ * Ornate zodiac wheel — the hero graphic on the Astrology hub.
  *
- * Brand-themed via CSS variables. The outer ring of glyphs turns slowly
- * (see .zodiac-spin in globals.css; honors prefers-reduced-motion).
+ * Self-contained SVG (no data, no API), so it renders identically and
+ * instantly for every member. The twelve astrological symbols ride a
+ * segmented, depth-shaded band in glowing gold medallions; a radiant core
+ * pulses at the center and a ring of stars turns slowly around the rim.
+ * Brand-themed via CSS variables; all motion honors prefers-reduced-motion.
  */
 
 const GLYPHS = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
 
-const C = 200; // center
-const TWO_PI = Math.PI * 2;
+const C = 200;
 
-function onCircle(r: number, i: number, n: number, offset = -Math.PI / 2) {
-  const a = (i / n) * TWO_PI + offset;
+/** Point on a circle. deg measured from the top (12 o'clock), clockwise. */
+function pol(r: number, deg: number) {
+  const a = ((deg - 90) * Math.PI) / 180;
   return { x: C + r * Math.cos(a), y: C + r * Math.sin(a) };
 }
 
+/** Annular sector path (a ring "wedge") from d0→d1 between radii ri and ro. */
+function wedge(ri: number, ro: number, d0: number, d1: number) {
+  const o0 = pol(ro, d0);
+  const o1 = pol(ro, d1);
+  const i1 = pol(ri, d1);
+  const i0 = pol(ri, d0);
+  return [
+    `M ${o0.x} ${o0.y}`,
+    `A ${ro} ${ro} 0 0 1 ${o1.x} ${o1.y}`,
+    `L ${i1.x} ${i1.y}`,
+    `A ${ri} ${ri} 0 0 0 ${i0.x} ${i0.y}`,
+    "Z",
+  ].join(" ");
+}
+
 export function ZodiacWheel({ className = "" }: { className?: string }) {
-  const glyphR = 168;
-  const spokeInner = 132;
-  const spokeOuter = 186;
+  const bandInner = 118;
+  const bandOuter = 172;
+  const medallionR = 145;
+  const rays = Array.from({ length: 12 });
+  const rimStars = Array.from({ length: 24 });
 
   return (
     <svg
       viewBox="0 0 400 400"
       className={className}
       role="img"
-      aria-label="A zodiac wheel of the twelve signs"
+      aria-label="An ornate zodiac wheel of the twelve signs"
     >
       <defs>
-        <radialGradient id="zw-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.20" />
-          <stop offset="55%" stopColor="var(--accent)" stopOpacity="0.05" />
+        <linearGradient id="zw-gold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f7dcb6" />
+          <stop offset="55%" stopColor="var(--accent)" />
+          <stop offset="100%" stopColor="#c8854a" />
+        </linearGradient>
+        <radialGradient id="zw-disc" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="var(--surface)" stopOpacity="0.65" />
+          <stop offset="70%" stopColor="var(--background)" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="var(--background)" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="zw-core" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#f7dcb6" />
+          <stop offset="45%" stopColor="var(--accent)" />
           <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="zw-halo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.35" />
+          <stop offset="60%" stopColor="var(--accent)" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+        </radialGradient>
+        <filter id="zw-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.4" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
       </defs>
 
-      {/* Soft halo */}
-      <circle cx={C} cy={C} r={196} fill="url(#zw-glow)" />
+      {/* Ambient halo + base disc for depth */}
+      <circle cx={C} cy={C} r={198} fill="url(#zw-halo)" />
+      <circle cx={C} cy={C} r={186} fill="url(#zw-disc)" />
 
-      {/* Static structural rings */}
-      <circle
-        cx={C}
-        cy={C}
-        r={188}
-        fill="none"
-        stroke="var(--accent)"
-        strokeOpacity="0.55"
-        strokeWidth="1.25"
-      />
-      <circle
-        cx={C}
-        cy={C}
-        r={150}
-        fill="none"
-        stroke="var(--border)"
-        strokeWidth="1"
-      />
-      <circle
-        cx={C}
-        cy={C}
-        r={120}
-        fill="none"
-        stroke="var(--border)"
-        strokeWidth="1"
-      />
+      {/* Segmented sign band with alternating depth shading */}
+      <g>
+        {GLYPHS.map((_, i) => (
+          <path
+            key={`seg-${i}`}
+            d={wedge(bandInner, bandOuter, i * 30, (i + 1) * 30)}
+            fill="var(--accent)"
+            fillOpacity={i % 2 === 0 ? 0.1 : 0.03}
+            stroke="var(--accent)"
+            strokeOpacity="0.22"
+            strokeWidth="0.75"
+          />
+        ))}
+      </g>
 
-      {/* Slowly rotating layer: spokes + glyphs + a dotted ring */}
+      {/* Framing rings */}
+      <circle cx={C} cy={C} r={bandOuter} fill="none" stroke="url(#zw-gold)" strokeWidth="2" />
+      <circle cx={C} cy={C} r={bandInner} fill="none" stroke="url(#zw-gold)" strokeWidth="1.5" />
+      <circle cx={C} cy={C} r={190} fill="none" stroke="var(--accent)" strokeOpacity="0.4" strokeWidth="1" />
+
+      {/* Slowly turning ring of stars around the rim */}
       <g className="zodiac-spin" style={{ transformOrigin: "200px 200px" }}>
-        <circle
-          cx={C}
-          cy={C}
-          r={170}
-          fill="none"
-          stroke="var(--accent)"
-          strokeOpacity="0.30"
-          strokeWidth="1"
-          strokeDasharray="1.5 7"
-        />
-        {GLYPHS.map((_, i) => {
-          const a = onCircle(spokeInner, i, 12);
-          const b = onCircle(spokeOuter, i, 12);
+        {rimStars.map((_, i) => {
+          const p = pol(181, i * 15);
           return (
-            <line
-              key={`spoke-${i}`}
-              x1={a.x}
-              y1={a.y}
-              x2={b.x}
-              y2={b.y}
-              stroke="var(--border)"
-              strokeWidth="1"
+            <circle
+              key={`rim-${i}`}
+              cx={p.x}
+              cy={p.y}
+              r={i % 2 ? 1 : 1.8}
+              fill={i % 2 ? "var(--foreground)" : "url(#zw-gold)"}
+              fillOpacity={i % 2 ? 0.45 : 0.9}
             />
-          );
-        })}
-        {GLYPHS.map((g, i) => {
-          // Offset by half a segment so glyphs sit between the spokes.
-          const p = onCircle(glyphR, i + 0.5, 12);
-          return (
-            <text
-              key={`glyph-${i}`}
-              x={p.x}
-              y={p.y}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fontSize="19"
-              fill="var(--accent)"
-              fillOpacity="0.92"
-            >
-              {g}
-            </text>
           );
         })}
       </g>
 
-      {/* Center star */}
-      <circle
-        cx={C}
-        cy={C}
-        r={120}
-        fill="var(--background)"
-        fillOpacity="0.35"
-      />
-      <text
-        x={C}
-        y={C + 1}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize="46"
-        fill="var(--accent)"
-      >
-        ✦
-      </text>
+      {/* Sign medallions — the glyphs as glowing gold "logos" */}
+      <g filter="url(#zw-glow)">
+        {GLYPHS.map((g, i) => {
+          const deg = i * 30 + 15;
+          const p = pol(medallionR, deg);
+          return (
+            <g key={`med-${i}`}>
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r={16}
+                fill="var(--background)"
+                fillOpacity="0.55"
+                stroke="url(#zw-gold)"
+                strokeWidth="1.25"
+              />
+              <text
+                x={p.x}
+                y={p.y + 1}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize="20"
+                fontWeight="700"
+                fill="url(#zw-gold)"
+              >
+                {g}
+              </text>
+            </g>
+          );
+        })}
+      </g>
 
-      {/* A few scattered stars */}
-      {[
-        [62, 78],
-        [330, 110],
-        [96, 320],
-        [318, 300],
-        [200, 36],
-      ].map(([x, y], i) => (
-        <circle
-          key={`star-${i}`}
-          cx={x}
-          cy={y}
-          r={i % 2 ? 1.4 : 2}
-          fill="var(--foreground)"
-          fillOpacity="0.5"
-        />
-      ))}
+      {/* Radiant core */}
+      <circle cx={C} cy={C} r={96} className="zodiac-pulse" fill="url(#zw-core)" />
+      <g filter="url(#zw-glow)">
+        {rays.map((_, i) => {
+          const inner = pol(34, i * 30);
+          const outer = pol(i % 2 ? 60 : 50, i * 30);
+          return (
+            <line
+              key={`ray-${i}`}
+              x1={inner.x}
+              y1={inner.y}
+              x2={outer.x}
+              y2={outer.y}
+              stroke="url(#zw-gold)"
+              strokeWidth={i % 2 ? 1 : 2}
+              strokeLinecap="round"
+              strokeOpacity="0.85"
+            />
+          );
+        })}
+        <circle cx={C} cy={C} r={26} fill="var(--background)" stroke="url(#zw-gold)" strokeWidth="1.5" />
+        <text
+          x={C}
+          y={C + 1}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize="30"
+          fill="url(#zw-gold)"
+        >
+          ✦
+        </text>
+      </g>
     </svg>
   );
 }

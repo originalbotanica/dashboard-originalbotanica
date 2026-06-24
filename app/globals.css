@@ -410,8 +410,27 @@ h1, h2, h3, h4, h5, h6 {
 .zodiac-spin {
   animation: zodiac-spin 140s linear infinite;
 }
+/* Counter-rotates so glyphs riding the spinning band stay upright. */
+.zodiac-counter-spin {
+  animation: zodiac-spin 140s linear infinite reverse;
+}
+@keyframes zodiac-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+.zodiac-pulse {
+  animation: zodiac-pulse 4.5s ease-in-out infinite;
+  transform-origin: center;
+}
 @media (prefers-reduced-motion: reduce) {
-  .zodiac-spin {
+  .zodiac-spin,
+  .zodiac-counter-spin,
+  .zodiac-pulse {
     animation: none;
   }
 }
