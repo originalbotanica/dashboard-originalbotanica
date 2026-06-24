@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
 import { usePacedReveal } from "@/components/use-paced-reveal";
+import { FloatingProse } from "@/components/floating-prose";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -121,7 +122,13 @@ export function AstrologerChat({
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
-              <Message key={i} msg={m} />
+              <Message
+                key={i}
+                msg={m}
+                animate={
+                  streaming && i === messages.length - 1 && m.role === "assistant"
+                }
+              />
             ))}
             {streaming &&
               messages[messages.length - 1]?.role === "assistant" && (
@@ -207,7 +214,7 @@ function Welcome({
   );
 }
 
-function Message({ msg }: { msg: Msg }) {
+function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
   const isUser = msg.role === "user";
   return (
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
@@ -221,12 +228,22 @@ function Message({ msg }: { msg: Msg }) {
         {isUser ? (
           msg.content || <span className="opacity-50">...</span>
         ) : msg.content ? (
-          <ProseBlock
-            text={msg.content}
-            lookup={EMPTY_LOOKUP}
-            optimisticBaseUrl={OB_BASE_URL}
-            className="leading-relaxed mb-3 last:mb-0"
-          />
+          animate ? (
+            <FloatingProse
+              text={msg.content}
+              mode="astrologer"
+              lookup={EMPTY_LOOKUP}
+              optimisticBaseUrl={OB_BASE_URL}
+              className="leading-relaxed mb-3 last:mb-0"
+            />
+          ) : (
+            <ProseBlock
+              text={msg.content}
+              lookup={EMPTY_LOOKUP}
+              optimisticBaseUrl={OB_BASE_URL}
+              className="leading-relaxed mb-3 last:mb-0"
+            />
+          )
         ) : (
           <span className="opacity-50">...</span>
         )}

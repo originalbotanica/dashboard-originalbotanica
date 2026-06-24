@@ -375,6 +375,32 @@ h1, h2, h3, h4, h5, h6 {
   50%  { opacity: 1;   transform: translateX(-50%) scaleY(1.1); }
   100% { opacity: 0.6; transform: translateX(-50%) scaleY(0.9); }
 }
+/* Each word of a streamed reading drifts up and fades into place, so the
+   reading "floats on" rather than looking typed. Mount-once: a word
+   animates the first time it appears and is never replayed. */
+@keyframes float-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.float-word {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: float-word-in 1.3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .float-word {
+    animation-duration: 0.01ms;
+  }
+}
+
 /* Slow, ambient rotation for the decorative zodiac wheel. */
 @keyframes zodiac-spin {
   to {
@@ -812,6 +838,16 @@ h1, h2, h3, h4, h5, h6 {
   animation: dream-settle 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 .dream-line:last-child { margin-bottom: 0; }
+/* Same reading style, no paragraph-level fade — used while words float in
+   individually during the live reveal. */
+.dream-line-static {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.18rem;
+  line-height: 1.78;
+  color: var(--foreground);
+  margin: 0 0 1.1rem;
+}
+.dream-line-static:last-child { margin-bottom: 0; }
 .dream-line a {
   color: var(--accent);
   border-bottom: 1px solid rgba(232, 172, 124, 0.45);

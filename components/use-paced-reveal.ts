@@ -17,10 +17,22 @@ import { useCallback, useEffect, useRef } from "react";
  */
 
 function clampToSafeBoundary(s: string): string {
+  // Hold back an incomplete product marker ("[[name|slug" with no "]]").
   const open = s.lastIndexOf("[[");
-  if (open === -1) return s;
-  const close = s.indexOf("]]", open);
-  return close === -1 ? s.slice(0, open) : s;
+  if (open !== -1 && s.indexOf("]]", open) === -1) s = s.slice(0, open);
+  // Hold back an unclosed bold span (odd number of "**").
+  const stars = s.match(/\*\*/g);
+  if (stars && stars.length % 2 === 1) s = s.slice(0, s.lastIndexOf("**"));
+  return s;
+}
+
+/** Snap an index back to the end of the last whole word, so partial words
+ *  are never shown (the reading reveals word-by-word, not letter-by-letter). */
+function snapToWord(s: string, n: number): string {
+  if (n >= s.length) return s;
+  const slice = s.slice(0, n);
+  const lastSpace = slice.search(/\s\S*$/); // index of last whitespace run
+  return lastSpace === -1 ? "" : slice.slice(0, lastSpace + 1);
 }
 
 export function usePacedReveal(
@@ -55,14 +67,14 @@ export function usePacedReveal(
       let shown = shownRef.current;
 
       if (shown < target) {
-        // Gentle base pace, easing faster only if the model gets well
-        // ahead so the reveal never lags too far behind a long answer.
+        // Slow, meditative base pace, easing faster only if the model gets
+        // well ahead so the reveal never lags too far behind a long answer.
         const backlog = target - shown;
-        const cps = Math.min(190, Math.max(46, backlog * 1.8));
+        const cps = Math.min(120, Math.max(22, backlog * 0.9));
         shown = Math.min(target, shown + (cps * dt) / 1000);
         shownRef.current = shown;
         onTickRef.current(
-          clampToSafeBoundary(targetRef.current.slice(0, Math.floor(shown))),
+          clampToSafeBoundary(snapToWord(targetRef.current, Math.floor(shown))),
         );
       }
 

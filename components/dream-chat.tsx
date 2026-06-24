@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { materialUrl } from "@/lib/rituals/material-link";
 import { usePacedReveal } from "@/components/use-paced-reveal";
+import { FloatingProse } from "@/components/floating-prose";
 
 // Supplies the reading recommends arrive wrapped in [[ ]]. Turn each into a
 // link to its originalbotanica.com page (matching the rituals library), so
@@ -207,7 +208,13 @@ export function DreamChat({
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
-              <Message key={i} msg={m} />
+              <Message
+                key={i}
+                msg={m}
+                animate={
+                  streaming && i === messages.length - 1 && m.role === "assistant"
+                }
+              />
             ))}
             {streaming &&
               messages[messages.length - 1]?.role === "assistant" &&
@@ -301,7 +308,7 @@ function Welcome({
   );
 }
 
-function Message({ msg }: { msg: Msg }) {
+function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
   // The dreamer's own words stay as a quiet bubble, right-aligned. The
   // reading is set as serif prose with no bubble, each paragraph settling in
   // gently over the candlelit backdrop. Paragraphs are keyed by index, so as
@@ -322,6 +329,19 @@ function Message({ msg }: { msg: Msg }) {
       <p className="dream-line opacity-60 animate-pulse" aria-label="Reading the dream">
         Reading the dream…
       </p>
+    );
+  }
+
+  // While the reading streams, each word floats in on its own.
+  if (animate) {
+    return (
+      <div className="max-w-[44rem]">
+        <FloatingProse
+          text={msg.content}
+          mode="dream"
+          className="dream-line-static"
+        />
+      </div>
     );
   }
 
