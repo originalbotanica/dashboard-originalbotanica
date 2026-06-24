@@ -46,8 +46,7 @@ export default function VirtualAltarToolPage() {
       </p>
 
       <div className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--accent)] pl-4 py-2 mt-12">
-        Coming soon. The virtual altar tool is being woven into this
-        membership.
+        Live now for members. Your altar is waiting on your dashboard.
       </div>
     </MarketingToolLayout>
   );
