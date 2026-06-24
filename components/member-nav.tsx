@@ -16,6 +16,7 @@ import { LanguageToggle } from "./language-toggle";
  * "bordered" is a solid bar for the tool pages.
  */
 const TOOLS = [
+  { href: "/dashboard", key: "nav.dashboard" },
   { href: "/tarot", key: "nav.tarot" },
   { href: "/astrology", key: "nav.astrology" },
   { href: "/dreams", key: "nav.dreams" },

@@ -38,30 +38,31 @@ export const metadata = {
 };
 
 /** Voices from the Original Botanica family on using The Practice. */
-const TESTIMONIALS: { quote: string; name: string; role: string }[] = [
+const TESTIMONIALS: { quote: string; name: string }[] = [
   {
     quote:
       "I pull my card every morning before we open the shop. Two quiet minutes that set the whole day straight — I've come to need it.",
     name: "Yessenia",
-    role: "Original Botanica",
   },
   {
     quote:
       "Having the astrologer in my pocket is a different thing. I asked about a hard transit and it gave me the reading and the ritual to go with it. The botanica, just always open.",
     name: "Lara",
-    role: "Original Botanica",
   },
   {
     quote:
       "My family is back home and I can't always get to the altar. Lighting a candle for my grandmother here, wherever I am, means more than I expected.",
     name: "Miguel",
-    role: "Original Botanica",
   },
   {
     quote:
       "People ask me for the right ritual all day long. Now I carry four hundred of them in one place, each with what it needs. The whole shop's knowledge, with me.",
     name: "Joseph",
-    role: "Original Botanica",
+  },
+  {
+    quote:
+      "The part regulars love most: your membership takes 10% off everything at originalbotanica.com — even what's already on sale. For anyone who shops the botanica, it pays for itself in a couple of orders.",
+    name: "Carmen",
   },
 ];
 
@@ -305,11 +306,8 @@ export default async function HomePage({
                 <blockquote className="invocation text-[var(--foreground)] leading-relaxed">
                   “{tm.quote}”
                 </blockquote>
-                <figcaption className="mt-4">
-                  <span className="eyebrow text-[var(--accent)]">{tm.name}</span>
-                  <span className="block text-xs text-[var(--foreground-subtle)] mt-1">
-                    {tm.role}
-                  </span>
+                <figcaption className="eyebrow mt-4 text-[var(--accent)]">
+                  {tm.name}
                 </figcaption>
               </figure>
             ))}

@@ -20,6 +20,7 @@ type Dict = Record<string, string>;
 
 const en: Dict = {
   // navigation / chrome
+  "nav.dashboard": "Dashboard",
   "nav.tarot": "Tarot",
   "nav.astrology": "Astrology",
   "nav.dreams": "Dreams",
@@ -244,6 +245,7 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  "nav.dashboard": "Inicio",
   "nav.tarot": "Tarot",
   "nav.astrology": "Astrología",
   "nav.dreams": "Sueños",
