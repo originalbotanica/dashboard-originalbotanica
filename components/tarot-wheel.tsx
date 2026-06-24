@@ -25,6 +25,9 @@ const SPIN_SPEED = 0.75;
 const LAND_MS = 3600;
 const LAND_SPINS = 3;
 const MUSIC_SRC = "/tarot-wheel/sounds/background-full.mp3";
+// Ethereal closing track. Has a built-in ~4.4s silent lead-in, so starting it
+// the moment the wheel settles lands the swell right as the card is revealed.
+const ENDING_SRC = "/tarot-wheel/sounds/after_click.wav";
 const MUTE_KEY = "ob-tarot-muted";
 
 const WHEEL = "min(94vw, 640px)";
@@ -62,6 +65,7 @@ export function TarotWheel({
   const slotRef = useRef<HTMLDivElement | null>(null);
   const presentRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const endAudioRef = useRef<HTMLAudioElement | null>(null);
   const rotationRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const fadeRef = useRef<number | null>(null);
@@ -142,6 +146,7 @@ export function TarotWheel({
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.muted = muted;
+    if (endAudioRef.current) endAudioRef.current.muted = muted;
   }, [muted]);
 
   // Preload the music while the wheel is ready, so it starts the exact moment
@@ -158,6 +163,14 @@ export function TarotWheel({
       audio.volume = 0.6;
       audio.load();
       audioRef.current = audio;
+
+      const ending = new Audio(ENDING_SRC);
+      ending.loop = false;
+      ending.preload = "auto";
+      ending.muted = muted;
+      ending.volume = 0.75;
+      ending.load();
+      endAudioRef.current = ending;
     } catch {
       /* audio is optional */
     }
@@ -179,6 +192,16 @@ export function TarotWheel({
         /* ignore */
       }
       audioRef.current = null;
+    }
+    const ending = endAudioRef.current;
+    if (ending) {
+      ending.pause();
+      try {
+        ending.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+      endAudioRef.current = null;
     }
   }, []);
 
@@ -241,8 +264,33 @@ export function TarotWheel({
     }
   };
 
+  // The ethereal closing track: spin music fades, this swells in as the card
+  // is revealed (its built-in silent lead-in handles the timing).
+  const playEnding = useCallback(() => {
+    try {
+      let a = endAudioRef.current;
+      if (!a) {
+        a = new Audio(ENDING_SRC);
+        a.preload = "auto";
+        endAudioRef.current = a;
+      }
+      a.loop = false;
+      a.muted = muted;
+      a.volume = 0.75;
+      try {
+        a.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+      a.play().catch(() => {});
+    } catch {
+      /* audio is optional */
+    }
+  }, [muted]);
+
   const settle = useCallback(() => {
     fadeOutMusic();
+    playEnding();
     markDone();
     if (reducedMotion()) {
       setPhase("revealed");
@@ -275,7 +323,7 @@ export function TarotWheel({
       "translate(-50%, -50%) perspective(1100px) scale(0.5) rotateX(48deg) rotateZ(-6deg)";
     void el.offsetWidth;
     el.style.transition =
-      "transform 1.6s cubic-bezier(0.2,0.75,0.2,1), opacity 0.7s ease";
+      "transform 3.4s cubic-bezier(0.2,0.75,0.2,1), opacity 1.3s ease";
     el.style.opacity = "1";
     el.style.transform =
       "translate(-50%, -50%) perspective(1100px) scale(1.06) rotateX(-11deg) rotateY(8deg)";
@@ -302,10 +350,10 @@ export function TarotWheel({
         presentRef.current.style.transition =
           "transform 1.5s cubic-bezier(0.4,0,0.15,1)";
         presentRef.current.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) perspective(1100px) scale(${k}) rotateX(0deg) rotateY(0deg)`;
-      }, 2500),
+      }, 4600),
     );
 
-    timers.push(window.setTimeout(() => setPhase("revealed"), 4150));
+    timers.push(window.setTimeout(() => setPhase("revealed"), 6250));
 
     return () => timers.forEach(clearTimeout);
   }, [phase]);
