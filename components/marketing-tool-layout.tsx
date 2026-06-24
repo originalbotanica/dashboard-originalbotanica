@@ -35,6 +35,14 @@ export function MarketingToolLayout({
 
       {/* Hero with full-bleed photography */}
       <section className="relative min-h-[70vh] flex flex-col items-center justify-center text-center px-6 pt-28 pb-16 overflow-hidden">
+        {/* Clear way back to the main page from a tool's detail view. */}
+        <Link
+          href="/"
+          className="absolute top-24 left-6 z-10 inline-flex items-center gap-1.5 nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+        >
+          <span aria-hidden>←</span> All the tools
+        </Link>
+
         <div className="absolute inset-0 -z-10">
           <Image
             src={heroImageUrl}
