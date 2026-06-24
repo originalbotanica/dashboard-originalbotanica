@@ -80,7 +80,7 @@ export default async function VirtualAltarPage({
           A sacred space where intention meets the flame. Light your candle, and
           let the collective energy of the community hold it with you.
         </p>
-        <div className="flex justify-center mb-10" aria-hidden>
+        <div className="flex justify-center mt-12 mb-10" aria-hidden>
           <FlameCandle size="large" lit />
         </div>
         <Link href="/altar/virtual/new" className="btn-primary inline-flex">
