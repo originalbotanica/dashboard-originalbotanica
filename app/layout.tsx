@@ -32,12 +32,12 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Original Botanica — Spiritual Membership",
-    template: "%s | Original Botanica",
+    default: "The Practice — Your Spiritual Home Online",
+    template: "%s | The Practice",
   },
   description:
     "Daily tarot, personal astrology, your virtual altar, ancestor altar, and a library of 400+ rituals from 66 years of practice. From Original Botanica, the Bronx, since 1959.",
-  applicationName: "Original Botanica Membership",
+  applicationName: "The Practice",
   authors: [{ name: "Original Botanica" }],
   keywords: [
     "spiritual membership",
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    siteName: "Original Botanica Membership",
-    title: "Original Botanica — Spiritual Membership",
+    siteName: "The Practice — from Original Botanica",
+    title: "The Practice — Your Spiritual Home Online",
     description:
       "Daily tarot, personal astrology, virtual altar, ancestor altar, rituals library. Rooted in the Bronx since 1959.",
     url: "/",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Original Botanica Membership",
+    title: "The Practice — from Original Botanica",
     description:
       "Your spiritual home online. Rooted in the Bronx since 1959.",
   },

@@ -154,6 +154,7 @@ const en: Dict = {
   "footer.signIn": "Sign in",
   "footer.legal": "Legal",
   "footer.tagline": "Spiritual products · the Bronx, since 1959",
+  "footer.fromOB": "from Original Botanica",
   "footer.callPhone": "Call {phone}",
   // moon strip
   "moon.in": "in",
@@ -369,6 +370,7 @@ const es: Dict = {
   "footer.signIn": "Iniciar sesión",
   "footer.legal": "Legal",
   "footer.tagline": "Productos espirituales · the Bronx, desde 1959",
+  "footer.fromOB": "de Original Botanica",
   "footer.callPhone": "Llama al {phone}",
   // moon strip
   "moon.in": "en",

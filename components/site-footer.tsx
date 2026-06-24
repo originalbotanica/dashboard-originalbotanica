@@ -86,8 +86,11 @@ export function SiteFooter() {
       <div className="max-w-5xl mx-auto px-6 py-14">
         <div className="flex flex-col items-center text-center mb-10">
           <Link href="/" className="display text-2xl text-[var(--foreground)]">
-            Original Botanica
+            The Practice
           </Link>
+          <p className="text-xs text-[var(--foreground-subtle)] mt-1">
+            {t("footer.fromOB")}
+          </p>
           <p className="eyebrow mt-3 text-[var(--foreground-subtle)]">
             {t("footer.tagline")}
           </p>
