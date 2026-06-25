@@ -55,8 +55,11 @@ export default async function SubscribePage() {
           <StartMembershipButtons />
         </div>
 
-        <p className="text-[var(--foreground-subtle)] text-xs mt-8">
-          You won&apos;t be charged during the trial.
+        <p className="mt-6 text-sm font-medium text-[var(--foreground)]">
+          You won&apos;t be charged during your 7-day trial.
+        </p>
+        <p className="mt-1.5 text-xs text-[var(--foreground-muted)]">
+          We&apos;ll email you before your trial ends, so nothing is a surprise.
         </p>
       </div>
     </main>
