@@ -186,6 +186,78 @@ const FEASTS: Feast[] = [
     color: "#b98cf0",
     action: { href: CANDLE("Honoring Babalú-Ayé — health and healing"), en: "Light a candle for Babalú-Ayé", es: "Vela para Babalú-Ayé" },
   },
+  {
+    m: 1, d: 21, id: "altagracia",
+    title: "Virgen de Altagracia",
+    en: "Protectress of the Dominican people. Light a candle for protection and blessings on your home.",
+    es: "Protectora del pueblo dominicano. Enciende una vela por protección y bendiciones para tu hogar.",
+    color: "#5b8fd8",
+    action: { href: CANDLE("Virgen de Altagracia — protection"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 5, d: 13, id: "fatima",
+    title: "Nuestra Señora de Fátima",
+    en: "Our Lady of Fátima. Light a candle for peace, conversion, and protection.",
+    es: "Nuestra Señora de Fátima. Enciende una vela por la paz, la conversión y la protección.",
+    color: "#7bb6f2",
+    action: { href: CANDLE("Our Lady of Fátima — peace and protection"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 6, d: 27, id: "perpetua",
+    title: "Our Lady of Perpetual Help",
+    en: "For those in urgent need. Light a candle when you need help that cannot wait.",
+    es: "Para quienes están en necesidad urgente. Enciende una vela cuando necesites ayuda que no puede esperar.",
+    color: "#6f8fd0",
+    action: { href: CANDLE("Our Lady of Perpetual Help — help in urgent need"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 7, d: 16, id: "carmen",
+    title: "Virgen del Carmen",
+    en: "Patroness of the sea and safe passage. Light a candle for protection over travelers and sailors.",
+    es: "Patrona del mar y del buen camino. Enciende una vela por protección para viajeros y marineros.",
+    color: "#b98a5e",
+    action: { href: CANDLE("Virgen del Carmen — protection and safe passage"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 7, d: 17, id: "san-alejo",
+    title: "San Alejo",
+    en: "Invoked to keep enemies and harmful people far away. Light a candle for distance from trouble.",
+    es: "Se le invoca para alejar a los enemigos y a las personas dañinas. Enciende una vela para alejar los problemas.",
+    color: "#9b7bd0",
+    action: { href: CANDLE("San Alejo — keep enemies and harm away"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 7, d: 26, id: "santa-ana",
+    title: "Santa Ana",
+    en: "Mother of the Virgin Mary. Light a candle for family, mothers, and fertility.",
+    es: "Madre de la Virgen María. Enciende una vela por la familia, las madres y la fertilidad.",
+    color: "#cdae5a",
+    action: { href: CANDLE("Santa Ana — family and fertility"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 9, d: 15, id: "dolorosa",
+    title: "Nuestra Señora de los Dolores",
+    en: "Our Lady of Sorrows. Light a candle for comfort in grief and hardship.",
+    es: "Nuestra Señora de los Dolores. Enciende una vela por consuelo en el dolor y la dificultad.",
+    color: "#6f7bbf",
+    action: { href: CANDLE("Our Lady of Sorrows — comfort in grief"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 10, d: 2, id: "guardian-angel",
+    title: "Holy Guardian Angels",
+    en: "The feast of the Guardian Angels. Light a candle and ask yours to watch over you.",
+    es: "La fiesta de los Ángeles de la Guarda. Enciende una vela y pide al tuyo que te cuide.",
+    color: "#8fb6e8",
+    action: { href: CANDLE("My guardian angel — watch over me"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 12, d: 12, id: "guadalupe",
+    title: "Virgen de Guadalupe",
+    en: "Patroness of the Americas. Light a candle for protection and grace over you and your family.",
+    es: "Patrona de las Américas. Enciende una vela por protección y gracia para ti y tu familia.",
+    color: "#3fae8f",
+    action: { href: CANDLE("Our Lady of Guadalupe — protection and grace"), en: "Light a candle", es: "Enciende una vela" },
+  },
 ];
 
 // ── Mercury retrograde — curated, dated (yearly refresh) ───────────────────
@@ -250,6 +322,42 @@ function solarCrossing(year: number, targetLon: number): number | null {
     prev = cur;
   }
   return null;
+}
+
+/** Easter Sunday (Gregorian computus). */
+function easterSunday(year: number): { y: number; m: number; d: number } {
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const mth = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * mth + 114) / 31);
+  const day = ((h + l - 7 * mth + 114) % 31) + 1;
+  return { y: year, m: month, d: day };
+}
+
+/** Movable feasts computed from Easter. Sacred Heart = Easter + 68 days. */
+function movableFeastsForYear(year: number): CalEvent[] {
+  const sh = addDays(easterSunday(year), 68);
+  return [
+    {
+      id: `sacred-heart-${year}`,
+      ...sh,
+      type: "feast",
+      title: "Sacred Heart of Jesus",
+      en: "The Sacred Heart of Jesus. Light a candle for love, mercy, and healing.",
+      es: "El Sagrado Corazón de Jesús. Enciende una vela por amor, misericordia y sanación.",
+      color: "#f0552f",
+      action: { href: "/altar/saint/sacred-heart", en: "Light a candle", es: "Enciende una vela" },
+    },
+  ];
 }
 
 function feastEventsForYear(year: number): CalEvent[] {
@@ -335,6 +443,7 @@ export function getEventsBetween(
   const events: CalEvent[] = [];
   for (let year = from.y; year <= to.y; year++) {
     events.push(...feastEventsForYear(year));
+    events.push(...movableFeastsForYear(year));
     events.push(...seasonalForYear(year));
   }
   events.push(...mercuryEvents());
