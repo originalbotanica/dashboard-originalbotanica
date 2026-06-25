@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { Candle } from "@/components/candle";
 import { MemberNav } from "@/components/member-nav";
 
@@ -31,6 +32,9 @@ export default async function AncestorsHubPage() {
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/tools/ancestors");
 
   const { data: memorials } = await supabase
     .from("ancestors")

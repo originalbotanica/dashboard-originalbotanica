@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { MemorialForm } from "@/components/memorial-form";
 import { createAncestorAction } from "../actions";
 
@@ -26,6 +27,9 @@ export default async function NewAncestorPage({
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/tools/ancestors");
 
   return (
     <main className="min-h-screen">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { Candle } from "@/components/candle";
 import { MemorialForm } from "@/components/memorial-form";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
@@ -40,6 +41,9 @@ export default async function MemorialDetailPage({
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/tools/ancestors");
 
   const { data: memorial } = await supabase
     .from("ancestors")

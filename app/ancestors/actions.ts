@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { randomBytes } from "crypto";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { containsProhibitedLanguage } from "@/lib/moderation";
 
 /** How many new memorials a member may add in a rolling 24-hour window.
@@ -32,6 +33,9 @@ export async function createAncestorAction(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/tools/ancestors");
 
   const name = String(formData.get("name") || "").trim();
   const relation = String(formData.get("relation") || "").trim() || null;
@@ -117,6 +121,9 @@ export async function updateAncestorAction(formData: FormData) {
 
   const id = String(formData.get("id") || "");
   if (!id) return redirect("/ancestors");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/tools/ancestors");
 
   const name = String(formData.get("name") || "").trim();
   const relation = String(formData.get("relation") || "").trim() || null;
