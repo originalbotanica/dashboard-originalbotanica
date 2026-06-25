@@ -33,6 +33,7 @@ export function AstrologerChat({
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   // Reveal the streamed reading at a calm, deliberate pace rather than
   // dumping tokens the instant they arrive.
@@ -67,10 +68,13 @@ export function AstrologerChat({
     reveal.reset();
 
     try {
+      const controller = new AbortController();
+      abortRef.current = controller;
       const res = await fetch("/api/astrologer/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -101,12 +105,19 @@ export function AstrologerChat({
       // Let the paced reveal catch up; it turns streaming off when settled.
       reveal.finish();
     } catch (err) {
-      reveal.reset();
-      setError(err instanceof Error ? err.message : "Unexpected error");
-      setMessages((m) => m.slice(0, -1));
-      setStreaming(false);
+      if (err instanceof DOMException && err.name === "AbortError") {
+        // Stopped by the member — keep what arrived and settle gracefully.
+        reveal.finish();
+      } else {
+        reveal.reset();
+        setError(err instanceof Error ? err.message : "Unexpected error");
+        setMessages((m) => m.slice(0, -1));
+        setStreaming(false);
+      }
     }
   }
+
+  const stop = () => abortRef.current?.abort();
 
   const isEmpty = messages.length === 0;
 
@@ -132,9 +143,18 @@ export function AstrologerChat({
             ))}
             {streaming &&
               messages[messages.length - 1]?.role === "assistant" && (
-                <p className="text-xs text-[var(--foreground-subtle)] italic">
-                  Reading the chart...
-                </p>
+                <div className="flex items-center gap-3">
+                  <p className="text-xs text-[var(--foreground-subtle)] italic">
+                    Reading the chart…
+                  </p>
+                  <button
+                    type="button"
+                    onClick={stop}
+                    className="text-xs text-[var(--accent)] hover:underline"
+                  >
+                    Stop
+                  </button>
+                </div>
               )}
           </div>
         )}

@@ -101,6 +101,7 @@ export function DreamChat({
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingNavRef = useRef<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   // Reveal the reading gently rather than dumping tokens as they arrive.
   const reveal = usePacedReveal(
@@ -141,6 +142,8 @@ export function DreamChat({
     reveal.reset();
 
     try {
+      const controller = new AbortController();
+      abortRef.current = controller;
       const res = await fetch("/api/dreams/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -148,6 +151,7 @@ export function DreamChat({
           message: trimmed,
           threadId: threadId || undefined,
         }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -186,12 +190,19 @@ export function DreamChat({
       pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
       reveal.finish();
     } catch (err) {
-      reveal.reset();
-      setError(err instanceof Error ? err.message : "Unexpected error");
-      setMessages((m) => m.slice(0, -1));
-      setStreaming(false);
+      if (err instanceof DOMException && err.name === "AbortError") {
+        // Stopped by the member — keep what arrived and settle gracefully.
+        reveal.finish();
+      } else {
+        reveal.reset();
+        setError(err instanceof Error ? err.message : "Unexpected error");
+        setMessages((m) => m.slice(0, -1));
+        setStreaming(false);
+      }
     }
   }
+
+  const stop = () => abortRef.current?.abort();
 
   const isEmpty = messages.length === 0;
 
@@ -219,9 +230,18 @@ export function DreamChat({
             {streaming &&
               messages[messages.length - 1]?.role === "assistant" &&
               messages[messages.length - 1].content && (
-                <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse mt-1">
-                  Still reading…
-                </p>
+                <div className="flex items-center gap-3 mt-1">
+                  <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse">
+                    Still reading…
+                  </p>
+                  <button
+                    type="button"
+                    onClick={stop}
+                    className="text-xs text-[var(--accent)] hover:underline"
+                  >
+                    Stop
+                  </button>
+                </div>
               )}
           </div>
         )}
