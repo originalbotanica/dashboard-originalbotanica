@@ -30,7 +30,7 @@ const MUSIC_SRC = "/tarot-wheel/sounds/background-full.mp3";
 const ENDING_SRC = "/tarot-wheel/sounds/after_click.wav";
 const MUTE_KEY = "ob-tarot-muted";
 
-const WHEEL = "min(94vw, 640px)";
+const WHEEL = "min(90vw, 640px)";
 const RADIUS = `calc(${WHEEL} * 0.355)`;
 const CARD_W = `calc(${WHEEL} * 0.16)`;
 const HUB = `calc(${WHEEL} * 0.26)`;
@@ -288,6 +288,50 @@ export function TarotWheel({
     }
   }, [muted]);
 
+  // Unlock the ending track for later playback. Browsers (especially iOS
+  // Safari) only allow audio.play() that originates from a user gesture; the
+  // ending swells from inside a setTimeout chain ~3.6s after Stop is tapped,
+  // which is too late to count as a gesture. So during the Spin/Stop tap we
+  // "prime" the element — play it, then immediately pause and rewind. The
+  // track's silent lead-in means nothing is audible, and the element is now
+  // unlocked so playEnding() works when the card is revealed.
+  const primeEnding = useCallback(() => {
+    try {
+      let a = endAudioRef.current;
+      if (!a) {
+        a = new Audio(ENDING_SRC);
+        a.preload = "auto";
+        endAudioRef.current = a;
+      }
+      a.loop = false;
+      a.muted = muted;
+      a.volume = 0.75;
+      const p = a.play();
+      if (p && typeof p.then === "function") {
+        p.then(() => {
+          const el = endAudioRef.current;
+          if (el) {
+            el.pause();
+            try {
+              el.currentTime = 0;
+            } catch {
+              /* ignore */
+            }
+          }
+        }).catch(() => {});
+      } else {
+        a.pause();
+        try {
+          a.currentTime = 0;
+        } catch {
+          /* ignore */
+        }
+      }
+    } catch {
+      /* audio is optional */
+    }
+  }, [muted]);
+
   const settle = useCallback(() => {
     fadeOutMusic();
     playEnding();
@@ -403,6 +447,9 @@ export function TarotWheel({
   const beginSpin = useCallback(() => {
     if (phase !== "ready") return;
 
+    // Unlock the ending track within this tap so it can swell later (autoplay).
+    primeEnding();
+
     if (reducedMotion()) {
       rotationRef.current = -index * STEP;
       applyRotation();
@@ -437,7 +484,7 @@ export function TarotWheel({
     if (ringRef.current) ringRef.current.style.transition = "none";
     lastTsRef.current = 0;
     rafRef.current = requestAnimationFrame(loop);
-  }, [phase, index, muted, loop, settle]);
+  }, [phase, index, muted, loop, settle, primeEnding]);
 
   const stop = useCallback(() => {
     if (phase !== "spinning") return;
@@ -465,7 +512,7 @@ export function TarotWheel({
 
   return (
     <section aria-label="Your tarot wheel" className="border-t border-[var(--border)]">
-      <div className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center">
+      <div className="max-w-4xl mx-auto px-6 py-6 md:py-16 flex flex-col items-center">
         <div
           className="relative"
           style={{
@@ -574,7 +621,7 @@ export function TarotWheel({
         </div>
 
         {phase === "ready" || phase === "spinning" || phase === "stopping" ? (
-          <p className="invocation text-[var(--foreground-muted)] mt-8 text-center max-w-md leading-relaxed">
+          <p className="invocation text-[var(--foreground-muted)] mt-6 text-center max-w-md leading-relaxed">
             {phase === "spinning"
               ? "When the right vibe hits, click the center again to stop the wheel."
               : phase === "stopping"

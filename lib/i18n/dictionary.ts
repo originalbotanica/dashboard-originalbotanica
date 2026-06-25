@@ -137,7 +137,7 @@ const en: Dict = {
   "dash.benefitBody": "Sign in to originalbotanica.com with the same email and your discount applies automatically at checkout. Every candle, oil, herb, and bath.",
   "dash.benefitLink": "Shop the botanica",
   "dash.giftEyebrow": "Give the gift of guidance",
-  "dash.giftHeadline": "Know someone walking a hard road?",
+  "dash.giftHeadline": "Share the gift of The Practice.",
   "dash.giftBody": "Give them a season at the botanica — daily tarot, dream interpretation, a place to honor their ancestors, and a spiritualist to talk with. A gift for a new practitioner, a grieving friend, or anyone who could use a little light.",
   "dash.giftCta": "Gift a membership",
   // daily tarot teaser
@@ -385,7 +385,7 @@ const es: Dict = {
   "dash.benefitBody": "Inicia sesión en originalbotanica.com con el mismo correo y tu descuento se aplica automáticamente al pagar. Cada vela, aceite, hierba y baño.",
   "dash.benefitLink": "Compra en la botánica",
   "dash.giftEyebrow": "Regala el don de la guía",
-  "dash.giftHeadline": "¿Conoces a alguien que esté pasando por un camino difícil?",
+  "dash.giftHeadline": "Comparte el regalo de The Practice.",
   "dash.giftBody": "Regálale una temporada en la botánica — tarot diario, interpretación de sueños, un lugar para honrar a sus ancestros y un espiritualista con quien hablar. Un regalo para un nuevo practicante, un amigo en duelo, o cualquiera que necesite un poco de luz.",
   "dash.giftCta": "Regalar una membresía",
   // daily tarot teaser
