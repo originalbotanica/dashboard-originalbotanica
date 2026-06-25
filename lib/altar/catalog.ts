@@ -212,7 +212,7 @@ export const DESIRES: Desire[] = [
       { slug: "san-alejo", name: "San Alejo", tagline: "Keep enemies and harm away", saintColor: "#9b7bd0", saintIntention: "San Alejo — keep enemies and harm far from me", photo: `${OB_PRODUCT_IMG}/7ds2020__19451.jpg` },
       { slug: "santa-ana", name: "Santa Ana", tagline: "For family, mothers, and fertility", saintColor: "#cdae5a", saintIntention: "Santa Ana — for family, mothers, and fertility", photo: `${OB_PRODUCT_IMG}/7ds2030__32727.jpg` },
       { slug: "dolorosa", name: "Nuestra Señora de los Dolores", tagline: "Comfort in grief and hardship", saintColor: "#6f7bbf", saintIntention: "Our Lady of Sorrows — comfort in grief and hardship", photo: `${OB_PRODUCT_IMG}/dolorosa_7day__30493.jpg` },
-      { slug: "guardian-angel", name: "Guardian Angel", tagline: "Watch over me", saintColor: "#bcd4f0", saintIntention: "My guardian angel — watch over me" },
+      { slug: "guardian-angel", name: "Guardian Angel", tagline: "Watch over me", saintColor: "#bcd4f0", saintIntention: "My guardian angel — watch over me", photo: `${OB_PRODUCT_IMG}/guardianangel_7day__37948.jpg` },
       { slug: "guadalupe", name: "Virgen de Guadalupe", tagline: "Protection and grace", saintColor: "#3fae8f", saintIntention: "Our Lady of Guadalupe — protection and grace for my family", photo: `${OB_PRODUCT_IMG}/guadalupe_7day__48155.jpg` },
     ],
   },
