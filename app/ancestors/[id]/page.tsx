@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { Candle } from "@/components/candle";
 import { MemorialForm } from "@/components/memorial-form";
+import { ShareMemorialLink } from "@/components/share-memorial-link";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
 
 export const metadata = {
@@ -97,10 +98,9 @@ export default async function MemorialDetailPage({
 
         {memorial.is_public && memorial.hash && (
           <div className="mt-6 inline-flex flex-col items-center border border-[var(--border)] rounded-lg p-4 bg-[var(--surface)]">
-            <p className="eyebrow mb-2">Share with family</p>
-            <code className="text-sm text-[var(--accent)] break-all">
-              https://dashboard-originalbotanica.vercel.app/candle/{memorial.hash}
-            </code>
+            <ShareMemorialLink
+              url={`${process.env.NEXT_PUBLIC_SITE_URL || "https://members.originalbotanica.com"}/candle/${memorial.hash}`}
+            />
             {memorial.light_count > 0 && (
               <p className="text-xs text-[var(--foreground-subtle)] mt-2">
                 {memorial.light_count}{" "}
