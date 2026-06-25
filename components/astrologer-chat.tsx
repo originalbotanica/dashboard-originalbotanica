@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
 import { usePacedReveal } from "@/components/use-paced-reveal";
 import { FloatingProse } from "@/components/floating-prose";
@@ -23,17 +24,21 @@ const STARTER_PROMPTS = [
 
 export function AstrologerChat({
   firstName,
+  threadId,
   initialMessages,
 }: {
   firstName: string;
+  threadId: string | null;
   initialMessages: Msg[];
 }) {
+  const router = useRouter();
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const pendingNavRef = useRef<string | null>(null);
 
   // Reveal the streamed reading at a calm, deliberate pace rather than
   // dumping tokens the instant they arrive.
@@ -46,7 +51,14 @@ export function AstrologerChat({
         }
         return next;
       }),
-    () => setStreaming(false),
+    () => {
+      setStreaming(false);
+      const nav = pendingNavRef.current;
+      if (nav) {
+        pendingNavRef.current = null;
+        router.replace(`/astrology/astrologer/${nav}`);
+      }
+    },
   );
 
   useEffect(() => {
@@ -73,7 +85,7 @@ export function AstrologerChat({
       const res = await fetch("/api/astrologer/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed }),
+        body: JSON.stringify({ message: trimmed, threadId: threadId || undefined }),
         signal: controller.signal,
       });
 
@@ -85,6 +97,7 @@ export function AstrologerChat({
         return;
       }
 
+      const newThreadId = res.headers.get("X-Thread-Id");
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
       if (!reader) {
@@ -102,7 +115,9 @@ export function AstrologerChat({
         buf += chunk;
         reveal.push(buf);
       }
-      // Let the paced reveal catch up; it turns streaming off when settled.
+      // On a brand-new conversation, route to its permanent URL once the
+      // reveal settles (handled in onSettled), so refresh/back work.
+      pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
       reveal.finish();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {

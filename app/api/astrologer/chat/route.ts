@@ -63,9 +63,11 @@ export async function POST(request: Request) {
 
   // Body
   let userMessage = "";
+  let providedThreadId: string | null = null;
   try {
     const body = await request.json();
     userMessage = String(body.message || "").trim();
+    providedThreadId = body.threadId ? String(body.threadId) : null;
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
@@ -97,34 +99,40 @@ export async function POST(request: Request) {
     );
   }
 
-  // Get or create the user's rolling thread
-  let { data: thread } = await supabase
-    .from("astrologer_threads")
-    .select("id")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (!thread) {
-    const { data: created } = await supabase
+  // Use the requested conversation, or start a new one.
+  let threadId: string;
+  if (providedThreadId) {
+    const { data: owned } = await supabase
       .from("astrologer_threads")
-      .insert({ user_id: user.id, title: "Your reading" })
+      .select("id")
+      .eq("id", providedThreadId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!owned) {
+      return NextResponse.json(
+        { error: "Conversation not found" },
+        { status: 404 },
+      );
+    }
+    threadId = providedThreadId;
+  } else {
+    const { data: created, error: createErr } = await supabase
+      .from("astrologer_threads")
+      .insert({ user_id: user.id, title: titleFromMessage(userMessage) })
       .select("id")
       .single();
-    thread = created;
-  }
-
-  if (!thread?.id) {
-    return NextResponse.json(
-      { error: "Could not create or load a conversation thread" },
-      { status: 500 },
-    );
+    if (createErr || !created?.id) {
+      return NextResponse.json(
+        { error: "Could not start a new conversation" },
+        { status: 500 },
+      );
+    }
+    threadId = created.id;
   }
 
   // Save the user's message
   await supabase.from("astrologer_messages").insert({
-    thread_id: thread.id,
+    thread_id: threadId,
     user_id: user.id,
     role: "user",
     content: userMessage,
@@ -134,7 +142,7 @@ export async function POST(request: Request) {
   const { data: historyRows } = await supabase
     .from("astrologer_messages")
     .select("role, content")
-    .eq("thread_id", thread.id)
+    .eq("thread_id", threadId)
     .order("created_at", { ascending: false })
     .limit(MAX_HISTORY_MESSAGES);
 
@@ -191,7 +199,6 @@ export async function POST(request: Request) {
   const anthropic = getAnthropic();
   const encoder = new TextEncoder();
   const adminSupabase = createAdminClient();
-  const threadId = thread.id;
   const userId = user.id;
 
   const stream = new ReadableStream({
@@ -242,6 +249,15 @@ export async function POST(request: Request) {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-cache, no-store",
+      "X-Thread-Id": threadId,
     },
   });
+}
+
+/** A short conversation title from the member's first message. */
+function titleFromMessage(msg: string): string {
+  const clean = msg.replace(/\s+/g, " ").trim();
+  const words = clean.split(" ").slice(0, 6).join(" ");
+  const title = words.length > 48 ? words.slice(0, 48).trim() + "…" : words;
+  return title || "Your reading";
 }
