@@ -16,36 +16,70 @@ export function SaintCandleLighter({
   name,
   color,
   intention,
+  photo,
   locale,
 }: {
   slug: string;
   name: string;
   color: string;
   intention: string;
+  photo?: string;
   locale: Locale;
 }) {
   const [lit, setLit] = useState(false);
+  const glow = lit ? `drop-shadow(0 0 34px ${color}aa)` : "none";
 
   return (
     <div className="flex flex-col items-center">
-      <div
-        className="relative"
-        style={{
-          filter: lit ? `drop-shadow(0 0 34px ${color}aa)` : "none",
-          transition: "filter 1s ease",
-        }}
-      >
-        <Candle size="large" lit={lit} alt={name} />
-        {!lit && (
-          <button
-            type="button"
-            onClick={() => setLit(true)}
-            aria-label={t(locale, "saint.tapHint")}
-            className="absolute left-1/2 -translate-x-1/2 rounded-full"
-            style={{ top: -16, width: 96, height: 110, cursor: "pointer", background: "transparent" }}
+      {photo ? (
+        <div
+          className="relative"
+          style={{ filter: glow, transition: "filter 1s ease" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={photo}
+            alt={name}
+            width={160}
+            className="rounded-xl block"
+            style={{ width: 160, height: "auto", opacity: lit ? 1 : 0.9, transition: "opacity .8s ease" }}
           />
-        )}
-      </div>
+          {lit && (
+            <span
+              aria-hidden
+              className="absolute left-1/2 -translate-x-1/2"
+              style={{ top: -22 }}
+            >
+              <span className="saint-flame" />
+            </span>
+          )}
+          {!lit && (
+            <button
+              type="button"
+              onClick={() => setLit(true)}
+              aria-label={t(locale, "saint.tapHint")}
+              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              style={{ top: -8, width: 90, height: 64, cursor: "pointer", background: "transparent" }}
+            />
+          )}
+        </div>
+      ) : (
+        <div
+          className="relative"
+          style={{ filter: glow, transition: "filter 1s ease" }}
+        >
+          <Candle size="large" lit={lit} alt={name} />
+          {!lit && (
+            <button
+              type="button"
+              onClick={() => setLit(true)}
+              aria-label={t(locale, "saint.tapHint")}
+              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              style={{ top: -16, width: 96, height: 110, cursor: "pointer", background: "transparent" }}
+            />
+          )}
+        </div>
+      )}
 
       <p
         className="invocation text-[var(--foreground-muted)] mt-6 text-center max-w-sm leading-relaxed"

@@ -20,6 +20,28 @@ export function AltarCandle({
 }) {
   const saint = getSaintCandle(candleSlug);
   if (saint) {
+    const px = size === "hero" ? 208 : 132;
+    // Real product photo when we have one; otherwise the themed glass candle.
+    if (saint.photo) {
+      return (
+        <span
+          className="inline-block"
+          aria-label={saint.name}
+          style={{ filter: `drop-shadow(0 0 18px ${saint.saintColor}99)` }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={saint.photo}
+            alt={saint.name}
+            width={px}
+            height={px}
+            loading="lazy"
+            className="rounded-xl object-cover candle-glow"
+            style={{ width: px, height: px }}
+          />
+        </span>
+      );
+    }
     return (
       <span
         className="inline-flex items-center justify-center"

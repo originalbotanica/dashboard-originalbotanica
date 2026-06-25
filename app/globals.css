@@ -375,6 +375,29 @@ h1, h2, h3, h4, h5, h6 {
   50%  { opacity: 1;   transform: translateX(-50%) scaleY(1.1); }
   100% { opacity: 0.6; transform: translateX(-50%) scaleY(0.9); }
 }
+/* Standalone flame for a saint candle lit from its product photo. */
+.saint-flame {
+  display: block;
+  width: 18px;
+  height: 34px;
+  border-radius: 50% 50% 42% 42% / 68% 68% 32% 32%;
+  background: radial-gradient(
+    ellipse at 50% 80%,
+    #fff7da 0%,
+    #ffd271 28%,
+    #ff8e22 60%,
+    #e0560a 100%
+  );
+  filter: drop-shadow(0 0 16px rgba(255, 170, 60, 0.85));
+  transform-origin: 50% 100%;
+  animation: flame-flicker-outer 1.9s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .saint-flame {
+    animation: none;
+  }
+}
+
 /* Landing feature-strip: each tool icon sits in a glowing gold medallion
    that lifts and brightens on hover, so the row reads rich, not generic. */
 .feat-badge {

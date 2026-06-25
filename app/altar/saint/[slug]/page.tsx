@@ -69,6 +69,7 @@ export default async function SaintCandlePage({
           name={saint.name}
           color={saint.saintColor ?? "var(--accent)"}
           intention={saint.saintIntention ?? saint.name}
+          photo={saint.photo}
           locale={locale}
         />
       </section>

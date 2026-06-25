@@ -27,7 +27,13 @@ export type CandleArt = {
   saintColor?: string;
   /** Default dedication suggested when lighting this saint candle. */
   saintIntention?: string;
+  /** Real 7-day product photo (originalbotanica.com). When present, the saint
+   *  candle shows this photo; otherwise it falls back to the themed glass. */
+  photo?: string;
 };
+
+const OB_PRODUCT_IMG =
+  "https://dlkhclkmyx18n.cloudfront.net/transforms/products/_productImage";
 
 export type Desire = {
   slug: string;
@@ -187,17 +193,17 @@ export const DESIRES: Desire[] = [
     purpose: "protection",
     candles: [
       { slug: "reyes", name: "Three Kings", tagline: "Blessings for the year ahead", saintColor: "#e8ac7c", saintIntention: "Blessings for the year ahead" },
-      { slug: "candelaria", name: "La Candelaria · Oyá", tagline: "Courage through change", saintColor: "#b98cf0", saintIntention: "Honoring Oyá — courage through change" },
-      { slug: "san-antonio", name: "San Antonio · Eleguá", tagline: "Open the roads", saintColor: "#f0552f", saintIntention: "Honoring Eleguá — open my roads" },
-      { slug: "san-juan", name: "San Juan Bautista", tagline: "Cleansing and renewal", saintColor: "#7bb6f2", saintIntention: "Cleansing and renewal on San Juan" },
-      { slug: "santiago", name: "Santiago · Oggún", tagline: "Strength for the work", saintColor: "#5aa06a", saintIntention: "Honoring Oggún — strength for the work" },
-      { slug: "regla", name: "La Virgen de Regla · Yemayá", tagline: "Protection and healing", saintColor: "#3f7bd8", saintIntention: "Honoring Yemayá — protection and healing" },
-      { slug: "caridad", name: "La Caridad · Ochún", tagline: "Love and abundance", saintColor: "#e8c34a", saintIntention: "Honoring Ochún — love and abundance" },
-      { slug: "mercedes", name: "Las Mercedes · Obatalá", tagline: "Peace and clarity", saintColor: "#efe7d6", saintIntention: "Honoring Obatalá — peace and clarity" },
-      { slug: "san-miguel", name: "San Miguel Arcángel", tagline: "Protection over you and your home", saintColor: "#7bb6f2", saintIntention: "San Miguel — protect me and mine" },
-      { slug: "san-francisco", name: "San Francisco · Orula", tagline: "Wisdom and guidance", saintColor: "#cda94f", saintIntention: "Honoring Orula — wisdom and guidance" },
-      { slug: "barbara", name: "Santa Bárbara · Changó", tagline: "Courage and victory", saintColor: "#f0552f", saintIntention: "Honoring Changó — courage and victory" },
-      { slug: "lazaro", name: "San Lázaro · Babalú-Ayé", tagline: "Health and healing", saintColor: "#9b7bd0", saintIntention: "Honoring Babalú-Ayé — health and healing" },
+      { slug: "candelaria", name: "La Candelaria · Oyá", tagline: "Courage through change", saintColor: "#b98cf0", saintIntention: "Honoring Oyá — courage through change", photo: `${OB_PRODUCT_IMG}/7ds2060__44657.jpg` },
+      { slug: "san-antonio", name: "San Antonio · Eleguá", tagline: "Open the roads", saintColor: "#f0552f", saintIntention: "Honoring Eleguá — open my roads", photo: `${OB_PRODUCT_IMG}/7ds2035__21361.jpg` },
+      { slug: "san-juan", name: "San Juan Bautista", tagline: "Cleansing and renewal", saintColor: "#7bb6f2", saintIntention: "Cleansing and renewal on San Juan", photo: `${OB_PRODUCT_IMG}/stjohn_7day__59430.jpg` },
+      { slug: "santiago", name: "Santiago · Oggún", tagline: "Strength for the work", saintColor: "#5aa06a", saintIntention: "Honoring Oggún — strength for the work", photo: `${OB_PRODUCT_IMG}/santiagowhite_7day__03218.jpg` },
+      { slug: "regla", name: "La Virgen de Regla · Yemayá", tagline: "Protection and healing", saintColor: "#3f7bd8", saintIntention: "Honoring Yemayá — protection and healing", photo: `${OB_PRODUCT_IMG}/yemaya-orisha-7-day-candle.jpg` },
+      { slug: "caridad", name: "La Caridad · Ochún", tagline: "Love and abundance", saintColor: "#e8c34a", saintIntention: "Honoring Ochún — love and abundance", photo: `${OB_PRODUCT_IMG}/7ds2065__84976.1414689245.1280.1280__30505.jpg` },
+      { slug: "mercedes", name: "Las Mercedes · Obatalá", tagline: "Peace and clarity", saintColor: "#efe7d6", saintIntention: "Honoring Obatalá — peace and clarity", photo: `${OB_PRODUCT_IMG}/mercedes_7day__10148.jpg` },
+      { slug: "san-miguel", name: "San Miguel Arcángel", tagline: "Protection over you and your home", saintColor: "#7bb6f2", saintIntention: "San Miguel — protect me and mine", photo: `${OB_PRODUCT_IMG}/candle-saint-michael-white-7-day.jpg` },
+      { slug: "san-francisco", name: "San Francisco · Orula", tagline: "Wisdom and guidance", saintColor: "#cda94f", saintIntention: "Honoring Orula — wisdom and guidance", photo: `${OB_PRODUCT_IMG}/stfrancis_7day__52566.jpg` },
+      { slug: "barbara", name: "Santa Bárbara · Changó", tagline: "Courage and victory", saintColor: "#f0552f", saintIntention: "Honoring Changó — courage and victory", photo: `${OB_PRODUCT_IMG}/7ds2050__63108.jpg` },
+      { slug: "lazaro", name: "San Lázaro · Babalú-Ayé", tagline: "Health and healing", saintColor: "#9b7bd0", saintIntention: "Honoring Babalú-Ayé — health and healing", photo: `${OB_PRODUCT_IMG}/lazarus_7day__43554.jpg` },
     ],
   },
 ];
