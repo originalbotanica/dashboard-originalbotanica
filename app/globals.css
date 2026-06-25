@@ -14,6 +14,11 @@
  */
 
 :root {
+  /* Render native controls (date/time pickers, scrollbars) in dark mode so
+     their text is legible on the dark theme — without this, Android shows the
+     time picker in light mode and the digits are effectively invisible. */
+  color-scheme: dark;
+
   /* Surfaces — deep warm brown, near-black */
   --background: #14100b;
   --background-elevated: #1c1611;
@@ -824,6 +829,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-input {
   width: 100%;
+  color-scheme: dark;
   padding: 0.75rem 1rem;
   background: var(--surface);
   border: 1px solid var(--border-strong);
