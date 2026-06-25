@@ -95,7 +95,7 @@ export default async function CalendarPage() {
           </Link>
         )}
 
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 md:p-7 mb-14">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-2.5 sm:p-6 md:p-7 mb-14">
           <CalendarMonthGrid events={gridEvents} today={today} locale={locale} />
         </div>
 

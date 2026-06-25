@@ -108,7 +108,7 @@ export function CalendarMonthGrid({
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center">
+      <div className="grid grid-cols-7 gap-0.5 sm:gap-1.5 text-center">
         {weekdays.map((w, i) => (
           <div key={i} className="text-xs text-[var(--foreground-subtle)] uppercase py-1">
             {w}
