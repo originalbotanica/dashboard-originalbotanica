@@ -200,10 +200,10 @@ export const DESIRES: Desire[] = [
       { slug: "regla", name: "La Virgen de Regla · Yemayá", tagline: "Protection and healing", saintColor: "#3f7bd8", saintIntention: "Honoring Yemayá — protection and healing", photo: `${OB_PRODUCT_IMG}/yemaya-orisha-7-day-candle.jpg` },
       { slug: "caridad", name: "La Caridad · Ochún", tagline: "Love and abundance", saintColor: "#e8c34a", saintIntention: "Honoring Ochún — love and abundance", photo: `${OB_PRODUCT_IMG}/7ds2065__84976.1414689245.1280.1280__30505.jpg` },
       { slug: "mercedes", name: "Las Mercedes · Obatalá", tagline: "Peace and clarity", saintColor: "#efe7d6", saintIntention: "Honoring Obatalá — peace and clarity", photo: `${OB_PRODUCT_IMG}/mercedes_7day__10148.jpg` },
-      { slug: "san-miguel", name: "San Miguel Arcángel", tagline: "Protection over you and your home", saintColor: "#7bb6f2", saintIntention: "San Miguel — protect me and mine", photo: `${OB_PRODUCT_IMG}/candle-saint-michael-white-7-day.jpg` },
+      { slug: "san-miguel", name: "San Miguel Arcángel", tagline: "Protection over you and your home", saintColor: "#7bb6f2", saintIntention: "San Miguel — protect me and mine", photo: `${OB_PRODUCT_IMG}/candle-saint-michael-red-7-day.jpg` },
       { slug: "san-francisco", name: "San Francisco · Orula", tagline: "Wisdom and guidance", saintColor: "#cda94f", saintIntention: "Honoring Orula — wisdom and guidance", photo: `${OB_PRODUCT_IMG}/stfrancis_7day__52566.jpg` },
       { slug: "barbara", name: "Santa Bárbara · Changó", tagline: "Courage and victory", saintColor: "#f0552f", saintIntention: "Honoring Changó — courage and victory", photo: `${OB_PRODUCT_IMG}/7ds2050__63108.jpg` },
-      { slug: "lazaro", name: "San Lázaro · Babalú-Ayé", tagline: "Health and healing", saintColor: "#9b7bd0", saintIntention: "Honoring Babalú-Ayé — health and healing", photo: `${OB_PRODUCT_IMG}/lazarus_7day__43554.jpg` },
+      { slug: "lazaro", name: "San Lázaro · Babalú-Ayé", tagline: "Health and healing", saintColor: "#9b7bd0", saintIntention: "Honoring Babalú-Ayé — health and healing", photo: `${OB_PRODUCT_IMG}/lazurusyellow_7day__77207.jpg` },
     ],
   },
 ];
