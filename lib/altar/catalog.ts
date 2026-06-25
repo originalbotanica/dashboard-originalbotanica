@@ -214,6 +214,7 @@ export const DESIRES: Desire[] = [
       { slug: "dolorosa", name: "Nuestra Señora de los Dolores", tagline: "Comfort in grief and hardship", saintColor: "#6f7bbf", saintIntention: "Our Lady of Sorrows — comfort in grief and hardship", photo: `${OB_PRODUCT_IMG}/dolorosa_7day__30493.jpg` },
       { slug: "guardian-angel", name: "Guardian Angel", tagline: "Watch over me", saintColor: "#bcd4f0", saintIntention: "My guardian angel — watch over me", photo: `${OB_PRODUCT_IMG}/guardianangel_7day__37948.jpg` },
       { slug: "guadalupe", name: "Virgen de Guadalupe", tagline: "Protection and grace", saintColor: "#3fae8f", saintIntention: "Our Lady of Guadalupe — protection and grace for my family", photo: `${OB_PRODUCT_IMG}/guadalupe_7day__48155.jpg` },
+      { slug: "santa-marta", name: "Santa Marta la Dominadora", tagline: "Peace and dominion at home", saintColor: "#3f8f5a", saintIntention: "Santa Marta la Dominadora — harmony and dominion over a hard situation", photo: `${OB_PRODUCT_IMG}/marthadom_7day__37176.jpg` },
     ],
   },
 ];

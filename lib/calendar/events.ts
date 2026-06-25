@@ -235,6 +235,14 @@ const FEASTS: Feast[] = [
     action: { href: CANDLE("Santa Ana — family and fertility"), en: "Light a candle", es: "Enciende una vela" },
   },
   {
+    m: 7, d: 29, id: "santa-marta",
+    title: "Santa Marta la Dominadora",
+    en: "Santa Marta la Dominadora, who tamed the dragon. Light a candle for peace and dominion over a hard situation.",
+    es: "Santa Marta la Dominadora, que amansó al dragón. Enciende una vela por paz y dominio sobre una situación difícil.",
+    color: "#3f8f5a",
+    action: { href: CANDLE("Santa Marta la Dominadora — peace and dominion"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
     m: 9, d: 15, id: "dolorosa",
     title: "Nuestra Señora de los Dolores",
     en: "Our Lady of Sorrows. Light a candle for comfort in grief and hardship.",
