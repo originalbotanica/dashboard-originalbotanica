@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Candle } from "@/components/candle";
 import { lightCandleAction } from "@/app/altar/virtual/actions";
+import { PendingSubmit } from "@/components/pending-submit";
 import { DURATIONS } from "@/lib/altar/catalog";
 import { t, type Locale } from "@/lib/i18n/dictionary";
 
@@ -151,13 +152,12 @@ export function SaintCandleLighter({
           </span>
         </label>
 
-        <button
-          type="submit"
+        <PendingSubmit
+          label={t(locale, "saint.place")}
+          pendingLabel="…"
+          className="btn-primary inline-flex"
           disabled={!lit}
-          className="btn-primary inline-flex disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {t(locale, "saint.place")}
-        </button>
+        />
       </form>
     </div>
   );

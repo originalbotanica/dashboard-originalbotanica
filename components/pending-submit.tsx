@@ -11,18 +11,21 @@ export function PendingSubmit({
   label,
   pendingLabel,
   className = "btn-primary",
+  disabled = false,
 }: {
   label: string;
   pendingLabel: string;
   className?: string;
+  disabled?: boolean;
 }) {
   const { pending } = useFormStatus();
+  const off = pending || disabled;
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={off}
       aria-busy={pending}
-      className={`${className} ${pending ? "opacity-70 cursor-wait" : ""}`}
+      className={`${className} ${pending ? "opacity-70 cursor-wait" : ""} ${disabled && !pending ? "opacity-50 cursor-not-allowed" : ""}`}
     >
       {pending ? (
         <span className="animate-pulse">{pendingLabel}</span>

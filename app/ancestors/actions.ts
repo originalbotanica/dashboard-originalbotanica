@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { randomBytes } from "crypto";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
@@ -191,6 +192,14 @@ export async function deleteAncestorAction(formData: FormData) {
  */
 export async function addLightAction(hash: string): Promise<{ ok: boolean }> {
   if (!hash) return { ok: false };
+
+  // One light per visitor per memorial: a cookie stops the same browser from
+  // inflating the count by clicking repeatedly. Not bulletproof, but it keeps
+  // the number honest for normal visitors.
+  const jar = await cookies();
+  const cookieKey = `ob_lit_${hash}`;
+  if (jar.get(cookieKey)) return { ok: true };
+
   const admin = createAdminClient();
   const { data: memorial } = await admin
     .from("ancestors")
@@ -202,6 +211,13 @@ export async function addLightAction(hash: string): Promise<{ ok: boolean }> {
     .from("ancestors")
     .update({ light_count: (memorial.light_count || 0) + 1 })
     .eq("id", memorial.id);
+
+  jar.set(cookieKey, "1", {
+    maxAge: 60 * 60 * 24 * 365,
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
   revalidatePath(`/candle/${hash}`);
   return { ok: true };
 }

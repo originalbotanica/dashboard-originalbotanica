@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { lightCandleAction } from "@/app/altar/virtual/actions";
+import { PendingSubmit } from "@/components/pending-submit";
 import {
   DESIRES,
   DURATIONS,
@@ -166,9 +167,11 @@ export function LightCandleForm({
         </span>
       </label>
 
-      <button type="submit" className="btn-primary inline-flex">
-        Light the candle
-      </button>
+      <PendingSubmit
+        label="Light the candle"
+        pendingLabel="Lighting…"
+        className="btn-primary inline-flex"
+      />
     </form>
   );
 }
