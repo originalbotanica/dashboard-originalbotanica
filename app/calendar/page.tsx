@@ -66,9 +66,17 @@ export default async function CalendarPage() {
         <h1 className="display text-4xl md:text-5xl leading-tight mb-4">
           {t(locale, "cal.pageTitle")}
         </h1>
-        <p className="text-[var(--foreground-muted)] leading-relaxed max-w-2xl mb-8">
+        <p className="text-[var(--foreground-muted)] leading-relaxed max-w-2xl mb-5">
           {t(locale, "cal.pageIntro")}
         </p>
+        <a
+          href="/api/calendar/ics"
+          download
+          className="nav-link text-[var(--accent)] inline-flex items-center gap-2 text-sm mb-10"
+        >
+          {t(locale, "cal.addToCalendar")}
+          <span aria-hidden>↓</span>
+        </a>
 
         {novena && (
           <Link

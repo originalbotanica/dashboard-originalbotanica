@@ -3,9 +3,15 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getPurpose } from "@/lib/rituals/purposes";
-import { getRitualBySlug, dayLabel, getSavedRitualIds } from "@/lib/rituals/queries";
+import {
+  getRitualBySlug,
+  dayLabel,
+  getSavedRitualIds,
+  listRitualsByPurpose,
+} from "@/lib/rituals/queries";
 import { materialUrl } from "@/lib/rituals/material-link";
 import { SaveRitualButton } from "@/components/save-ritual-button";
+import { RitualCard } from "@/components/ritual-card";
 
 export async function generateMetadata({
   params,
@@ -42,10 +48,16 @@ export default async function RitualDetailPage({
   const r = await getRitualBySlug(slug);
   if (!r) notFound();
 
-  const saved = (await getSavedRitualIds(user.id)).has(r.id);
+  const savedIds = await getSavedRitualIds(user.id);
+  const saved = savedIds.has(r.id);
   const purpose = r.purpose ? getPurpose(r.purpose) : undefined;
   const day = dayLabel(r.best_day_of_week);
   const backHref = purpose ? `/rituals/${purpose.slug}` : "/rituals";
+  const related = r.purpose
+    ? (await listRitualsByPurpose(r.purpose))
+        .filter((x) => x.slug !== r.slug)
+        .slice(0, 3)
+    : [];
 
   return (
     <main className="min-h-screen">
@@ -160,6 +172,22 @@ export default async function RitualDetailPage({
           </p>
         ) : null}
       </article>
+
+      {related.length > 0 ? (
+        <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-12">
+          <p className="eyebrow mb-2">More like this</p>
+          <p className="text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
+            {purpose
+              ? `More rituals for ${purpose.label.toLowerCase()}.`
+              : "More from the library."}
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {related.map((x) => (
+              <RitualCard key={x.slug} ritual={x} saved={savedIds.has(x.id)} />
+            ))}
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

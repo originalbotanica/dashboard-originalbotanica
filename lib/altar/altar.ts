@@ -67,8 +67,12 @@ export async function listMyCandles(userId: string): Promise<Candle[]> {
   return (data ?? []) as Candle[];
 }
 
-/** Public, still-burning candles for the community wall. Optional keyword. */
-export async function listCommunityCandles(search?: string): Promise<Candle[]> {
+/** Public, still-burning candles for the community wall. Optional keyword
+ *  and/or intention (desire / "saints") filter. */
+export async function listCommunityCandles(
+  search?: string,
+  desire?: string,
+): Promise<Candle[]> {
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
   let q = supabase
@@ -81,6 +85,7 @@ export async function listCommunityCandles(search?: string): Promise<Candle[]> {
     .limit(60);
   const term = (search || "").trim();
   if (term) q = q.ilike("intention", `%${term.replace(/[%_]/g, "")}%`);
+  if (desire) q = q.eq("candle_type", desire);
   const { data, error } = await q;
   if (error) return [];
   return (data ?? []) as Candle[];

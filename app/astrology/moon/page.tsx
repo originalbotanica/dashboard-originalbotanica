@@ -96,6 +96,18 @@ export default async function MoonGuidePage() {
               Full moon in {moon.daysToFull} {moon.daysToFull === 1 ? "day" : "days"}
             </span>
           </div>
+
+          <div className="flex flex-wrap justify-center gap-3 mt-10">
+            <Link
+              href={`/altar/virtual/new?intention=${encodeURIComponent(`An intention for the ${moon.phaseName.toLowerCase()}`)}`}
+              className="btn-primary inline-flex"
+            >
+              Light a candle for this moon
+            </Link>
+            <Link href="/calendar" className="btn-ghost inline-flex">
+              The spiritual calendar
+            </Link>
+          </div>
         </div>
       </section>
 

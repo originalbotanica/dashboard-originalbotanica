@@ -8,6 +8,7 @@ import {
   listMyCandles,
   listCommunityCandles,
   daysLeft,
+  DESIRES,
   type Candle,
 } from "@/lib/altar/altar";
 import { AltarCandle } from "@/components/altar-candle";
@@ -24,9 +25,9 @@ const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
 export default async function VirtualAltarPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; desire?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, desire: desireParam } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -44,9 +45,10 @@ export default async function VirtualAltarPage({
   if (!sub.isActive) redirect("/tools/virtual-altar");
 
   const query = (q || "").trim();
+  const desire = (desireParam || "").trim() || undefined;
   const [mine, community] = await Promise.all([
     listMyCandles(user.id),
-    listCommunityCandles(query),
+    listCommunityCandles(query, desire),
   ]);
 
   return (
@@ -115,10 +117,36 @@ export default async function VirtualAltarPage({
           />
         </form>
 
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          <Link
+            href={query ? `/altar/virtual?q=${encodeURIComponent(query)}` : "/altar/virtual"}
+            className={`eyebrow rounded-full px-3 py-1 border transition-colors ${
+              !desire
+                ? "border-[var(--accent)] text-[var(--accent)]"
+                : "border-[var(--border-strong)] text-[var(--foreground-muted)] hover:text-[var(--accent)]"
+            }`}
+          >
+            All
+          </Link>
+          {DESIRES.map((d) => (
+            <Link
+              key={d.slug}
+              href={`/altar/virtual?desire=${d.slug}${query ? `&q=${encodeURIComponent(query)}` : ""}`}
+              className={`eyebrow rounded-full px-3 py-1 border transition-colors ${
+                desire === d.slug
+                  ? "border-[var(--accent)] text-[var(--accent)]"
+                  : "border-[var(--border-strong)] text-[var(--foreground-muted)] hover:text-[var(--accent)]"
+              }`}
+            >
+              {d.label}
+            </Link>
+          ))}
+        </div>
+
         {community.length === 0 ? (
           <p className="text-[var(--foreground-muted)] text-center leading-relaxed">
-            {query
-              ? `No candles match "${query}".`
+            {query || desire
+              ? "No candles match this filter yet."
               : "No candles are burning yet. Be the first to light one."}
           </p>
         ) : (
