@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { loadAstrologerContext } from "@/lib/astrologer/context";
 import { ChartWheel } from "@/components/chart-wheel";
 
@@ -32,6 +33,9 @@ export default async function ChartPage() {
   if (!profile.birth_date || !profile.birth_place) {
     redirect("/astrology");
   }
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/astrology");
 
   const context = await loadAstrologerContext(user.id);
   if (!context) redirect("/astrology");

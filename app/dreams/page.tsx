@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { MemberNav } from "@/components/member-nav";
 import { createClient } from "@/utils/supabase/server";
+import { getSubscriptionStatus } from "@/lib/subscription";
 
 export const metadata = {
   title: "Dreams",
@@ -26,6 +27,9 @@ export default async function DreamsHubPage() {
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/tools/dreams");
 
   const { data: threads } = await supabase
     .from("dream_threads")

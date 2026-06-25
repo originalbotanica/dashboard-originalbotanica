@@ -1,6 +1,7 @@
 import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { TarotWheel } from "@/components/tarot-wheel";
 import { drawWheelForUser, botanicaDayKey } from "@/lib/tarot/wheel-deck";
 
@@ -30,6 +31,9 @@ export default async function TarotPullPage() {
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/tools/tarot");
 
   const dayKey = botanicaDayKey();
   const draw = drawWheelForUser(user.id, dayKey);

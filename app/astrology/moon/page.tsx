@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { getMoon, moonGuidance } from "@/lib/astrology/moon";
 import { getTodaysSky } from "@/lib/astrology/sky";
 import { getRitualsByMoonPhase, getSavedRitualIds } from "@/lib/rituals/queries";
@@ -26,6 +27,9 @@ export default async function MoonGuidePage() {
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.first_name) redirect("/profile-setup");
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) redirect("/astrology");
 
   const moon = getMoon();
   const guide = moonGuidance(moon.bucket);
