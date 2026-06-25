@@ -323,25 +323,33 @@ export default async function HomePage({
       {/* ── FAQ / objections ──────────────────────────────────────────── */}
       <section className="border-t border-[var(--border)]">
         <div className="max-w-2xl mx-auto px-6 py-20 md:py-24">
-          <p className="eyebrow mb-3 text-center">{tr("lp.faqEyebrow")}</p>
-          <h2 className="display text-3xl md:text-4xl mb-12 text-center leading-tight">
-            {tr("lp.faqTitle")}
-          </h2>
-          <div className="border border-[var(--border)] rounded-xl bg-[var(--surface)] divide-y divide-[var(--border)]">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <details key={n} className="group px-5">
-                <summary className="flex items-center justify-between cursor-pointer list-none text-[var(--foreground)] font-medium py-4">
-                  {tr(`lp.faqQ${n}`)}
-                  <span className="text-[var(--accent)] ml-4 transition-transform group-open:rotate-45" aria-hidden>
-                    +
-                  </span>
-                </summary>
-                <p className="text-[var(--foreground-muted)] leading-relaxed pb-4 text-sm">
-                  {tr(`lp.faqA${n}`)}
-                </p>
-              </details>
-            ))}
-          </div>
+          <details className="group">
+            <summary className="cursor-pointer list-none select-none text-center [&::-webkit-details-marker]:hidden">
+              <p className="eyebrow mb-3">{tr("lp.faqEyebrow")}</p>
+              <h2 className="display text-3xl md:text-4xl leading-tight inline-flex items-center justify-center gap-3">
+                {tr("lp.faqTitle")}
+                <span className="text-[var(--accent)] text-2xl transition-transform group-open:rotate-45" aria-hidden>
+                  +
+                </span>
+              </h2>
+            </summary>
+
+            <div className="mt-10 border border-[var(--border)] rounded-xl bg-[var(--surface)] divide-y divide-[var(--border)]">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <details key={n} className="group/item px-5">
+                  <summary className="flex items-center justify-between cursor-pointer list-none text-[var(--foreground)] font-medium py-4 [&::-webkit-details-marker]:hidden">
+                    {tr(`lp.faqQ${n}`)}
+                    <span className="text-[var(--accent)] ml-4 transition-transform group-open/item:rotate-45" aria-hidden>
+                      +
+                    </span>
+                  </summary>
+                  <p className="text-[var(--foreground-muted)] leading-relaxed pb-4 text-sm">
+                    {tr(`lp.faqA${n}`)}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </details>
         </div>
       </section>
 
