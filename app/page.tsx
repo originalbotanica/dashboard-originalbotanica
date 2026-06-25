@@ -327,19 +327,16 @@ export default async function HomePage({
           <h2 className="display text-3xl md:text-4xl mb-12 text-center leading-tight">
             {tr("lp.faqTitle")}
           </h2>
-          <div className="space-y-3">
+          <div className="border border-[var(--border)] rounded-xl bg-[var(--surface)] divide-y divide-[var(--border)]">
             {[1, 2, 3, 4, 5].map((n) => (
-              <details
-                key={n}
-                className="group border border-[var(--border)] rounded-lg bg-[var(--surface)] px-5 py-4"
-              >
-                <summary className="flex items-center justify-between cursor-pointer list-none text-[var(--foreground)] font-medium">
+              <details key={n} className="group px-5">
+                <summary className="flex items-center justify-between cursor-pointer list-none text-[var(--foreground)] font-medium py-4">
                   {tr(`lp.faqQ${n}`)}
                   <span className="text-[var(--accent)] ml-4 transition-transform group-open:rotate-45" aria-hidden>
                     +
                   </span>
                 </summary>
-                <p className="text-[var(--foreground-muted)] leading-relaxed mt-3 text-sm">
+                <p className="text-[var(--foreground-muted)] leading-relaxed pb-4 text-sm">
                   {tr(`lp.faqA${n}`)}
                 </p>
               </details>
