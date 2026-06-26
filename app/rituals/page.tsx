@@ -60,9 +60,13 @@ export default async function RitualsLibraryPage({
         <h1 className="display text-3xl md:text-5xl leading-tight mb-5">
           Sixty-six years of practice, organized by purpose.
         </h1>
-        <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-8">
+        <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-4">
           Real rituals from the botanica&apos;s archive. Search by what you
           need, or browse the shelves below.
+        </p>
+        <p className="text-[var(--foreground-subtle)] text-sm leading-relaxed max-w-2xl mb-8">
+          New rituals are added regularly — the archive keeps growing, so check
+          back often.
         </p>
 
         <form action="/rituals" method="get" className="max-w-xl">
