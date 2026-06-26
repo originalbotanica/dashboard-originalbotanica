@@ -13,13 +13,10 @@ import { t, type Locale } from "@/lib/i18n/dictionary";
  * and burns), then writes a dedication and places it on the altar.
  */
 
-// The product photo renders large and floats in a soft candlelight glow — no
-// hard white box. These are clear-glass candles shot on white, so we keep the
-// photo (the white is what lets the glass read) but feather its edges into the
-// glow with an intersecting mask, and set a warm radial pool of light behind.
-const CANDLE_W = "min(56vw, 220px)";
-const FEATHER =
-  "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent)";
+// The candle photos are cut out of their white studio background (see
+// scripts/cutout_saints.py), so they show just the candle in its glass on the
+// altar's black — no box, no haze.
+const CANDLE_W = "min(38vw, 146px)";
 export function SaintCandleLighter({
   slug,
   name,
@@ -42,61 +39,39 @@ export function SaintCandleLighter({
     <div className="flex flex-col items-center">
       {photo ? (
         <div
-          className="relative flex items-center justify-center"
-          style={{ filter: glow, transition: "filter 1s ease" }}
+          className="relative"
+          style={{ filter: glow, transition: "filter 1s ease", width: CANDLE_W }}
         >
-          {/* warm pool of candlelight behind the candle (no hard box) */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={photo}
+            alt={name}
             style={{
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "170%",
-              height: "116%",
-              background:
-                "radial-gradient(ellipse 42% 50% at 50% 50%, rgba(243,232,210,0.55) 0%, rgba(243,232,210,0.15) 46%, transparent 70%)",
+              width: "100%",
+              height: "auto",
+              display: "block",
+              opacity: lit ? 1 : 0.96,
+              transition: "opacity .8s ease",
             }}
           />
-          <div className="relative" style={{ width: CANDLE_W }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={photo}
-              alt={name}
-              style={{
-                width: "100%",
-                height: "auto",
-                display: "block",
-                opacity: lit ? 1 : 0.94,
-                transition: "opacity .8s ease",
-                WebkitMaskImage: FEATHER,
-                maskImage: FEATHER,
-                WebkitMaskComposite: "source-in",
-                maskComposite: "intersect",
-                WebkitMaskRepeat: "no-repeat",
-                maskRepeat: "no-repeat",
-              }}
+          {lit && (
+            <span
+              aria-hidden
+              className="absolute left-1/2 -translate-x-1/2"
+              style={{ top: -14 }}
+            >
+              <span className="saint-flame" style={{ width: 20, height: 40 }} />
+            </span>
+          )}
+          {!lit && (
+            <button
+              type="button"
+              onClick={() => setLit(true)}
+              aria-label={t(locale, "saint.tapHint")}
+              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              style={{ top: 0, width: "62%", height: "22%", cursor: "pointer", background: "transparent" }}
             />
-            {lit && (
-              <span
-                aria-hidden
-                className="absolute left-1/2 -translate-x-1/2"
-                style={{ top: -16 }}
-              >
-                <span className="saint-flame" style={{ width: 26, height: 50 }} />
-              </span>
-            )}
-            {!lit && (
-              <button
-                type="button"
-                onClick={() => setLit(true)}
-                aria-label={t(locale, "saint.tapHint")}
-                className="absolute left-1/2 -translate-x-1/2 rounded-full"
-                style={{ top: 0, width: "62%", height: "20%", cursor: "pointer", background: "transparent" }}
-              />
-            )}
-          </div>
+          )}
         </div>
       ) : (
         <div
