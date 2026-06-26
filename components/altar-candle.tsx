@@ -23,22 +23,33 @@ export function AltarCandle({
     const px = size === "hero" ? 208 : 132;
     // Real product photo when we have one; otherwise the themed glass candle.
     if (saint.photo) {
+      // Show the WHOLE candle (the photos are tall, so never crop to a square)
+      // and a lit flame at the wick, so a placed candle reads as burning.
+      const w = size === "hero" ? 168 : 104;
+      const fw = size === "hero" ? 22 : 15;
+      const fh = size === "hero" ? 44 : 30;
+      const ftop = size === "hero" ? -16 : -10;
       return (
         <span
-          className="inline-block"
+          className="relative inline-block"
           aria-label={saint.name}
-          style={{ filter: `drop-shadow(0 0 18px ${saint.saintColor}99)` }}
+          style={{ filter: `drop-shadow(0 0 18px ${saint.saintColor}99)`, width: w }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={saint.photo}
             alt={saint.name}
-            width={px}
-            height={px}
             loading="lazy"
-            className="rounded-xl object-cover candle-glow"
-            style={{ width: px, height: px }}
+            className="rounded-xl block"
+            style={{ width: w, height: "auto" }}
           />
+          <span
+            aria-hidden
+            className="absolute left-1/2 -translate-x-1/2"
+            style={{ top: ftop }}
+          >
+            <span className="saint-flame" style={{ width: fw, height: fh }} />
+          </span>
         </span>
       );
     }
