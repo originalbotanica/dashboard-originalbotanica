@@ -33,7 +33,9 @@ is locked in prod, which is the correct/safe setup). Nothing was saved during th
 2. **[Us]** Finish the discount in the live control panel once the group exists (~2 min):
    name "Members 10%", Actions → Per Item Percentage Off = 10, Conditions → Match Customer
    → "User Group is one of → Members", leave Matching Items empty (covers all products),
-   enable.
+   enable. **Retail only:** also require the customer is NOT in the **Wholesale** group, so a
+   wholesale account that subscribes never gets 10% on top of wholesale pricing (see the
+   retail-only scope note below).
 3. **[Lighthaus]** Build an authenticated endpoint, e.g. `POST /actions/ob-membership/sync`,
    accepting `{ email, action: "add" | "remove" }` plus a shared-secret header. It finds or
    creates the Craft user by email and adds/removes the `members` group. Idempotent; returns
@@ -44,6 +46,19 @@ is locked in prod, which is the correct/safe setup). Nothing was saved during th
    New env vars: `CRAFT_SYNC_URL`, `CRAFT_SYNC_SECRET`. Deploys inert until the endpoint is live.
 5. **[Us]** One-time backfill of current active members; nightly reconcile job so a missed
    webhook self-heals.
+
+**Retail-only scope [Lighthaus / Us]:** the member 10% is for **retail customers only** and must
+not erode margin on already-discounted goods. When building the discount rule:
+- **Exclude wholesale:** require the customer is in `members` AND **not** in the `Wholesale`
+  group (wholesale already buys at wholesale pricing — no stacking).
+- **No stacking on sales:** exclude sale / on-promotion / clearance items so the 10% never
+  applies on top of a markdown (members "get the better of the two" — the sale price or 10%).
+- **Exclude services & gift cards** from the discount (Matching Items / category condition).
+
+Customer-facing fine print reflecting this is already live in the dashboard member-benefit
+section (`dash.benefitBody`, EN + ES): "Member savings apply to regularly-priced retail orders —
+they don't combine with sale or wholesale pricing, and exclude services and gift cards." The
+**system must enforce this**, not just the copy.
 
 **Dependency:** the member's store login email must equal their membership email (already
 implied by the dashboard's member-benefit copy).
