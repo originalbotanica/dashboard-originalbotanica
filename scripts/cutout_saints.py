@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 """
-Cut the saint 7-day candle photos out of their white studio background so the
-altar shows just the candle in its glass on black — nothing else.
-
-Method: flag near-pure-white pixels (the flat studio backdrop), keep only the
-white connected to the image border as background (so the white wax inside the
-jar and any white label text are preserved), make that transparent, lightly
-soften the edge, then crop to the candle. Colored wax (red, yellow, etc.) is
-never touched because only near-white is removed.
+Trim the saint 7-day candle photos to the candle on its original WHITE studio
+background (just removing the wide empty margins so the candle fills the frame).
+The altar shows these in a simple white rounded frame.
 
 Run:  python3 scripts/cutout_saints.py            # all
       python3 scripts/cutout_saints.py san-juan   # one slug
 """
 import sys, os, io, urllib.request
 import numpy as np
-from scipy import ndimage
 from PIL import Image
 
 OB = "https://dlkhclkmyx18n.cloudfront.net/transforms/products/_productImage"
@@ -45,29 +39,28 @@ PHOTOS = {
 }
 
 OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "public", "saints")
-THRESH = 250   # only the flat near-pure-white studio backdrop counts as bg
+THRESH = 244  # all channels this bright => empty white margin
 
-def cutout(img: Image.Image) -> Image.Image:
+def crop_to_candle(img: Image.Image) -> Image.Image:
     rgb = np.asarray(img.convert("RGB")).astype(np.int16)
-    white = (rgb[:, :, 0] >= THRESH) & (rgb[:, :, 1] >= THRESH) & (rgb[:, :, 2] >= THRESH)
-    labels, _ = ndimage.label(white)
-    border = set(labels[0, :]) | set(labels[-1, :]) | set(labels[:, 0]) | set(labels[:, -1])
-    border.discard(0)
-    bg = np.isin(labels, list(border))
-    alpha = np.where(bg, 0, 255).astype(np.float32)
-    alpha = ndimage.gaussian_filter(alpha, 0.8)  # soften the cut edge a hair
-    alpha = np.clip(alpha, 0, 255).astype(np.uint8)
-    out = np.dstack([np.asarray(img.convert("RGB")), alpha]).astype("uint8")
-    res = Image.fromarray(out)
-    bbox = res.getbbox()
-    if bbox:
-        res = res.crop(bbox)
-    return res
+    nonwhite = ~((rgb[:, :, 0] >= THRESH) & (rgb[:, :, 1] >= THRESH) & (rgb[:, :, 2] >= THRESH))
+    ys, xs = np.where(nonwhite)
+    if len(xs) == 0:
+        return img.convert("RGB")
+    w, h = img.size
+    padx, pady = int(w * 0.06), int(h * 0.05)
+    box = (
+        max(int(xs.min()) - padx, 0),
+        max(int(ys.min()) - pady, 0),
+        min(int(xs.max()) + padx, w),
+        min(int(ys.max()) + pady, h),
+    )
+    return img.convert("RGB").crop(box)
 
 def run(slug, fname):
     data = urllib.request.urlopen(f"{OB}/{fname}", timeout=60).read()
     img = Image.open(io.BytesIO(data))
-    res = cutout(img)
+    res = crop_to_candle(img)
     os.makedirs(OUT_DIR, exist_ok=True)
     res.save(os.path.join(OUT_DIR, f"{slug}.png"))
     print(f"{slug:16s} {img.size} -> {res.size}")

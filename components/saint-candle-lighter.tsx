@@ -13,9 +13,8 @@ import { t, type Locale } from "@/lib/i18n/dictionary";
  * and burns), then writes a dedication and places it on the altar.
  */
 
-// The candle photos are cut out of their white studio background (see
-// scripts/cutout_saints.py), so they show just the candle in its glass on the
-// altar's black — no box, no haze.
+// The candle photos are trimmed to the candle on their original white studio
+// background (see scripts/cutout_saints.py) and shown in a simple white frame.
 const CANDLE_W = "min(38vw, 146px)";
 export function SaintCandleLighter({
   slug,
@@ -46,10 +45,10 @@ export function SaintCandleLighter({
           <img
             src={photo}
             alt={name}
+            className="rounded-xl block"
             style={{
               width: "100%",
               height: "auto",
-              display: "block",
               opacity: lit ? 1 : 0.96,
               transition: "opacity .8s ease",
             }}
