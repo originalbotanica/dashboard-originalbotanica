@@ -464,6 +464,19 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* A reading "comes on" all at once with a gentle fade — used by the astrologer
+   and dream readings so they reveal like the Compatibility reading. */
+@keyframes reading-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.reading-fade {
+  animation: reading-fade-in 0.7s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-fade { animation: none; }
+}
+
 /* Landing feature-strip: each tool icon sits in a glowing gold medallion
    that lifts and brightens on hover, so the row reads rich, not generic. */
 .feat-badge {

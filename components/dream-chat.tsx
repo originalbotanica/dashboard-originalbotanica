@@ -3,14 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { materialUrl } from "@/lib/rituals/material-link";
-import { usePacedReveal } from "@/components/use-paced-reveal";
-import { FloatingProse } from "@/components/floating-prose";
 
 // Supplies the reading recommends arrive wrapped in [[ ]]. Turn each into a
 // link to its originalbotanica.com page (matching the rituals library), so
 // the closing ritual is shoppable. Plain text and household items are left
-// untouched. Incomplete markers (mid-stream) simply render as text until the
-// closing brackets arrive.
+// untouched.
 const SUPPLY_RE = /\[\[([^\][]+)\]\]/g;
 
 // A handful of slow-rising embers for the atmospheric backdrop. Fixed values
@@ -100,28 +97,7 @@ export function DreamChat({
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const pendingNavRef = useRef<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
-
-  // Reveal the reading gently rather than dumping tokens as they arrive.
-  const reveal = usePacedReveal(
-    (text) =>
-      setMessages((m) => {
-        const next = m.slice();
-        if (next[next.length - 1]?.role === "assistant") {
-          next[next.length - 1] = { role: "assistant", content: text };
-        }
-        return next;
-      }),
-    () => {
-      setStreaming(false);
-      const nav = pendingNavRef.current;
-      if (nav) {
-        pendingNavRef.current = null;
-        router.replace(`/dreams/${nav}`);
-      }
-    },
-  );
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -138,9 +114,10 @@ export function DreamChat({
     setInput("");
     setMessages((m) => [...m, { role: "user", content: trimmed }]);
     setStreaming(true);
-    setMessages((m) => [...m, { role: "assistant", content: "" }]);
-    reveal.reset();
 
+    // Buffer the whole reading, then reveal it all at once (like the
+    // Compatibility reading) instead of streaming word-by-word.
+    let buf = "";
     try {
       const controller = new AbortController();
       abortRef.current = controller;
@@ -157,46 +134,39 @@ export function DreamChat({
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError(data.error || `Error ${res.status}`);
-        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
 
-      // If this was a brand new thread, the API returns the new thread id
-      // in the X-Thread-Id header. Route to /dreams/<id> so the URL becomes
-      // shareable + bookmarkable for the journal.
       const newThreadId = res.headers.get("X-Thread-Id");
-
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
       if (!reader) {
         setError("No response stream from server.");
-        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
 
-      let buf = "";
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        buf += chunk;
-        reveal.push(buf);
+        buf += decoder.decode(value, { stream: true });
       }
 
-      // Navigate to the permanent thread URL only once the reveal has
-      // settled (handled in onSettled), so the reading isn't cut short.
-      pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
-      reveal.finish();
+      setMessages((m) => [...m, { role: "assistant", content: buf }]);
+      setStreaming(false);
+
+      if (!threadId && newThreadId) {
+        router.replace(`/dreams/${newThreadId}`);
+      }
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
-        // Stopped by the member — keep what arrived and settle gracefully.
-        reveal.finish();
+        if (buf.trim()) {
+          setMessages((m) => [...m, { role: "assistant", content: buf }]);
+        }
+        setStreaming(false);
       } else {
-        reveal.reset();
         setError(err instanceof Error ? err.message : "Unexpected error");
-        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
       }
     }
@@ -214,35 +184,27 @@ export function DreamChat({
         className="relative z-10 flex-1 overflow-y-auto pr-2"
         style={{ minHeight: "240px", maxHeight: "calc(100dvh - 300px)" }}
       >
-        {isEmpty ? (
+        {isEmpty && !streaming ? (
           <Welcome firstName={firstName} onPick={send} />
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
-              <Message
-                key={i}
-                msg={m}
-                animate={
-                  streaming && i === messages.length - 1 && m.role === "assistant"
-                }
-              />
+              <Message key={i} msg={m} />
             ))}
-            {streaming &&
-              messages[messages.length - 1]?.role === "assistant" &&
-              messages[messages.length - 1].content && (
-                <div className="flex items-center gap-3 mt-1">
-                  <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse">
-                    Still reading…
-                  </p>
-                  <button
-                    type="button"
-                    onClick={stop}
-                    className="text-xs text-[var(--accent)] hover:underline"
-                  >
-                    Stop
-                  </button>
-                </div>
-              )}
+            {streaming && (
+              <div className="flex items-center gap-3 mt-1">
+                <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse">
+                  Reading the dream…
+                </p>
+                <button
+                  type="button"
+                  onClick={stop}
+                  className="text-xs text-[var(--accent)] hover:underline"
+                >
+                  Stop
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -268,11 +230,7 @@ export function DreamChat({
             }}
             disabled={streaming}
             rows={3}
-            placeholder={
-              isEmpty
-                ? "Describe the dream..."
-                : "Ask a follow-up..."
-            }
+            placeholder={isEmpty ? "Describe the dream..." : "Ask a follow-up..."}
             className="form-input resize-none flex-1"
             style={{ minHeight: "80px" }}
           />
@@ -328,12 +286,10 @@ function Welcome({
   );
 }
 
-function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
-  // The dreamer's own words stay as a quiet bubble, right-aligned. The
-  // reading is set as serif prose with no bubble, each paragraph settling in
-  // gently over the candlelit backdrop. Paragraphs are keyed by index, so as
-  // the reading streams a finished paragraph animates in once and is not
-  // replayed when later text arrives.
+function Message({ msg }: { msg: Msg }) {
+  // The dreamer's own words stay as a quiet bubble, right-aligned. The reading
+  // is set as serif prose with no bubble, revealed all at once with a gentle
+  // fade over the candlelit backdrop.
   if (msg.role === "user") {
     return (
       <div className="flex justify-end">
@@ -344,30 +300,14 @@ function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
     );
   }
 
-  if (!msg.content) {
-    return (
-      <p className="dream-line opacity-60 animate-pulse" aria-label="Reading the dream">
-        Reading the dream…
-      </p>
-    );
-  }
+  if (!msg.content) return null;
 
-  // While the reading streams, each word floats in on its own.
-  if (animate) {
-    return (
-      <div className="max-w-[44rem]">
-        <FloatingProse
-          text={msg.content}
-          mode="dream"
-          className="dream-line-static"
-        />
-      </div>
-    );
-  }
-
-  const paragraphs = msg.content.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  const paragraphs = msg.content
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean);
   return (
-    <div className="max-w-[44rem]">
+    <div className="max-w-[44rem] reading-fade">
       {paragraphs.map((p, i) => (
         <p key={i} className="dream-line">
           {renderDreamContent(p)}

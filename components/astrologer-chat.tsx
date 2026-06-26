@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
-import { usePacedReveal } from "@/components/use-paced-reveal";
-import { FloatingProse } from "@/components/floating-prose";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -38,28 +36,6 @@ export function AstrologerChat({
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const pendingNavRef = useRef<string | null>(null);
-
-  // Reveal the streamed reading at a calm, deliberate pace rather than
-  // dumping tokens the instant they arrive.
-  const reveal = usePacedReveal(
-    (text) =>
-      setMessages((m) => {
-        const next = m.slice();
-        if (next[next.length - 1]?.role === "assistant") {
-          next[next.length - 1] = { role: "assistant", content: text };
-        }
-        return next;
-      }),
-    () => {
-      setStreaming(false);
-      const nav = pendingNavRef.current;
-      if (nav) {
-        pendingNavRef.current = null;
-        router.replace(`/astrology/astrologer/${nav}`);
-      }
-    },
-  );
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -76,9 +52,10 @@ export function AstrologerChat({
     setInput("");
     setMessages((m) => [...m, { role: "user", content: trimmed }]);
     setStreaming(true);
-    setMessages((m) => [...m, { role: "assistant", content: "" }]);
-    reveal.reset();
 
+    // Buffer the whole reading, then reveal it at once (like the Compatibility
+    // reading) instead of streaming word-by-word — calmer, easier to read.
+    let buf = "";
     try {
       const controller = new AbortController();
       abortRef.current = controller;
@@ -92,7 +69,6 @@ export function AstrologerChat({
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError(data.error || `Error ${res.status}`);
-        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
@@ -102,31 +78,33 @@ export function AstrologerChat({
       const decoder = new TextDecoder();
       if (!reader) {
         setError("No response stream from server.");
-        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
 
-      let buf = "";
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        buf += chunk;
-        reveal.push(buf);
+        buf += decoder.decode(value, { stream: true });
       }
-      // On a brand-new conversation, route to its permanent URL once the
-      // reveal settles (handled in onSettled), so refresh/back work.
-      pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
-      reveal.finish();
+
+      setMessages((m) => [...m, { role: "assistant", content: buf }]);
+      setStreaming(false);
+
+      // On a brand-new conversation, route to its permanent URL so
+      // refresh/back work.
+      if (!threadId && newThreadId) {
+        router.replace(`/astrology/astrologer/${newThreadId}`);
+      }
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
-        // Stopped by the member — keep what arrived and settle gracefully.
-        reveal.finish();
+        // Stopped by the member — keep whatever arrived.
+        if (buf.trim()) {
+          setMessages((m) => [...m, { role: "assistant", content: buf }]);
+        }
+        setStreaming(false);
       } else {
-        reveal.reset();
         setError(err instanceof Error ? err.message : "Unexpected error");
-        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
       }
     }
@@ -143,34 +121,27 @@ export function AstrologerChat({
         className="flex-1 overflow-y-auto pr-2"
         style={{ minHeight: "240px", maxHeight: "calc(100dvh - 300px)" }}
       >
-        {isEmpty ? (
+        {isEmpty && !streaming ? (
           <Welcome firstName={firstName} onPick={send} />
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
-              <Message
-                key={i}
-                msg={m}
-                animate={
-                  streaming && i === messages.length - 1 && m.role === "assistant"
-                }
-              />
+              <Message key={i} msg={m} />
             ))}
-            {streaming &&
-              messages[messages.length - 1]?.role === "assistant" && (
-                <div className="flex items-center gap-3">
-                  <p className="text-xs text-[var(--foreground-subtle)] italic">
-                    Reading the chart…
-                  </p>
-                  <button
-                    type="button"
-                    onClick={stop}
-                    className="text-xs text-[var(--accent)] hover:underline"
-                  >
-                    Stop
-                  </button>
-                </div>
-              )}
+            {streaming && (
+              <div className="flex items-center gap-3">
+                <p className="text-xs text-[var(--foreground-subtle)] italic">
+                  Reading the chart…
+                </p>
+                <button
+                  type="button"
+                  onClick={stop}
+                  className="text-xs text-[var(--accent)] hover:underline"
+                >
+                  Stop
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -227,10 +198,8 @@ function Welcome({
   return (
     <div className="py-8">
       <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
-        Welcome, {firstName}. I have your chart in front of me. Ask anything.
-        About a placement that&rsquo;s been on your mind, a transit that&rsquo;s
-        making itself known, or the ritual that fits this week. Every reading
-        ends with the work.
+        Welcome, {firstName}. I have your chart in front of me. What&rsquo;s on
+        your mind? Every reading ends with a little of the work to do.
       </p>
       <p className="sublabel mb-3">Start with</p>
       <div className="grid sm:grid-cols-2 gap-3">
@@ -249,7 +218,7 @@ function Welcome({
   );
 }
 
-function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
+function Message({ msg }: { msg: Msg }) {
   const isUser = msg.role === "user";
   return (
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
@@ -257,28 +226,18 @@ function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
         className={`max-w-[85%] rounded-lg px-4 py-3 leading-relaxed whitespace-pre-wrap break-words ${
           isUser
             ? "bg-[var(--accent)] text-[var(--accent-foreground)]"
-            : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)]"
+            : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)] reading-fade"
         }`}
       >
         {isUser ? (
           msg.content || <span className="opacity-50">...</span>
         ) : msg.content ? (
-          animate ? (
-            <FloatingProse
-              text={msg.content}
-              mode="astrologer"
-              lookup={EMPTY_LOOKUP}
-              optimisticBaseUrl={OB_BASE_URL}
-              className="leading-relaxed mb-3 last:mb-0"
-            />
-          ) : (
-            <ProseBlock
-              text={msg.content}
-              lookup={EMPTY_LOOKUP}
-              optimisticBaseUrl={OB_BASE_URL}
-              className="leading-relaxed mb-3 last:mb-0"
-            />
-          )
+          <ProseBlock
+            text={msg.content}
+            lookup={EMPTY_LOOKUP}
+            optimisticBaseUrl={OB_BASE_URL}
+            className="leading-relaxed mb-3 last:mb-0"
+          />
         ) : (
           <span className="opacity-50">...</span>
         )}
