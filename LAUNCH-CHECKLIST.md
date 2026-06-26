@@ -96,3 +96,10 @@ stronger acquisition; removed automatically if they don't convert.)
 - Mobile pass across the dashboard and chat tools — ✓ done (shipped).
 - Photographic saint candles on the virtual altar (optional polish).
 - Show chat usage caps to members before they hit the limit.
+
+## Database migrations to run (Supabase SQL editor)
+
+Apply any not-yet-run migration from `migrations/` (all are safe / `if not exists`). Most recent:
+- `2026-06-25-trial-reminder.sql` — trial-ending reminder cache column.
+- `2026-06-26-astrologer-recs.sql` — stores each astrologer reading's matched
+  rituals + products so the "For this reading" cards can render under the reading.

@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { AstrologerChat } from "@/components/astrologer-chat";
+import { BotanicaRecs } from "@/components/botanica-recs";
 
 export const metadata = {
   title: "A reading",
@@ -55,6 +56,17 @@ export default async function AstrologerThreadPage({
     content: r.content,
   }));
 
+  // The latest reading's matched archive rituals + shop products, surfaced as
+  // tappable "For this reading" cards beneath the conversation.
+  const { data: lastReading } = await supabase
+    .from("astrologer_messages")
+    .select("ritual_slugs, product_slugs")
+    .eq("thread_id", thread.id)
+    .eq("role", "assistant")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
   return (
     <main className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--border)]">
@@ -76,6 +88,14 @@ export default async function AstrologerThreadPage({
           firstName={profile.first_name}
           threadId={thread.id}
           initialMessages={initialMessages}
+        />
+
+        {/* Tappable rituals + supplies that ground this reading. */}
+        <BotanicaRecs
+          userId={user.id}
+          sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
+          productSlugs={(lastReading?.product_slugs as string[]) || []}
+          heading="For this reading"
         />
       </section>
     </main>

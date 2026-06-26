@@ -92,9 +92,12 @@ export function AstrologerChat({
       setStreaming(false);
 
       // On a brand-new conversation, route to its permanent URL so
-      // refresh/back work.
+      // refresh/back work. On a continuing thread, refresh so the
+      // "For this reading" cards under the chat update to this reading.
       if (!threadId && newThreadId) {
         router.replace(`/astrology/astrologer/${newThreadId}`);
+      } else {
+        router.refresh();
       }
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {

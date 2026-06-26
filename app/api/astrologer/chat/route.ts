@@ -13,6 +13,7 @@ import { stripDashes } from "@/lib/llm/sanitize";
 import {
   retrieveRituals,
   formatRitualsForPrompt,
+  metadataFromRituals,
 } from "@/lib/rag/retrieve";
 import { formatCommonSuppliesForPrompt } from "@/lib/rag/common-supplies";
 
@@ -168,6 +169,15 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join("\n\n");
 
+  // The archive rituals + shop products that ground this reading. We persist
+  // them on the assistant message so the reading can show a tappable
+  // "For this reading" cards block (like Forecast and Compatibility).
+  const ragMeta = metadataFromRituals(retrieved);
+  const ritualSlugs = (ragMeta.sources || [])
+    .map((s) => s.slug)
+    .filter(Boolean);
+  const productSlugs = ragMeta.product_slugs || [];
+
   // Build the system prompt with the user's chart and the retrieved
   // archive context inline.
   const currentDate = new Date().toISOString().slice(0, 10);
@@ -236,6 +246,8 @@ export async function POST(request: Request) {
             user_id: userId,
             role: "assistant",
             content: cleanText,
+            ritual_slugs: ritualSlugs,
+            product_slugs: productSlugs,
           });
         }
         // Increment usage (best-effort)
