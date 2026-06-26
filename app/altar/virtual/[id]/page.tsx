@@ -102,9 +102,9 @@ export default async function CandleDetailPage({
             <input type="hidden" name="id" value={candle.id} />
             <button
               type="submit"
-              className="nav-link text-[var(--ember)] hover:underline"
+              className="nav-link text-sm text-[var(--foreground-subtle)] hover:text-[var(--foreground-muted)]"
             >
-              Extinguish this candle
+              Remove from the altar
             </button>
           </form>
         ) : null}

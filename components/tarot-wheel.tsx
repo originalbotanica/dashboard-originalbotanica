@@ -30,7 +30,9 @@ const MUSIC_SRC = "/tarot-wheel/sounds/background-full.mp3";
 const ENDING_SRC = "/tarot-wheel/sounds/after_click.wav";
 const MUTE_KEY = "ob-tarot-muted";
 
-const WHEEL = "min(90vw, 640px)";
+// Cap by viewport height too, so on desktop the wheel never pushes the
+// "stop the wheel" instruction below the fold.
+const WHEEL = "min(92vw, 600px, 56vh)";
 const RADIUS = `calc(${WHEEL} * 0.355)`;
 const CARD_W = `calc(${WHEEL} * 0.16)`;
 const HUB = `calc(${WHEEL} * 0.26)`;
@@ -512,7 +514,7 @@ export function TarotWheel({
 
   return (
     <section aria-label="Your tarot wheel" className="border-t border-[var(--border)]">
-      <div className="max-w-4xl mx-auto px-6 py-6 md:py-16 flex flex-col items-center">
+      <div className="max-w-4xl mx-auto px-6 py-6 md:py-10 flex flex-col items-center">
         <div
           className="relative"
           style={{

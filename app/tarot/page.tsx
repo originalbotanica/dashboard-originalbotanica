@@ -50,7 +50,7 @@ export default async function TarotPullPage() {
     <main className="min-h-screen">
       <MemberNav />
 
-      <div className="max-w-5xl mx-auto px-6 pt-8 md:pt-16 text-center">
+      <div className="max-w-5xl mx-auto px-6 pt-8 md:pt-10 text-center">
         <p className="eyebrow mb-3 text-[var(--foreground-muted)]">{dateLabel}</p>
         <h1 className="display text-3xl md:text-5xl leading-tight tracking-wide">
           Tarot Today

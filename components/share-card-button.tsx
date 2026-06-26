@@ -3,10 +3,11 @@
 import { useState } from "react";
 
 /**
- * Share the day's tarot card. On phones, the native share sheet (texts,
- * Instagram, WhatsApp, etc.). On desktop, a small menu: copy link, X,
- * Facebook. The link points to the public /card page for this card and
- * orientation, so whoever opens it sees the same card and an invite to join.
+ * Share the day's tarot card. Opens a menu with explicit social options
+ * (X, Facebook, WhatsApp, Pinterest, Reddit) plus copy-link — and, on
+ * phones, the native share sheet as a "More…" option. The link points to
+ * the public /card page for this card and orientation, so whoever opens it
+ * sees the same card and an invite to join.
  */
 export function ShareCardButton({
   cardId,
@@ -27,25 +28,17 @@ export function ShareCardButton({
   const buildText = () =>
     `My Original Botanica tarot card for today: ${cardName}${reversed ? " (upside down)" : ""}.`;
 
-  const onShare = async () => {
-    const url = buildUrl();
-    const text = buildText();
-    const nav = typeof navigator !== "undefined" ? navigator : undefined;
-    if (nav && typeof nav.share === "function") {
-      try {
-        await nav.share({ title: "Original Botanica — Tarot Today", text, url });
-      } catch {
-        /* user dismissed; ignore */
-      }
-      return;
-    }
-    setOpen((o) => !o);
+  const hasNativeShare =
+    typeof navigator !== "undefined" && typeof navigator.share === "function";
+
+  const openWin = (u: string) => {
+    window.open(u, "_blank", "noopener,noreferrer");
+    setOpen(false);
   };
 
   const copyLink = () => {
-    const url = buildUrl();
     navigator.clipboard
-      ?.writeText(url)
+      ?.writeText(buildUrl())
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1800);
@@ -53,38 +46,72 @@ export function ShareCardButton({
       .catch(() => {});
   };
 
-  const openX = () => {
-    const u = `https://twitter.com/intent/tweet?text=${encodeURIComponent(buildText())}&url=${encodeURIComponent(buildUrl())}`;
-    window.open(u, "_blank", "noopener,noreferrer");
-    setOpen(false);
-  };
-  const openFb = () => {
-    const u = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(buildUrl())}`;
-    window.open(u, "_blank", "noopener,noreferrer");
+  const nativeShare = async () => {
+    try {
+      await navigator.share({
+        title: "Original Botanica — Tarot Today",
+        text: buildText(),
+        url: buildUrl(),
+      });
+    } catch {
+      /* dismissed */
+    }
     setOpen(false);
   };
 
+  const url = () => encodeURIComponent(buildUrl());
+  const text = () => encodeURIComponent(buildText());
+
+  const links: { label: string; onClick: () => void }[] = [
+    { label: "Share on X", onClick: () => openWin(`https://twitter.com/intent/tweet?text=${text()}&url=${url()}`) },
+    { label: "Share on Facebook", onClick: () => openWin(`https://www.facebook.com/sharer/sharer.php?u=${url()}`) },
+    { label: "Share on WhatsApp", onClick: () => openWin(`https://wa.me/?text=${text()}%20${url()}`) },
+    { label: "Share on Pinterest", onClick: () => openWin(`https://www.pinterest.com/pin/create/button/?url=${url()}&description=${text()}`) },
+    { label: "Share on Reddit", onClick: () => openWin(`https://www.reddit.com/submit?url=${url()}&title=${text()}`) },
+  ];
+
   return (
     <div className="relative inline-flex flex-col items-center">
-      <button type="button" onClick={onShare} className="btn-ghost inline-flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="btn-ghost inline-flex items-center gap-2"
+      >
         <ShareIcon />
         Share this card
       </button>
 
       {open ? (
         <div
-          className="absolute top-full mt-2 z-30 rounded-lg border border-[var(--border)] bg-[var(--surface)] py-1"
-          style={{ minWidth: 180 }}
+          className="absolute top-full mt-2 z-30 rounded-lg border border-[var(--border)] bg-[var(--surface)] py-1 shadow-lg"
+          style={{ minWidth: 190 }}
         >
-          <button type="button" onClick={copyLink} className="nav-link block w-full text-left px-4 py-2.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
+          {links.map((l) => (
+            <button
+              key={l.label}
+              type="button"
+              onClick={l.onClick}
+              className="nav-link block w-full text-left px-4 py-2.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)]"
+            >
+              {l.label}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={copyLink}
+            className="nav-link block w-full text-left px-4 py-2.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)]"
+          >
             {copied ? "Link copied" : "Copy link"}
           </button>
-          <button type="button" onClick={openX} className="nav-link block w-full text-left px-4 py-2.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
-            Share on X
-          </button>
-          <button type="button" onClick={openFb} className="nav-link block w-full text-left px-4 py-2.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
-            Share on Facebook
-          </button>
+          {hasNativeShare && (
+            <button
+              type="button"
+              onClick={nativeShare}
+              className="nav-link block w-full text-left px-4 py-2.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)]"
+            >
+              More…
+            </button>
+          )}
         </div>
       ) : null}
     </div>

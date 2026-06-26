@@ -403,6 +403,67 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* A fuller "burning" flame for a saint candle shown on the altar — soft halo,
+   flame body, bright core, and a warm light cast onto the candle. No blend
+   mode, so it reads on the white glass and the dark page alike. Size via the
+   --fw (flame width) custom property set on .altar-flame. */
+.altar-flame {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--fw);
+  height: 0;
+  pointer-events: none;
+}
+.altar-flame span {
+  position: absolute;
+  left: 50%;
+}
+.altar-flame .af-halo,
+.altar-flame .af-cast {
+  transform: translateX(-50%);
+}
+.altar-flame .af-halo {
+  width: calc(var(--fw) * 4);
+  height: calc(var(--fw) * 4);
+  bottom: calc(var(--fw) * -1.4);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 58%, rgba(255,205,95,0.55) 0%, rgba(255,140,30,0.25) 40%, transparent 70%);
+  animation: flame-halo-breathe 2.4s ease-in-out infinite alternate;
+}
+.altar-flame .af-cast {
+  width: calc(var(--fw) * 3.2);
+  height: calc(var(--fw) * 1);
+  bottom: calc(var(--fw) * -0.5);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,180,70,0.4) 0%, transparent 75%);
+  animation: flame-halo-breathe 2s ease-in-out infinite alternate;
+}
+.altar-flame .af-outer {
+  width: var(--fw);
+  height: calc(var(--fw) * 2.1);
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 80%, #ffd271 0%, #ff8e22 44%, #e0560a 74%, #b23c06 100%);
+  border-radius: 50% 50% 42% 42% / 70% 70% 30% 30%;
+  filter: drop-shadow(0 0 calc(var(--fw) * 0.6) rgba(255,150,40,0.75));
+  transform-origin: 50% 100%;
+  animation: flame-flicker-outer 1.9s ease-in-out infinite alternate;
+}
+.altar-flame .af-inner {
+  width: calc(var(--fw) * 0.5);
+  height: calc(var(--fw) * 1.4);
+  bottom: calc(var(--fw) * 0.12);
+  background: radial-gradient(ellipse at 50% 72%, #fffef5 0%, #fff3c0 34%, #ffce5e 72%, transparent 100%);
+  border-radius: 50% 50% 36% 36% / 70% 70% 30% 30%;
+  transform-origin: 50% 100%;
+  animation: flame-flicker-inner 1.2s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .altar-flame span {
+    animation: none;
+  }
+}
+
 /* Landing feature-strip: each tool icon sits in a glowing gold medallion
    that lifts and brightens on hover, so the row reads rich, not generic. */
 .feat-badge {
