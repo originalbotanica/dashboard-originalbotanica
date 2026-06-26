@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
+import { usePacedReveal } from "@/components/use-paced-reveal";
+import { FloatingProse } from "@/components/floating-prose";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 // Empty product lookup is fine for the chat: we render assistant
 // messages in "optimistic" mode, so any [[Name|slug]] markup links
 // to originalbotanica.com/<slug> even without a per-slug validation.
-// Claude is prompted not to invent slugs, so broken links are rare.
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
 
@@ -39,6 +40,31 @@ export function AstrologerChat({
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const pendingNavRef = useRef<string | null>(null);
+
+  // Reveal the reading at a calm, ethereal pace — words flow in as they are
+  // written, rather than spilling out all at once or splashing in a block.
+  const reveal = usePacedReveal(
+    (text) =>
+      setMessages((m) => {
+        const next = m.slice();
+        if (next[next.length - 1]?.role === "assistant") {
+          next[next.length - 1] = { role: "assistant", content: text };
+        }
+        return next;
+      }),
+    () => {
+      setStreaming(false);
+      const nav = pendingNavRef.current;
+      if (nav) {
+        pendingNavRef.current = null;
+        router.replace(`/astrology/astrologer/${nav}`);
+      } else {
+        // Continuing thread: refresh so the "For this reading" cards update.
+        router.refresh();
+      }
+    },
+  );
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -55,10 +81,9 @@ export function AstrologerChat({
     setInput("");
     setMessages((m) => [...m, { role: "user", content: trimmed }]);
     setStreaming(true);
+    setMessages((m) => [...m, { role: "assistant", content: "" }]);
+    reveal.reset();
 
-    // Buffer the whole reading, then reveal it at once (like the Compatibility
-    // reading) instead of streaming word-by-word — calmer, easier to read.
-    let buf = "";
     try {
       const controller = new AbortController();
       abortRef.current = controller;
@@ -72,6 +97,7 @@ export function AstrologerChat({
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError(data.error || `Error ${res.status}`);
+        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
@@ -81,36 +107,30 @@ export function AstrologerChat({
       const decoder = new TextDecoder();
       if (!reader) {
         setError("No response stream from server.");
+        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
 
+      let buf = "";
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
         buf += decoder.decode(value, { stream: true });
+        reveal.push(buf);
       }
-
-      setMessages((m) => [...m, { role: "assistant", content: buf }]);
-      setStreaming(false);
-
-      // On a brand-new conversation, route to its permanent URL so
-      // refresh/back work. On a continuing thread, refresh so the
-      // "For this reading" cards under the chat update to this reading.
-      if (!threadId && newThreadId) {
-        router.replace(`/astrology/astrologer/${newThreadId}`);
-      } else {
-        router.refresh();
-      }
+      // For a new conversation, route to its permanent URL once the reveal
+      // settles (handled in onSettled), so refresh/back work.
+      pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
+      reveal.finish();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
-        // Stopped by the member — keep whatever arrived.
-        if (buf.trim()) {
-          setMessages((m) => [...m, { role: "assistant", content: buf }]);
-        }
-        setStreaming(false);
+        // Stopped by the member — keep what arrived and settle gracefully.
+        reveal.finish();
       } else {
+        reveal.reset();
         setError(err instanceof Error ? err.message : "Unexpected error");
+        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
       }
     }
@@ -127,27 +147,34 @@ export function AstrologerChat({
         className="flex-1 overflow-y-auto pr-2"
         style={{ minHeight: "240px", maxHeight: "calc(100dvh - 300px)" }}
       >
-        {isEmpty && !streaming ? (
+        {isEmpty ? (
           <Welcome firstName={firstName} onPick={send} />
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
-              <Message key={i} msg={m} />
+              <Message
+                key={i}
+                msg={m}
+                animate={
+                  streaming && i === messages.length - 1 && m.role === "assistant"
+                }
+              />
             ))}
-            {streaming && (
-              <div className="flex items-center gap-3">
-                <p className="text-xs text-[var(--foreground-subtle)] italic">
-                  Reading the chart…
-                </p>
-                <button
-                  type="button"
-                  onClick={stop}
-                  className="text-xs text-[var(--accent)] hover:underline"
-                >
-                  Stop
-                </button>
-              </div>
-            )}
+            {streaming &&
+              messages[messages.length - 1]?.role === "assistant" && (
+                <div className="flex items-center gap-3">
+                  <p className="text-xs text-[var(--foreground-subtle)] italic">
+                    Reading the chart…
+                  </p>
+                  <button
+                    type="button"
+                    onClick={stop}
+                    className="text-xs text-[var(--accent)] hover:underline"
+                  >
+                    Stop
+                  </button>
+                </div>
+              )}
           </div>
         )}
       </div>
@@ -227,7 +254,7 @@ function Welcome({
   );
 }
 
-function Message({ msg }: { msg: Msg }) {
+function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
   const isUser = msg.role === "user";
   return (
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
@@ -235,18 +262,28 @@ function Message({ msg }: { msg: Msg }) {
         className={`max-w-[85%] rounded-lg px-4 py-3 leading-relaxed whitespace-pre-wrap break-words ${
           isUser
             ? "bg-[var(--accent)] text-[var(--accent-foreground)]"
-            : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)] reading-fade"
+            : "bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)]"
         }`}
       >
         {isUser ? (
           msg.content || <span className="opacity-50">...</span>
         ) : msg.content ? (
-          <ProseBlock
-            text={msg.content}
-            lookup={EMPTY_LOOKUP}
-            optimisticBaseUrl={OB_BASE_URL}
-            className="leading-relaxed mb-3 last:mb-0"
-          />
+          animate ? (
+            <FloatingProse
+              text={msg.content}
+              mode="astrologer"
+              lookup={EMPTY_LOOKUP}
+              optimisticBaseUrl={OB_BASE_URL}
+              className="leading-relaxed mb-3 last:mb-0"
+            />
+          ) : (
+            <ProseBlock
+              text={msg.content}
+              lookup={EMPTY_LOOKUP}
+              optimisticBaseUrl={OB_BASE_URL}
+              className="leading-relaxed mb-3 last:mb-0"
+            />
+          )
         ) : (
           <span className="opacity-50">...</span>
         )}

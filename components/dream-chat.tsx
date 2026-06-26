@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { materialUrl } from "@/lib/rituals/material-link";
+import { usePacedReveal } from "@/components/use-paced-reveal";
 
 // Supplies the reading recommends arrive wrapped in [[ ]]. Turn each into a
 // link to its originalbotanica.com page (matching the rituals library), so
@@ -101,6 +102,31 @@ export function DreamChat({
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const pendingNavRef = useRef<string | null>(null);
+
+  // Reveal the reading at a calm, ethereal pace — the words surface gently as
+  // they are written, rather than spilling out at once or splashing in a block.
+  const reveal = usePacedReveal(
+    (text) =>
+      setMessages((m) => {
+        const next = m.slice();
+        if (next[next.length - 1]?.role === "assistant") {
+          next[next.length - 1] = { role: "assistant", content: text };
+        }
+        return next;
+      }),
+    () => {
+      setStreaming(false);
+      const nav = pendingNavRef.current;
+      if (nav) {
+        pendingNavRef.current = null;
+        router.replace(`/dreams/${nav}`);
+      } else {
+        // Continuing thread: refresh so the "For this dream" cards update.
+        router.refresh();
+      }
+    },
+  );
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -117,10 +143,9 @@ export function DreamChat({
     setInput("");
     setMessages((m) => [...m, { role: "user", content: trimmed }]);
     setStreaming(true);
+    setMessages((m) => [...m, { role: "assistant", content: "" }]);
+    reveal.reset();
 
-    // Buffer the whole reading, then reveal it all at once (like the
-    // Compatibility reading) instead of streaming word-by-word.
-    let buf = "";
     try {
       const controller = new AbortController();
       abortRef.current = controller;
@@ -137,6 +162,7 @@ export function DreamChat({
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError(data.error || `Error ${res.status}`);
+        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
@@ -146,32 +172,28 @@ export function DreamChat({
       const decoder = new TextDecoder();
       if (!reader) {
         setError("No response stream from server.");
+        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
       }
 
+      let buf = "";
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
         buf += decoder.decode(value, { stream: true });
+        reveal.push(buf);
       }
-
-      setMessages((m) => [...m, { role: "assistant", content: buf }]);
-      setStreaming(false);
-
-      if (!threadId && newThreadId) {
-        router.replace(`/dreams/${newThreadId}`);
-      } else {
-        router.refresh();
-      }
+      pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
+      reveal.finish();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
-        if (buf.trim()) {
-          setMessages((m) => [...m, { role: "assistant", content: buf }]);
-        }
-        setStreaming(false);
+        // Stopped by the dreamer — keep what arrived and settle gracefully.
+        reveal.finish();
       } else {
+        reveal.reset();
         setError(err instanceof Error ? err.message : "Unexpected error");
+        setMessages((m) => m.slice(0, -1));
         setStreaming(false);
       }
     }
@@ -189,27 +211,28 @@ export function DreamChat({
         className="relative z-10 flex-1 overflow-y-auto pr-2"
         style={{ minHeight: "240px", maxHeight: "calc(100dvh - 300px)" }}
       >
-        {isEmpty && !streaming ? (
+        {isEmpty ? (
           <Welcome firstName={firstName} onPick={send} />
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
               <Message key={i} msg={m} />
             ))}
-            {streaming && (
-              <div className="flex items-center gap-3 mt-1">
-                <p className="text-sm text-[var(--foreground-subtle)] italic animate-pulse">
-                  Reading the dream…
-                </p>
-                <button
-                  type="button"
-                  onClick={stop}
-                  className="text-xs text-[var(--accent)] hover:underline"
-                >
-                  Stop
-                </button>
-              </div>
-            )}
+            {streaming &&
+              messages[messages.length - 1]?.role === "assistant" && (
+                <div className="flex items-center gap-3 mt-1">
+                  <p className="text-sm text-[var(--foreground-subtle)] italic">
+                    Reading the dream…
+                  </p>
+                  <button
+                    type="button"
+                    onClick={stop}
+                    className="text-xs text-[var(--accent)] hover:underline"
+                  >
+                    Stop
+                  </button>
+                </div>
+              )}
           </div>
         )}
       </div>
@@ -296,8 +319,8 @@ function Welcome({
 
 function Message({ msg }: { msg: Msg }) {
   // The dreamer's own words stay as a quiet bubble, right-aligned. The reading
-  // is set as serif prose with no bubble, revealed all at once with a gentle
-  // fade over the candlelit backdrop.
+  // is set as serif prose with no bubble, surfacing gently word-by-word over
+  // the candlelit backdrop.
   if (msg.role === "user") {
     return (
       <div className="flex justify-end">
@@ -315,7 +338,7 @@ function Message({ msg }: { msg: Msg }) {
     .map((p) => p.trim())
     .filter(Boolean);
   return (
-    <div className="max-w-[44rem] reading-fade">
+    <div className="max-w-[44rem]">
       {paragraphs.map((p, i) => (
         <p key={i} className="dream-line">
           {renderDreamContent(p)}
