@@ -12,7 +12,6 @@ import { getSubscriptionStatus } from "@/lib/subscription";
 import { stripDashes } from "@/lib/llm/sanitize";
 import {
   retrieveRituals,
-  formatRitualsForPrompt,
   metadataFromRituals,
 } from "@/lib/rag/retrieve";
 import { formatCommonSuppliesForPrompt } from "@/lib/rag/common-supplies";
@@ -159,24 +158,20 @@ export async function POST(request: Request) {
     }
   }
 
-  // RAG: retrieve OB blog posts most relevant to the user's question.
-  // Failure here is non-fatal; the reading proceeds without it.
-  const retrieved = await retrieveRituals(userMessage, 3);
-  const ritualsContext = [
-    formatRitualsForPrompt(retrieved),
-    formatCommonSuppliesForPrompt(),
-  ]
-    .filter(Boolean)
-    .join("\n\n");
+  // RAG retrieval grounds the "For this reading" cards. We kick it off here
+  // but do NOT block the first token on it — the vector search adds seconds
+  // of dead air before the reading begins. Instead the reading streams right
+  // away, and we await this promise after the stream to persist the matched
+  // ritual/product slugs (the cards then arrive on the post-stream refresh).
+  const retrievalPromise = retrieveRituals(userMessage, 3).catch((e) => {
+    console.error("Astrologer retrieval error:", e);
+    return [];
+  });
 
-  // The archive rituals + shop products that ground this reading. We persist
-  // them on the assistant message so the reading can show a tappable
-  // "For this reading" cards block (like Forecast and Compatibility).
-  const ragMeta = metadataFromRituals(retrieved);
-  const ritualSlugs = (ragMeta.sources || [])
-    .map((s) => s.slug)
-    .filter(Boolean);
-  const productSlugs = ragMeta.product_slugs || [];
+  // Inline product links in the reading body are grounded on the always-
+  // available common supplies (a static list, no network call), so they keep
+  // working without waiting on the vector search.
+  const ritualsContext = formatCommonSuppliesForPrompt();
 
   // Build the system prompt with the user's chart and the retrieved
   // archive context inline.
@@ -238,6 +233,15 @@ export async function POST(request: Request) {
           encoder.encode("\n\nSomething went wrong reading the chart. Please try again."),
         );
       } finally {
+        // The reading is written. Now fold in the RAG matches (which ran in
+        // parallel) so the "For this reading" cards can render on refresh.
+        const retrieved = await retrievalPromise;
+        const ragMeta = metadataFromRituals(retrieved);
+        const ritualSlugs = (ragMeta.sources || [])
+          .map((s) => s.slug)
+          .filter(Boolean);
+        const productSlugs = ragMeta.product_slugs || [];
+
         // Persist the assistant message (sanitize em-dashes)
         const cleanText = stripDashes(assistantText).trim();
         if (cleanText) {

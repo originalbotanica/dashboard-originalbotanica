@@ -157,17 +157,14 @@ export async function POST(request: Request) {
   const system = buildDreamSystemPrompt({ firstName, currentDate });
 
   // Archive rituals + shop supplies that fit the dream, surfaced as a
-  // tappable "For this dream" cards block under the reading (best-effort).
-  let ritualSlugs: string[] = [];
-  let productSlugs: string[] = [];
-  try {
-    const retrieved = await retrieveRituals(userMessage, 3);
-    const ragMeta = metadataFromRituals(retrieved);
-    ritualSlugs = (ragMeta.sources || []).map((s) => s.slug).filter(Boolean);
-    productSlugs = ragMeta.product_slugs || [];
-  } catch {
-    /* retrieval is non-fatal; the reading proceeds without cards */
-  }
+  // tappable "For this dream" cards block under the reading. The dream prompt
+  // does not use this, so we run it in parallel and never block the first
+  // token on it — the interpretation streams right away and we await this
+  // after the stream to persist the matched slugs (cards arrive on refresh).
+  const retrievalPromise = retrieveRituals(userMessage, 3).catch((e) => {
+    console.error("Dream interpreter retrieval error:", e);
+    return [];
+  });
 
   const anthropic = getAnthropic();
   const encoder = new TextEncoder();
@@ -204,6 +201,15 @@ export async function POST(request: Request) {
           ),
         );
       } finally {
+        // The interpretation is written. Fold in the RAG matches (which ran
+        // in parallel) so the "For this dream" cards render on refresh.
+        const retrieved = await retrievalPromise;
+        const ragMeta = metadataFromRituals(retrieved);
+        const ritualSlugs = (ragMeta.sources || [])
+          .map((s) => s.slug)
+          .filter(Boolean);
+        const productSlugs = ragMeta.product_slugs || [];
+
         const cleanText = stripDashes(assistantText).trim();
         if (cleanText) {
           await adminSupabase.from("dream_messages").insert({
