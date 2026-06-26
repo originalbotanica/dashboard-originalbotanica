@@ -32,8 +32,6 @@ export type CandleArt = {
   photo?: string;
 };
 
-const OB_PRODUCT_IMG =
-  "https://dlkhclkmyx18n.cloudfront.net/transforms/products/_productImage";
 
 export type Desire = {
   slug: string;
@@ -193,28 +191,28 @@ export const DESIRES: Desire[] = [
     purpose: "protection",
     candles: [
       { slug: "reyes", name: "Three Kings", tagline: "Blessings for the year ahead", saintColor: "#e8ac7c", saintIntention: "Blessings for the year ahead" },
-      { slug: "candelaria", name: "La Candelaria · Oyá", tagline: "Courage through change", saintColor: "#b98cf0", saintIntention: "Honoring Oyá — courage through change", photo: `${OB_PRODUCT_IMG}/7ds2060__44657.jpg` },
-      { slug: "san-antonio", name: "San Antonio · Eleguá", tagline: "Open the roads", saintColor: "#f0552f", saintIntention: "Honoring Eleguá — open my roads", photo: `${OB_PRODUCT_IMG}/7ds2035__21361.jpg` },
-      { slug: "san-juan", name: "San Juan Bautista", tagline: "Cleansing and renewal", saintColor: "#7bb6f2", saintIntention: "Cleansing and renewal on San Juan", photo: `${OB_PRODUCT_IMG}/stjohn_7day__59430.jpg` },
-      { slug: "santiago", name: "Santiago · Oggún", tagline: "Strength for the work", saintColor: "#5aa06a", saintIntention: "Honoring Oggún — strength for the work", photo: `${OB_PRODUCT_IMG}/santiagowhite_7day__03218.jpg` },
-      { slug: "regla", name: "La Virgen de Regla · Yemayá", tagline: "Protection and healing", saintColor: "#3f7bd8", saintIntention: "Honoring Yemayá — protection and healing", photo: `${OB_PRODUCT_IMG}/yemaya-orisha-7-day-candle.jpg` },
-      { slug: "caridad", name: "La Caridad · Ochún", tagline: "Love and abundance", saintColor: "#e8c34a", saintIntention: "Honoring Ochún — love and abundance", photo: `${OB_PRODUCT_IMG}/7ds2065__84976.1414689245.1280.1280__30505.jpg` },
-      { slug: "mercedes", name: "Las Mercedes · Obatalá", tagline: "Peace and clarity", saintColor: "#efe7d6", saintIntention: "Honoring Obatalá — peace and clarity", photo: `${OB_PRODUCT_IMG}/mercedes_7day__10148.jpg` },
-      { slug: "san-miguel", name: "San Miguel Arcángel", tagline: "Protection over you and your home", saintColor: "#7bb6f2", saintIntention: "San Miguel — protect me and mine", photo: `${OB_PRODUCT_IMG}/candle-saint-michael-red-7-day.jpg` },
-      { slug: "san-francisco", name: "San Francisco · Orula", tagline: "Wisdom and guidance", saintColor: "#cda94f", saintIntention: "Honoring Orula — wisdom and guidance", photo: `${OB_PRODUCT_IMG}/stfrancis_7day__52566.jpg` },
-      { slug: "barbara", name: "Santa Bárbara · Changó", tagline: "Courage and victory", saintColor: "#f0552f", saintIntention: "Honoring Changó — courage and victory", photo: `${OB_PRODUCT_IMG}/7ds2050__63108.jpg` },
-      { slug: "lazaro", name: "San Lázaro · Babalú-Ayé", tagline: "Health and healing", saintColor: "#9b7bd0", saintIntention: "Honoring Babalú-Ayé — health and healing", photo: `${OB_PRODUCT_IMG}/lazurusyellow_7day__77207.jpg` },
-      { slug: "altagracia", name: "Virgen de Altagracia", tagline: "Protection and blessings", saintColor: "#5b8fd8", saintIntention: "Virgen de Altagracia — protection and blessings", photo: `${OB_PRODUCT_IMG}/7ds2025__87830.jpg` },
-      { slug: "fatima", name: "Nuestra Señora de Fátima", tagline: "Peace and protection", saintColor: "#bcd4f0", saintIntention: "Our Lady of Fátima — peace and protection", photo: `${OB_PRODUCT_IMG}/fatima_7day__90934.jpg` },
-      { slug: "sacred-heart", name: "Sacred Heart of Jesus", tagline: "Love, mercy, and healing", saintColor: "#f0552f", saintIntention: "Sacred Heart of Jesus — love, mercy, and healing", photo: `${OB_PRODUCT_IMG}/jesusred_7day__67475.jpg` },
-      { slug: "perpetua", name: "Our Lady of Perpetual Help", tagline: "Help in urgent need", saintColor: "#6f8fd0", saintIntention: "Our Lady of Perpetual Help — help in urgent need", photo: `${OB_PRODUCT_IMG}/ladyhelp_7day__76559.jpg` },
-      { slug: "carmen", name: "Virgen del Carmen", tagline: "Protection and safe passage", saintColor: "#b98a5e", saintIntention: "Virgen del Carmen — protection and safe passage", photo: `${OB_PRODUCT_IMG}/carmen_7day__67532.jpg` },
-      { slug: "san-alejo", name: "San Alejo", tagline: "Keep enemies and harm away", saintColor: "#9b7bd0", saintIntention: "San Alejo — keep enemies and harm far from me", photo: `${OB_PRODUCT_IMG}/7ds2020__19451.jpg` },
-      { slug: "santa-ana", name: "Santa Ana", tagline: "For family, mothers, and fertility", saintColor: "#cdae5a", saintIntention: "Santa Ana — for family, mothers, and fertility", photo: `${OB_PRODUCT_IMG}/7ds2030__32727.jpg` },
-      { slug: "dolorosa", name: "Nuestra Señora de los Dolores", tagline: "Comfort in grief and hardship", saintColor: "#6f7bbf", saintIntention: "Our Lady of Sorrows — comfort in grief and hardship", photo: `${OB_PRODUCT_IMG}/dolorosa_7day__30493.jpg` },
-      { slug: "guardian-angel", name: "Guardian Angel", tagline: "Watch over me", saintColor: "#bcd4f0", saintIntention: "My guardian angel — watch over me", photo: `${OB_PRODUCT_IMG}/guardianangel_7day__37948.jpg` },
-      { slug: "guadalupe", name: "Virgen de Guadalupe", tagline: "Protection and grace", saintColor: "#3fae8f", saintIntention: "Our Lady of Guadalupe — protection and grace for my family", photo: `${OB_PRODUCT_IMG}/guadalupe_7day__48155.jpg` },
-      { slug: "santa-marta", name: "Santa Marta la Dominadora", tagline: "Peace and dominion at home", saintColor: "#3f8f5a", saintIntention: "Santa Marta la Dominadora — harmony and dominion over a hard situation", photo: `${OB_PRODUCT_IMG}/marthadom_7day__37176.jpg` },
+      { slug: "candelaria", name: "La Candelaria · Oyá", tagline: "Courage through change", saintColor: "#b98cf0", saintIntention: "Honoring Oyá — courage through change", photo: "/saints/candelaria.png" },
+      { slug: "san-antonio", name: "San Antonio · Eleguá", tagline: "Open the roads", saintColor: "#f0552f", saintIntention: "Honoring Eleguá — open my roads", photo: "/saints/san-antonio.png" },
+      { slug: "san-juan", name: "San Juan Bautista", tagline: "Cleansing and renewal", saintColor: "#7bb6f2", saintIntention: "Cleansing and renewal on San Juan", photo: "/saints/san-juan.png" },
+      { slug: "santiago", name: "Santiago · Oggún", tagline: "Strength for the work", saintColor: "#5aa06a", saintIntention: "Honoring Oggún — strength for the work", photo: "/saints/santiago.png" },
+      { slug: "regla", name: "La Virgen de Regla · Yemayá", tagline: "Protection and healing", saintColor: "#3f7bd8", saintIntention: "Honoring Yemayá — protection and healing", photo: "/saints/regla.png" },
+      { slug: "caridad", name: "La Caridad · Ochún", tagline: "Love and abundance", saintColor: "#e8c34a", saintIntention: "Honoring Ochún — love and abundance", photo: "/saints/caridad.png" },
+      { slug: "mercedes", name: "Las Mercedes · Obatalá", tagline: "Peace and clarity", saintColor: "#efe7d6", saintIntention: "Honoring Obatalá — peace and clarity", photo: "/saints/mercedes.png" },
+      { slug: "san-miguel", name: "San Miguel Arcángel", tagline: "Protection over you and your home", saintColor: "#7bb6f2", saintIntention: "San Miguel — protect me and mine", photo: "/saints/san-miguel.png" },
+      { slug: "san-francisco", name: "San Francisco · Orula", tagline: "Wisdom and guidance", saintColor: "#cda94f", saintIntention: "Honoring Orula — wisdom and guidance", photo: "/saints/san-francisco.png" },
+      { slug: "barbara", name: "Santa Bárbara · Changó", tagline: "Courage and victory", saintColor: "#f0552f", saintIntention: "Honoring Changó — courage and victory", photo: "/saints/barbara.png" },
+      { slug: "lazaro", name: "San Lázaro · Babalú-Ayé", tagline: "Health and healing", saintColor: "#9b7bd0", saintIntention: "Honoring Babalú-Ayé — health and healing", photo: "/saints/lazaro.png" },
+      { slug: "altagracia", name: "Virgen de Altagracia", tagline: "Protection and blessings", saintColor: "#5b8fd8", saintIntention: "Virgen de Altagracia — protection and blessings", photo: "/saints/altagracia.png" },
+      { slug: "fatima", name: "Nuestra Señora de Fátima", tagline: "Peace and protection", saintColor: "#bcd4f0", saintIntention: "Our Lady of Fátima — peace and protection", photo: "/saints/fatima.png" },
+      { slug: "sacred-heart", name: "Sacred Heart of Jesus", tagline: "Love, mercy, and healing", saintColor: "#f0552f", saintIntention: "Sacred Heart of Jesus — love, mercy, and healing", photo: "/saints/sacred-heart.png" },
+      { slug: "perpetua", name: "Our Lady of Perpetual Help", tagline: "Help in urgent need", saintColor: "#6f8fd0", saintIntention: "Our Lady of Perpetual Help — help in urgent need", photo: "/saints/perpetua.png" },
+      { slug: "carmen", name: "Virgen del Carmen", tagline: "Protection and safe passage", saintColor: "#b98a5e", saintIntention: "Virgen del Carmen — protection and safe passage", photo: "/saints/carmen.png" },
+      { slug: "san-alejo", name: "San Alejo", tagline: "Keep enemies and harm away", saintColor: "#9b7bd0", saintIntention: "San Alejo — keep enemies and harm far from me", photo: "/saints/san-alejo.png" },
+      { slug: "santa-ana", name: "Santa Ana", tagline: "For family, mothers, and fertility", saintColor: "#cdae5a", saintIntention: "Santa Ana — for family, mothers, and fertility", photo: "/saints/santa-ana.png" },
+      { slug: "dolorosa", name: "Nuestra Señora de los Dolores", tagline: "Comfort in grief and hardship", saintColor: "#6f7bbf", saintIntention: "Our Lady of Sorrows — comfort in grief and hardship", photo: "/saints/dolorosa.png" },
+      { slug: "guardian-angel", name: "Guardian Angel", tagline: "Watch over me", saintColor: "#bcd4f0", saintIntention: "My guardian angel — watch over me", photo: "/saints/guardian-angel.png" },
+      { slug: "guadalupe", name: "Virgen de Guadalupe", tagline: "Protection and grace", saintColor: "#3fae8f", saintIntention: "Our Lady of Guadalupe — protection and grace for my family", photo: "/saints/guadalupe.png" },
+      { slug: "santa-marta", name: "Santa Marta la Dominadora", tagline: "Peace and dominion at home", saintColor: "#3f8f5a", saintIntention: "Santa Marta la Dominadora — harmony and dominion over a hard situation", photo: "/saints/santa-marta.png" },
     ],
   },
 ];
