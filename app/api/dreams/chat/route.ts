@@ -9,6 +9,7 @@ import {
 } from "@/lib/dreams/usage";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { stripDashes } from "@/lib/llm/sanitize";
+import { retrieveRituals, metadataFromRituals } from "@/lib/rag/retrieve";
 
 /**
  * POST /api/dreams/chat
@@ -155,6 +156,19 @@ export async function POST(request: Request) {
   const currentDate = new Date().toISOString().slice(0, 10);
   const system = buildDreamSystemPrompt({ firstName, currentDate });
 
+  // Archive rituals + shop supplies that fit the dream, surfaced as a
+  // tappable "For this dream" cards block under the reading (best-effort).
+  let ritualSlugs: string[] = [];
+  let productSlugs: string[] = [];
+  try {
+    const retrieved = await retrieveRituals(userMessage, 3);
+    const ragMeta = metadataFromRituals(retrieved);
+    ritualSlugs = (ragMeta.sources || []).map((s) => s.slug).filter(Boolean);
+    productSlugs = ragMeta.product_slugs || [];
+  } catch {
+    /* retrieval is non-fatal; the reading proceeds without cards */
+  }
+
   const anthropic = getAnthropic();
   const encoder = new TextEncoder();
   const adminSupabase = createAdminClient();
@@ -197,6 +211,8 @@ export async function POST(request: Request) {
             user_id: userId,
             role: "assistant",
             content: cleanText,
+            ritual_slugs: ritualSlugs,
+            product_slugs: productSlugs,
           });
         }
         await incrementDreamUsage(userId).catch(() => {});

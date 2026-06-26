@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { DreamChat } from "@/components/dream-chat";
+import { BotanicaRecs } from "@/components/botanica-recs";
 
 export const metadata = {
   title: "Dream",
@@ -56,6 +57,17 @@ export default async function DreamThreadPage({
     content: r.content,
   }));
 
+  // The latest reading's matched archive rituals + supplies, shown as tappable
+  // "For this dream" cards beneath the conversation.
+  const { data: lastReading } = await supabase
+    .from("dream_messages")
+    .select("ritual_slugs, product_slugs")
+    .eq("thread_id", thread.id)
+    .eq("role", "assistant")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
   return (
     <main className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--border)]">
@@ -77,6 +89,14 @@ export default async function DreamThreadPage({
           firstName={profile.first_name}
           threadId={thread.id}
           initialMessages={initialMessages}
+        />
+
+        {/* Tappable rituals + supplies that fit this dream. */}
+        <BotanicaRecs
+          userId={user.id}
+          sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
+          productSlugs={(lastReading?.product_slugs as string[]) || []}
+          heading="For this dream"
         />
       </section>
     </main>

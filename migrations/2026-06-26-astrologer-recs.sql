@@ -9,3 +9,9 @@
 alter table public.astrologer_messages
   add column if not exists ritual_slugs  text[] not null default '{}',
   add column if not exists product_slugs text[] not null default '{}';
+
+-- Same for the dream interpreter, so dream readings can show their own
+-- "For this dream" cards block.
+alter table public.dream_messages
+  add column if not exists ritual_slugs  text[] not null default '{}',
+  add column if not exists product_slugs text[] not null default '{}';

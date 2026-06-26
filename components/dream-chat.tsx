@@ -158,6 +158,8 @@ export function DreamChat({
 
       if (!threadId && newThreadId) {
         router.replace(`/dreams/${newThreadId}`);
+      } else {
+        router.refresh();
       }
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
