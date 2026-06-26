@@ -88,14 +88,14 @@ export default async function AstrologerThreadPage({
           firstName={profile.first_name}
           threadId={thread.id}
           initialMessages={initialMessages}
-        />
-
-        {/* Tappable rituals + supplies that ground this reading. */}
-        <BotanicaRecs
-          userId={user.id}
-          sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
-          productSlugs={(lastReading?.product_slugs as string[]) || []}
-          heading="For this reading"
+          recs={
+            <BotanicaRecs
+              userId={user.id}
+              sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
+              productSlugs={(lastReading?.product_slugs as string[]) || []}
+              heading="For this reading"
+            />
+          }
         />
       </section>
     </main>

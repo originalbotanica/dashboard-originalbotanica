@@ -89,14 +89,14 @@ export default async function DreamThreadPage({
           firstName={profile.first_name}
           threadId={thread.id}
           initialMessages={initialMessages}
-        />
-
-        {/* Tappable rituals + supplies that fit this dream. */}
-        <BotanicaRecs
-          userId={user.id}
-          sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
-          productSlugs={(lastReading?.product_slugs as string[]) || []}
-          heading="For this dream"
+          recs={
+            <BotanicaRecs
+              userId={user.id}
+              sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
+              productSlugs={(lastReading?.product_slugs as string[]) || []}
+              heading="For this dream"
+            />
+          }
         />
       </section>
     </main>

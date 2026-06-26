@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
 
@@ -24,10 +24,13 @@ export function AstrologerChat({
   firstName,
   threadId,
   initialMessages,
+  recs,
 }: {
   firstName: string;
   threadId: string | null;
   initialMessages: Msg[];
+  /** "For this reading" cards, rendered by the server page under the latest reading. */
+  recs?: ReactNode;
 }) {
   const router = useRouter();
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
@@ -148,6 +151,9 @@ export function AstrologerChat({
           </div>
         )}
       </div>
+
+      {/* "For this reading" cards, directly under the reading. */}
+      {!streaming && recs}
 
       {error && <p className="form-error mt-3">{error}</p>}
 
