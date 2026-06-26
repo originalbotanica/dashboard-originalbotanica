@@ -103,8 +103,8 @@ export default async function AstrologyHubPage() {
         ) : (
           <>
             <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-8">
-              Your astrologer is ready. Ask about a placement, a current transit,
-              or the ritual that fits this week.
+              Your astrologer is ready. Ask anything that&apos;s been on your
+              mind, and let&apos;s see what the stars have to say.
             </p>
 
             {hasChart && (

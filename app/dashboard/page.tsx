@@ -202,8 +202,22 @@ export default async function DashboardPage() {
         <MembershipPrompt sub={sub} trialLeft={trialLeft} locale={locale} />
       </section>
 
-      {/* ── Today on the spiritual calendar ───────────────────────────── */}
-      <CalendarToday />
+      {/* ── Astrology first — lead with the stars, per Steve's note ───── */}
+      <Suspense
+        fallback={
+          <ToolSection
+            eyebrow={tr("dash.astroEyebrow")}
+            headline={tr("dash.astroHeadline")}
+            body={tr("dash.astroBodyFallback")}
+            href="/astrology"
+            linkLabel={tr("dash.astroLink")}
+            imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+            imageSide="left"
+          />
+        }
+      >
+        <AstrologySection sunSign={sunSign} horoscopePromise={horoscopePromise} />
+      </Suspense>
 
       {/* ── Tonight's moon — compact daily touchpoint ─────────────────── */}
       <section aria-label="Tonight's moon" className="border-t border-[var(--border)]">
@@ -239,22 +253,8 @@ export default async function DashboardPage() {
         </Link>
       </section>
 
-      {/* ── 2. Astrology — image left ─────────────────────────────────── */}
-      <Suspense
-        fallback={
-          <ToolSection
-            eyebrow={tr("dash.astroEyebrow")}
-            headline={tr("dash.astroHeadline")}
-            body={tr("dash.astroBodyFallback")}
-            href="/astrology"
-            linkLabel={tr("dash.astroLink")}
-            imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
-            imageSide="left"
-          />
-        }
-      >
-        <AstrologySection sunSign={sunSign} horoscopePromise={horoscopePromise} />
-      </Suspense>
+      {/* ── Today on the spiritual calendar ───────────────────────────── */}
+      <CalendarToday />
 
       {/* ── 3. Dreams — image right ───────────────────────────────────── */}
       <ToolSection

@@ -52,8 +52,9 @@ export default async function AstrologerHubPage() {
           Sit with the astrologer, {profile.first_name}.
         </h1>
         <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-10">
-          Ask about a placement, a transit making itself known, or the ritual
-          that fits this week. Each conversation is kept here for you.
+          Ask anything that&apos;s been on your mind, and let&apos;s see what the
+          stars have to say. Need a ritual that fits today? Just ask. Each
+          conversation is kept here for you.
         </p>
 
         <Link

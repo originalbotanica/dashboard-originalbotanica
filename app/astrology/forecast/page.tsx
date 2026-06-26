@@ -52,6 +52,17 @@ export default async function ForecastPage() {
 
   const monthLabel = currentMonthLabel();
 
+  // Only show key dates that haven't passed yet this month (Steve's note —
+  // no point marking dates already behind us). We read the last day number in
+  // the label so a range like "June 12–14" stays until the 14th; anything we
+  // can't parse is kept, to be safe.
+  const todayDay = new Date().getUTCDate();
+  const upcomingKeyDates = (forecast?.content.key_dates || []).filter((kd) => {
+    const nums = String(kd.date).match(/[0-9]{1,2}/g);
+    if (!nums) return true;
+    return parseInt(nums[nums.length - 1], 10) >= todayDay;
+  });
+
   return (
     <main className="min-h-screen relative">
       {/* Atmospheric backdrop */}
@@ -105,13 +116,12 @@ export default async function ForecastPage() {
               />
             </article>
 
-            {/* Key dates */}
-            {forecast.content.key_dates &&
-              forecast.content.key_dates.length > 0 && (
+            {/* Key dates — upcoming only */}
+            {upcomingKeyDates.length > 0 && (
                 <section className="mb-16 border-t border-[var(--border)] pt-10">
                   <p className="eyebrow mb-6">Dates to mark</p>
                   <ul className="space-y-6">
-                    {forecast.content.key_dates.map((kd, i) => (
+                    {upcomingKeyDates.map((kd, i) => (
                       <li
                         key={i}
                         className="grid grid-cols-12 gap-4 pb-4 border-b border-[var(--border)] last:border-b-0"

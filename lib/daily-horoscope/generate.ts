@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
 import { sanitizeStringsDeep } from "@/lib/llm/sanitize";
 import {
@@ -44,7 +44,13 @@ export type DailyHoroscope = {
 export async function getOrGenerateDailyHoroscope(
   sign: Sign,
 ): Promise<DailyHoroscope | null> {
-  const supabase = await createClient();
+  // Admin (service-role) client: the daily_horoscopes table is world-readable
+  // but writes must go through the service role (RLS has no user insert/update
+  // policy). Using the user client here silently failed the cache write, so the
+  // horoscope regenerated on every page load — giving a different "focus" on
+  // the dashboard vs the astrology page. Admin client = one generation per day,
+  // consistent everywhere.
+  const supabase = createAdminClient();
   const date = todayKey();
 
   // Cache lookup

@@ -138,7 +138,7 @@ const en: Dict = {
   "dash.benefitLink": "Shop the botanica",
   "dash.giftEyebrow": "Give the gift of guidance",
   "dash.giftHeadline": "Share the gift of The Practice.",
-  "dash.giftBody": "Give them a season at the botanica — daily tarot, dream interpretation, a place to honor their ancestors, and a spiritualist to talk with. A gift for a new practitioner, a grieving friend, or anyone who could use a little light.",
+  "dash.giftBody": "Give them a season at the botanica — daily tarot, an astrologer to talk with, dream interpretation, and a place to honor their ancestors. A gift for a new practitioner, a grieving friend, or anyone who could use a little light.",
   "dash.giftCta": "Gift a membership",
   // daily tarot teaser
   "teaser.eyebrow": "Your card today",
@@ -386,7 +386,7 @@ const es: Dict = {
   "dash.benefitLink": "Compra en la botánica",
   "dash.giftEyebrow": "Regala el don de la guía",
   "dash.giftHeadline": "Comparte el regalo de The Practice.",
-  "dash.giftBody": "Regálale una temporada en la botánica — tarot diario, interpretación de sueños, un lugar para honrar a sus ancestros y un espiritualista con quien hablar. Un regalo para un nuevo practicante, un amigo en duelo, o cualquiera que necesite un poco de luz.",
+  "dash.giftBody": "Regálale una temporada en la botánica — tarot diario, un astrólogo con quien hablar, interpretación de sueños, y un lugar para honrar a sus ancestros. Un regalo para un nuevo practicante, un amigo en duelo, o cualquiera que necesite un poco de luz.",
   "dash.giftCta": "Regalar una membresía",
   // daily tarot teaser
   "teaser.eyebrow": "Tu carta de hoy",
