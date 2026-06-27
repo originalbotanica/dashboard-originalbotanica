@@ -71,7 +71,6 @@ export const COMMON_SUPPLIES: CommonSupply[] = [
   // Common herbs, flowers, resins
   { name: "rue", slug: "rue-herb" },
   { name: "basil", slug: "basil-herb" },
-  { name: "hyssop", slug: "hyssop-herb" },
   { name: "bay leaves", slug: "bay-leaves" },
   { name: "sage leaves", slug: "sage-leaves" },
   { name: "lavender", slug: "lavender-flowers" },
