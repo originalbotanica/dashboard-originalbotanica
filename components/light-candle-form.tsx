@@ -184,11 +184,17 @@ export function LightCandleForm({
         </span>
         <p className="display text-lg leading-tight mt-5">{candle.name}</p>
         <p className="text-sm text-[var(--foreground-muted)]">{candle.tagline}</p>
-        <p className="invocation text-[var(--foreground-muted)] mt-3 text-sm">
+        <p
+          className={`invocation mt-3 ${
+            armed && !lit
+              ? "text-[var(--accent)] text-lg md:text-xl font-medium animate-pulse"
+              : "text-[var(--foreground-muted)] text-sm"
+          }`}
+        >
           {lit
             ? "The flame is lit."
             : armed
-              ? "Tap the wick to light the candle."
+              ? "↑ Tap the wick to light the candle."
               : "Write your dedication below, then light the candle."}
         </p>
         <button

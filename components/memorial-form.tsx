@@ -135,11 +135,17 @@ export function MemorialForm({
           )}
         </div>
         {!initial?.id && (
-          <p className="invocation text-[var(--foreground-muted)] mt-4 text-sm">
+          <p
+            className={`invocation mt-4 ${
+              armed && !lit
+                ? "text-[var(--accent)] text-lg md:text-xl font-medium animate-pulse"
+                : "text-[var(--foreground-muted)] text-sm"
+            }`}
+          >
             {lit
               ? "Their flame is lit."
               : armed
-                ? "Tap the wick to light their flame."
+                ? "↑ Tap the wick to light their flame."
                 : "Fill in their details below, then light their flame."}
           </p>
         )}
