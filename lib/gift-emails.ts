@@ -58,7 +58,7 @@ function codeBlock(code: string): string {
 }
 
 const TOOLS_LINE =
-  "your daily tarot pull, your birth chart and a spiritualist to talk with, dream interpretation, a virtual altar to light candles, a place to honor your ancestors, and a library of rituals with everything you need to do the work";
+  "your daily tarot pull, your birth chart and an astrologer to talk with, dream interpretation, a virtual altar to light candles, a place to honor your ancestors, and a library of rituals with everything you need to do the work";
 
 export function giftRecipientEmail(args: {
   recipientName?: string | null;

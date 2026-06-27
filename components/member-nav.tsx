@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useT } from "./locale-provider";
 import { LanguageToggle } from "./language-toggle";
 
@@ -35,6 +35,15 @@ export function MemberNav({
   const [menuOpen, setMenuOpen] = useState(false);
   const [acctOpen, setAcctOpen] = useState(false);
   const t = useT();
+
+  // Close the account menu when the page scrolls (a wheel scroll doesn't
+  // blur the button, so without this the menu lingers over the page).
+  useEffect(() => {
+    if (!acctOpen) return;
+    const close = () => setAcctOpen(false);
+    window.addEventListener("scroll", close, { passive: true });
+    return () => window.removeEventListener("scroll", close);
+  }, [acctOpen]);
 
   const wrapper =
     variant === "floating"

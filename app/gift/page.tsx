@@ -53,7 +53,7 @@ export default async function GiftPage({
           <p className="eyebrow mb-4">What&apos;s inside</p>
           <ul className="space-y-3 text-[var(--foreground-muted)] leading-relaxed">
             <li>A daily tarot pull from a hand-painted wheel</li>
-            <li>Their birth chart, and a spiritualist to talk with</li>
+            <li>Their birth chart, and an astrologer to talk with</li>
             <li>Dream interpretation in the tradition</li>
             <li>A virtual altar to light candles</li>
             <li>A place to honor their ancestors</li>

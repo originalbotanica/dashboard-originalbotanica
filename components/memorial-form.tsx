@@ -154,9 +154,13 @@ export function MemorialForm({
             (optional, up to 5 MB)
           </span>
         </label>
+        {/* No `name` on purpose: the file is uploaded via XHR in onPhotoChange
+            and its URL stored in the hidden `photo_url` input. If this input
+            had a name, the raw multi-MB file would also be POSTed with the
+            server action, blowing past Next's 1MB server-action body limit
+            (which broke memorial creation when a photo was attached). */}
         <input
           id="photo"
-          name="photo"
           type="file"
           accept="image/png,image/jpeg,image/webp,image/heic"
           onChange={onPhotoChange}

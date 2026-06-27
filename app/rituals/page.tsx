@@ -94,7 +94,7 @@ export default async function RitualsLibraryPage({
       {query ? (
         <section className="max-w-5xl mx-auto px-6 pb-24">
           <p className="eyebrow mb-6">
-            {results.length} {results.length === 1 ? "ritual" : "rituals"} for
+            {`${results.length} ${results.length === 1 ? "ritual" : "rituals"} for `}
             &ldquo;{query}&rdquo;
           </p>
           {results.length === 0 ? (
