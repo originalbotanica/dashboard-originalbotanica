@@ -22,8 +22,16 @@ export function ShareMemorialLink({ url }: { url: string }) {
   const u = encodeURIComponent(url);
   const t = encodeURIComponent(shareText);
 
-  const socials: { label: string; href: string }[] = [
-    { label: "WhatsApp", href: `https://wa.me/?text=${t}%20${u}` },
+  // Instagram has no link-based share (you can't pre-fill a post from the web),
+  // so its button copies the link and opens Instagram, ready to paste into a
+  // story, DM, or bio. The rest use their normal web share intents.
+  async function instagram() {
+    await copy();
+    window.open("https://www.instagram.com", "_blank", "noopener,noreferrer");
+  }
+
+  const socials: { label: string; href?: string; onClick?: () => void }[] = [
+    { label: "Instagram", onClick: instagram },
     { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
     { label: "X", href: `https://twitter.com/intent/tweet?text=${t}&url=${u}` },
     {
@@ -76,17 +84,28 @@ export function ShareMemorialLink({ url }: { url: string }) {
         Or share on
       </p>
       <div className="flex flex-wrap gap-2 justify-center">
-        {socials.map((s) => (
-          <a
-            key={s.label}
-            href={s.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-ghost text-sm"
-          >
-            {s.label}
-          </a>
-        ))}
+        {socials.map((s) =>
+          s.href ? (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost text-sm"
+            >
+              {s.label}
+            </a>
+          ) : (
+            <button
+              key={s.label}
+              type="button"
+              onClick={s.onClick}
+              className="btn-ghost text-sm"
+            >
+              {s.label}
+            </button>
+          ),
+        )}
       </div>
     </div>
   );

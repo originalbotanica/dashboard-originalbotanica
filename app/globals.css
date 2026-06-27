@@ -418,6 +418,10 @@ h1, h2, h3, h4, h5, h6 {
 .altar-flame span {
   position: absolute;
   left: 50%;
+  /* Static centering so the flame is centered on the very first paint (and for
+     reduced-motion). The flicker keyframes also carry translateX(-50%), so the
+     animation never shifts it off the wick. */
+  transform: translateX(-50%);
 }
 .altar-flame .af-halo,
 .altar-flame .af-cast {
