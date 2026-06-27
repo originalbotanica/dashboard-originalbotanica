@@ -245,13 +245,15 @@ export function MemorialForm({
             had a name, the raw multi-MB file would also be POSTed with the
             server action, blowing past Next's 1MB server-action body limit
             (which broke memorial creation when a photo was attached). */}
+        {/* Styled as a bare button + filename (no boxed form-input, which
+            showed an empty dark box between the button and the file name). */}
         <input
           id="photo"
           type="file"
           accept="image/png,image/jpeg,image/webp,image/heic"
           onChange={onPhotoChange}
           disabled={uploading}
-          className="form-input"
+          className="block w-full text-sm text-[var(--foreground-muted)] file:mr-3 file:rounded-md file:border file:border-[var(--border-strong)] file:bg-[var(--surface)] file:px-4 file:py-2 file:text-sm file:text-[var(--foreground)] file:cursor-pointer hover:file:border-[var(--accent)]"
         />
         {uploading && (
           <p className="text-sm text-[var(--foreground-muted)] mt-2">
