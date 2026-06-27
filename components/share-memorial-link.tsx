@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 
 /**
  * The "Share with family" control on a memorial page. Shows the public link
- * and offers one-tap copy (and the native share sheet on phones), instead of
- * a select-by-hand text box.
+ * with one-tap copy, the native share sheet on phones, and explicit links to
+ * popular places families share (WhatsApp, Facebook, X, email) so desktop
+ * users — who have no native share sheet — can still share in one click.
  */
 export function ShareMemorialLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
@@ -16,6 +17,22 @@ export function ShareMemorialLink({ url }: { url: string }) {
       typeof navigator !== "undefined" && typeof navigator.share === "function",
     );
   }, []);
+
+  const shareText = "A flame lit in their memory. Add your light.";
+  const u = encodeURIComponent(url);
+  const t = encodeURIComponent(shareText);
+
+  const socials: { label: string; href: string }[] = [
+    { label: "WhatsApp", href: `https://wa.me/?text=${t}%20${u}` },
+    { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
+    { label: "X", href: `https://twitter.com/intent/tweet?text=${t}&url=${u}` },
+    {
+      label: "Email",
+      href: `mailto:?subject=${encodeURIComponent(
+        "A candle lit in their memory",
+      )}&body=${t}%20${u}`,
+    },
+  ];
 
   async function copy() {
     try {
@@ -31,7 +48,7 @@ export function ShareMemorialLink({ url }: { url: string }) {
     try {
       await navigator.share({
         title: "A memorial candle",
-        text: "A flame lit in their memory. Add your light.",
+        text: shareText,
         url,
       });
     } catch {
@@ -43,6 +60,7 @@ export function ShareMemorialLink({ url }: { url: string }) {
     <div className="flex flex-col items-center">
       <p className="eyebrow mb-2">Share with family</p>
       <p className="text-sm text-[var(--accent)] break-all max-w-xs mb-3">{url}</p>
+
       <div className="flex flex-wrap gap-2 justify-center">
         <button type="button" onClick={copy} className="btn-ghost text-sm">
           {copied ? "Copied ✓" : "Copy link"}
@@ -52,6 +70,23 @@ export function ShareMemorialLink({ url }: { url: string }) {
             Share
           </button>
         )}
+      </div>
+
+      <p className="eyebrow text-[var(--foreground-subtle)] mt-5 mb-2">
+        Or share on
+      </p>
+      <div className="flex flex-wrap gap-2 justify-center">
+        {socials.map((s) => (
+          <a
+            key={s.label}
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost text-sm"
+          >
+            {s.label}
+          </a>
+        ))}
       </div>
     </div>
   );
