@@ -70,20 +70,39 @@ export function AltarCandle({
   const art = getCandleArt(candleSlug);
   const slug = art ? candleSlug! : "white-candle";
   const name = art ? art.name : "Prayer candle";
-  const px = size === "hero" ? 208 : 132;
+  // Render prepared candles larger (closer to the saint candles' footprint)
+  // and add a burning flame at the wick so a placed candle reads as lit on
+  // the altar. The product photos are full-candle shots with the wick near
+  // the top of the frame, so the flame sits just above the image top.
+  const w = size === "hero" ? 200 : 164;
+  const fw = size === "hero" ? 18 : 13;
+  // The wick sits ~12% down from the top of the (square) candle photo.
+  const ftop = size === "hero" ? 24 : 19;
 
   return (
-    <span className="inline-block" aria-hidden={art ? undefined : true}>
+    <span
+      className="relative inline-block"
+      aria-label={name}
+      style={{ filter: "drop-shadow(0 0 16px rgba(240, 176, 110, 0.45))", width: w }}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={candleImageUrl(slug)}
         alt={name}
-        width={px}
-        height={px}
         loading="lazy"
-        className="rounded-xl object-cover candle-glow"
-        style={{ width: px, height: px }}
+        className="rounded-xl block"
+        style={{ width: w, height: "auto" }}
       />
+      <span
+        aria-hidden
+        className="altar-flame"
+        style={{ "--fw": `${fw}px`, top: ftop } as CSSProperties}
+      >
+        <span className="af-halo" />
+        <span className="af-cast" />
+        <span className="af-outer" />
+        <span className="af-inner" />
+      </span>
     </span>
   );
 }

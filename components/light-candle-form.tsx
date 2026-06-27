@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { lightCandleAction } from "@/app/altar/virtual/actions";
 import { PendingSubmit } from "@/components/pending-submit";
 import {
@@ -22,6 +22,7 @@ export function LightCandleForm({
 }) {
   const [desire, setDesire] = useState<Desire | null>(null);
   const [candle, setCandle] = useState<CandleArt | null>(null);
+  const [lit, setLit] = useState(false);
 
   // Step 1 — choose a desire
   if (!desire) {
@@ -90,29 +91,86 @@ export function LightCandleForm({
       <input type="hidden" name="candle_type" value={desire.slug} />
       <input type="hidden" name="candle_color" value={candle.slug} />
 
-      <div className="flex items-center gap-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={candleImageUrl(candle.slug)}
-          alt={candle.name}
-          width={72}
-          height={72}
-          className="rounded-lg object-cover candle-glow"
-          style={{ width: 72, height: 72 }}
-        />
-        <div className="flex-1">
-          <p className="display text-lg leading-tight">{candle.name}</p>
-          <p className="text-sm text-[var(--foreground-muted)]">{candle.tagline}</p>
-        </div>
+      {/* Candle preview — tap the wick to light it before placing. */}
+      <div className="flex flex-col items-center text-center">
+        <span
+          className="relative inline-block"
+          style={{
+            width: 164,
+            filter: lit
+              ? "drop-shadow(0 0 28px rgba(240, 176, 110, 0.55))"
+              : "none",
+            transition: "filter 1s ease",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={candleImageUrl(candle.slug)}
+            alt={candle.name}
+            className="rounded-xl block"
+            style={{
+              width: 164,
+              height: "auto",
+              opacity: lit ? 1 : 0.95,
+              transition: "opacity .8s ease",
+            }}
+          />
+          {lit && (
+            <span
+              aria-hidden
+              className="altar-flame"
+              style={{ "--fw": "13px", top: 19 } as CSSProperties}
+            >
+              <span className="af-halo" />
+              <span className="af-cast" />
+              <span className="af-outer" />
+              <span className="af-inner" />
+            </span>
+          )}
+          {!lit && (
+            <button
+              type="button"
+              onClick={() => setLit(true)}
+              aria-label="Tap the wick to light the candle"
+              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              style={{
+                top: 0,
+                width: "60%",
+                height: "26%",
+                cursor: "pointer",
+                background: "transparent",
+              }}
+            />
+          )}
+        </span>
+        <p className="display text-lg leading-tight mt-5">{candle.name}</p>
+        <p className="text-sm text-[var(--foreground-muted)]">{candle.tagline}</p>
+        <p className="invocation text-[var(--foreground-muted)] mt-3 text-sm">
+          {lit
+            ? "The flame is lit. Speak your prayer below."
+            : "Tap the wick to light the candle."}
+        </p>
         <button
           type="button"
-          onClick={() => setCandle(null)}
-          className="nav-link text-[var(--accent)]"
+          onClick={() => {
+            setCandle(null);
+            setLit(false);
+          }}
+          className="nav-link text-[var(--accent)] mt-3"
         >
-          Change
+          Change candle
         </button>
       </div>
 
+      {/* The dedication and placement open once the candle is lit. */}
+      <div
+        className="space-y-10"
+        style={{
+          opacity: lit ? 1 : 0.4,
+          pointerEvents: lit ? "auto" : "none",
+          transition: "opacity .6s ease",
+        }}
+      >
       <div>
         <label htmlFor="intention" className="form-label">
           Dedication
@@ -171,7 +229,9 @@ export function LightCandleForm({
         label="Light the candle"
         pendingLabel="Lighting…"
         className="btn-primary inline-flex"
+        disabled={!lit}
       />
+      </div>
     </form>
   );
 }

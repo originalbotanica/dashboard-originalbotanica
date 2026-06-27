@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Candle } from "@/components/candle";
 
 /**
  * Memorial form for creating or editing an ancestor.
@@ -34,6 +35,9 @@ export function MemorialForm({
   );
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  // New memorials start dark and are lit by tapping the wick; an existing
+  // memorial being edited is already lit, so we don't gate saving on it.
+  const [lit, setLit] = useState(!!initial?.id);
 
   async function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -64,6 +68,42 @@ export function MemorialForm({
     <form action={action} className="flex flex-col gap-6">
       {initial?.id && <input type="hidden" name="id" value={initial.id} />}
       <input type="hidden" name="photo_url" value={photoUrl || ""} />
+
+      {/* Candle preview — tap the wick to light their flame before placing.
+          (Editing an existing memorial starts already lit.) */}
+      <div className="flex flex-col items-center text-center mb-2">
+        <div
+          className="relative inline-block"
+          style={{
+            filter: lit
+              ? "drop-shadow(0 0 26px rgba(240, 176, 110, 0.5))"
+              : "none",
+            transition: "filter 1s ease",
+          }}
+        >
+          <Candle size="large" lit={lit} photoUrl={photoUrl} alt="Their candle" />
+          {!lit && (
+            <button
+              type="button"
+              onClick={() => setLit(true)}
+              aria-label="Tap the wick to light their flame"
+              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              style={{
+                top: -10,
+                width: 90,
+                height: 84,
+                cursor: "pointer",
+                background: "transparent",
+              }}
+            />
+          )}
+        </div>
+        {!initial?.id && (
+          <p className="invocation text-[var(--foreground-muted)] mt-4 text-sm">
+            {lit ? "Their flame is lit." : "Tap the wick to light their flame."}
+          </p>
+        )}
+      </div>
 
       <div>
         <label htmlFor="name" className="form-label">
@@ -210,7 +250,11 @@ export function MemorialForm({
         </label>
       </div>
 
-      <button type="submit" className="btn-primary mt-2">
+      <button
+        type="submit"
+        disabled={!lit}
+        className={`btn-primary mt-2 ${!lit ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
         {submitLabel}
       </button>
     </form>
