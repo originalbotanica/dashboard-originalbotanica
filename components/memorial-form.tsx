@@ -234,27 +234,34 @@ export function MemorialForm({
       </div>
 
       <div>
-        <label htmlFor="photo" className="form-label">
+        <p className="form-label">
           A photo{" "}
           <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
             (optional, up to 5 MB)
           </span>
-        </label>
-        {/* No `name` on purpose: the file is uploaded via XHR in onPhotoChange
-            and its URL stored in the hidden `photo_url` input. If this input
-            had a name, the raw multi-MB file would also be POSTed with the
-            server action, blowing past Next's 1MB server-action body limit
-            (which broke memorial creation when a photo was attached). */}
-        {/* Styled as a bare button + filename (no boxed form-input, which
-            showed an empty dark box between the button and the file name). */}
+        </p>
+        {/* The native file control is hidden entirely (it renders its own
+            boxed field, which differs per browser and showed an empty dark
+            box on iOS); our own label is the button. No `name` on purpose —
+            the file is uploaded via XHR in onPhotoChange and its URL stored in
+            the hidden `photo_url` input, so the raw file is never POSTed with
+            the server action (which broke creation past Next's 1MB limit). */}
         <input
           id="photo"
           type="file"
           accept="image/png,image/jpeg,image/webp,image/heic"
           onChange={onPhotoChange}
           disabled={uploading}
-          className="block w-full text-sm text-[var(--foreground-muted)] file:mr-3 file:rounded-md file:border file:border-[var(--border-strong)] file:bg-[var(--surface)] file:px-4 file:py-2 file:text-sm file:text-[var(--foreground)] file:cursor-pointer hover:file:border-[var(--accent)]"
+          className="sr-only"
         />
+        <label
+          htmlFor="photo"
+          className={`inline-flex items-center rounded-md border border-[var(--border-strong)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--foreground)] cursor-pointer hover:border-[var(--accent)] transition-colors ${
+            uploading ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
+          {photoUrl ? "Choose a different photo" : "Choose a photo"}
+        </label>
         {uploading && (
           <p className="text-sm text-[var(--foreground-muted)] mt-2">
             Uploading...
