@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { lightCandleAction } from "@/app/altar/virtual/actions";
 import { PendingSubmit } from "@/components/pending-submit";
 import {
@@ -23,6 +23,30 @@ export function LightCandleForm({
   const [desire, setDesire] = useState<Desire | null>(null);
   const [candle, setCandle] = useState<CandleArt | null>(null);
   const [lit, setLit] = useState(false);
+  // "armed" = the member has filled the details and pressed "Light the
+  // candle"; now we send them up to tap the wick. The wick tap lights the
+  // flame and then submits, so the order is: details -> light -> tap wick.
+  const [armed, setArmed] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const candleRef = useRef<HTMLDivElement>(null);
+
+  function armAndScroll() {
+    const f = formRef.current;
+    if (!f) return;
+    // Make them fill the required dedication before lighting.
+    if (!f.checkValidity()) {
+      f.reportValidity();
+      return;
+    }
+    setArmed(true);
+    candleRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function lightAndPlace() {
+    setLit(true);
+    // Let the flame catch for a beat, then place the candle.
+    setTimeout(() => formRef.current?.requestSubmit(), 650);
+  }
 
   // Step 1 — choose a desire
   if (!desire) {
@@ -87,12 +111,16 @@ export function LightCandleForm({
 
   // Step 3 — dedication + petition + duration + public, then light it
   return (
-    <form action={lightCandleAction} className="space-y-10">
+    <form ref={formRef} action={lightCandleAction} className="space-y-10">
       <input type="hidden" name="candle_type" value={desire.slug} />
       <input type="hidden" name="candle_color" value={candle.slug} />
 
-      {/* Candle preview — tap the wick to light it before placing. */}
-      <div className="flex flex-col items-center text-center">
+      {/* Candle preview. Write the dedication below first; "Light the candle"
+          brings you back up here to tap the wick, which lights and places it. */}
+      <div
+        ref={candleRef}
+        className="flex flex-col items-center text-center scroll-mt-24"
+      >
         <span
           className="relative inline-block"
           style={{
@@ -127,12 +155,12 @@ export function LightCandleForm({
               <span className="af-inner" />
             </span>
           )}
-          {!lit && (
+          {armed && !lit && (
             <button
               type="button"
-              onClick={() => setLit(true)}
+              onClick={lightAndPlace}
               aria-label="Tap the wick to light the candle"
-              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              className="absolute left-1/2 -translate-x-1/2 rounded-full flex items-start justify-center"
               style={{
                 top: 0,
                 width: "60%",
@@ -140,21 +168,35 @@ export function LightCandleForm({
                 cursor: "pointer",
                 background: "transparent",
               }}
-            />
+            >
+              <span
+                aria-hidden
+                className="block rounded-full animate-ping"
+                style={{
+                  marginTop: 8,
+                  width: 18,
+                  height: 18,
+                  background: "rgba(240, 176, 110, 0.6)",
+                }}
+              />
+            </button>
           )}
         </span>
         <p className="display text-lg leading-tight mt-5">{candle.name}</p>
         <p className="text-sm text-[var(--foreground-muted)]">{candle.tagline}</p>
         <p className="invocation text-[var(--foreground-muted)] mt-3 text-sm">
           {lit
-            ? "The flame is lit. Speak your prayer below."
-            : "Tap the wick to light the candle."}
+            ? "The flame is lit."
+            : armed
+              ? "Tap the wick to light the candle."
+              : "Write your dedication below, then light the candle."}
         </p>
         <button
           type="button"
           onClick={() => {
             setCandle(null);
             setLit(false);
+            setArmed(false);
           }}
           className="nav-link text-[var(--accent)] mt-3"
         >
@@ -162,15 +204,7 @@ export function LightCandleForm({
         </button>
       </div>
 
-      {/* The dedication and placement open once the candle is lit. */}
-      <div
-        className="space-y-10"
-        style={{
-          opacity: lit ? 1 : 0.4,
-          pointerEvents: lit ? "auto" : "none",
-          transition: "opacity .6s ease",
-        }}
-      >
+      <div className="space-y-10">
       <div>
         <label htmlFor="intention" className="form-label">
           Dedication
@@ -225,12 +259,21 @@ export function LightCandleForm({
         </span>
       </label>
 
-      <PendingSubmit
-        label="Light the candle"
-        pendingLabel="Lighting…"
-        className="btn-primary inline-flex"
-        disabled={!lit}
-      />
+      {lit ? (
+        <PendingSubmit
+          label="Lighting…"
+          pendingLabel="Lighting…"
+          className="btn-primary inline-flex"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={armAndScroll}
+          className="btn-primary inline-flex"
+        >
+          Light the candle
+        </button>
+      )}
       </div>
     </form>
   );

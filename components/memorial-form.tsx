@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Candle } from "@/components/candle";
 
 /**
@@ -38,6 +38,27 @@ export function MemorialForm({
   // New memorials start dark and are lit by tapping the wick; an existing
   // memorial being edited is already lit, so we don't gate saving on it.
   const [lit, setLit] = useState(!!initial?.id);
+  // For new memorials: fill the details, press "Light their flame" (which
+  // sends you up to the candle), then tap the wick to light and place it.
+  const [armed, setArmed] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const candleRef = useRef<HTMLDivElement>(null);
+
+  function armAndScroll() {
+    const f = formRef.current;
+    if (!f) return;
+    if (!f.checkValidity()) {
+      f.reportValidity();
+      return;
+    }
+    setArmed(true);
+    candleRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function lightAndPlace() {
+    setLit(true);
+    setTimeout(() => formRef.current?.requestSubmit(), 650);
+  }
 
   async function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -65,13 +86,17 @@ export function MemorialForm({
   }
 
   return (
-    <form action={action} className="flex flex-col gap-6">
+    <form ref={formRef} action={action} className="flex flex-col gap-6">
       {initial?.id && <input type="hidden" name="id" value={initial.id} />}
       <input type="hidden" name="photo_url" value={photoUrl || ""} />
 
-      {/* Candle preview — tap the wick to light their flame before placing.
-          (Editing an existing memorial starts already lit.) */}
-      <div className="flex flex-col items-center text-center mb-2">
+      {/* Candle preview. For a new memorial, fill the details below first;
+          "Light their flame" brings you up here to tap the wick, which lights
+          and places it. (Editing an existing memorial starts already lit.) */}
+      <div
+        ref={candleRef}
+        className="flex flex-col items-center text-center mb-2 scroll-mt-24"
+      >
         <div
           className="relative inline-block"
           style={{
@@ -82,12 +107,12 @@ export function MemorialForm({
           }}
         >
           <Candle size="large" lit={lit} photoUrl={photoUrl} alt="Their candle" />
-          {!lit && (
+          {armed && !lit && (
             <button
               type="button"
-              onClick={() => setLit(true)}
+              onClick={lightAndPlace}
               aria-label="Tap the wick to light their flame"
-              className="absolute left-1/2 -translate-x-1/2 rounded-full"
+              className="absolute left-1/2 -translate-x-1/2 rounded-full flex items-start justify-center"
               style={{
                 top: -10,
                 width: 90,
@@ -95,12 +120,27 @@ export function MemorialForm({
                 cursor: "pointer",
                 background: "transparent",
               }}
-            />
+            >
+              <span
+                aria-hidden
+                className="block rounded-full animate-ping"
+                style={{
+                  marginTop: 6,
+                  width: 18,
+                  height: 18,
+                  background: "rgba(240, 176, 110, 0.6)",
+                }}
+              />
+            </button>
           )}
         </div>
         {!initial?.id && (
           <p className="invocation text-[var(--foreground-muted)] mt-4 text-sm">
-            {lit ? "Their flame is lit." : "Tap the wick to light their flame."}
+            {lit
+              ? "Their flame is lit."
+              : armed
+                ? "Tap the wick to light their flame."
+                : "Fill in their details below, then light their flame."}
           </p>
         )}
       </div>
@@ -250,13 +290,19 @@ export function MemorialForm({
         </label>
       </div>
 
-      <button
-        type="submit"
-        disabled={!lit}
-        className={`btn-primary mt-2 ${!lit ? "opacity-50 cursor-not-allowed" : ""}`}
-      >
-        {submitLabel}
-      </button>
+      {lit ? (
+        <button type="submit" className="btn-primary mt-2">
+          {submitLabel}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={armAndScroll}
+          className="btn-primary mt-2"
+        >
+          {submitLabel}
+        </button>
+      )}
     </form>
   );
 }
