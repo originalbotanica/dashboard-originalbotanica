@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown";
     console.error("Webhook signature verification failed:", msg);
-    return new NextResponse(`Webhook signature error: ${msg}`, { status: 400 });
+    return new NextResponse("Invalid signature", { status: 400 });
   }
 
   try {
@@ -98,9 +98,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ received: true });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "unknown";
     console.error(`Webhook handler error for ${event.type}:`, err);
-    return new NextResponse(`Webhook handler error: ${msg}`, { status: 500 });
+    return new NextResponse("Webhook handler error", { status: 500 });
   }
 }
 

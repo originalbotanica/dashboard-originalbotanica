@@ -8,18 +8,17 @@ import { deliverDueGifts } from "@/lib/gift-fulfill";
  * arrived (gifts with no date are delivered immediately on payment, in the
  * webhook). Scheduled by vercel.json -> crons.
  *
- * Auth: allowed when called by Vercel Cron (sets the `x-vercel-cron` header)
- * or with `Authorization: Bearer <CRON_SECRET>` for manual runs.
+ * Auth: requires `Authorization: Bearer <CRON_SECRET>`. Vercel Cron sends this
+ * header automatically when the CRON_SECRET env var is set. We do NOT trust the
+ * `x-vercel-cron` header — any client can set it on a request to the public URL.
  */
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
-  const isVercelCron = request.headers.get("x-vercel-cron") !== null;
   const secret = process.env.CRON_SECRET;
   const authed =
-    isVercelCron ||
-    (!!secret && request.headers.get("authorization") === `Bearer ${secret}`);
+    !!secret && request.headers.get("authorization") === `Bearer ${secret}`;
 
   if (!authed) {
     return new NextResponse("Unauthorized", { status: 401 });

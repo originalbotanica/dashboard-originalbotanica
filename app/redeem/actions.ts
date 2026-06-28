@@ -1,9 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { normalizeGiftCode, giftTerm, addMonths } from "@/lib/gift";
+import { rateLimit } from "@/lib/rate-limit";
 
 /**
  * Redeem a gift code for the signed-in member.
@@ -29,6 +31,21 @@ export async function redeemGift(formData: FormData) {
   // Must be signed in to attach the gift to an account.
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(`/redeem?code=${code}`)}`);
+  }
+
+  // Throttle redemption attempts to make code guessing impractical, keyed on
+  // both the account and the source IP (so cycling accounts doesn't help).
+  const hdrs = await headers();
+  const ip =
+    hdrs.get("x-forwarded-for")?.split(",")[0].trim() ||
+    hdrs.get("x-real-ip")?.trim() ||
+    "unknown";
+  const byUser = rateLimit(`redeem:user:${user.id}`, 10, 10 * 60_000);
+  const byIp = rateLimit(`redeem:ip:${ip}`, 20, 10 * 60_000);
+  if (!byUser.ok || !byIp.ok) {
+    redirect(
+      errorUrl("Too many attempts. Please wait a few minutes and try again."),
+    );
   }
 
   const admin = createAdminClient();

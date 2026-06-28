@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { getStripe } from "@/lib/stripe";
 import { giftTerm, generateGiftCode, termLabel } from "@/lib/gift";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 /**
  * Create a one-time Stripe Checkout Session for a gift membership.
@@ -22,6 +23,16 @@ import { giftTerm, generateGiftCode, termLabel } from "@/lib/gift";
  * }
  */
 export async function POST(request: Request) {
+  // Anonymous endpoint that writes a DB row and creates a Stripe session per
+  // call — throttle per IP to blunt spam. Generous enough for real buyers.
+  const limit = rateLimit(`gift-checkout:${clientIp(request)}`, 10, 10 * 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many attempts. Please wait a moment and try again." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } },
+    );
+  }
+
   const body = await request.json().catch(() => ({}));
 
   const term = giftTerm(Number(body.months));

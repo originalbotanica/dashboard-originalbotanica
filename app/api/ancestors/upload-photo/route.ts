@@ -59,7 +59,16 @@ export async function POST(request: Request) {
   }
 
   const admin = createAdminClient();
-  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  // Derive the extension from the validated MIME type, never the user-supplied
+  // filename (which could carry path separators or odd characters).
+  const EXT_BY_TYPE: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/jpg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/heic": "heic",
+  };
+  const ext = EXT_BY_TYPE[file.type] ?? "jpg";
   const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
   const { error: uploadErr } = await admin.storage

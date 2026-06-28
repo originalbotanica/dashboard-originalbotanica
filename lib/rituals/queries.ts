@@ -130,7 +130,13 @@ export async function searchRituals(q: string): Promise<RitualCardData[]> {
 /** Keyword pass: case-insensitive match on title + summary. */
 async function keywordSearchRituals(term: string): Promise<RitualCardData[]> {
   const supabase = await createClient();
-  const pattern = `%${term.replace(/[%_]/g, "")}%`;
+  // Strip characters that carry meaning in PostgREST's filter syntax used by
+  // .or() below: commas and parentheses delimit/group conditions, dots separate
+  // column.operator.value, and %/_ are LIKE wildcards. Removing them keeps a
+  // crafted search term from injecting extra filter conditions.
+  const safe = term.replace(/[%_,.()*\\]/g, " ").replace(/\s+/g, " ").trim();
+  if (!safe) return [];
+  const pattern = `%${safe}%`;
   const { data, error } = await supabase
     .from("rituals")
     .select(LIST_FIELDS)
