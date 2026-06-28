@@ -18,7 +18,7 @@ export function candleImageUrl(slug: string): string {
   // ?v bump busts the CDN/browser cache when the candle art is replaced
   // (the prepared candles were re-cut to tall white-background photos to
   // match the saint candles — bump this if they're regenerated again).
-  return `${CANDLE_ART_BASE}/${slug}.jpg?v=3`;
+  return `${CANDLE_ART_BASE}/${slug}.jpg?v=4`;
 }
 
 export type CandleArt = {
