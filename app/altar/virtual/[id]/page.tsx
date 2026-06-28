@@ -102,7 +102,7 @@ export default async function CandleDetailPage({
             <input type="hidden" name="id" value={candle.id} />
             <button
               type="submit"
-              className="nav-link text-sm text-[var(--foreground-subtle)] hover:text-[var(--foreground-muted)]"
+              className="nav-link text-sm text-[var(--foreground-muted)] underline underline-offset-4 decoration-[var(--border-strong)] hover:text-[var(--ember)] hover:decoration-[var(--ember)] cursor-pointer transition-colors"
             >
               Remove from the altar
             </button>
