@@ -147,7 +147,7 @@ export function LightCandleForm({
             <span
               aria-hidden
               className="altar-flame"
-              style={{ "--fw": "13px", top: 19 } as CSSProperties}
+              style={{ "--fw": "20px", top: 47 } as CSSProperties}
             >
               <span className="af-halo" />
               <span className="af-cast" />

@@ -15,7 +15,10 @@ const CANDLE_ART_BASE =
   "https://beeayiskwueqnugithaw.supabase.co/storage/v1/object/public/candle-art";
 
 export function candleImageUrl(slug: string): string {
-  return `${CANDLE_ART_BASE}/${slug}.jpg`;
+  // ?v bump busts the CDN/browser cache when the candle art is replaced
+  // (the prepared candles were re-cut to tall white-background photos to
+  // match the saint candles — bump this if they're regenerated again).
+  return `${CANDLE_ART_BASE}/${slug}.jpg?v=2`;
 }
 
 export type CandleArt = {

@@ -70,14 +70,11 @@ export function AltarCandle({
   const art = getCandleArt(candleSlug);
   const slug = art ? candleSlug! : "white-candle";
   const name = art ? art.name : "Prayer candle";
-  // Render prepared candles larger (closer to the saint candles' footprint)
-  // and add a burning flame at the wick so a placed candle reads as lit on
-  // the altar. The product photos are full-candle shots with the wick near
-  // the top of the frame, so the flame sits just above the image top.
-  const w = size === "hero" ? 200 : 164;
-  const fw = size === "hero" ? 18 : 13;
-  // The wick sits ~12% down from the top of the (square) candle photo.
-  const ftop = size === "hero" ? 24 : 19;
+  // Prepared candles are now tall white-background cutouts like the saints,
+  // so render them with the same width and flame position for a uniform altar.
+  const w = size === "hero" ? 168 : 104;
+  const fw = size === "hero" ? 20 : 13;
+  const ftop = size === "hero" ? 48 : 30;
 
   return (
     <span
