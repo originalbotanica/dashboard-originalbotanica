@@ -24,11 +24,12 @@ export function AltarCandle({
     const px = size === "hero" ? 208 : 132;
     // Real product photo when we have one; otherwise the themed glass candle.
     if (saint.photo) {
-      // Show the WHOLE candle (the photos are tall, so never crop to a square)
-      // and a full burning flame at the top, so a placed candle reads as lit.
-      const w = size === "hero" ? 168 : 104;
-      const fw = size === "hero" ? 20 : 13;
-      const ftop = size === "hero" ? 48 : 30;
+      // Saint photos carry more white margin around the candle than the
+      // prepared-candle cutouts, so render them wider to match the prepared
+      // candles' visible size on the altar (Jason's preference: the larger).
+      const w = size === "hero" ? 213 : 132;
+      const fw = size === "hero" ? 25 : 16;
+      const ftop = size === "hero" ? 61 : 38;
       return (
         <span
           className="relative inline-block"
