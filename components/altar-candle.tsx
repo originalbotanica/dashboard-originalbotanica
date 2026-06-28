@@ -11,6 +11,10 @@ import { Candle } from "@/components/candle";
  * shelf, regardless of how each source photo was framed. A burning flame sits
  * at the wick. Saints without a photo fall back to the themed glass candle.
  *
+ * NOTE: the images are NOT lazy-loaded. With height set and width:auto, the
+ * box is 0px wide until the image loads, so a lazy loader never sees it
+ * intersect the viewport and never fetches it. Eager loading avoids that.
+ *
  * `candleSlug` is the stored candle id (the candle_color column). Unknown
  * slugs fall back to a plain white candle so legacy rows still render.
  */
@@ -59,7 +63,6 @@ export function AltarCandle({
           <img
             src={saint.photo}
             alt={saint.name}
-            loading="lazy"
             className="rounded-xl block"
             style={{ height: h, width: "auto" }}
           />
@@ -93,7 +96,6 @@ export function AltarCandle({
       <img
         src={candleImageUrl(slug)}
         alt={name}
-        loading="lazy"
         className="rounded-xl block"
         style={{ height: h, width: "auto" }}
       />
