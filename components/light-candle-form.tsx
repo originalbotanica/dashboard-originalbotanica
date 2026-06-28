@@ -93,10 +93,8 @@ export function LightCandleForm({
               <img
                 src={candleImageUrl(c.slug)}
                 alt={c.name}
-                width={120}
-                height={120}
-                className="rounded-lg object-cover mb-3"
-                style={{ width: 120, height: 120 }}
+                className="rounded-lg mb-3"
+                style={{ height: 150, width: "auto" }}
               />
               <span className="display text-sm leading-tight">{c.name}</span>
               <span className="text-xs text-[var(--foreground-subtle)] mt-1 leading-snug">
