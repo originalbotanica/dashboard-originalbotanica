@@ -4,6 +4,8 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { AstrologerChat } from "@/components/astrologer-chat";
 import { BotanicaRecs } from "@/components/botanica-recs";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "A reading",
@@ -67,6 +69,8 @@ export default async function AstrologerThreadPage({
     .limit(1)
     .maybeSingle();
 
+  const locale = await getLocale();
+
   return (
     <main className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--border)]">
@@ -75,7 +79,7 @@ export default async function AstrologerThreadPage({
             href="/astrology/astrologer"
             className="nav-link text-[var(--accent)] shrink-0"
           >
-            ← Your astrologer
+            ← {t(locale, "astrologer.sublabel")}
           </Link>
           <p className="sublabel text-xs truncate" title={thread.title}>
             {thread.title}

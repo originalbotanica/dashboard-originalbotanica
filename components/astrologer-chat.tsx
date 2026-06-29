@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
 import { usePacedReveal } from "@/components/use-paced-reveal";
 import { FloatingProse } from "@/components/floating-prose";
+import { useT } from "@/components/locale-provider";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -13,13 +14,6 @@ type Msg = { role: "user" | "assistant"; content: string };
 // to originalbotanica.com/<slug> even without a per-slug validation.
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
-
-const STARTER_PROMPTS = [
-  "What is my chart trying to teach me right now?",
-  "What does my Saturn placement want from me?",
-  "How is the current sky affecting my love life?",
-  "Give me a ritual for this week.",
-];
 
 export function AstrologerChat({
   firstName,
@@ -34,6 +28,7 @@ export function AstrologerChat({
   recs?: ReactNode;
 }) {
   const router = useRouter();
+  const t = useT();
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -106,7 +101,7 @@ export function AstrologerChat({
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
       if (!reader) {
-        setError("No response stream from server.");
+        setError(t("dr.noStream"));
         setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
@@ -129,7 +124,7 @@ export function AstrologerChat({
         reveal.finish();
       } else {
         reveal.reset();
-        setError(err instanceof Error ? err.message : "Unexpected error");
+        setError(err instanceof Error ? err.message : t("dr.unexpected"));
         setMessages((m) => m.slice(0, -1));
         setStreaming(false);
       }
@@ -164,14 +159,14 @@ export function AstrologerChat({
               messages[messages.length - 1]?.role === "assistant" && (
                 <div className="flex items-center gap-3">
                   <p className="text-xs text-[var(--foreground-subtle)] italic">
-                    Reading the chart…
+                    {t("achat.reading")}
                   </p>
                   <button
                     type="button"
                     onClick={stop}
                     className="text-xs text-[var(--accent)] hover:underline"
                   >
-                    Stop
+                    {t("dr.stop")}
                   </button>
                 </div>
               )}
@@ -203,7 +198,7 @@ export function AstrologerChat({
             }}
             disabled={streaming}
             rows={2}
-            placeholder="Ask your astrologer..."
+            placeholder={t("achat.placeholder")}
             className="form-input resize-none flex-1"
             style={{ minHeight: "60px" }}
           />
@@ -213,11 +208,11 @@ export function AstrologerChat({
             className="btn-primary self-end disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ whiteSpace: "nowrap" }}
           >
-            {streaming ? "..." : "Ask"}
+            {streaming ? "..." : t("achat.ask")}
           </button>
         </div>
         <p className="text-xs text-[var(--foreground-subtle)] mt-2">
-          Press Enter to send. Shift+Enter for a new line.
+          {t("dr.enterHint")}
         </p>
       </form>
     </div>
@@ -231,15 +226,21 @@ function Welcome({
   firstName: string;
   onPick: (q: string) => void;
 }) {
+  const t = useT();
+  const starters = [
+    t("achat.starter1"),
+    t("achat.starter2"),
+    t("achat.starter3"),
+    t("achat.starter4"),
+  ];
   return (
     <div className="py-8">
       <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
-        Welcome, {firstName}. I have your chart in front of me. What&rsquo;s on
-        your mind? Every reading ends with a little of the work to do.
+        {t("achat.welcome", { name: firstName })}
       </p>
-      <p className="sublabel mb-3">Start with</p>
+      <p className="sublabel mb-3">{t("achat.startWith")}</p>
       <div className="grid sm:grid-cols-2 gap-3">
-        {STARTER_PROMPTS.map((q) => (
+        {starters.map((q) => (
           <button
             key={q}
             type="button"

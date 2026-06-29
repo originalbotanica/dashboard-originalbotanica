@@ -4,6 +4,9 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { loadAstrologerContext } from "@/lib/astrologer/context";
 import { ChartWheel } from "@/components/chart-wheel";
+import { getLocale } from "@/lib/i18n/server";
+import { t, type Locale } from "@/lib/i18n/dictionary";
+import { signName, planetName } from "@/lib/astrology/terms";
 
 export const metadata = {
   title: "Your Natal Chart",
@@ -40,6 +43,7 @@ export default async function ChartPage() {
   const context = await loadAstrologerContext(user.id);
   if (!context) redirect("/astrology");
 
+  const locale = await getLocale();
   const { chart, birthDate, birthCity, birthTime, isUnderEighteen } = context;
   // Rising and houses depend on the time of birth. Without it the chart engine
   // falls back to noon, which would make Rising/houses look exact when they are
@@ -57,64 +61,63 @@ export default async function ChartPage() {
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
-            ← Astrology
+            ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">Your chart</p>
+          <p className="sublabel text-xs">{t(locale, "chart.sublabel")}</p>
         </div>
       </header>
 
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-24">
-        <p className="eyebrow mb-4">Your natal chart</p>
+        <p className="eyebrow mb-4">{t(locale, "chart.eyebrow")}</p>
         <h1 className="display text-4xl md:text-5xl mb-3">
           {profile.first_name}
         </h1>
         <p className="text-[var(--foreground-muted)] mb-10">
-          Born {formatDate(birthDate)}
-          {birthTime ? ` at ${birthTime}` : ""} in {birthCity}.
+          {birthTime
+            ? t(locale, "chart.bornAt", { date: formatDate(birthDate, locale), time: birthTime, city: birthCity })
+            : t(locale, "chart.born", { date: formatDate(birthDate, locale), city: birthCity })}
           {!hasTime && (
             <span className="block text-sm mt-1 text-[var(--foreground-subtle)]">
-              Birth time not set, so your Sun and Moon are exact, but your Rising
-              and house placements need your time of birth and aren&apos;t shown.{" "}
+              {t(locale, "chart.noTimePre")}
               <Link
                 href="/profile-setup"
                 className="text-[var(--accent)] hover:underline"
               >
-                Add your birth time
-              </Link>{" "}
-              for the full chart.
+                {t(locale, "chart.addTime")}
+              </Link>
+              {t(locale, "chart.noTimePost")}
             </span>
           )}
           {chart.isMocked && (
             <span className="block text-sm mt-2 text-[var(--ember)]">
-              Astrology API not configured. Showing example data.
+              {t(locale, "chart.mocked")}
             </span>
           )}
         </p>
 
         {isUnderEighteen && (
           <div className="form-error mb-10">
-            We do not provide chart readings for anyone under 18. If this birth
-            date is incorrect, please update it in your profile.
+            {t(locale, "chart.under18")}
           </div>
         )}
 
         {chart.chartImageUrl && <ChartWheel src={chart.chartImageUrl} />}
 
         <section className="mb-12">
-          <p className="eyebrow mb-3">Big three</p>
+          <p className="eyebrow mb-3">{t(locale, "chart.bigThree")}</p>
           <ul className="space-y-3">
             <li className="flex justify-between border-b border-[var(--border)] pb-3">
-              <span className="text-[var(--foreground-muted)]">Sun</span>
-              <span className="display text-xl">{chart.sunSign}</span>
+              <span className="text-[var(--foreground-muted)]">{planetName("Sun", locale)}</span>
+              <span className="display text-xl">{signName(chart.sunSign, locale)}</span>
             </li>
             <li className="flex justify-between border-b border-[var(--border)] pb-3">
-              <span className="text-[var(--foreground-muted)]">Moon</span>
-              <span className="display text-xl">{chart.moonSign}</span>
+              <span className="text-[var(--foreground-muted)]">{planetName("Moon", locale)}</span>
+              <span className="display text-xl">{signName(chart.moonSign, locale)}</span>
             </li>
             <li className="flex justify-between border-b border-[var(--border)] pb-3">
-              <span className="text-[var(--foreground-muted)]">Rising</span>
+              <span className="text-[var(--foreground-muted)]">{planetName("Rising", locale)}</span>
               <span className="display text-xl">
-                {hasTime ? (chart.risingSign ?? "—") : "—"}
+                {hasTime ? signName(chart.risingSign, locale) : "—"}
               </span>
             </li>
           </ul>
@@ -122,14 +125,18 @@ export default async function ChartPage() {
 
         {otherPlacements.length > 0 && (
           <section className="mb-12">
-            <p className="eyebrow mb-3">Other placements</p>
+            <p className="eyebrow mb-3">{t(locale, "chart.otherPlacements")}</p>
             <ul className="space-y-2 text-[var(--foreground-muted)]">
               {otherPlacements.map((p) => (
                 <li key={p.name} className="flex justify-between text-sm">
-                  <span>{p.name}</span>
+                  <span>{planetName(p.name, locale)}</span>
                   <span>
-                    {p.sign}
-                    {hasTime && p.house != null ? ` · ${ordinal(p.house)} house` : ""}
+                    {signName(p.sign, locale)}
+                    {hasTime && p.house != null
+                      ? " · " + (locale === "es"
+                          ? t(locale, "chart.houseES", { n: p.house })
+                          : t(locale, "chart.houseEN", { ord: ordinal(p.house) }))
+                      : ""}
                   </span>
                 </li>
               ))}
@@ -142,10 +149,10 @@ export default async function ChartPage() {
             href="/astrology/astrologer"
             className="btn-primary inline-flex"
           >
-            Talk to Your Astrologer
+            {t(locale, "chart.talkBtn")}
           </Link>
           <Link href="/astrology" className="btn-ghost inline-flex">
-            Back to Astrology
+            {t(locale, "chart.backBtn")}
           </Link>
         </div>
       </section>
@@ -153,10 +160,10 @@ export default async function ChartPage() {
   );
 }
 
-function formatDate(yyyyMmDd: string): string {
+function formatDate(yyyyMmDd: string, locale: Locale): string {
   const [y, m, d] = yyyyMmDd.split("-").map(Number);
   const date = new Date(Date.UTC(y, m - 1, d));
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",

@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { AstrologerChat } from "@/components/astrologer-chat";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "A new reading",
@@ -26,14 +28,16 @@ export default async function NewAstrologerReadingPage() {
   const sub = await getSubscriptionStatus(user.id);
   if (!sub.isActive) redirect("/astrology");
 
+  const locale = await getLocale();
+
   return (
     <main className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/astrology/astrologer" className="nav-link text-[var(--accent)]">
-            ← Your astrologer
+            ← {t(locale, "astrologer.sublabel")}
           </Link>
-          <p className="sublabel text-xs">A new reading</p>
+          <p className="sublabel text-xs">{t(locale, "astrologer.newSublabel")}</p>
         </div>
       </header>
 

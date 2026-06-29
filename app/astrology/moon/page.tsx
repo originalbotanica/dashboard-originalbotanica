@@ -7,6 +7,9 @@ import { getTodaysSky } from "@/lib/astrology/sky";
 import { getRitualsByMoonPhase, getSavedRitualIds } from "@/lib/rituals/queries";
 import { MoonPhase } from "@/components/moon-phase";
 import { RitualCard } from "@/components/ritual-card";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
+import { signName, moonPhaseName } from "@/lib/astrology/terms";
 
 export const metadata = {
   title: "Tonight's moon",
@@ -38,15 +41,16 @@ export default async function MoonGuidePage() {
     getRitualsByMoonPhase(moon.bucket, 3),
     getSavedRitualIds(user.id),
   ]);
+  const locale = await getLocale();
 
   return (
     <main className="min-h-screen">
       <header className="border-b border-[var(--border)]">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
-            ← Astrology
+            ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">Tonight&apos;s moon</p>
+          <p className="sublabel text-xs">{t(locale, "moon.sublabel")}</p>
         </div>
       </header>
 
@@ -58,10 +62,10 @@ export default async function MoonGuidePage() {
             size={150}
           />
           <p className="eyebrow mt-8 mb-2 text-[var(--foreground-muted)]">
-            {moon.illuminationPct}% illuminated {moon.waxing ? "and waxing" : "and waning"}
+            {t(locale, moon.waxing ? "moon.illumWaxing" : "moon.illumWaning", { pct: moon.illuminationPct })}
           </p>
           <h1 className="display text-3xl md:text-5xl leading-tight">
-            {moon.phaseName} in {sky.moonSign}
+            {t(locale, "moon.phaseInSign", { phase: moonPhaseName(moon.phaseName, locale), sign: signName(sky.moonSign, locale) })}
           </h1>
           {sky.aspect && (
             <p className="eyebrow mt-3 text-[var(--foreground-muted)]">
@@ -90,22 +94,22 @@ export default async function MoonGuidePage() {
           {/* Next phases */}
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-2 mt-10 text-[var(--foreground-subtle)]">
             <span className="eyebrow">
-              New moon in {moon.daysToNew} {moon.daysToNew === 1 ? "day" : "days"}
+              {t(locale, moon.daysToNew === 1 ? "moon.newInOne" : "moon.newInMany", { n: moon.daysToNew })}
             </span>
             <span className="eyebrow">
-              Full moon in {moon.daysToFull} {moon.daysToFull === 1 ? "day" : "days"}
+              {t(locale, moon.daysToFull === 1 ? "moon.fullInOne" : "moon.fullInMany", { n: moon.daysToFull })}
             </span>
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 mt-10">
             <Link
-              href={`/altar/virtual/new?intention=${encodeURIComponent(`An intention for the ${moon.phaseName.toLowerCase()}`)}`}
+              href={`/altar/virtual/new?intention=${encodeURIComponent(t(locale, "moon.intentionPrefill", { phase: moonPhaseName(moon.phaseName, locale).toLowerCase() }))}`}
               className="btn-primary inline-flex"
             >
-              Light a candle for this moon
+              {t(locale, "moon.lightCta")}
             </Link>
             <Link href="/calendar" className="btn-ghost inline-flex">
-              The spiritual calendar
+              {t(locale, "moon.calendar")}
             </Link>
           </div>
         </div>
@@ -114,13 +118,13 @@ export default async function MoonGuidePage() {
       {/* Rituals timed to tonight's moon */}
       {rituals.length > 0 ? (
         <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-12">
-          <p className="eyebrow mb-2">Rituals for tonight&apos;s moon</p>
+          <p className="eyebrow mb-2">{t(locale, "moon.ritualsEyebrow")}</p>
           <p className="text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
-            From the library, timed to a {moon.bucket === "full" ? "full" : moon.bucket} moon.
+            {t(locale, "moon.ritualsIntro", { phase: moon.bucket === "full" ? "full" : moon.bucket })}
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rituals.map((r) => (
-              <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} />
+              <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} locale={locale} />
             ))}
           </div>
           <p className="mt-8">
@@ -128,7 +132,7 @@ export default async function MoonGuidePage() {
               href="/rituals"
               className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
             >
-              Browse the full library
+              {t(locale, "moon.browseFull")}
               <span aria-hidden>→</span>
             </Link>
           </p>

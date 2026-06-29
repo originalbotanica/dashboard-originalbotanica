@@ -10,6 +10,9 @@ import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
 import { isValidSign, type Sign } from "@/lib/daily-horoscope/prompt";
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
 import { ZodiacWheel } from "@/components/zodiac-wheel";
+import { getLocale } from "@/lib/i18n/server";
+import { t, type Locale } from "@/lib/i18n/dictionary";
+import { signName } from "@/lib/astrology/terms";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
@@ -51,6 +54,7 @@ export default async function AstrologyHubPage() {
 
   // Today's sky, computed locally. No API, nothing to wait on.
   const sky = getTodaysSky();
+  const locale = await getLocale();
 
   return (
     <main className="min-h-screen relative">
@@ -78,40 +82,42 @@ export default async function AstrologyHubPage() {
       <section className="max-w-5xl mx-auto px-6 pt-24 pb-20">
         <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-14 items-center">
           <div className="max-w-2xl">
-        <p className="eyebrow mb-4">Astrology</p>
+        <p className="eyebrow mb-4">{t(locale, "astro.eyebrow")}</p>
         <h1 className="display text-4xl md:text-5xl mb-6 leading-tight">
-          {profile.first_name}, your chart awaits.
+          {t(locale, "astro.chartAwaits", { name: profile.first_name })}
         </h1>
 
         {/* Today's sky: one quiet line, computed locally. */}
         <p className="eyebrow mb-8 text-[var(--foreground-muted)]">
-          Today&apos;s sky: Moon in {sky.moonSign},{" "}
-          {sky.waxing ? "waxing" : "waning"}. Sun in {sky.sunSign}.
-          {sky.aspect ? ` Moon ${sky.aspect.name} Sun. ${sky.aspect.meaning}` : ""}
+          {t(locale, "astro.skyLine", {
+            moon: signName(sky.moonSign, locale),
+            phase: sky.waxing ? t(locale, "astro.waxing") : t(locale, "astro.waning"),
+            sun: signName(sky.sunSign, locale),
+          })}
+          {sky.aspect ? ` ${sky.aspect.name}. ${sky.aspect.meaning}` : ""}
         </p>
 
         {!hasBirthData ? (
           <>
             <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-10">
-              To read your chart, the astrologer needs your birth date and the
-              city where you were born. Birth time is helpful but not required.
+              {t(locale, "astro.needBirthBody")}
             </p>
             <Link href="/profile-setup" className="btn-primary inline-flex">
-              Add your birth details
+              {t(locale, "astro.addBirth")}
             </Link>
           </>
         ) : (
           <>
             <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-8">
-              Your astrologer is ready. Ask anything that&apos;s been on your
-              mind, and let&apos;s see what the stars have to say.
+              {t(locale, "astro.ready")}
             </p>
 
             {hasChart && (
               <div className="invocation text-base text-[var(--foreground-muted)] mb-12 border-l-2 border-[var(--accent)] pl-4 py-2">
-                Sun in {profile.sun_sign}. Moon in {profile.moon_sign}.
+                {t(locale, "astro.sunIn", { sign: signName(profile.sun_sign, locale) })}{" "}
+                {t(locale, "astro.moonIn", { sign: signName(profile.moon_sign, locale) })}
                 {profile.rising_sign
-                  ? ` Rising in ${profile.rising_sign}.`
+                  ? " " + t(locale, "astro.risingIn", { sign: signName(profile.rising_sign, locale) })
                   : ""}
               </div>
             )}
@@ -121,32 +127,31 @@ export default async function AstrologyHubPage() {
                 href="/astrology/astrologer"
                 className="btn-primary inline-flex"
               >
-                Talk to your astrologer
+                {t(locale, "astro.talk")}
               </Link>
               <Link
                 href="/astrology/forecast"
                 className="btn-ghost inline-flex"
               >
-                Monthly forecast
+                {t(locale, "astro.monthlyForecast")}
               </Link>
               <Link
                 href="/astrology/compatibility"
                 className="btn-ghost inline-flex"
               >
-                Compatibility
+                {t(locale, "astro.compatibility")}
               </Link>
               <Link href="/astrology/chart" className="btn-ghost inline-flex">
-                View your chart
+                {t(locale, "astro.viewChart")}
               </Link>
               <Link href="/astrology/moon" className="btn-ghost inline-flex">
-                Tonight&apos;s moon
+                {t(locale, "astro.tonightsMoon")}
               </Link>
             </div>
 
             {!sub.isActive && (
               <p className="form-error mt-8">
-                Your subscription is not active. The astrologer is locked until
-                you reactivate.
+                {t(locale, "astro.subInactive")}
               </p>
             )}
           </>
@@ -165,25 +170,23 @@ export default async function AstrologyHubPage() {
             one cold generation each morning. */}
         {hasChart && profile.sun_sign && isValidSign(profile.sun_sign) && (
           <section className="mt-20 border-t border-[var(--border)] pt-12">
-            <p className="eyebrow mb-6">Today for {profile.sun_sign}</p>
+            <p className="eyebrow mb-6">{t(locale, "astro.todayFor", { sign: signName(profile.sun_sign, locale) })}</p>
             <Suspense
               fallback={
                 <p className="invocation text-[var(--foreground-muted)] animate-pulse">
-                  Reading today&apos;s sky for {profile.sun_sign}...
+                  {t(locale, "astro.readingSky", { sign: signName(profile.sun_sign, locale) })}
                 </p>
               }
             >
-              <HubHoroscope sign={profile.sun_sign} />
+              <HubHoroscope sign={profile.sun_sign} locale={locale} />
             </Suspense>
           </section>
         )}
 
         <section className="mt-24 border-t border-[var(--border)] pt-12">
-          <p className="eyebrow mb-4">Woven through your readings</p>
+          <p className="eyebrow mb-4">{t(locale, "astro.wovenEyebrow")}</p>
           <p className="text-[var(--foreground-muted)] leading-relaxed max-w-2xl">
-            Every reading draws on the botanica&apos;s archive. Where a ritual
-            or supply fits, it appears with the reading: rituals link into the
-            library, supplies link to the shelves at the botanica.
+            {t(locale, "astro.wovenBody")}
           </p>
         </section>
         </div>
@@ -196,22 +199,21 @@ export default async function AstrologyHubPage() {
  * The member's daily horoscope, rendered on the hub. Streams in behind a
  * Suspense boundary so the hub never waits on generation.
  */
-async function HubHoroscope({ sign }: { sign: Sign }) {
-  const horoscope = await getOrGenerateDailyHoroscope(sign).catch(() => null);
+async function HubHoroscope({ sign, locale }: { sign: Sign; locale: Locale }) {
+  const horoscope = await getOrGenerateDailyHoroscope(sign, locale).catch(() => null);
   if (!horoscope) {
     return (
       <p className="text-[var(--foreground-muted)] leading-relaxed">
-        Today&apos;s reading could not be drawn just now. Refresh in a moment,
-        or ask the astrologer directly.
+        {t(locale, "astro.horoscopeFail")}
       </p>
     );
   }
   return (
     <div className="max-w-2xl">
       <h2 className="display text-2xl md:text-3xl leading-tight mb-4">
-        The focus is{" "}
+        {t(locale, "astro.focusPre")}
         <span className="italic text-[var(--accent)]">
-          {horoscope.content.focus}
+          {t(locale, `focus.${horoscope.content.focus}`)}
         </span>
         .
       </h2>
