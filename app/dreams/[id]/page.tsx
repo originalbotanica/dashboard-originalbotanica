@@ -94,7 +94,7 @@ export default async function DreamThreadPage({
               userId={user.id}
               sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
               productSlugs={(lastReading?.product_slugs as string[]) || []}
-              heading="For this dream"
+              headingKey="recs.forThisDream"
             />
           }
         />

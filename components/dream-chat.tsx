@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { materialUrl } from "@/lib/rituals/material-link";
 import { usePacedReveal } from "@/components/use-paced-reveal";
+import { useT } from "@/components/locale-provider";
 
 // Supplies the reading recommends arrive wrapped in [[ ]]. Turn each into a
 // link to its originalbotanica.com page (matching the rituals library), so
@@ -76,13 +77,6 @@ function renderDreamContent(content: string) {
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const STARTER_PROMPTS = [
-  "I dreamt I was being chased through a house I have never seen before.",
-  "My grandmother visited me in a dream last night.",
-  "I keep dreaming about water. Sometimes calm, sometimes flooding.",
-  "I had a dream where I lost a tooth.",
-];
-
 export function DreamChat({
   firstName,
   threadId,
@@ -96,6 +90,7 @@ export function DreamChat({
   recs?: ReactNode;
 }) {
   const router = useRouter();
+  const t = useT();
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -171,7 +166,7 @@ export function DreamChat({
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
       if (!reader) {
-        setError("No response stream from server.");
+        setError(t("dr.noStream"));
         setMessages((m) => m.slice(0, -1));
         setStreaming(false);
         return;
@@ -192,7 +187,7 @@ export function DreamChat({
         reveal.finish();
       } else {
         reveal.reset();
-        setError(err instanceof Error ? err.message : "Unexpected error");
+        setError(err instanceof Error ? err.message : t("dr.unexpected"));
         setMessages((m) => m.slice(0, -1));
         setStreaming(false);
       }
@@ -222,14 +217,14 @@ export function DreamChat({
               messages[messages.length - 1]?.role === "assistant" && (
                 <div className="flex items-center gap-3 mt-1">
                   <p className="text-sm text-[var(--foreground-subtle)] italic">
-                    Reading the dream…
+                    {t("dr.reading")}
                   </p>
                   <button
                     type="button"
                     onClick={stop}
                     className="text-xs text-[var(--accent)] hover:underline"
                   >
-                    Stop
+                    {t("dr.stop")}
                   </button>
                 </div>
               )}
@@ -261,7 +256,7 @@ export function DreamChat({
             }}
             disabled={streaming}
             rows={3}
-            placeholder={isEmpty ? "Describe the dream..." : "Ask a follow-up..."}
+            placeholder={isEmpty ? t("dr.placeholderNew") : t("dr.placeholderFollow")}
             className="form-input resize-none flex-1"
             style={{ minHeight: "80px" }}
           />
@@ -271,14 +266,14 @@ export function DreamChat({
             className="btn-primary self-end disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ whiteSpace: "nowrap" }}
           >
-            {streaming ? "..." : "Send"}
+            {streaming ? "..." : t("dr.send")}
           </button>
         </div>
         <p className="text-xs text-[var(--foreground-subtle)] mt-2">
-          Press Enter to send. Shift+Enter for a new line.
+          {t("dr.enterHint")}
         </p>
         <p className="text-xs text-[var(--foreground-subtle)] mt-1">
-          Your dreams are private to your account.
+          {t("dr.privateNote")}
         </p>
       </form>
     </div>
@@ -292,17 +287,21 @@ function Welcome({
   firstName: string;
   onPick: (q: string) => void;
 }) {
+  const t = useT();
+  const starters = [
+    t("dr.starter1"),
+    t("dr.starter2"),
+    t("dr.starter3"),
+    t("dr.starter4"),
+  ];
   return (
     <div className="py-8">
       <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
-        Welcome, {firstName}. Tell me the dream. As much as you remember, in
-        any order. The interpretation honors Lucum&iacute;, Espiritismo, folk
-        Catholic, and Western dreamwork traditions. Every reading ends with a
-        small ritual.
+        {t("dr.welcome", { name: firstName })}
       </p>
-      <p className="sublabel mb-3">Or start with</p>
+      <p className="sublabel mb-3">{t("dr.orStart")}</p>
       <div className="grid sm:grid-cols-2 gap-3">
-        {STARTER_PROMPTS.map((q) => (
+        {starters.map((q) => (
           <button
             key={q}
             type="button"

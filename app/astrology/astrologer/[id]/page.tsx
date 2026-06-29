@@ -93,7 +93,7 @@ export default async function AstrologerThreadPage({
               userId={user.id}
               sourceSlugs={(lastReading?.ritual_slugs as string[]) || []}
               productSlugs={(lastReading?.product_slugs as string[]) || []}
-              heading="For this reading"
+              headingKey="recs.forThisReading"
             />
           }
         />

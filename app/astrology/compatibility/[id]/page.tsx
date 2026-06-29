@@ -134,7 +134,7 @@ export default async function CompatibilityReadingPage({
           sourceSlugs={(
             (reading.retrieved_sources as Array<{ slug: string }>) || []
           ).map((s) => s.slug)}
-          heading="For the two of you"
+          headingKey="recs.forTwoOfYou"
         />
 
         {/* Footer actions */}

@@ -176,7 +176,7 @@ export default async function ForecastPage() {
               userId={user.id}
               productSlugs={forecast.retrieved_product_slugs || []}
               sourceSlugs={(forecast.retrieved_sources || []).map((s) => s.slug)}
-              heading="For this month's work"
+              headingKey="recs.forThisMonth"
             />
           </>
         )}

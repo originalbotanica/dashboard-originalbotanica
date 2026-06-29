@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { DreamChat } from "@/components/dream-chat";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Interpret a dream",
@@ -25,14 +27,16 @@ export default async function NewDreamPage() {
   const sub = await getSubscriptionStatus(user.id);
   if (!sub.isActive) redirect("/dreams");
 
+  const locale = await getLocale();
+
   return (
     <main className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/dreams" className="nav-link text-[var(--accent)]">
-            ← Dream journal
+            ← {t(locale, "dr.journalEyebrow")}
           </Link>
-          <p className="sublabel text-xs">A new dream</p>
+          <p className="sublabel text-xs">{t(locale, "dr.newSublabel")}</p>
         </div>
       </header>
 

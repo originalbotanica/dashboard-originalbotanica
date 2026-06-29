@@ -4,6 +4,8 @@ import {
   getSavedRitualIds,
 } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 /**
  * "From the botanica" — inline ritual and product recommendations under a
@@ -19,33 +21,34 @@ export async function BotanicaRecs({
   userId,
   productSlugs = [],
   sourceSlugs = [],
-  heading = "From the botanica",
+  headingKey = "recs.fromBotanica",
 }: {
   userId?: string;
   productSlugs?: string[];
   sourceSlugs?: string[];
-  heading?: string;
+  /** Dictionary key for the section heading. */
+  headingKey?: string;
 }) {
-  const [rituals, products, savedIds] = await Promise.all([
+  const [rituals, products, savedIds, locale] = await Promise.all([
     getLibraryRitualsBySlugs(sourceSlugs),
     getProductCards(productSlugs.slice(0, 4)),
     userId ? getSavedRitualIds(userId) : Promise.resolve(new Set<string>()),
+    getLocale(),
   ]);
 
   if (rituals.length === 0 && products.length === 0) return null;
 
   return (
     <section className="mt-16 border-t border-[var(--border)] pt-10">
-      <p className="eyebrow mb-2">{heading}</p>
+      <p className="eyebrow mb-2">{t(locale, headingKey)}</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
-        Rituals and supplies that fit this reading, drawn from the
-        botanica&apos;s archive and shelves.
+        {t(locale, "recs.body")}
       </p>
 
       {rituals.length > 0 ? (
         <div className="grid sm:grid-cols-2 gap-6 mb-10">
           {rituals.slice(0, 2).map((r) => (
-            <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} />
+            <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} locale={locale} />
           ))}
         </div>
       ) : null}
@@ -74,7 +77,7 @@ export async function BotanicaRecs({
                 <p className="text-sm leading-snug text-[var(--foreground)]">
                   {p.name}
                 </p>
-                <p className="eyebrow text-[var(--accent)] mt-2">Shop</p>
+                <p className="eyebrow text-[var(--accent)] mt-2">{t(locale, "recs.shop")}</p>
               </div>
             </a>
           ))}
