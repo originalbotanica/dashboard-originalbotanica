@@ -2,9 +2,11 @@ import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getPurpose } from "@/lib/rituals/purposes";
+import { getPurpose, purposeLabel, purposeBlurb } from "@/lib/rituals/purposes";
 import { listRitualsByPurpose, getSavedRitualIds } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export async function generateMetadata({
   params,
@@ -45,37 +47,38 @@ export default async function PurposePage({
     listRitualsByPurpose(p.slug),
     getSavedRitualIds(user.id),
   ]);
+  const locale = await getLocale();
 
   return (
     <main className="min-h-screen">
       <header className="border-b border-[var(--border)]">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/rituals" className="nav-link text-[var(--accent)]">
-            ← Library
+            ← {t(locale, "rit.library")}
           </Link>
-          <p className="sublabel text-xs">{p.label}</p>
+          <p className="sublabel text-xs">{purposeLabel(p, locale)}</p>
         </div>
       </header>
 
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-10">
-        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">Purpose</p>
+        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">{t(locale, "rit.purposeEyebrow")}</p>
         <h1 className="display text-3xl md:text-5xl leading-tight mb-4">
-          {p.label}
+          {purposeLabel(p, locale)}
         </h1>
         <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl">
-          {p.blurb}
+          {purposeBlurb(p, locale)}
         </p>
       </section>
 
       <section className="max-w-5xl mx-auto px-6 pb-24">
         {rituals.length === 0 ? (
           <p className="text-[var(--foreground-muted)] leading-relaxed">
-            No rituals on this shelf yet.
+            {t(locale, "rit.purposeEmpty")}
           </p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rituals.map((r) => (
-              <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} />
+              <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} locale={locale} />
             ))}
           </div>
         )}

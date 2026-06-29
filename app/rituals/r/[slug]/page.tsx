@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getPurpose } from "@/lib/rituals/purposes";
+import { getPurpose, purposeLabel } from "@/lib/rituals/purposes";
 import {
   getRitualBySlug,
   dayLabel,
@@ -12,6 +12,8 @@ import {
 import { materialUrl } from "@/lib/rituals/material-link";
 import { SaveRitualButton } from "@/components/save-ritual-button";
 import { RitualCard } from "@/components/ritual-card";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export async function generateMetadata({
   params,
@@ -50,8 +52,9 @@ export default async function RitualDetailPage({
 
   const savedIds = await getSavedRitualIds(user.id);
   const saved = savedIds.has(r.id);
+  const locale = await getLocale();
   const purpose = r.purpose ? getPurpose(r.purpose) : undefined;
-  const day = dayLabel(r.best_day_of_week);
+  const day = dayLabel(r.best_day_of_week, locale);
   const backHref = purpose ? `/rituals/${purpose.slug}` : "/rituals";
   const related = r.purpose
     ? (await listRitualsByPurpose(r.purpose))
@@ -64,14 +67,14 @@ export default async function RitualDetailPage({
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href={backHref} className="nav-link text-[var(--accent)]">
-            ← {purpose ? purpose.label : "Library"}
+            ← {purpose ? purposeLabel(purpose, locale) : t(locale, "rit.library")}
           </Link>
-          <p className="sublabel text-xs">Ritual</p>
+          <p className="sublabel text-xs">{t(locale, "rit.ritualTag")}</p>
         </div>
       </header>
 
       <article className="max-w-3xl mx-auto px-6 pt-16 pb-24">
-        {purpose ? <p className="eyebrow mb-3">{purpose.label}</p> : null}
+        {purpose ? <p className="eyebrow mb-3">{purposeLabel(purpose, locale)}</p> : null}
         <h1 className="display text-3xl md:text-5xl leading-tight mb-5">
           {r.title_en}
         </h1>
@@ -80,8 +83,8 @@ export default async function RitualDetailPage({
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 text-[var(--foreground-subtle)]">
           {r.tradition ? <span className="eyebrow">{prettyTradition(r.tradition)}</span> : null}
           {r.difficulty ? <span className="eyebrow">{r.difficulty}</span> : null}
-          {day ? <span className="eyebrow">Best on {day}</span> : null}
-          {r.best_moon_phase ? <span className="eyebrow">{r.best_moon_phase} moon</span> : null}
+          {day ? <span className="eyebrow">{t(locale, "rit.bestOn", { day })}</span> : null}
+          {r.best_moon_phase ? <span className="eyebrow">{r.best_moon_phase} {t(locale, "rit.moonWord")}</span> : null}
         </div>
 
         <div className="mb-10">
@@ -109,7 +112,7 @@ export default async function RitualDetailPage({
         {/* Materials */}
         {r.materials.length > 0 ? (
           <section className="mb-10">
-            <p className="eyebrow mb-4">What you need</p>
+            <p className="eyebrow mb-4">{t(locale, "rit.whatYouNeed")}</p>
             <ul className="space-y-2">
               {r.materials.map((m, i) => (
                 <li key={i} className="text-[var(--foreground-muted)] leading-relaxed">
@@ -130,7 +133,7 @@ export default async function RitualDetailPage({
         {/* Steps */}
         {r.steps.length > 0 ? (
           <section className="mb-10">
-            <p className="eyebrow mb-4">The ritual</p>
+            <p className="eyebrow mb-4">{t(locale, "rit.theRitual")}</p>
             <ol className="space-y-5">
               {r.steps.map((s, i) => (
                 <li key={i} className="flex gap-4">
@@ -156,17 +159,14 @@ export default async function RitualDetailPage({
         {/* Source */}
         {r.source_url ? (
           <p className="text-[var(--foreground-subtle)] text-sm">
-            From the Original Botanica{" "}
-            {r.source_type === "youtube" ? "channel" : "blog"}.{" "}
+            {t(locale, r.source_type === "youtube" ? "rit.sourceChannel" : "rit.sourceBlog")}
             <a
               href={r.source_url}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--accent)] hover:underline"
             >
-              {r.source_type === "youtube"
-                ? "Watch the original video"
-                : "Read the full original"}
+              {t(locale, r.source_type === "youtube" ? "rit.watchVideo" : "rit.readOriginal")}
             </a>
             .
           </p>
@@ -175,15 +175,15 @@ export default async function RitualDetailPage({
 
       {related.length > 0 ? (
         <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-12">
-          <p className="eyebrow mb-2">More like this</p>
+          <p className="eyebrow mb-2">{t(locale, "rit.moreLikeThis")}</p>
           <p className="text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
             {purpose
-              ? `More rituals for ${purpose.label.toLowerCase()}.`
-              : "More from the library."}
+              ? t(locale, "rit.moreForPurpose", { purpose: purposeLabel(purpose, locale).toLowerCase() })
+              : t(locale, "rit.moreFromLibrary")}
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {related.map((x) => (
-              <RitualCard key={x.slug} ritual={x} saved={savedIds.has(x.id)} />
+              <RitualCard key={x.slug} ritual={x} saved={savedIds.has(x.id)} locale={locale} />
             ))}
           </div>
         </section>

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { getPurpose } from "@/lib/rituals/purposes";
+import { getPurpose, purposeLabel } from "@/lib/rituals/purposes";
 import type { RitualCardData } from "@/lib/rituals/queries";
 import { SaveRitualButton } from "@/components/save-ritual-button";
+import { t, type Locale } from "@/lib/i18n/dictionary";
 
 /**
  * A ritual card for purpose shelves and search results. Links to the ritual
@@ -13,9 +14,11 @@ import { SaveRitualButton } from "@/components/save-ritual-button";
 export function RitualCard({
   ritual,
   saved = false,
+  locale = "en",
 }: {
   ritual: RitualCardData;
   saved?: boolean;
+  locale?: Locale;
 }) {
   const purpose = ritual.purpose ? getPurpose(ritual.purpose) : undefined;
   const tradition = ritual.tradition ? prettyTradition(ritual.tradition) : null;
@@ -40,7 +43,7 @@ export function RitualCard({
         </div>
       ) : null}
       <div className="p-5 flex flex-col flex-1">
-        {purpose ? <p className="eyebrow mb-2">{purpose.label}</p> : null}
+        {purpose ? <p className="eyebrow mb-2">{purposeLabel(purpose, locale)}</p> : null}
         <h3 className="display text-lg leading-tight mb-2">{ritual.title_en}</h3>
         {ritual.summary ? (
           <p className="text-[var(--foreground-muted)] text-sm leading-relaxed line-clamp-3">
@@ -49,7 +52,7 @@ export function RitualCard({
         ) : null}
         <div className="mt-auto pt-4 flex items-center gap-3 text-[var(--foreground-subtle)]">
           {ritual.source_type === "youtube" ? (
-            <span className="eyebrow text-[var(--accent)]">▶ Video</span>
+            <span className="eyebrow text-[var(--accent)]">▶ {t(locale, "rit.video")}</span>
           ) : null}
           {tradition ? <span className="eyebrow">{tradition}</span> : null}
           {ritual.difficulty ? (

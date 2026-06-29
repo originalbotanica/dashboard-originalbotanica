@@ -9,6 +9,8 @@ import { createClient } from "@/utils/supabase/server";
  * policy). The pipeline writes with the service role, which bypasses RLS.
  */
 
+import { t } from "@/lib/i18n/dictionary";
+
 export type RitualMaterial = {
   name: string;
   url?: string | null;
@@ -255,7 +257,11 @@ export async function listSavedRituals(userId: string): Promise<RitualCardData[]
 }
 
 /** Day-of-week label, 0=Sunday. */
-export function dayLabel(n: number | null): string | null {
+const DAY_KEYS = [
+  "day.sunday", "day.monday", "day.tuesday", "day.wednesday",
+  "day.thursday", "day.friday", "day.saturday",
+];
+export function dayLabel(n: number | null, locale: "en" | "es" = "en"): string | null {
   if (n === null || n < 0 || n > 6) return null;
-  return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][n];
+  return t(locale, DAY_KEYS[n]);
 }

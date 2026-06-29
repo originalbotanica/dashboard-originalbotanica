@@ -3,7 +3,9 @@ import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { PURPOSES, OB_CDN } from "@/lib/rituals/purposes";
+import { PURPOSES, OB_CDN, purposeLabel, purposeBlurb } from "@/lib/rituals/purposes";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 import {
   getPurposeCounts,
   searchRituals,
@@ -40,6 +42,7 @@ export default async function RitualsLibraryPage({
   const sub = await getSubscriptionStatus(user.id);
   if (!sub.isActive) redirect("/tools/rituals");
 
+  const locale = await getLocale();
   const query = (q || "").trim();
   const [counts, results, savedIds, covers] = await Promise.all([
     getPurposeCounts(),
@@ -56,17 +59,15 @@ export default async function RitualsLibraryPage({
       <MemberNav />
 
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-10">
-        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">The archive</p>
+        <p className="eyebrow mb-3 text-[var(--foreground-muted)]">{t(locale, "rit.archiveEyebrow")}</p>
         <h1 className="display text-3xl md:text-5xl leading-tight mb-5">
-          Sixty-six years of practice, organized by purpose.
+          {t(locale, "rit.homeTitle")}
         </h1>
         <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-4">
-          Real rituals from the botanica&apos;s archive. Search by what you
-          need, or browse the shelves below.
+          {t(locale, "rit.homeIntro")}
         </p>
         <p className="text-[var(--foreground-subtle)] text-sm leading-relaxed max-w-2xl mb-8">
-          New rituals are added regularly — the archive keeps growing, so check
-          back often.
+          {t(locale, "rit.homeGrowing")}
         </p>
 
         <form action="/rituals" method="get" className="max-w-xl">
@@ -74,9 +75,9 @@ export default async function RitualsLibraryPage({
             type="search"
             name="q"
             defaultValue={query}
-            placeholder="Search by need: money, protection, a lover who left..."
+            placeholder={t(locale, "rit.searchPlaceholder")}
             className="form-input"
-            aria-label="Search rituals"
+            aria-label={t(locale, "rit.searchAria")}
           />
         </form>
 
@@ -85,7 +86,7 @@ export default async function RitualsLibraryPage({
             href="/rituals/saved"
             className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
           >
-            Your saved rituals
+            {t(locale, "rit.savedLink")}
             <span aria-hidden>→</span>
           </Link>
         </p>
@@ -94,22 +95,21 @@ export default async function RitualsLibraryPage({
       {query ? (
         <section className="max-w-5xl mx-auto px-6 pb-24">
           <p className="eyebrow mb-6">
-            {`${results.length} ${results.length === 1 ? "ritual" : "rituals"} for `}
+            {t(locale, results.length === 1 ? "rit.resultOne" : "rit.resultMany", { n: results.length })}{" "}
             &ldquo;{query}&rdquo;
           </p>
           {results.length === 0 ? (
             <p className="text-[var(--foreground-muted)] leading-relaxed">
-              Nothing matched yet. Try a simpler word, or browse the shelves on
-              the{" "}
+              {t(locale, "rit.noMatchPre")}
               <Link href="/rituals" className="text-[var(--accent)]">
-                library home
+                {t(locale, "rit.libraryHome")}
               </Link>
               .
             </p>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {results.map((r) => (
-                <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} />
+                <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} locale={locale} />
               ))}
             </div>
           )}
@@ -118,7 +118,7 @@ export default async function RitualsLibraryPage({
         <section className="max-w-5xl mx-auto px-6 pb-24">
           {shelves.length === 0 ? (
             <div className="border-l-2 border-[var(--accent)] pl-4 py-2 invocation text-[var(--foreground-muted)] max-w-lg">
-              The library is being indexed from the archive. Check back shortly.
+              {t(locale, "rit.indexing")}
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -145,13 +145,13 @@ export default async function RitualsLibraryPage({
                   </div>
                   <div className="p-5">
                     <div className="flex items-baseline justify-between gap-3">
-                      <h2 className="display text-xl leading-tight">{p.label}</h2>
+                      <h2 className="display text-xl leading-tight">{purposeLabel(p, locale)}</h2>
                       <span className="eyebrow text-[var(--foreground-subtle)] shrink-0">
                         {counts[p.slug]}
                       </span>
                     </div>
                     <p className="text-[var(--foreground-muted)] text-sm leading-relaxed mt-2">
-                      {p.blurb}
+                      {purposeBlurb(p, locale)}
                     </p>
                   </div>
                 </Link>

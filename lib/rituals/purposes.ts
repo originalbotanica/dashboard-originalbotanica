@@ -175,3 +175,31 @@ export const PURPOSE_SLUGS: string[] = PURPOSES.map((p) => p.slug);
 
 /** OB CloudFront base; prepend to a Purpose.image to get a full URL. */
 export const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
+
+/** Spanish shelf labels and blurbs, keyed by slug. */
+const PURPOSE_ES: Record<string, { label: string; blurb: string }> = {
+  "money-drawing": { label: "Atraer Dinero", blurb: "Atrae dinero, prosperidad e ingresos estables hacia ti." },
+  "gambling-luck": { label: "Juego y Suerte", blurb: "La suerte de tu lado, para juegos, números y la mano ganadora." },
+  "manifestation": { label: "Manifestación e Intención", blurb: "Fija intenciones y llama tus deseos a la existencia." },
+  "road-opening": { label: "Abre Caminos", blurb: "Despeja los bloqueos y abre el camino hacia adelante." },
+  "love-drawing": { label: "Amor y Atracción", blurb: "Atrae el amor, profundiza la atracción, endulza una conexión." },
+  "reconciliation": { label: "Reconciliación", blurb: "Repara lo que se rompió y llama de vuelta a un ser querido." },
+  "protection": { label: "Protección", blurb: "Protégete a ti, a tu hogar y a quienes amas." },
+  "uncrossing": { label: "Descruce y Reversión", blurb: "Levanta una condición cruzada y devuélvela de donde vino." },
+  "cleansing": { label: "Limpieza Espiritual", blurb: "Despeja la energía pesada de tu cuerpo, tu espíritu y tu espacio." },
+  "banishing": { label: "Destierro y Corte", blurb: "Corta lazos, destierra lo que te daña y despeja el aire para siempre." },
+  "court-case": { label: "Casos de Corte y Justicia", blurb: "Para la justicia en la corte y para ganar tu caso." },
+  "healing": { label: "Sanación y Bienestar", blurb: "Apoya la sanación del cuerpo, la mente y el espíritu." },
+  "blessing-peace": { label: "Bendición y Paz", blurb: "Bendice un hogar, encuentra la paz e invita al buen espíritu." },
+  "ancestor-work": { label: "Ancestros y Espíritus", blurb: "Honra a los muertos, trabaja con tus guías, atiende a los espíritus." },
+};
+
+/** Locale-aware shelf label. Falls back to the English label. */
+export function purposeLabel(p: Purpose, locale: "en" | "es"): string {
+  return locale === "es" ? PURPOSE_ES[p.slug]?.label ?? p.label : p.label;
+}
+
+/** Locale-aware shelf blurb. Falls back to the English blurb. */
+export function purposeBlurb(p: Purpose, locale: "en" | "es"): string {
+  return locale === "es" ? PURPOSE_ES[p.slug]?.blurb ?? p.blurb : p.blurb;
+}

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { setRitualFavorite } from "@/app/rituals/actions";
+import { useT } from "@/components/locale-provider";
 
 /**
  * Bookmark / save toggle for a ritual.
@@ -23,6 +24,7 @@ export function SaveRitualButton({
 }) {
   const [saved, setSaved] = useState(initialSaved);
   const [pending, startTransition] = useTransition();
+  const t = useT();
 
   function toggle(e: React.MouseEvent) {
     e.preventDefault();
@@ -41,8 +43,8 @@ export function SaveRitualButton({
         type="button"
         onClick={toggle}
         aria-pressed={saved}
-        aria-label={saved ? "Remove from saved" : "Save ritual"}
-        title={saved ? "Saved" : "Save"}
+        aria-label={saved ? t("rit.removeSaved") : t("rit.save")}
+        title={saved ? t("rit.saved") : t("rit.saveShort")}
         className={`grid place-items-center w-9 h-9 rounded-full border backdrop-blur transition-colors ${
           saved
             ? "border-[var(--accent)] text-[var(--accent)]"
