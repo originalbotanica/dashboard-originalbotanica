@@ -6,6 +6,8 @@ import { deleteCompatibilityAction } from "../actions";
 import type { CompatibilityContent } from "@/lib/compatibility/prompt";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
 import { BotanicaRecs } from "@/components/botanica-recs";
+import { getLocale } from "@/lib/i18n/server";
+import { t, type Locale } from "@/lib/i18n/dictionary";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
@@ -49,6 +51,7 @@ export default async function CompatibilityReadingPage({
   if (!reading) notFound();
 
   const content = reading.content as CompatibilityContent;
+  const locale = await getLocale();
 
   return (
     <main className="min-h-screen">
@@ -58,21 +61,23 @@ export default async function CompatibilityReadingPage({
             href="/astrology/compatibility"
             className="nav-link text-[var(--accent)]"
           >
-            ← Compatibility
+            ← {t(locale, "cmp.sublabel")}
           </Link>
-          <p className="sublabel text-xs">You and {reading.other_name}</p>
+          <p className="sublabel text-xs">{t(locale, "cmp.youAnd", { name: reading.other_name })}</p>
         </div>
       </header>
 
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-24">
-        <p className="eyebrow mb-4">Synastry reading</p>
+        <p className="eyebrow mb-4">{t(locale, "cmp.synastry")}</p>
         <h1 className="display text-3xl md:text-4xl mb-3 leading-tight">
-          {profile.first_name} and {reading.other_name}.
+          {t(locale, "cmp.pairTitle", { name1: profile.first_name, name2: reading.other_name })}
         </h1>
         <p className="text-sm text-[var(--foreground-subtle)] mb-12">
-          {reading.other_name} born{" "}
-          {formatDate(reading.other_birth_date as string)} in{" "}
-          {reading.other_birth_city}.
+          {t(locale, "cmp.bornLine", {
+            name: reading.other_name,
+            date: formatDate(reading.other_birth_date as string, locale),
+            city: reading.other_birth_city,
+          })}
         </p>
 
         {/* Opening */}
@@ -109,7 +114,7 @@ export default async function CompatibilityReadingPage({
         {/* Shared ritual */}
         {content.shared_ritual && (
           <section className="border-t border-[var(--border)] pt-10">
-            <p className="eyebrow mb-4">A shared ritual</p>
+            <p className="eyebrow mb-4">{t(locale, "cmp.sharedRitual")}</p>
             <h2 className="display text-2xl md:text-3xl mb-2 leading-tight">
               {content.shared_ritual.title}
             </h2>
@@ -143,10 +148,10 @@ export default async function CompatibilityReadingPage({
             href="/astrology/compatibility"
             className="btn-ghost inline-flex"
           >
-            All readings
+            {t(locale, "cmp.allReadings")}
           </Link>
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
-            Astrology hub
+            {t(locale, "cmp.hub")}
           </Link>
           <form action={deleteCompatibilityAction} className="ml-auto">
             <input type="hidden" name="id" value={reading.id} />
@@ -154,7 +159,7 @@ export default async function CompatibilityReadingPage({
               type="submit"
               className="nav-link text-[var(--ember)] hover:underline"
             >
-              Delete this reading
+              {t(locale, "cmp.delete")}
             </button>
           </form>
         </div>
@@ -163,10 +168,10 @@ export default async function CompatibilityReadingPage({
   );
 }
 
-function formatDate(yyyyMmDd: string): string {
+function formatDate(yyyyMmDd: string, locale: Locale): string {
   const [y, m, d] = yyyyMmDd.split("-").map(Number);
   const date = new Date(Date.UTC(y, m - 1, d));
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",

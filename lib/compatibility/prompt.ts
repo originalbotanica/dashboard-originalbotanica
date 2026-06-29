@@ -34,9 +34,14 @@ export function buildCompatibilityPrompt(args: {
   };
   relationshipNote?: string | null;
   retrievedRituals?: string; // Optional RAG context from OB blog corpus
+  locale?: "en" | "es";
 }): { system: string; user: string } {
   const a = args.subscriberFirstName;
   const b = args.otherName;
+  const langRule =
+    args.locale === "es"
+      ? `\n\nLANGUAGE\n- Write every text field in the JSON entirely in natural, warm Latin American Spanish (opening, each dynamics entry's body, and the shared_ritual fields). Keep names as given.`
+      : "";
 
   const placementsToLines = (placements: Placement[]) =>
     placements
@@ -48,7 +53,7 @@ export function buildCompatibilityPrompt(args: {
       )
       .join("\n");
 
-  const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.
+  const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.${langRule}
 
 This is a synastry reading. Two charts, read in relation to each other. You are reading ${a}'s chart against ${b}'s chart. The reading is for ${a}.
 

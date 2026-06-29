@@ -5,6 +5,8 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { createCompatibilityAction } from "./actions";
 import { PendingSubmit } from "@/components/pending-submit";
+import { getLocale } from "@/lib/i18n/server";
+import { t, type Locale } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Compatibility",
@@ -51,6 +53,8 @@ export default async function CompatibilityHubPage({
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
+  const locale = await getLocale();
+
   return (
     <main className="min-h-screen relative">
       <div className="absolute inset-0 -z-10">
@@ -74,21 +78,19 @@ export default async function CompatibilityHubPage({
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
-            ← Astrology
+            ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">Compatibility</p>
+          <p className="sublabel text-xs">{t(locale, "cmp.sublabel")}</p>
         </div>
       </header>
 
       <section className="max-w-3xl mx-auto px-6 pt-20 pb-20">
-        <p className="eyebrow mb-4">Compatibility</p>
+        <p className="eyebrow mb-4">{t(locale, "cmp.sublabel")}</p>
         <h1 className="display text-4xl md:text-5xl mb-4 leading-tight">
-          Two charts, read together.
+          {t(locale, "cmp.title")}
         </h1>
         <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl mb-10">
-          A synastry reading. Where the energies harmonize, where they grind,
-          what the work between you asks. The chart describes the terrain,
-          not the outcome.
+          {t(locale, "cmp.intro")}
         </p>
 
         {params.error && (
@@ -100,10 +102,10 @@ export default async function CompatibilityHubPage({
           action={createCompatibilityAction}
           className="flex flex-col gap-5 border border-[var(--border)] rounded-xl p-6 bg-[var(--surface)] mb-16"
         >
-          <p className="eyebrow">New reading</p>
+          <p className="eyebrow">{t(locale, "cmp.newReading")}</p>
           <div>
             <label htmlFor="other_name" className="form-label">
-              Their name
+              {t(locale, "cmp.theirName")}
             </label>
             <input
               id="other_name"
@@ -111,13 +113,13 @@ export default async function CompatibilityHubPage({
               type="text"
               required
               className="form-input"
-              placeholder="e.g. Maria"
+              placeholder={t(locale, "cmp.theirNamePh")}
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label htmlFor="other_birth_date" className="form-label">
-                Their birth date
+                {t(locale, "cmp.theirBirthDate")}
               </label>
               <input
                 id="other_birth_date"
@@ -129,9 +131,9 @@ export default async function CompatibilityHubPage({
             </div>
             <div>
               <label htmlFor="other_birth_time" className="form-label">
-                Their birth time{" "}
+                {t(locale, "cmp.theirBirthTime")}{" "}
                 <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
-                  (if known)
+                  {t(locale, "cmp.ifKnown")}
                 </span>
               </label>
               <input
@@ -144,7 +146,7 @@ export default async function CompatibilityHubPage({
           </div>
           <div>
             <label htmlFor="other_birth_city" className="form-label">
-              Their birth city
+              {t(locale, "cmp.theirBirthCity")}
             </label>
             <input
               id="other_birth_city"
@@ -152,14 +154,14 @@ export default async function CompatibilityHubPage({
               type="text"
               required
               className="form-input"
-              placeholder="e.g. Havana, Cuba"
+              placeholder={t(locale, "cmp.cityPh")}
             />
           </div>
           <div>
             <label htmlFor="relationship_note" className="form-label">
-              What you want the reading to address{" "}
+              {t(locale, "cmp.address")}{" "}
               <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
-                (optional)
+                {t(locale, "cmp.optional")}
               </span>
             </label>
             <textarea
@@ -167,23 +169,23 @@ export default async function CompatibilityHubPage({
               name="relationship_note"
               rows={3}
               className="form-input"
-              placeholder="e.g. We've been dating six months. The chemistry is real but we communicate badly."
+              placeholder={t(locale, "cmp.addressPh")}
             />
           </div>
           <PendingSubmit
-            label="Read the dynamic"
-            pendingLabel="Reading the charts..."
+            label={t(locale, "cmp.submit")}
+            pendingLabel={t(locale, "cmp.submitting")}
             className="btn-primary mt-2"
           />
           <p className="text-xs text-[var(--foreground-subtle)]">
-            Takes about 15 seconds while the charts are read.
+            {t(locale, "cmp.submitNote")}
           </p>
         </form>
 
         {/* Past readings */}
         {readings && readings.length > 0 && (
           <section>
-            <p className="eyebrow mb-6">Past readings</p>
+            <p className="eyebrow mb-6">{t(locale, "cmp.past")}</p>
             <ul className="space-y-3">
               {readings.map((r) => (
                 <li key={r.id}>
@@ -192,10 +194,10 @@ export default async function CompatibilityHubPage({
                     className="block border border-[var(--border)] rounded-lg px-5 py-4 hover:border-[var(--accent)] hover:bg-[var(--surface)] transition-colors"
                   >
                     <p className="display text-lg mb-1">
-                      You and {r.other_name}
+                      {t(locale, "cmp.youAnd", { name: r.other_name })}
                     </p>
                     <p className="text-xs text-[var(--foreground-subtle)]">
-                      {formatRelative(r.created_at)}
+                      {formatRelative(r.created_at, locale)}
                     </p>
                   </Link>
                 </li>
@@ -208,16 +210,16 @@ export default async function CompatibilityHubPage({
   );
 }
 
-function formatRelative(iso: string): string {
+function formatRelative(iso: string, locale: Locale): string {
   const date = new Date(iso);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffH = Math.floor(diffMs / (1000 * 60 * 60));
   const diffD = Math.floor(diffH / 24);
-  if (diffH < 1) return "Just now";
-  if (diffH < 24) return `${diffH} ${diffH === 1 ? "hour" : "hours"} ago`;
-  if (diffD < 7) return `${diffD} ${diffD === 1 ? "day" : "days"} ago`;
-  return date.toLocaleDateString("en-US", {
+  if (diffH < 1) return t(locale, "dr.justNow");
+  if (diffH < 24) return t(locale, diffH === 1 ? "dr.hourAgo" : "dr.hoursAgo", { n: diffH });
+  if (diffD < 7) return t(locale, diffD === 1 ? "dr.dayAgo" : "dr.daysAgo", { n: diffD });
+  return date.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",

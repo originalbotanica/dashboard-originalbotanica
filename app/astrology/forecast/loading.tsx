@@ -1,31 +1,32 @@
 import Link from "next/link";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 /**
  * Shown while the month's forecast is generated on first view of the month.
  * Generation takes 10 to 15 seconds, so this carries the wait with intention
  * instead of a blank screen.
  */
-export default function ForecastLoading() {
+export default async function ForecastLoading() {
+  const locale = await getLocale();
   return (
     <main className="min-h-screen">
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
-            ← Astrology
+            ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">Monthly forecast</p>
+          <p className="sublabel text-xs">{t(locale, "fc.loadSublabel")}</p>
         </div>
       </header>
 
       <section className="max-w-3xl mx-auto px-6 pt-20 pb-20">
-        <p className="eyebrow mb-4">Your month</p>
+        <p className="eyebrow mb-4">{t(locale, "fc.loadEyebrow")}</p>
         <h1 className="display text-4xl md:text-5xl mb-6 leading-tight">
-          The astrologer is reading your month.
+          {t(locale, "fc.loadTitle")}
         </h1>
         <p className="invocation text-[var(--foreground-muted)] text-lg leading-relaxed max-w-2xl animate-pulse">
-          Your chart, the month&apos;s transits, and the botanica&apos;s archive
-          are being read together. This takes a few breaths the first time each
-          month. Stay here.
+          {t(locale, "fc.loadBody")}
         </p>
 
         <div className="mt-12 space-y-4 max-w-2xl" aria-hidden>

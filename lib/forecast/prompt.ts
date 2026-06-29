@@ -15,7 +15,12 @@ export function buildForecastPrompt(args: {
   placements: Array<{ name: string; sign: string; house?: number }>;
   retrievedRituals?: string; // Optional RAG context from OB blog corpus
   lunarEvents?: string; // Computed real new/full moons for the month
+  locale?: "en" | "es";
 }): { system: string; user: string } {
+  const langRule =
+    args.locale === "es"
+      ? `\n\nLANGUAGE\n- Write every text field in the JSON entirely in natural, warm Latin American Spanish. This includes opening, love, work, spirit, the key_dates entries, and the ritual fields.`
+      : "";
   const placementLines = args.placements
     .map((p) =>
       p.house != null
@@ -24,7 +29,7 @@ export function buildForecastPrompt(args: {
     )
     .join("\n");
 
-  const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.
+  const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.${langRule}
 
 VOICE
 - Grounded, direct, warm. Short sentences. Periods, not commas.

@@ -43,6 +43,7 @@ export async function createCompatibilityReading(args: {
   otherBirthTime: string | null; // HH:MM or null
   otherBirthCity: string;
   relationshipNote?: string | null;
+  locale?: "en" | "es";
 }): Promise<CompatibilityReading | null> {
   // 1. Subscriber chart
   const subscriberCtx = await loadAstrologerContext(args.userId);
@@ -85,6 +86,7 @@ export async function createCompatibilityReading(args: {
     },
     relationshipNote: args.relationshipNote || null,
     retrievedRituals: ritualsContext,
+    locale: args.locale,
   });
 
   const anthropic = getAnthropic();

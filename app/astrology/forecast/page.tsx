@@ -10,6 +10,8 @@ import {
   buildProductLookup,
 } from "@/lib/rag/render-prose";
 import { BotanicaRecs } from "@/components/botanica-recs";
+import { getLocale } from "@/lib/i18n/server";
+import { t, type Locale } from "@/lib/i18n/dictionary";
 
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
@@ -48,9 +50,10 @@ export default async function ForecastPage() {
   const sub = await getSubscriptionStatus(user.id);
   if (!sub.isActive) redirect("/astrology");
 
-  const forecast = await getOrGenerateMonthlyForecast(user.id);
+  const locale = await getLocale();
+  const forecast = await getOrGenerateMonthlyForecast(user.id, locale);
 
-  const monthLabel = currentMonthLabel();
+  const monthLabel = currentMonthLabel(locale);
 
   // Only show key dates that haven't passed yet this month (Steve's note —
   // no point marking dates already behind us). We read the last day number in
@@ -87,22 +90,21 @@ export default async function ForecastPage() {
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
-            ← Astrology
+            ← {t(locale, "astro.eyebrow")}
           </Link>
           <p className="sublabel text-xs">{monthLabel}</p>
         </div>
       </header>
 
       <section className="max-w-3xl mx-auto px-6 pt-20 pb-24">
-        <p className="eyebrow mb-4">Your monthly forecast</p>
+        <p className="eyebrow mb-4">{t(locale, "fc.eyebrow")}</p>
         <h1 className="display text-4xl md:text-5xl mb-10 leading-tight">
-          {profile.first_name}, {monthLabel}.
+          {t(locale, "fc.title", { name: profile.first_name, month: monthLabel })}
         </h1>
 
         {!forecast ? (
           <div className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--ember)] pl-4 py-2 max-w-xl">
-            The forecast could not be generated right now. Please refresh
-            the page in a moment.
+            {t(locale, "fc.failBody")}
           </div>
         ) : (
           <>
@@ -119,7 +121,7 @@ export default async function ForecastPage() {
             {/* Key dates — upcoming only */}
             {upcomingKeyDates.length > 0 && (
                 <section className="mb-16 border-t border-[var(--border)] pt-10">
-                  <p className="eyebrow mb-6">Dates to mark</p>
+                  <p className="eyebrow mb-6">{t(locale, "fc.datesToMark")}</p>
                   <ul className="space-y-6">
                     {upcomingKeyDates.map((kd, i) => (
                       <li
@@ -147,14 +149,14 @@ export default async function ForecastPage() {
 
             {/* Three terrains: love, work, spirit */}
             <section className="grid md:grid-cols-3 gap-8 mb-16 border-t border-[var(--border)] pt-10">
-              <Terrain label="Love" body={forecast.content.love} />
-              <Terrain label="Work" body={forecast.content.work} />
-              <Terrain label="Spirit" body={forecast.content.spirit} />
+              <Terrain label={t(locale, "fc.terrainLove")} body={forecast.content.love} />
+              <Terrain label={t(locale, "fc.terrainWork")} body={forecast.content.work} />
+              <Terrain label={t(locale, "fc.terrainSpirit")} body={forecast.content.spirit} />
             </section>
 
             {/* Ritual for the month */}
             <section className="border-t border-[var(--border)] pt-10">
-              <p className="eyebrow mb-4">A ritual for this month</p>
+              <p className="eyebrow mb-4">{t(locale, "fc.ritualEyebrow")}</p>
               <h2 className="display text-2xl md:text-3xl mb-2 leading-tight">
                 {forecast.content.ritual.title}
               </h2>
@@ -186,10 +188,10 @@ export default async function ForecastPage() {
             href="/astrology/astrologer"
             className="btn-primary inline-flex"
           >
-            Talk to your astrologer
+            {t(locale, "astro.talk")}
           </Link>
           <Link href="/astrology" className="btn-ghost inline-flex">
-            Back to astrology
+            {t(locale, "fc.back")}
           </Link>
         </div>
       </section>
@@ -213,9 +215,9 @@ function Terrain({ label, body }: { label: string; body: string }) {
   );
 }
 
-function currentMonthLabel(): string {
+function currentMonthLabel(locale: Locale): string {
   const now = new Date();
-  return now.toLocaleString("en-US", {
+  return now.toLocaleString(locale === "es" ? "es-ES" : "en-US", {
     month: "long",
     year: "numeric",
     timeZone: "UTC",

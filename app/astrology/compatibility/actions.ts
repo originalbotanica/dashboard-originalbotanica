@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { createCompatibilityReading } from "@/lib/compatibility/generate";
+import { getLocale } from "@/lib/i18n/server";
 
 /**
  * Server actions for compatibility readings.
@@ -52,6 +53,7 @@ export async function createCompatibilityAction(formData: FormData) {
     otherBirthTime: other_birth_time,
     otherBirthCity: other_birth_city,
     relationshipNote: relationship_note,
+    locale: await getLocale(),
   });
 
   if (!result) {
