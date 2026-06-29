@@ -4,6 +4,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
 import { loadAstrologerContext } from "@/lib/astrologer/context";
 import { buildSystemPrompt } from "@/lib/astrologer/prompt";
+import { getLocale } from "@/lib/i18n/server";
 import {
   checkUsageWithinCap,
   incrementUsage,
@@ -187,6 +188,7 @@ export async function POST(request: Request) {
     placements: context.chart.placements,
     currentDate,
     retrievedRituals: ritualsContext,
+    locale: await getLocale(),
   });
 
   // Underage hard-stop (the prompt also has a guardrail, this is belt-and-suspenders)

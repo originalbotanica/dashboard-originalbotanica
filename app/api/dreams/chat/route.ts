@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
 import { buildDreamSystemPrompt, dreamTitleFromMessage } from "@/lib/dreams/prompt";
+import { getLocale } from "@/lib/i18n/server";
 import {
   checkDreamUsageWithinCap,
   incrementDreamUsage,
@@ -154,7 +155,7 @@ export async function POST(request: Request) {
   }
 
   const currentDate = new Date().toISOString().slice(0, 10);
-  const system = buildDreamSystemPrompt({ firstName, currentDate });
+  const system = buildDreamSystemPrompt({ firstName, currentDate, locale: await getLocale() });
 
   // Archive rituals + shop supplies that fit the dream, surfaced as a
   // tappable "For this dream" cards block under the reading. The dream prompt

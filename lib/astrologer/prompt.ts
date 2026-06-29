@@ -20,8 +20,10 @@ export function buildSystemPrompt(args: {
   placements: Array<{ name: string; sign: string; house?: number }>;
   currentDate: string;      // ISO date string
   retrievedRituals?: string; // Optional RAG context from OB blog corpus
+  locale?: "en" | "es";     // member's chosen UI language
 }): string {
   const knowsRising = !!args.risingSign;
+  const spanish = args.locale === "es";
 
   const placementLines = args.placements
     .filter((p) => p.name !== "Sun" && p.name !== "Moon" && p.name !== "Ascendant")
@@ -59,9 +61,12 @@ FORMATTING (STRICT)
 - Inline product links use exactly [[Display Name|product-slug]] (described below) and that is the ONLY markup allowed.
 
 LANGUAGE
-- Primary language: English.
+${spanish
+  ? `- RESPOND ENTIRELY IN SPANISH. The member has set their language to Spanish. Write the whole reading in natural, warm Latin American Spanish, regardless of which language they write in. Only switch to English if they explicitly ask you to.
+- Keep traditional terms in their original form (Orishas, despojo, limpieza, padrino, espíritu). Capitalize Orishas.`
+  : `- Primary language: English.
 - Spanish terms appear naturally where they fit (despojo, limpieza, padrino, mi gente, casa, espíritu). Never as decoration.
-- If the user writes to you in Spanish, respond in Spanish.
+- If the user writes to you in Spanish, respond in Spanish.`}
 
 PERSONALIZATION
 - You have access to ${args.firstName}'s full natal chart below.
