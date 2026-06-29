@@ -9,10 +9,14 @@ import {
   listCommunityCandles,
   daysLeft,
   DESIRES,
+  desireLabel,
   type Candle,
 } from "@/lib/altar/altar";
 import { AltarCandle } from "@/components/altar-candle";
 import { Candle as FlameCandle } from "@/components/candle";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
+import type { Locale } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Virtual altar",
@@ -50,6 +54,7 @@ export default async function VirtualAltarPage({
     listMyCandles(user.id),
     listCommunityCandles(query, desire),
   ]);
+  const locale = await getLocale();
 
   return (
     <main className="min-h-screen relative">
@@ -74,36 +79,34 @@ export default async function VirtualAltarPage({
       <MemberNav />
 
       <section className="max-w-5xl mx-auto px-6 pt-20 pb-12 text-center">
-        <p className="eyebrow mb-4">The virtual altar</p>
+        <p className="eyebrow mb-4">{t(locale, "altar.eyebrow")}</p>
         <h1 className="display text-4xl md:text-5xl mb-5 max-w-2xl mx-auto leading-tight">
-          Light a candle. Set your prayer aloft.
+          {t(locale, "altar.title")}
         </h1>
         <p className="text-[var(--foreground-muted)] text-lg leading-relaxed max-w-xl mx-auto mb-8">
-          A sacred space where intention meets the flame. Light your candle, and
-          let the collective energy of the community hold it with you.
+          {t(locale, "altar.intro")}
         </p>
         <div className="flex justify-center mt-12 mb-10" aria-hidden>
           <FlameCandle size="large" lit />
         </div>
         <Link href="/altar/virtual/new" className="btn-primary inline-flex">
-          Light a candle
+          {t(locale, "altar.lightCta")}
         </Link>
       </section>
 
       {/* Your candles */}
       {mine.length > 0 && (
         <section className="max-w-5xl mx-auto px-6 pb-16">
-          <p className="eyebrow mb-8 text-center">Your altar</p>
-          <CandleGrid candles={mine} />
+          <p className="eyebrow mb-8 text-center">{t(locale, "altar.yourAltar")}</p>
+          <CandleGrid candles={mine} locale={locale} />
         </section>
       )}
 
       {/* Community altar */}
       <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-14">
-        <p className="eyebrow mb-2 text-center">The community altar</p>
+        <p className="eyebrow mb-2 text-center">{t(locale, "altar.communityEyebrow")}</p>
         <p className="text-[var(--foreground-muted)] leading-relaxed text-center max-w-xl mx-auto mb-8">
-          Candles lit by the community, burning now. Search by name or
-          intention.
+          {t(locale, "altar.communityIntro")}
         </p>
 
         <form action="/altar/virtual" method="get" className="max-w-md mx-auto mb-12">
@@ -111,9 +114,9 @@ export default async function VirtualAltarPage({
             type="search"
             name="q"
             defaultValue={query}
-            placeholder="Name or keyword"
+            placeholder={t(locale, "altar.searchPh")}
             className="form-input"
-            aria-label="Search the altar"
+            aria-label={t(locale, "altar.searchAria")}
           />
         </form>
 
@@ -126,7 +129,7 @@ export default async function VirtualAltarPage({
                 : "border-[var(--border-strong)] text-[var(--foreground-muted)] hover:text-[var(--accent)]"
             }`}
           >
-            All
+            {t(locale, "altar.all")}
           </Link>
           {DESIRES.map((d) => (
             <Link
@@ -138,7 +141,7 @@ export default async function VirtualAltarPage({
                   : "border-[var(--border-strong)] text-[var(--foreground-muted)] hover:text-[var(--accent)]"
               }`}
             >
-              {d.label}
+              {desireLabel(d, locale)}
             </Link>
           ))}
         </div>
@@ -146,18 +149,18 @@ export default async function VirtualAltarPage({
         {community.length === 0 ? (
           <p className="text-[var(--foreground-muted)] text-center leading-relaxed">
             {query || desire
-              ? "No candles match this filter yet."
-              : "No candles are burning yet. Be the first to light one."}
+              ? t(locale, "altar.noMatch")
+              : t(locale, "altar.noneYet")}
           </p>
         ) : (
-          <CandleGrid candles={community} />
+          <CandleGrid candles={community} locale={locale} />
         )}
       </section>
     </main>
   );
 }
 
-function CandleGrid({ candles }: { candles: Candle[] }) {
+function CandleGrid({ candles, locale }: { candles: Candle[]; locale: Locale }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-12">
       {candles.map((c) => {
@@ -175,8 +178,8 @@ function CandleGrid({ candles }: { candles: Candle[] }) {
             {left !== null && (
               <p className="text-xs text-[var(--foreground-subtle)] mt-1">
                 {left > 0
-                  ? `${left} ${left === 1 ? "day" : "days"} left`
-                  : "Burned out"}
+                  ? t(locale, left === 1 ? "altar.dayLeftOne" : "altar.dayLeftMany", { n: left })
+                  : t(locale, "altar.burnedOut")}
               </p>
             )}
           </Link>

@@ -7,9 +7,12 @@ import {
   DESIRES,
   DURATIONS,
   candleImageUrl,
+  desireLabel,
+  durationLabel,
   type Desire,
   type CandleArt,
 } from "@/lib/altar/catalog";
+import { useT, useLocale } from "@/components/locale-provider";
 
 /**
  * The light-a-candle picker, mirroring the live altar flow:
@@ -29,6 +32,8 @@ export function LightCandleForm({
   const [armed, setArmed] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const candleRef = useRef<HTMLDivElement>(null);
+  const t = useT();
+  const locale = useLocale();
 
   function armAndScroll() {
     const f = formRef.current;
@@ -52,7 +57,7 @@ export function LightCandleForm({
   if (!desire) {
     return (
       <div>
-        <p className="form-label mb-4">Choose your intention</p>
+        <p className="form-label mb-4">{t("lcf.chooseIntention")}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {DESIRES.map((d) => (
             <button
@@ -61,7 +66,7 @@ export function LightCandleForm({
               onClick={() => setDesire(d)}
               className="altar-choice"
             >
-              {d.label}
+              {desireLabel(d, locale)}
             </button>
           ))}
         </div>
@@ -78,9 +83,9 @@ export function LightCandleForm({
           onClick={() => setDesire(null)}
           className="nav-link text-[var(--accent)] mb-6"
         >
-          ← {desire.label}
+          ← {desireLabel(desire, locale)}
         </button>
-        <p className="form-label mb-4">Choose your candle</p>
+        <p className="form-label mb-4">{t("lcf.chooseCandle")}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {desire.candles.map((c) => (
             <button
@@ -157,7 +162,7 @@ export function LightCandleForm({
             <button
               type="button"
               onClick={lightAndPlace}
-              aria-label="Tap the wick to light the candle"
+              aria-label={t("lcf.tapAria")}
               className="absolute left-1/2 -translate-x-1/2 rounded-full flex items-start justify-center"
               style={{
                 top: 0,
@@ -190,10 +195,10 @@ export function LightCandleForm({
           }`}
         >
           {lit
-            ? "The flame is lit."
+            ? t("lcf.flameLit")
             : armed
-              ? "↑ Tap the wick to light the candle."
-              : "Write your dedication below, then light the candle."}
+              ? t("lcf.tapWick")
+              : t("lcf.writeFirst")}
         </p>
         <button
           type="button"
@@ -204,14 +209,14 @@ export function LightCandleForm({
           }}
           className="nav-link text-[var(--accent)] mt-3"
         >
-          Change candle
+          {t("lcf.changeCandle")}
         </button>
       </div>
 
       <div className="space-y-10">
       <div>
         <label htmlFor="intention" className="form-label">
-          Dedication
+          {t("lcf.dedication")}
         </label>
         <input
           id="intention"
@@ -220,36 +225,36 @@ export function LightCandleForm({
           required
           maxLength={200}
           defaultValue={initialIntention}
-          placeholder="For my mother's healing"
+          placeholder={t("lcf.dedicationPh")}
           className="form-input"
         />
         <p className="text-xs text-[var(--foreground-subtle)] mt-2">
-          Shown beneath your candle. Keep it short.
+          {t("lcf.dedicationHint")}
         </p>
       </div>
 
       <div>
         <label htmlFor="petition" className="form-label">
-          Your petition{" "}
-          <span className="normal-case text-[var(--foreground-subtle)]">(optional)</span>
+          {t("lcf.petition")}{" "}
+          <span className="normal-case text-[var(--foreground-subtle)]">{t("lcf.optional")}</span>
         </label>
         <textarea
           id="petition"
           name="petition"
           rows={5}
           maxLength={2000}
-          placeholder="Speak your prayer here. What are you asking for, and for whom."
+          placeholder={t("lcf.petitionPh")}
           className="form-input"
         />
       </div>
 
       <fieldset>
-        <legend className="form-label mb-3">How long it burns</legend>
+        <legend className="form-label mb-3">{t("lcf.duration")}</legend>
         <div className="flex flex-wrap gap-3">
           {DURATIONS.map((d, i) => (
             <label key={d.days} className="altar-choice altar-choice-sm">
               <input type="radio" name="days" value={d.days} defaultChecked={i === 0} />
-              <span>{d.label}</span>
+              <span>{durationLabel(d.days, locale)}</span>
             </label>
           ))}
         </div>
@@ -258,15 +263,14 @@ export function LightCandleForm({
       <label className="flex items-start gap-3 cursor-pointer">
         <input type="checkbox" name="is_public" defaultChecked className="mt-1" />
         <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
-          Add my candle to the community altar, so others can see its flame and
-          hold the intention with me. Uncheck to keep it private to your own altar.
+          {t("lcf.publicLabel")}
         </span>
       </label>
 
       {lit ? (
         <PendingSubmit
-          label="Lighting…"
-          pendingLabel="Lighting…"
+          label={t("lcf.lighting")}
+          pendingLabel={t("lcf.lighting")}
           className="btn-primary inline-flex"
         />
       ) : (
@@ -275,7 +279,7 @@ export function LightCandleForm({
           onClick={armAndScroll}
           className="btn-primary inline-flex"
         >
-          Light the candle
+          {t("lcf.lightBtn")}
         </button>
       )}
       </div>

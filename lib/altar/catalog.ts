@@ -246,6 +246,33 @@ export function desireForCandle(slug: string | null): Desire | undefined {
   return slug ? CANDLE_INDEX.get(slug)?.desire : undefined;
 }
 
+/** Spanish desire (intention) labels, keyed by slug. */
+const DESIRE_ES: Record<string, string> = {
+  "money-wealth": "Dinero y Riqueza",
+  "love-attraction": "Amor y Atracción",
+  "protection": "Protección",
+  "open-road": "Abre Camino",
+  "luck-gambling": "Suerte y Juego",
+  "spiritual-cleansing": "Limpieza Espiritual",
+  "health": "Salud",
+  "go-away-evil": "Aleja el Mal",
+  "success-prosperity": "Éxito y Prosperidad",
+  "win-in-court": "Ganar en la Corte",
+  "reverse-magic": "Magia Reversible",
+  "peace": "Paz",
+  "saints": "Santos y Orishas",
+};
+
+/** Locale-aware desire label. Falls back to the English label. */
+export function desireLabel(d: Desire, locale: "en" | "es"): string {
+  return locale === "es" ? DESIRE_ES[d.slug] ?? d.label : d.label;
+}
+
+/** Locale-aware burn-duration label, e.g. "7 days" / "7 días". */
+export function durationLabel(days: number, locale: "en" | "es"): string {
+  return locale === "es" ? `${days} días` : `${days} days`;
+}
+
 /** Days remaining before a candle burns out (null if no expiry). */
 export function daysLeft(expires_at: string | null): number | null {
   if (!expires_at) return null;

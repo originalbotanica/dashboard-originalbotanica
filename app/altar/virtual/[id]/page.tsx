@@ -2,11 +2,13 @@ import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getCandle, getDesire, getCandleArt, daysLeft } from "@/lib/altar/altar";
+import { getCandle, getDesire, getCandleArt, daysLeft, desireLabel } from "@/lib/altar/altar";
 import { AltarCandle } from "@/components/altar-candle";
 import { listRitualsByPurpose, getSavedRitualIds } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
 import { extinguishCandleAction } from "../actions";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export async function generateMetadata({
   params,
@@ -51,6 +53,7 @@ export default async function CandleDetailPage({
     .maybeSingle();
   const isOwner = !!owned;
 
+  const locale = await getLocale();
   const desire = getDesire(candle.candle_type);
   const art = getCandleArt(candle.candle_color);
   const left = daysLeft(candle.expires_at);
@@ -65,9 +68,9 @@ export default async function CandleDetailPage({
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/altar/virtual" className="nav-link text-[var(--accent)]">
-            ← Altar
+            ← {t(locale, "altar.back")}
           </Link>
-          <p className="sublabel text-xs">A candle</p>
+          <p className="sublabel text-xs">{t(locale, "altar.candleSublabel")}</p>
         </div>
       </header>
 
@@ -76,7 +79,7 @@ export default async function CandleDetailPage({
           <AltarCandle candleSlug={candle.candle_color} size="hero" />
         </div>
 
-        {desire ? <p className="eyebrow mb-3">{desire.label}</p> : null}
+        {desire ? <p className="eyebrow mb-3">{desireLabel(desire, locale)}</p> : null}
         {art ? (
           <p className="text-[var(--foreground-muted)] text-sm mb-3">
             {art.name} · {art.tagline}
@@ -87,7 +90,9 @@ export default async function CandleDetailPage({
         </h1>
         {left !== null && (
           <p className="text-[var(--foreground-subtle)] eyebrow">
-            {left > 0 ? `Burning · ${left} ${left === 1 ? "day" : "days"} left` : "Burned out"}
+            {left > 0
+              ? t(locale, left === 1 ? "altar.burningOne" : "altar.burningMany", { n: left })
+              : t(locale, "altar.burnedOut")}
           </p>
         )}
 
@@ -104,7 +109,7 @@ export default async function CandleDetailPage({
               type="submit"
               className="nav-link text-sm text-[var(--foreground-muted)] underline underline-offset-4 decoration-[var(--border-strong)] hover:text-[var(--ember)] hover:decoration-[var(--ember)] cursor-pointer transition-colors"
             >
-              Remove from the altar
+              {t(locale, "altar.remove")}
             </button>
           </form>
         ) : null}
@@ -113,13 +118,13 @@ export default async function CandleDetailPage({
       {/* Rituals for this intention */}
       {rituals.length > 0 && desire ? (
         <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-12">
-          <p className="eyebrow mb-2 text-center">To deepen the work</p>
+          <p className="eyebrow mb-2 text-center">{t(locale, "altar.deepenEyebrow")}</p>
           <p className="text-[var(--foreground-muted)] leading-relaxed text-center max-w-xl mx-auto mb-8">
-            Rituals from the library for {desire.label.toLowerCase()}.
+            {t(locale, "altar.deepenIntro", { purpose: desireLabel(desire, locale).toLowerCase() })}
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rituals.slice(0, 3).map((r) => (
-              <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} />
+              <RitualCard key={r.slug} ritual={r} saved={savedIds.has(r.id)} locale={locale} />
             ))}
           </div>
         </section>
