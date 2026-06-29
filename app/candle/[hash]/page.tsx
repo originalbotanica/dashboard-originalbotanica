@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { Candle } from "@/components/candle";
 import { addLightAction } from "../../ancestors/actions";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
+import type { Locale } from "@/lib/i18n/dictionary";
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
 
@@ -58,7 +61,8 @@ export default async function PublicMemorialPage({
 
   if (!memorial || !memorial.is_public) notFound();
 
-  const dates = formatDates(memorial.birth_date, memorial.death_date);
+  const locale = await getLocale();
+  const dates = formatDates(memorial.birth_date, memorial.death_date, locale);
 
   async function light() {
     "use server";
@@ -97,7 +101,7 @@ export default async function PublicMemorialPage({
               className="h-auto w-[60px] md:w-[70px]"
             />
           </Link>
-          <p className="sublabel text-xs">In memory</p>
+          <p className="sublabel text-xs">{t(locale, "cand.inMemory")}</p>
         </div>
       </header>
 
@@ -109,7 +113,7 @@ export default async function PublicMemorialPage({
           alt={`Candle for ${memorial.name}`}
         />
 
-        <p className="eyebrow mt-10 mb-3">In memory of</p>
+        <p className="eyebrow mt-10 mb-3">{t(locale, "cand.inMemoryOf")}</p>
         <h1 className="display text-3xl md:text-5xl mb-3 leading-tight">
           {memorial.name}
         </h1>
@@ -131,14 +135,12 @@ export default async function PublicMemorialPage({
 
         <form action={light} className="mt-8">
           <button type="submit" className="btn-primary inline-flex">
-            Add your light
+            {t(locale, "cand.addLight")}
           </button>
         </form>
         {memorial.light_count > 0 && (
           <p className="text-xs text-[var(--foreground-subtle)] mt-4">
-            {memorial.light_count}{" "}
-            {memorial.light_count === 1 ? "light has" : "lights have"} been
-            added in their memory
+            {t(locale, memorial.light_count === 1 ? "cand.lightsOne" : "cand.lightsMany", { n: memorial.light_count })}
           </p>
         )}
       </section>
@@ -146,11 +148,10 @@ export default async function PublicMemorialPage({
       <section className="border-t border-[var(--border)] mt-12">
         <div className="max-w-xl mx-auto px-6 py-16 text-center">
           <p className="invocation text-[var(--foreground-muted)] mb-6 leading-relaxed">
-            This flame is kept at Original Botanica, a family-owned spiritual
-            house serving the Bronx and the world since 1959.
+            {t(locale, "cand.houseLine")}
           </p>
           <Link href="/" className="btn-ghost inline-flex">
-            About the practice
+            {t(locale, "cand.about")}
           </Link>
         </div>
       </section>
@@ -158,10 +159,10 @@ export default async function PublicMemorialPage({
   );
 }
 
-function formatDates(birth?: string | null, death?: string | null): string {
+function formatDates(birth: string | null | undefined, death: string | null | undefined, locale: Locale): string {
   const fmt = (s?: string | null) =>
     s
-      ? new Date(s + "T00:00:00Z").toLocaleDateString("en-US", {
+      ? new Date(s + "T00:00:00Z").toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",
@@ -170,8 +171,8 @@ function formatDates(birth?: string | null, death?: string | null): string {
       : null;
   const b = fmt(birth);
   const d = fmt(death);
-  if (b && d) return `${b} — ${d}`;
-  if (d) return `Passed ${d}`;
-  if (b) return `Born ${b}`;
+  if (b && d) return `${b} – ${d}`;
+  if (d) return t(locale, "anc.passed", { y: d });
+  if (b) return t(locale, "anc.born", { y: b });
   return "";
 }

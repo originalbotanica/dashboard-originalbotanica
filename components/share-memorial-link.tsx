@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useT } from "@/components/locale-provider";
 
 /**
  * The "Share with family" control on a memorial page. Shows the public link
@@ -11,6 +12,7 @@ import { useEffect, useState } from "react";
 export function ShareMemorialLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
   const [canShare, setCanShare] = useState(false);
+  const t = useT();
 
   useEffect(() => {
     setCanShare(
@@ -18,9 +20,9 @@ export function ShareMemorialLink({ url }: { url: string }) {
     );
   }, []);
 
-  const shareText = "A flame lit in their memory. Add your light.";
+  const shareText = t("share.text");
   const u = encodeURIComponent(url);
-  const t = encodeURIComponent(shareText);
+  const tEnc = encodeURIComponent(shareText);
 
   // Instagram has no link-based share (you can't pre-fill a post from the web),
   // so its button copies the link and opens Instagram, ready to paste into a
@@ -33,12 +35,12 @@ export function ShareMemorialLink({ url }: { url: string }) {
   const socials: { label: string; href?: string; onClick?: () => void }[] = [
     { label: "Instagram", onClick: instagram },
     { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
-    { label: "X", href: `https://twitter.com/intent/tweet?text=${t}&url=${u}` },
+    { label: "X", href: `https://twitter.com/intent/tweet?text=${tEnc}&url=${u}` },
     {
       label: "Email",
       href: `mailto:?subject=${encodeURIComponent(
-        "A candle lit in their memory",
-      )}&body=${t}%20${u}`,
+        t("share.emailSubject"),
+      )}&body=${tEnc}%20${u}`,
     },
   ];
 
@@ -55,7 +57,7 @@ export function ShareMemorialLink({ url }: { url: string }) {
   async function share() {
     try {
       await navigator.share({
-        title: "A memorial candle",
+        title: t("share.nativeTitle"),
         text: shareText,
         url,
       });
@@ -66,22 +68,22 @@ export function ShareMemorialLink({ url }: { url: string }) {
 
   return (
     <div className="flex flex-col items-center">
-      <p className="eyebrow mb-2">Share with family</p>
+      <p className="eyebrow mb-2">{t("share.withFamily")}</p>
       <p className="text-sm text-[var(--accent)] break-all max-w-xs mb-3">{url}</p>
 
       <div className="flex flex-wrap gap-2 justify-center">
         <button type="button" onClick={copy} className="btn-ghost text-sm">
-          {copied ? "Copied ✓" : "Copy link"}
+          {copied ? t("share.copied") : t("share.copy")}
         </button>
         {canShare && (
           <button type="button" onClick={share} className="btn-ghost text-sm">
-            Share
+            {t("share.share")}
           </button>
         )}
       </div>
 
       <p className="eyebrow text-[var(--foreground-subtle)] mt-5 mb-2">
-        Or share on
+        {t("share.orShareOn")}
       </p>
       <div className="flex flex-wrap gap-2 justify-center">
         {socials.map((s) =>

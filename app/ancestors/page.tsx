@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { Candle } from "@/components/candle";
 import { MemberNav } from "@/components/member-nav";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
+import type { Locale } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Ancestors altar",
@@ -45,6 +48,7 @@ export default async function AncestorsHubPage() {
     .order("added_at", { ascending: false });
 
   const list = memorials || [];
+  const locale = await getLocale();
 
   return (
     <main className="min-h-screen relative">
@@ -69,24 +73,23 @@ export default async function AncestorsHubPage() {
       <MemberNav />
 
       <section className="max-w-5xl mx-auto px-6 pt-20 pb-24">
-        <p className="eyebrow mb-4 text-center">Ancestors altar</p>
+        <p className="eyebrow mb-4 text-center">{t(locale, "anc.eyebrow")}</p>
         <h1 className="display text-4xl md:text-5xl mb-4 text-center max-w-2xl mx-auto leading-tight">
-          A flame for those who came before.
+          {t(locale, "anc.title")}
         </h1>
         <p className="text-[var(--foreground-muted)] text-lg leading-relaxed text-center max-w-xl mx-auto mb-12">
-          Add the people you carry. Their flame lit. Their stories with you.
+          {t(locale, "anc.intro")}
         </p>
 
         <div className="flex justify-center mb-16">
           <Link href="/ancestors/new" className="btn-primary inline-flex">
-            Add an ancestor
+            {t(locale, "anc.add")}
           </Link>
         </div>
 
         {list.length === 0 ? (
           <div className="invocation text-[var(--foreground-muted)] text-center max-w-md mx-auto pt-12 leading-relaxed">
-            Your altar is bare. The first flame is the hardest to light.
-            When you are ready, add a name.
+            {t(locale, "anc.empty")}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12 pt-8">
@@ -110,7 +113,7 @@ export default async function AncestorsHubPage() {
                   </p>
                 )}
                 <p className="text-xs text-[var(--foreground-subtle)] mt-1">
-                  {formatYears(m.birth_date, m.death_date)}
+                  {formatYears(m.birth_date, m.death_date, locale)}
                 </p>
               </Link>
             ))}
@@ -121,11 +124,11 @@ export default async function AncestorsHubPage() {
   );
 }
 
-function formatYears(birth?: string | null, death?: string | null): string {
+function formatYears(birth: string | null | undefined, death: string | null | undefined, locale: Locale): string {
   const b = birth ? new Date(birth).getUTCFullYear() : null;
   const d = death ? new Date(death).getUTCFullYear() : null;
-  if (b && d) return `${b} — ${d}`;
-  if (d) return `Passed ${d}`;
-  if (b) return `Born ${b}`;
+  if (b && d) return `${b} – ${d}`;
+  if (d) return t(locale, "anc.passed", { y: d });
+  if (b) return t(locale, "anc.born", { y: b });
   return "";
 }

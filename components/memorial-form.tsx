@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Candle } from "@/components/candle";
+import { useT } from "@/components/locale-provider";
 
 /**
  * Memorial form for creating or editing an ancestor.
@@ -15,7 +16,7 @@ import { Candle } from "@/components/candle";
 export function MemorialForm({
   action,
   initial,
-  submitLabel = "Light their flame",
+  submitLabel,
 }: {
   action: (formData: FormData) => void | Promise<void>;
   initial?: {
@@ -43,6 +44,8 @@ export function MemorialForm({
   const [armed, setArmed] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const candleRef = useRef<HTMLDivElement>(null);
+  const t = useT();
+  const label = submitLabel ?? t("mem.lightFlame");
 
   function armAndScroll() {
     const f = formRef.current;
@@ -74,12 +77,12 @@ export function MemorialForm({
       });
       const data = await res.json();
       if (!res.ok) {
-        setUploadError(data.error || "Could not upload");
+        setUploadError(data.error || t("mem.couldNotUpload"));
         return;
       }
       setPhotoUrl(data.url);
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Upload failed");
+      setUploadError(err instanceof Error ? err.message : t("mem.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -106,12 +109,12 @@ export function MemorialForm({
             transition: "filter 1s ease",
           }}
         >
-          <Candle size="large" lit={lit} photoUrl={photoUrl} alt="Their candle" />
+          <Candle size="large" lit={lit} photoUrl={photoUrl} alt={t("mem.candleAlt")} />
           {armed && !lit && (
             <button
               type="button"
               onClick={lightAndPlace}
-              aria-label="Tap the wick to light their flame"
+              aria-label={t("mem.tapAria")}
               className="absolute left-1/2 -translate-x-1/2 rounded-full flex items-start justify-center"
               style={{
                 top: -10,
@@ -143,17 +146,17 @@ export function MemorialForm({
             }`}
           >
             {lit
-              ? "Their flame is lit."
+              ? t("mem.flameLit")
               : armed
-                ? "↑ Tap the wick to light their flame."
-                : "Fill in their details below, then light their flame."}
+                ? t("mem.tapWick")
+                : t("mem.fillFirst")}
           </p>
         )}
       </div>
 
       <div>
         <label htmlFor="name" className="form-label">
-          Their name
+          {t("mem.name")}
         </label>
         <input
           id="name"
@@ -162,15 +165,15 @@ export function MemorialForm({
           required
           defaultValue={initial?.name || ""}
           className="form-input"
-          placeholder="e.g. Mama Carmen, my grandmother"
+          placeholder={t("mem.namePh")}
         />
       </div>
 
       <div>
         <label htmlFor="relation" className="form-label">
-          Who they were to you{" "}
+          {t("mem.relation")}{" "}
           <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
-            (optional)
+            {t("mem.optional")}
           </span>
         </label>
         <input
@@ -179,16 +182,16 @@ export function MemorialForm({
           type="text"
           defaultValue={initial?.relation || ""}
           className="form-input"
-          placeholder="Grandmother. Father. Padrino. Friend."
+          placeholder={t("mem.relationPh")}
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="birth_date" className="form-label">
-            Born{" "}
+            {t("mem.born")}{" "}
             <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
-              (optional)
+              {t("mem.optional")}
             </span>
           </label>
           <input
@@ -201,9 +204,9 @@ export function MemorialForm({
         </div>
         <div>
           <label htmlFor="death_date" className="form-label">
-            Passed{" "}
+            {t("mem.passed")}{" "}
             <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
-              (optional)
+              {t("mem.optional")}
             </span>
           </label>
           <input
@@ -218,9 +221,9 @@ export function MemorialForm({
 
       <div>
         <label htmlFor="dedication" className="form-label">
-          A dedication{" "}
+          {t("mem.dedication")}{" "}
           <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
-            (optional)
+            {t("mem.optional")}
           </span>
         </label>
         <textarea
@@ -229,15 +232,15 @@ export function MemorialForm({
           rows={4}
           defaultValue={initial?.dedication || ""}
           className="form-input"
-          placeholder="A few sentences. What you carry of them. What you want said when their flame is lit."
+          placeholder={t("mem.dedicationPh")}
         />
       </div>
 
       <div>
         <p className="form-label">
-          A photo{" "}
+          {t("mem.photo")}{" "}
           <span className="text-[var(--foreground-subtle)] normal-case tracking-normal">
-            (optional, up to 5 MB)
+            {t("mem.photoOptional")}
           </span>
         </p>
         {/* The native file control is hidden entirely (it renders its own
@@ -260,11 +263,11 @@ export function MemorialForm({
             uploading ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          {photoUrl ? "Choose a different photo" : "Choose a photo"}
+          {photoUrl ? t("mem.chooseDifferent") : t("mem.choosePhoto")}
         </label>
         {uploading && (
           <p className="text-sm text-[var(--foreground-muted)] mt-2">
-            Uploading...
+            {t("mem.uploading")}
           </p>
         )}
         {uploadError && <p className="form-error">{uploadError}</p>}
@@ -273,7 +276,7 @@ export function MemorialForm({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photoUrl}
-              alt="Memorial photo preview"
+              alt={t("mem.photoAlt")}
               className="w-16 h-16 rounded-full object-cover border border-[var(--border-strong)]"
             />
             <button
@@ -281,7 +284,7 @@ export function MemorialForm({
               onClick={() => setPhotoUrl(null)}
               className="nav-link text-[var(--foreground-muted)] hover:text-[var(--ember)]"
             >
-              Remove
+              {t("mem.remove")}
             </button>
           </div>
         )}
@@ -297,17 +300,16 @@ export function MemorialForm({
           />
           <span className="text-sm text-[var(--foreground-muted)] leading-relaxed">
             <span className="text-[var(--foreground)] font-medium">
-              Allow family to view this memorial.
+              {t("mem.allowFamily")}
             </span>{" "}
-            A private link is created automatically. Only people who have
-            the link can see this page. They do not need an account.
+            {t("mem.allowFamilyBody")}
           </span>
         </label>
       </div>
 
       {lit ? (
         <button type="submit" className="btn-primary mt-2">
-          {submitLabel}
+          {label}
         </button>
       ) : (
         <button
@@ -315,7 +317,7 @@ export function MemorialForm({
           onClick={armAndScroll}
           className="btn-primary mt-2"
         >
-          {submitLabel}
+          {label}
         </button>
       )}
     </form>

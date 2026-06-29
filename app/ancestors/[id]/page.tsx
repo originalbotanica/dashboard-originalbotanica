@@ -6,6 +6,9 @@ import { Candle } from "@/components/candle";
 import { MemorialForm } from "@/components/memorial-form";
 import { ShareMemorialLink } from "@/components/share-memorial-link";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
+import type { Locale } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Memorial",
@@ -56,14 +59,15 @@ export default async function MemorialDetailPage({
     .maybeSingle();
   if (!memorial) notFound();
 
-  const dates = formatDates(memorial.birth_date, memorial.death_date);
+  const locale = await getLocale();
+  const dates = formatDates(memorial.birth_date, memorial.death_date, locale);
 
   return (
     <main className="min-h-screen">
       <header className="border-b border-[var(--border)]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/ancestors" className="nav-link text-[var(--accent)]">
-            ← Ancestors altar
+            ← {t(locale, "anc.eyebrow")}
           </Link>
           <p className="sublabel text-xs">{memorial.name}</p>
         </div>
@@ -103,9 +107,7 @@ export default async function MemorialDetailPage({
             />
             {memorial.light_count > 0 && (
               <p className="text-xs text-[var(--foreground-subtle)] mt-2">
-                {memorial.light_count}{" "}
-                {memorial.light_count === 1 ? "person has" : "people have"} added
-                their light
+                {t(locale, memorial.light_count === 1 ? "anc.lightAddedOne" : "anc.lightAddedMany", { n: memorial.light_count })}
               </p>
             )}
           </div>
@@ -115,21 +117,20 @@ export default async function MemorialDetailPage({
       {/* Edit form */}
       <section className="max-w-2xl mx-auto px-6 pb-24">
         <div className="border-t border-[var(--border)] pt-12">
-          <p className="eyebrow mb-4">Edit memorial</p>
+          <p className="eyebrow mb-4">{t(locale, "anc.editEyebrow")}</p>
           {sp.error && <p className="form-error mb-4">{sp.error}</p>}
-          {sp.saved && <p className="form-success mb-4">Changes saved.</p>}
+          {sp.saved && <p className="form-success mb-4">{t(locale, "anc.savedMsg")}</p>}
           <MemorialForm
             action={updateAncestorAction}
             initial={memorial}
-            submitLabel="Save changes"
+            submitLabel={t(locale, "anc.saveChanges")}
           />
         </div>
 
         <div className="mt-16 border-t border-[var(--border)] pt-8">
-          <p className="eyebrow mb-3 text-[var(--ember)]">Danger zone</p>
+          <p className="eyebrow mb-3 text-[var(--ember)]">{t(locale, "anc.dangerZone")}</p>
           <p className="text-sm text-[var(--foreground-muted)] mb-4 leading-relaxed max-w-lg">
-            Removing a memorial extinguishes the flame and deletes the
-            record permanently. This cannot be undone.
+            {t(locale, "anc.removeBody")}
           </p>
           <form action={deleteAncestorAction}>
             <input type="hidden" name="id" value={memorial.id} />
@@ -137,7 +138,7 @@ export default async function MemorialDetailPage({
               type="submit"
               className="nav-link text-[var(--ember)] hover:underline"
             >
-              Remove this memorial
+              {t(locale, "anc.removeBtn")}
             </button>
           </form>
         </div>
@@ -146,10 +147,10 @@ export default async function MemorialDetailPage({
   );
 }
 
-function formatDates(birth?: string | null, death?: string | null): string {
+function formatDates(birth: string | null | undefined, death: string | null | undefined, locale: Locale): string {
   const fmt = (s?: string | null) =>
     s
-      ? new Date(s + "T00:00:00Z").toLocaleDateString("en-US", {
+      ? new Date(s + "T00:00:00Z").toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",
@@ -158,8 +159,8 @@ function formatDates(birth?: string | null, death?: string | null): string {
       : null;
   const b = fmt(birth);
   const d = fmt(death);
-  if (b && d) return `${b} — ${d}`;
-  if (d) return `Passed ${d}`;
-  if (b) return `Born ${b}`;
+  if (b && d) return `${b} – ${d}`;
+  if (d) return t(locale, "anc.passed", { y: d });
+  if (b) return t(locale, "anc.born", { y: b });
   return "";
 }
