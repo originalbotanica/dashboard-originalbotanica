@@ -8,6 +8,10 @@ import {
   dayLabel,
   getSavedRitualIds,
   listRitualsByPurpose,
+  ritualTitle,
+  ritualSummary,
+  ritualSteps,
+  ritualWarnings,
 } from "@/lib/rituals/queries";
 import { materialUrl } from "@/lib/rituals/material-link";
 import { SaveRitualButton } from "@/components/save-ritual-button";
@@ -76,7 +80,7 @@ export default async function RitualDetailPage({
       <article className="max-w-3xl mx-auto px-6 pt-16 pb-24">
         {purpose ? <p className="eyebrow mb-3">{purposeLabel(purpose, locale)}</p> : null}
         <h1 className="display text-3xl md:text-5xl leading-tight mb-5">
-          {r.title_en}
+          {ritualTitle(r, locale)}
         </h1>
 
         {/* Meta row */}
@@ -103,9 +107,9 @@ export default async function RitualDetailPage({
           </div>
         ) : null}
 
-        {r.summary ? (
+        {ritualSummary(r, locale) ? (
           <p className="invocation text-lg text-[var(--foreground)] leading-relaxed mb-10">
-            {r.summary}
+            {ritualSummary(r, locale)}
           </p>
         ) : null}
 
@@ -131,11 +135,11 @@ export default async function RitualDetailPage({
         ) : null}
 
         {/* Steps */}
-        {r.steps.length > 0 ? (
+        {ritualSteps(r, locale).length > 0 ? (
           <section className="mb-10">
             <p className="eyebrow mb-4">{t(locale, "rit.theRitual")}</p>
             <ol className="space-y-5">
-              {r.steps.map((s, i) => (
+              {ritualSteps(r, locale).map((s, i) => (
                 <li key={i} className="flex gap-4">
                   <span className="display text-[var(--accent)] text-lg shrink-0 w-7">
                     {i + 1}
@@ -150,9 +154,9 @@ export default async function RitualDetailPage({
         ) : null}
 
         {/* Warnings */}
-        {r.warnings ? (
+        {ritualWarnings(r, locale) ? (
           <div className="border-l-2 border-[var(--ember)] pl-4 py-2 text-[var(--foreground-muted)] leading-relaxed mb-10">
-            {r.warnings}
+            {ritualWarnings(r, locale)}
           </div>
         ) : null}
 

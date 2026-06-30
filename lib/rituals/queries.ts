@@ -9,7 +9,7 @@ import { createClient } from "@/utils/supabase/server";
  * policy). The pipeline writes with the service role, which bypasses RLS.
  */
 
-import { t } from "@/lib/i18n/dictionary";
+import { t, type Locale } from "@/lib/i18n/dictionary";
 
 export type RitualMaterial = {
   name: string;
@@ -21,8 +21,12 @@ export type Ritual = {
   id: string;
   slug: string;
   title_en: string;
+  title_es: string | null;
   summary: string | null;
+  summary_es: string | null;
   steps: string[];
+  steps_es: string[];
+  warnings_es: string | null;
   purpose: string | null;
   intention: string | null;
   tradition: string | null;
@@ -38,13 +42,27 @@ export type Ritual = {
 };
 
 const LIST_FIELDS =
-  "id, slug, title_en, summary, purpose, tradition, difficulty, image_url, source_type";
+  "id, slug, title_en, title_es, summary, summary_es, purpose, tradition, difficulty, image_url, source_type";
 
 /** The fields a ritual card needs. */
 export type RitualCardData = Pick<
   Ritual,
-  "id" | "slug" | "title_en" | "summary" | "purpose" | "tradition" | "difficulty" | "image_url" | "source_type"
+  "id" | "slug" | "title_en" | "title_es" | "summary" | "summary_es" | "purpose" | "tradition" | "difficulty" | "image_url" | "source_type"
 >;
+
+/** Locale-aware ritual fields. Spanish falls back to English when empty. */
+export function ritualTitle(r: { title_en: string; title_es?: string | null }, locale: Locale): string {
+  return locale === "es" && r.title_es ? r.title_es : r.title_en;
+}
+export function ritualSummary(r: { summary: string | null; summary_es?: string | null }, locale: Locale): string | null {
+  return locale === "es" && r.summary_es ? r.summary_es : r.summary;
+}
+export function ritualSteps(r: { steps: string[]; steps_es?: string[] }, locale: Locale): string[] {
+  return locale === "es" && r.steps_es && r.steps_es.length ? r.steps_es : r.steps;
+}
+export function ritualWarnings(r: { warnings: string | null; warnings_es?: string | null }, locale: Locale): string | null {
+  return locale === "es" && r.warnings_es ? r.warnings_es : r.warnings;
+}
 
 /** Count of published rituals per purpose slug. */
 export async function getPurposeCounts(): Promise<Record<string, number>> {
@@ -82,7 +100,7 @@ export async function getRitualBySlug(slug: string): Promise<Ritual | null> {
   const { data, error } = await supabase
     .from("rituals")
     .select(
-      "id, slug, title_en, summary, steps, purpose, intention, tradition, difficulty, best_day_of_week, best_moon_phase, materials, warnings, image_url, source_url, source_type, keywords",
+      "id, slug, title_en, title_es, summary, summary_es, steps, steps_es, purpose, intention, tradition, difficulty, best_day_of_week, best_moon_phase, materials, warnings, warnings_es, image_url, source_url, source_type, keywords",
     )
     .eq("slug", slug)
     .not("published_at", "is", null)
@@ -92,6 +110,7 @@ export async function getRitualBySlug(slug: string): Promise<Ritual | null> {
   return {
     ...(r as unknown as Ritual),
     steps: Array.isArray(r.steps) ? (r.steps as string[]) : [],
+    steps_es: Array.isArray(r.steps_es) ? (r.steps_es as string[]) : [],
     materials: Array.isArray(r.materials) ? (r.materials as RitualMaterial[]) : [],
   };
 }
@@ -143,7 +162,7 @@ async function keywordSearchRituals(term: string): Promise<RitualCardData[]> {
     .from("rituals")
     .select(LIST_FIELDS)
     .not("published_at", "is", null)
-    .or(`title_en.ilike.${pattern},summary.ilike.${pattern}`)
+    .or(`title_en.ilike.${pattern},summary.ilike.${pattern},title_es.ilike.${pattern},summary_es.ilike.${pattern}`)
     .order("title_en")
     .limit(50);
   if (error) return [];
@@ -242,7 +261,7 @@ export async function listSavedRituals(userId: string): Promise<RitualCardData[]
   const { data, error } = await supabase
     .from("ritual_favorites")
     .select(
-      "saved_at, rituals(id, slug, title_en, summary, purpose, tradition, difficulty, image_url, source_type)",
+      "saved_at, rituals(id, slug, title_en, title_es, summary, summary_es, purpose, tradition, difficulty, image_url, source_type)",
     )
     .eq("user_id", userId)
     .order("saved_at", { ascending: false });

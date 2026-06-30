@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getPurpose, purposeLabel } from "@/lib/rituals/purposes";
-import type { RitualCardData } from "@/lib/rituals/queries";
+import { type RitualCardData, ritualTitle, ritualSummary } from "@/lib/rituals/queries";
 import { SaveRitualButton } from "@/components/save-ritual-button";
 import { t, type Locale } from "@/lib/i18n/dictionary";
 
@@ -44,10 +44,10 @@ export function RitualCard({
       ) : null}
       <div className="p-5 flex flex-col flex-1">
         {purpose ? <p className="eyebrow mb-2">{purposeLabel(purpose, locale)}</p> : null}
-        <h3 className="display text-lg leading-tight mb-2">{ritual.title_en}</h3>
-        {ritual.summary ? (
+        <h3 className="display text-lg leading-tight mb-2">{ritualTitle(ritual, locale)}</h3>
+        {ritualSummary(ritual, locale) ? (
           <p className="text-[var(--foreground-muted)] text-sm leading-relaxed line-clamp-3">
-            {ritual.summary}
+            {ritualSummary(ritual, locale)}
           </p>
         ) : null}
         <div className="mt-auto pt-4 flex items-center gap-3 text-[var(--foreground-subtle)]">
