@@ -215,6 +215,8 @@ async function main() {
   const limitArg = process.argv.find((a) => a.startsWith("--limit="));
   const limit = limitArg ? parseInt(limitArg.split("=")[1], 10) : undefined;
   const dry = process.argv.includes("--dry");
+  // Incremental: only extract posts that do not already have a library entry.
+  const newOnly = process.argv.includes("--new");
 
   console.log(`Loading ritual_posts${limit ? ` (limit ${limit})` : ""}...`);
   let q = supabase
@@ -222,18 +224,27 @@ async function main() {
     .select("slug, url, title, description, keywords, body_excerpt, image_url, product_slugs")
     .order("slug");
   if (limit) q = q.limit(limit);
-  const { data: posts, error } = await q;
+  const { data: postsRaw, error } = await q;
   if (error) {
     console.error("Failed to read ritual_posts:", error.message);
     process.exit(1);
   }
-  console.log(`Got ${posts?.length ?? 0} posts.\n`);
+
+  let posts = (postsRaw ?? []) as Post[];
+  if (newOnly) {
+    const { data: existing } = await supabase.from("rituals").select("slug");
+    const have = new Set((existing ?? []).map((r: { slug: string }) => r.slug));
+    const before = posts.length;
+    posts = posts.filter((p) => !have.has(p.slug));
+    console.log(`Incremental: ${posts.length} new of ${before} posts.`);
+  }
+  console.log(`Got ${posts.length} posts.\n`);
 
   let rituals = 0;
   let skipped = 0;
   let failed = 0;
 
-  for (const post of (posts ?? []) as Post[]) {
+  for (const post of posts) {
     const e = await extract(post);
     if (!e) {
       failed++;

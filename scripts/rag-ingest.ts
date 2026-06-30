@@ -349,7 +349,7 @@ async function ingestProducts(limit?: number, offset = 0): Promise<Set<string>> 
 }
 
 // ---------- blog ingest ----------
-async function ingestBlog(knownProductSlugs: Set<string>, limit?: number, offset = 0) {
+async function ingestBlog(knownProductSlugs: Set<string>, limit?: number, offset = 0, newOnly = false) {
   console.log("[blog] gathering URLs from sitemaps...");
   const allUrls: string[] = [];
   for (const sm of BLOG_SITEMAPS) {
@@ -358,8 +358,20 @@ async function ingestBlog(knownProductSlugs: Set<string>, limit?: number, offset
   }
   console.log(`[blog] ${allUrls.length} URLs in sitemaps`);
 
+  // Incremental mode: only process posts we have not ingested yet.
+  let candidateUrls = allUrls;
+  if (newOnly) {
+    const { data } = await supabase.from("ritual_posts").select("slug");
+    const have = new Set((data ?? []).map((r: { slug: string }) => r.slug));
+    candidateUrls = allUrls.filter((u) => {
+      const s = slugFromUrl(u);
+      return s && !have.has(s);
+    });
+    console.log(`[blog] ${candidateUrls.length} new (not yet ingested) of ${allUrls.length}`);
+  }
+
   const sliceEnd = limit ? offset + limit : undefined;
-  const subset = allUrls.slice(offset, sliceEnd);
+  const subset = candidateUrls.slice(offset, sliceEnd);
   console.log(`[blog] processing slice ${offset}..${offset + subset.length}`);
 
   type ParsedPost = {
@@ -465,6 +477,7 @@ async function main() {
   const offset = offsetArg ? parseInt(offsetArg.split("=")[1], 10) : 0;
   const runProducts = !args.has("--blog");
   const runBlog = !args.has("--products");
+  const newOnly = args.has("--new");
 
   let knownSlugs = new Set<string>();
   if (runProducts) {
@@ -479,7 +492,7 @@ async function main() {
       console.error("VOYAGE_API_KEY required for blog ingest");
       process.exit(1);
     }
-    await ingestBlog(knownSlugs, limit, offset);
+    await ingestBlog(knownSlugs, limit, offset, newOnly);
   }
   console.log("[done]");
 }

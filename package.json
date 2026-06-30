@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "refresh-rituals": "tsx scripts/rag-ingest.ts --blog --new && tsx scripts/build-ritual-library.ts --new && tsx scripts/translate-rituals.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.scripts.json --noEmit",
     "typecheck:app": "tsc --noEmit",
     "typecheck:scripts": "tsc -p tsconfig.scripts.json --noEmit"
