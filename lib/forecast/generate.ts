@@ -47,22 +47,16 @@ export async function getOrGenerateMonthlyForecast(
   const supabase = await createClient();
   const month = currentMonthKey();
 
-  // The forecasts cache is keyed on (user, month) only, so it holds one
-  // language. English uses it; Spanish generates fresh each view to avoid a
-  // stale English cache hit. (A future migration could add a locale column.)
-  const useCache = locale === "en";
-
-  // Cache lookup
-  const { data: existing } = useCache
-    ? await supabase
-        .from("forecasts")
-        .select(
-          "month, content, generated_at, retrieved_product_slugs, retrieved_sources",
-        )
-        .eq("user_id", userId)
-        .eq("month", month)
-        .maybeSingle()
-    : { data: null };
+  // Cached per (user, month, locale), so each language caches independently.
+  const { data: existing } = await supabase
+    .from("forecasts")
+    .select(
+      "month, content, generated_at, retrieved_product_slugs, retrieved_sources",
+    )
+    .eq("user_id", userId)
+    .eq("month", month)
+    .eq("locale", locale)
+    .maybeSingle();
 
   if (existing?.content) {
     return {
@@ -137,22 +131,20 @@ export async function getOrGenerateMonthlyForecast(
   const clean = sanitizeStringsDeep(parsed);
 
   // Persist via admin client so we can write even though RLS is for
-  // selects only (writes are server-only by design). Only the English cache is
-  // persisted (see useCache note above).
-  if (useCache) {
-    const admin = createAdminClient();
-    await admin.from("forecasts").upsert(
-      {
-        user_id: userId,
-        month,
-        content: clean,
-        generated_at: new Date().toISOString(),
-        retrieved_product_slugs: ragMetadata.product_slugs,
-        retrieved_sources: ragMetadata.sources,
-      },
-      { onConflict: "user_id,month" },
-    );
-  }
+  // selects only (writes are server-only by design).
+  const admin = createAdminClient();
+  await admin.from("forecasts").upsert(
+    {
+      user_id: userId,
+      month,
+      locale,
+      content: clean,
+      generated_at: new Date().toISOString(),
+      retrieved_product_slugs: ragMetadata.product_slugs,
+      retrieved_sources: ragMetadata.sources,
+    },
+    { onConflict: "user_id,month,locale" },
+  );
 
   return {
     month,

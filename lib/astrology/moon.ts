@@ -78,32 +78,57 @@ export type MoonGuidance = {
 };
 
 /** What each phase is good for, in the voice of the house. */
-export function moonGuidance(b: MoonBucket): MoonGuidance {
+export function moonGuidance(b: MoonBucket, locale: "en" | "es" = "en"): MoonGuidance {
+  const es = locale === "es";
   switch (b) {
     case "new":
-      return {
-        title: "Plant what you want to grow.",
-        body: "The dark moon is the seed in the soil. Begin here. Set intentions, open roads, start the work you mean to build on. What you start under the new moon grows with it.",
-        goodFor: ["New beginnings", "Road opening", "Setting intentions"],
-      };
+      return es
+        ? {
+            title: "Planta lo que quieres que crezca.",
+            body: "La luna oscura es la semilla en la tierra. Comienza aquí. Fija intenciones, abre caminos, empieza el trabajo sobre el que quieres construir. Lo que comienzas bajo la luna nueva crece con ella.",
+            goodFor: ["Nuevos comienzos", "Abrir caminos", "Fijar intenciones"],
+          }
+        : {
+            title: "Plant what you want to grow.",
+            body: "The dark moon is the seed in the soil. Begin here. Set intentions, open roads, start the work you mean to build on. What you start under the new moon grows with it.",
+            goodFor: ["New beginnings", "Road opening", "Setting intentions"],
+          };
     case "waxing":
-      return {
-        title: "Draw it toward you.",
-        body: "The moon is growing and so is anything you call in now. This is the time to attract: money, love, success, blessings. Build, increase, invite. The tide is rising in your favor.",
-        goodFor: ["Money drawing", "Love and attraction", "Success and growth"],
-      };
+      return es
+        ? {
+            title: "Atráelo hacia ti.",
+            body: "La luna está creciendo y también todo lo que llamas ahora. Este es el momento de atraer: dinero, amor, éxito, bendiciones. Construye, aumenta, invita. La marea sube a tu favor.",
+            goodFor: ["Atraer dinero", "Amor y atracción", "Éxito y crecimiento"],
+          }
+        : {
+            title: "Draw it toward you.",
+            body: "The moon is growing and so is anything you call in now. This is the time to attract: money, love, success, blessings. Build, increase, invite. The tide is rising in your favor.",
+            goodFor: ["Money drawing", "Love and attraction", "Success and growth"],
+          };
     case "full":
-      return {
-        title: "The moon is at full power.",
-        body: "Tonight the moon is strongest. Charge your waters, stones, and tools in its light. Give thanks. Do the work that needs real force behind it, and release what you are ready to let go.",
-        goodFor: ["Charging tools", "Powerful workings", "Gratitude and release"],
-      };
+      return es
+        ? {
+            title: "La luna está en su máximo poder.",
+            body: "Esta noche la luna es más fuerte. Carga tus aguas, piedras y herramientas en su luz. Da gracias. Haz el trabajo que necesita verdadera fuerza, y suelta lo que estás listo para dejar ir.",
+            goodFor: ["Cargar herramientas", "Trabajos poderosos", "Gratitud y liberación"],
+          }
+        : {
+            title: "The moon is at full power.",
+            body: "Tonight the moon is strongest. Charge your waters, stones, and tools in its light. Give thanks. Do the work that needs real force behind it, and release what you are ready to let go.",
+            goodFor: ["Charging tools", "Powerful workings", "Gratitude and release"],
+          };
     case "waning":
-      return {
-        title: "Send it away.",
-        body: "The moon is shrinking, and what you release shrinks with it. This is the time to cleanse, banish, uncross, and cut what no longer serves you. Clear the ground so the next new moon has room.",
-        goodFor: ["Cleansing", "Uncrossing and reversal", "Banishing"],
-      };
+      return es
+        ? {
+            title: "Envíalo lejos.",
+            body: "La luna está menguando, y lo que sueltas mengua con ella. Este es el momento de limpiar, desterrar, descruzar y cortar lo que ya no te sirve. Despeja el terreno para que la próxima luna nueva tenga espacio.",
+            goodFor: ["Limpieza", "Descruce y reversión", "Destierro"],
+          }
+        : {
+            title: "Send it away.",
+            body: "The moon is shrinking, and what you release shrinks with it. This is the time to cleanse, banish, uncross, and cut what no longer serves you. Clear the ground so the next new moon has room.",
+            goodFor: ["Cleansing", "Uncrossing and reversal", "Banishing"],
+          };
   }
 }
 

@@ -131,6 +131,34 @@ const ASPECTS: Array<{ angle: number; orb: number; aspect: SkyAspect }> = [
   },
 ];
 
+const ASPECT_LABEL_ES: Record<SkyAspect["name"], string> = {
+  conjunct: "conjunción",
+  sextile: "sextil",
+  square: "cuadratura",
+  trine: "trígono",
+  opposite: "oposición",
+};
+
+const ASPECT_MEANING_ES: Record<SkyAspect["name"], string> = {
+  conjunct: "La voluntad y el sentimiento se mueven como uno. Fija tus intenciones con confianza.",
+  sextile: "Una puerta abierta. Hoy los pequeños esfuerzos llegan más lejos de lo habitual.",
+  square: "La cabeza y el corazón tiran en direcciones distintas. Sé amable contigo y con los demás.",
+  trine: "La corriente fluye fácil. Un buen día para el trabajo que has postergado.",
+  opposite: "Todo queda iluminado, incluso lo que preferirías no ver. Suelta lo que ya terminó.",
+};
+
+/** "Moon trine Sun" / "La Luna en trígono con el Sol". */
+export function aspectPhrase(name: SkyAspect["name"], locale: "en" | "es"): string {
+  return locale === "es"
+    ? `La Luna en ${ASPECT_LABEL_ES[name]} con el Sol`
+    : `Moon ${name} Sun`;
+}
+
+/** Localized one-line meaning for an aspect. */
+export function aspectMeaning(aspect: SkyAspect, locale: "en" | "es"): string {
+  return locale === "es" ? ASPECT_MEANING_ES[aspect.name] : aspect.meaning;
+}
+
 export type TodaysSky = {
   moonSign: ZodiacSign;
   sunSign: ZodiacSign;

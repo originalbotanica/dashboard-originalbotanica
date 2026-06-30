@@ -5,7 +5,7 @@ import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getTodaysSky } from "@/lib/astrology/sky";
+import { getTodaysSky, aspectPhrase, aspectMeaning } from "@/lib/astrology/sky";
 import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
 import { isValidSign, type Sign } from "@/lib/daily-horoscope/prompt";
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
@@ -94,7 +94,7 @@ export default async function AstrologyHubPage() {
             phase: sky.waxing ? t(locale, "astro.waxing") : t(locale, "astro.waning"),
             sun: signName(sky.sunSign, locale),
           })}
-          {sky.aspect ? ` ${sky.aspect.name}. ${sky.aspect.meaning}` : ""}
+          {sky.aspect ? ` ${aspectPhrase(sky.aspect.name, locale)}. ${aspectMeaning(sky.aspect, locale)}` : ""}
         </p>
 
         {!hasBirthData ? (

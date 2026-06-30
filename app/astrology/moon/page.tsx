@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getMoon, moonGuidance } from "@/lib/astrology/moon";
-import { getTodaysSky } from "@/lib/astrology/sky";
+import { getTodaysSky, aspectPhrase, aspectMeaning } from "@/lib/astrology/sky";
 import { getRitualsByMoonPhase, getSavedRitualIds } from "@/lib/rituals/queries";
 import { MoonPhase } from "@/components/moon-phase";
 import { RitualCard } from "@/components/ritual-card";
@@ -34,14 +34,14 @@ export default async function MoonGuidePage() {
   const sub = await getSubscriptionStatus(user.id);
   if (!sub.isActive) redirect("/astrology");
 
+  const locale = await getLocale();
   const moon = getMoon();
-  const guide = moonGuidance(moon.bucket);
+  const guide = moonGuidance(moon.bucket, locale);
   const sky = getTodaysSky();
   const [rituals, savedIds] = await Promise.all([
     getRitualsByMoonPhase(moon.bucket, 3),
     getSavedRitualIds(user.id),
   ]);
-  const locale = await getLocale();
 
   return (
     <main className="min-h-screen">
@@ -69,7 +69,7 @@ export default async function MoonGuidePage() {
           </h1>
           {sky.aspect && (
             <p className="eyebrow mt-3 text-[var(--foreground-muted)]">
-              Moon {sky.aspect.name} Sun. {sky.aspect.meaning}
+              {aspectPhrase(sky.aspect.name, locale)}. {aspectMeaning(sky.aspect, locale)}
             </p>
           )}
           <p className="invocation text-lg md:text-xl text-[var(--foreground)] mt-5 max-w-2xl">

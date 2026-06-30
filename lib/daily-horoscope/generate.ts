@@ -54,23 +54,16 @@ export async function getOrGenerateDailyHoroscope(
   const supabase = createAdminClient();
   const date = todayKey();
 
-  // The daily_horoscopes cache is keyed on (sign, date) only, so it can hold
-  // one language. English uses it; Spanish generates fresh each view (low
-  // volume) to avoid serving an English cache hit. A future migration could add
-  // a `locale` column to cache both.
-  const useCache = locale === "en";
-
-  // Cache lookup
-  const { data: existing } = useCache
-    ? await supabase
-        .from("daily_horoscopes")
-        .select(
-          "sign, date, content, generated_at, retrieved_product_slugs, retrieved_sources",
-        )
-        .eq("sign", sign)
-        .eq("date", date)
-        .maybeSingle()
-    : { data: null };
+  // Cached per (sign, date, locale), so each language caches independently.
+  const { data: existing } = await supabase
+    .from("daily_horoscopes")
+    .select(
+      "sign, date, content, generated_at, retrieved_product_slugs, retrieved_sources",
+    )
+    .eq("sign", sign)
+    .eq("date", date)
+    .eq("locale", locale)
+    .maybeSingle();
 
   if (existing?.content) {
     return {
@@ -138,20 +131,18 @@ export async function getOrGenerateDailyHoroscope(
   const clean = sanitizeStringsDeep(parsed);
 
   // Persist (idempotent; another concurrent request may have written first).
-  // Only the English cache is persisted (see useCache note above).
-  if (useCache) {
-    await supabase.from("daily_horoscopes").upsert(
-      {
-        sign,
-        date,
-        content: clean,
-        generated_at: new Date().toISOString(),
-        retrieved_product_slugs: ragMetadata.product_slugs,
-        retrieved_sources: ragMetadata.sources,
-      },
-      { onConflict: "sign,date" },
-    );
-  }
+  await supabase.from("daily_horoscopes").upsert(
+    {
+      sign,
+      date,
+      locale,
+      content: clean,
+      generated_at: new Date().toISOString(),
+      retrieved_product_slugs: ragMetadata.product_slugs,
+      retrieved_sources: ragMetadata.sources,
+    },
+    { onConflict: "sign,date,locale" },
+  );
 
   return {
     sign,
