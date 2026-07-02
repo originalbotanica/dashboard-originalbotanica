@@ -41,7 +41,7 @@ export async function MarketingToolLayout({
       <MarketingHeader />
 
       {/* Hero with full-bleed photography */}
-      <section className="relative min-h-[70vh] flex flex-col items-center justify-center text-center px-6 pt-28 pb-16 overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center text-center px-6 pt-32 pb-14 overflow-hidden">
         {/* Clear way back to the main page from a tool's detail view. */}
         <Link
           href="/"
@@ -79,9 +79,9 @@ export async function MarketingToolLayout({
 
       {/* Body content (passed by the specific tool page) */}
       <section className="border-t border-[var(--border)]">
-        <div className="max-w-3xl mx-auto px-6 py-20">
+        <div className="max-w-3xl mx-auto px-6 pt-12 pb-20">
           {graphicSrc && (
-            <div className="mb-16 flex justify-center">
+            <div className="mb-14 flex justify-center">
               <div className="relative w-full max-w-md aspect-square rounded-md border border-[#b08d52]/60 overflow-hidden bg-[#0d0a07]">
                 <Image
                   src={graphicSrc}
