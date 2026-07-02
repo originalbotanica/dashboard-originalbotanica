@@ -16,7 +16,7 @@ export async function MarketingHeader() {
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
       style={{ background: "rgba(10, 8, 6, 0.9) " }}
     >
-      <div className="w-full px-4 sm:px-6 md:px-12 py-3 flex items-center justify-between gap-3 md:gap-4">
+      <div className="w-full px-3 sm:px-6 md:px-12 py-3 flex items-center justify-between gap-2 md:gap-4">
         <Link href="/" className="flex items-center leading-none shrink-0">
           <Image
             src="/logo-ob-white-banner.png"
@@ -24,7 +24,7 @@ export async function MarketingHeader() {
             width={943}
             height={685}
             priority
-            className="h-auto w-[72px] md:w-[92px]"
+            className="h-auto w-[60px] md:w-[92px]"
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}
@@ -51,10 +51,10 @@ export async function MarketingHeader() {
         <nav className="flex items-center gap-2 md:gap-4 shrink-0">
           <span className="flex items-center gap-1.5 md:gap-2 text-[15px] md:text-[20px] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
             <LanguageToggle className="!text-[15px] md:!text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6]" />
-            <span aria-hidden className="text-[#d2ac66]">/</span>
+            <span aria-hidden className="text-[#d2ac66] hidden sm:inline">/</span>
             <Link
               href="/login"
-              className="nav-link !text-[15px] md:!text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors hidden sm:inline-flex"
+              className="nav-link !text-[15px] md:!text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
             >
               {t(locale, "lp.signIn")}
             </Link>
