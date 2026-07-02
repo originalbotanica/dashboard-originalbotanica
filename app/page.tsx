@@ -8,12 +8,16 @@ import { t } from "@/lib/i18n/dictionary";
 
 /**
  * Marketing homepage (logged out) — Jimmy's landing design.
- * Hero wordmark, intro card, six photo tiles, 10%-off banner,
- * heritage block. Dark + gold, EN/ES, all links functional.
+ * Black + gold, sacred-geometry backdrop, wordmark hero, intro card,
+ * six photo tiles, 10%-off banner, heritage block. EN/ES.
  * Photo assets are CDN stand-ins until the designer's exports arrive.
  */
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
+
+// Jimmy's gold. Warmer and yellower than the app accent.
+const GOLD = "#d2ac66";
+const GOLD_SOFT = "rgba(210, 172, 102, 0.55)";
 
 const OG_IMAGE = `${OB_CDN}/Banners/original-botanica.png`;
 const OG_DESC =
@@ -37,6 +41,46 @@ export const metadata = {
     images: [OG_IMAGE],
   },
 };
+
+/** Faint sacred-geometry line work behind the page, like the comp. */
+function GeometryBackdrop() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 -z-20 overflow-hidden"
+    >
+      <svg
+        className="absolute left-1/2 -translate-x-1/2 top-[6%] w-[1400px] max-w-none opacity-[0.05]"
+        viewBox="0 0 800 800"
+        fill="none"
+        stroke={GOLD}
+        strokeWidth="1"
+      >
+        <circle cx="400" cy="400" r="360" />
+        <circle cx="400" cy="400" r="250" />
+        <circle cx="400" cy="400" r="120" />
+        <path d="M400 40 L760 580 L40 580 Z" />
+        <path d="M400 760 L760 220 L40 220 Z" />
+        <path d="M40 400 H760 M400 40 V760" />
+      </svg>
+      <svg
+        className="absolute left-1/2 -translate-x-1/2 bottom-[2%] w-[1200px] max-w-none opacity-[0.05]"
+        viewBox="0 0 800 400"
+        fill="none"
+        stroke={GOLD}
+        strokeWidth="1"
+      >
+        <circle cx="400" cy="200" r="180" />
+        <path d="M20 200 H780" />
+        <path d="M60 200 l14 -10 v20 z M740 200 l-14 -10 v20 z" fill={GOLD} />
+        <circle cx="200" cy="80" r="2.5" fill={GOLD} />
+        <circle cx="620" cy="310" r="2.5" fill={GOLD} />
+        <circle cx="90" cy="330" r="2" fill={GOLD} />
+        <circle cx="700" cy="60" r="2" fill={GOLD} />
+      </svg>
+    </div>
+  );
+}
 
 export default async function HomePage({
   searchParams,
@@ -85,11 +129,12 @@ export default async function HomePage({
     t(locale, k, vars);
 
   return (
-    <main className="flex-1">
+    <main className="relative flex-1 bg-[#0d0a07]">
+      <GeometryBackdrop />
       <MarketingHeader />
 
       {/* ── Hero: The Practice wordmark ─────────────────────────────── */}
-      <section className="relative flex flex-col items-center justify-center text-center px-6 pt-40 pb-16 overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center text-center px-6 pt-32 pb-16 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
             src={`${OB_CDN}/spiritual-candles.png`}
@@ -97,40 +142,53 @@ export default async function HomePage({
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-35"
+            className="object-cover opacity-50"
           />
           <div
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, rgba(20,16,11,0.45) 0%, rgba(20,16,11,0.85) 70%, rgba(20,16,11,1) 100%)",
+                "linear-gradient(180deg, rgba(13,10,7,0.55) 0%, rgba(13,10,7,0.35) 40%, rgba(13,10,7,0.92) 88%, #0d0a07 100%)",
             }}
           />
         </div>
 
-        <p className="eyebrow mb-6 tracking-[0.3em]">{tr("lp2.introducing")}</p>
+        <p className="uppercase tracking-[0.35em] text-xs md:text-sm text-[var(--foreground)] mb-7">
+          {tr("lp2.introducing")}
+        </p>
 
         {/* Wordmark — the brand name stays the same in both languages. */}
-        <div className="flex items-center gap-4 text-[var(--accent)] mb-1">
-          <span aria-hidden className="h-px w-10 md:w-16 bg-[var(--accent)]" />
-          <span className="display text-2xl md:text-4xl tracking-[0.35em] uppercase">
+        <div
+          className="flex items-center gap-5 mb-2"
+          style={{ color: GOLD }}
+        >
+          <span aria-hidden className="h-px w-12 md:w-20" style={{ backgroundColor: GOLD_SOFT }} />
+          <span className="display text-3xl md:text-5xl tracking-[0.3em] uppercase">
             The
           </span>
-          <span aria-hidden className="h-px w-10 md:w-16 bg-[var(--accent)]" />
+          <span aria-hidden className="h-px w-12 md:w-20" style={{ backgroundColor: GOLD_SOFT }} />
         </div>
-        <h1 className="display text-6xl md:text-8xl uppercase tracking-[0.08em] text-[var(--accent)] leading-none mb-4">
+        <h1
+          className="display text-[4.2rem] md:text-[7.5rem] uppercase tracking-[0.06em] leading-none mb-5"
+          style={{ color: GOLD }}
+        >
           Practice
         </h1>
-        <p className="eyebrow tracking-[0.28em] mb-6">{tr("lp2.byline")}</p>
-        <p className="uppercase tracking-[0.2em] text-lg md:text-xl text-[var(--foreground)]">
+        <p
+          className="uppercase tracking-[0.3em] text-[0.65rem] md:text-xs mb-8"
+          style={{ color: GOLD }}
+        >
+          {tr("lp2.byline")}
+        </p>
+        <p className="uppercase tracking-[0.22em] text-base md:text-xl text-white">
           {tr("lp2.tagline")}
         </p>
       </section>
 
       {/* ── Intro card: photo + pitch ───────────────────────────────── */}
       <section className="px-6">
-        <div className="max-w-5xl mx-auto rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden grid md:grid-cols-[2fr_3fr]">
-          <div className="relative min-h-[260px] md:min-h-full">
+        <div className="max-w-5xl mx-auto rounded-md border border-[#2b241a] bg-[#120e0a] overflow-hidden grid md:grid-cols-[2fr_3fr]">
+          <div className="relative min-h-[280px] md:min-h-full">
             <Image
               src={`${OB_CDN}/cta-spiritual-services.jpg`}
               alt=""
@@ -140,70 +198,28 @@ export default async function HomePage({
             />
           </div>
           <div className="p-8 md:p-12">
-            <h2 className="display text-2xl md:text-3xl uppercase tracking-wide text-[var(--accent)] mb-5 leading-snug">
+            <h2
+              className="display text-[1.55rem] md:text-[2.05rem] uppercase tracking-[0.02em] mb-5 leading-[1.25]"
+              style={{ color: GOLD }}
+            >
               {tr("lp2.introTitle")}
             </h2>
-            <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
+            <p className="text-[#cfc8bd] leading-relaxed md:text-lg mb-8">
               {tr("lp2.introBody")}
             </p>
-            <p className="invocation text-[var(--accent)] leading-relaxed border-t border-[var(--border)] pt-6">
+            <p
+              className="font-semibold leading-relaxed md:text-lg"
+              style={{ color: GOLD }}
+            >
               {tr("lp2.introHighlight")}
             </p>
           </div>
         </div>
       </section>
 
-      {/* ── The six tools — photo tiles ─────────────────────────────── */}
-      <section aria-label={tr("lp.toolsTitle")} className="px-6 pt-10 pb-4">
-        <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ToolTile
-            href="/tools/tarot"
-            imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
-            title={tr("lp.toolTarotTitle")}
-            body={tr("lp.toolTarotBody")}
-            learnMore={tr("lp2.learnMore")}
-          />
-          <ToolTile
-            href="/tools/astrology"
-            imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
-            title={tr("lp.toolAstroTitle")}
-            body={tr("lp.toolAstroBody")}
-            learnMore={tr("lp2.learnMore")}
-          />
-          <ToolTile
-            href="/tools/dreams"
-            imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
-            title={tr("lp.toolDreamsTitle")}
-            body={tr("lp.toolDreamsBody")}
-            learnMore={tr("lp2.learnMore")}
-          />
-          <ToolTile
-            href="/tools/virtual-altar"
-            imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
-            title={tr("lp.toolAltarTitle")}
-            body={tr("lp.toolAltarBody")}
-            learnMore={tr("lp2.learnMore")}
-          />
-          <ToolTile
-            href="/tools/ancestors"
-            imageSrc={`${OB_CDN}/spiritual-candles.png`}
-            title={tr("lp.toolAncestorsTitle")}
-            body={tr("lp.toolAncestorsBody")}
-            learnMore={tr("lp2.learnMore")}
-          />
-          <ToolTile
-            href="/tools/rituals"
-            imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
-            title={tr("lp.toolRitualsTitle")}
-            body={tr("lp.toolRitualsBody")}
-            learnMore={tr("lp2.learnMore")}
-          />
-        </div>
-      </section>
-
       {/* ── The six tools ───────────────────────────────────────────── */}
-      <section aria-label={tr("lp.toolsTitle")} className="px-6 py-10">
-        <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section aria-label={tr("lp.toolsTitle")} className="px-6 py-8">
+        <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
           <ToolTile
             href="/tools/tarot"
             imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
@@ -250,50 +266,57 @@ export default async function HomePage({
       </section>
 
       {/* ── 10% off banner + primary CTA ────────────────────────────── */}
-      <section className="px-6 py-10">
-        <div className="relative max-w-5xl mx-auto rounded-xl border border-[var(--border)] overflow-hidden">
+      <section className="px-6 py-8">
+        <div className="relative max-w-5xl mx-auto rounded-md border border-[#2b241a] overflow-hidden">
           <div className="absolute inset-0 -z-10">
             <Image
-              src={`${OB_CDN}/spiritual-baths-washes.png`}
+              src={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
               alt=""
               fill
               sizes="(max-width: 1024px) 100vw, 1024px"
-              className="object-cover opacity-45"
+              className="object-cover opacity-70"
             />
             <div
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(20,16,11,0.95) 0%, rgba(20,16,11,0.75) 45%, rgba(20,16,11,0.35) 100%)",
+                  "linear-gradient(90deg, rgba(13,10,7,0.97) 0%, rgba(13,10,7,0.88) 42%, rgba(13,10,7,0.25) 100%)",
               }}
             />
           </div>
-          <div className="p-8 md:p-14 max-w-xl">
-            <p className="display uppercase tracking-wide text-3xl md:text-4xl leading-tight mb-1">
+          <div className="px-8 py-12 md:px-14 md:py-16 max-w-2xl">
+            <p className="display uppercase text-4xl md:text-5xl leading-tight text-white mb-1">
               {tr("lp2.joinAndGet")}
             </p>
-            <p className="display uppercase text-6xl md:text-7xl leading-none text-[var(--accent)] mb-1">
+            <p
+              className="display uppercase text-7xl md:text-[6.5rem] leading-[0.95] mb-1"
+              style={{ color: GOLD }}
+            >
               {tr("lp2.tenOff")}
             </p>
-            <p className="display uppercase tracking-wide text-3xl md:text-4xl leading-tight mb-2">
+            <p className="display uppercase text-4xl md:text-5xl leading-tight text-white mb-3">
               {tr("lp2.everythingAt")}
             </p>
             <a
               href="https://originalbotanica.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-lg md:text-xl text-[var(--foreground)] hover:text-[var(--accent)] underline underline-offset-4 transition-colors"
+              className="text-xl md:text-2xl font-semibold text-white hover:underline underline-offset-4"
             >
               www.originalbotanica.com
             </a>
-            <div className="mt-8">
-              <Link href="/signup" className="btn-primary text-sm uppercase tracking-wide">
+            <div className="mt-9">
+              <Link
+                href="/signup"
+                className="inline-block uppercase tracking-[0.12em] text-sm font-semibold rounded-sm px-6 py-3 text-[#181207] transition-opacity hover:opacity-90"
+                style={{ backgroundColor: GOLD }}
+              >
                 {tr("lp.heroCta")}
               </Link>
             </div>
-            <p className="text-xs text-[var(--foreground-muted)] mt-4 leading-relaxed">
+            <p className="text-xs text-[#b9b0a2] mt-5 leading-relaxed max-w-xs">
               {tr("lp.heroMicro")}{" "}
-              <Link href="/gift" className="text-[var(--accent)] hover:underline">
+              <Link href="/gift" className="hover:underline" style={{ color: GOLD }}>
                 {tr("lp.heroGift")}
               </Link>
             </p>
@@ -302,22 +325,21 @@ export default async function HomePage({
       </section>
 
       {/* ── Heritage: a real botanica since 1959 ────────────────────── */}
-      <section className="px-6 pb-24">
-        <div className="max-w-5xl mx-auto rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden grid md:grid-cols-2">
-          <div className="grid grid-cols-[2fr_3fr]">
-            <div className="relative flex items-center justify-center bg-[#2a1430] p-6">
+      <section className="px-6 pb-24 pt-2">
+        <div className="max-w-5xl mx-auto rounded-md border border-[#2b241a] bg-[#120e0a] overflow-hidden grid md:grid-cols-2">
+          <div className="grid grid-cols-[2fr_3fr] min-h-[280px]">
+            <div className="relative flex items-center justify-center bg-[#3d1a49] p-6">
               <Image
                 src="/logo-original-botanica.svg"
                 alt="Original Botanica"
                 width={120}
                 height={86}
-                className="h-auto w-full max-w-[120px]"
+                className="h-auto w-full max-w-[110px]"
               />
             </div>
             <div
               role="img"
               aria-label={tr("lp.heritageCaption")}
-              className="min-h-[240px]"
               style={{
                 backgroundImage: "url('/heritage/building-then-now.png')",
                 backgroundSize: "cover",
@@ -327,13 +349,17 @@ export default async function HomePage({
             />
           </div>
           <div className="p-8 md:p-12">
-            <h2 className="display text-2xl md:text-3xl uppercase tracking-wide text-[var(--accent)] mb-5 leading-snug">
+            <h2
+              className="display text-[1.6rem] md:text-[2.1rem] uppercase tracking-[0.02em] leading-[1.2] mb-5"
+              style={{ color: GOLD }}
+            >
               {tr("lp2.heritageTitle")}
             </h2>
-            <p className="text-[var(--foreground-muted)] leading-relaxed mb-5 border-t border-[var(--border)] pt-5">
+            <div className="h-px w-full mb-6" style={{ backgroundColor: GOLD_SOFT }} />
+            <p className="text-[#cfc8bd] leading-relaxed mb-5">
               {tr("lp2.heritageBody1")}
             </p>
-            <p className="text-[var(--foreground)] leading-relaxed">
+            <p className="text-white leading-relaxed">
               {tr("lp2.heritageBody2")}
             </p>
           </div>
@@ -343,7 +369,7 @@ export default async function HomePage({
   );
 }
 
-/** A landing tile: full-bleed photo, title + one-liner, Learn more. */
+/** A landing tile: full-bleed photo, gold-ruled title, Learn more. */
 function ToolTile({
   href,
   imageSrc,
@@ -360,7 +386,7 @@ function ToolTile({
   return (
     <Link
       href={href}
-      className="group relative block aspect-[10/11] rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors"
+      className="group relative block aspect-square rounded-md overflow-hidden border border-[#2b241a] hover:border-[#d2ac66] transition-colors"
     >
       <Image
         src={imageSrc}
@@ -373,19 +399,25 @@ function ToolTile({
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(20,16,11,0.05) 30%, rgba(20,16,11,0.82) 78%, rgba(20,16,11,0.95) 100%)",
+            "linear-gradient(180deg, rgba(13,10,7,0.0) 32%, rgba(13,10,7,0.72) 68%, rgba(13,10,7,0.94) 100%)",
         }}
       />
-      <div className="absolute inset-x-0 bottom-0 p-5">
-        <h3 className="display uppercase tracking-wide text-2xl leading-tight text-[var(--foreground)] mb-2 border-b border-[var(--accent)] pb-2 inline-block group-hover:text-[var(--accent)] transition-colors">
+      <div className="absolute inset-x-0 bottom-0 p-6">
+        <h3 className="display uppercase text-[1.7rem] leading-[1.05] text-white mb-2.5">
           {title}
         </h3>
-        <p className="text-xs text-[var(--foreground-muted)] leading-relaxed mb-3 max-w-[26ch]">
+        <div className="h-px w-24 mb-3" style={{ backgroundColor: GOLD_SOFT }} />
+        <p className="text-[0.78rem] text-[#d6cfc4] leading-relaxed max-w-[30ch]">
           {body}
         </p>
-        <span className="eyebrow text-[0.65rem] tracking-[0.18em] text-[var(--accent)] border border-[var(--accent)] rounded-sm px-2.5 py-1 inline-block">
-          {learnMore}
-        </span>
+        <div className="flex justify-end mt-3">
+          <span
+            className="uppercase tracking-[0.16em] text-[0.6rem] border rounded-sm px-3 py-1.5 transition-colors group-hover:bg-[#d2ac66] group-hover:text-[#181207]"
+            style={{ borderColor: GOLD_SOFT, color: GOLD }}
+          >
+            {learnMore}
+          </span>
+        </div>
       </div>
     </Link>
   );
