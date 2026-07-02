@@ -187,17 +187,19 @@ export default async function HomePage({
 
       {/* ── Intro card: photo + pitch ───────────────────────────────── */}
       <section className="px-6">
-        <div className="max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 bg-[#120e0a] overflow-hidden grid md:grid-cols-[2fr_3fr]">
-          <div className="relative min-h-[280px] md:min-h-full">
+        <div className="relative isolate max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 overflow-hidden">
+          <div className="absolute inset-0 -z-10">
             <Image
-              src="/landing/intro-woman.jpg"
+              src="/landing/intro-card.jpg"
               alt=""
               fill
-              sizes="(max-width: 768px) 100vw, 40vw"
+              sizes="(max-width: 1400px) 100vw, 1400px"
               className="object-cover"
             />
+            {/* Keeps text readable when the photo sits behind it on mobile. */}
+            <div className="absolute inset-0 bg-[#0d0a07]/70 md:bg-transparent" />
           </div>
-          <div className="p-8 md:p-12">
+          <div className="p-8 md:p-12 md:ml-[42%] max-w-2xl">
             <h2
               className="display text-[1.55rem] md:text-[2.05rem] uppercase tracking-[0.02em] mb-5 leading-[1.25]"
               style={{ color: GOLD }}
@@ -326,29 +328,18 @@ export default async function HomePage({
 
       {/* ── Heritage: a real botanica since 1959 ────────────────────── */}
       <section className="px-6 pb-24 pt-2">
-        <div className="max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 bg-[#120e0a] overflow-hidden grid md:grid-cols-2">
-          <div className="grid grid-cols-[2fr_3fr] min-h-[280px]">
-            <div className="relative flex items-center justify-center bg-[#3d1a49] p-6">
-              <Image
-                src="/logo-original-botanica-white.svg"
-                alt="Original Botanica"
-                width={120}
-                height={86}
-                className="h-auto w-full max-w-[110px]"
-              />
-            </div>
-            <div
-              role="img"
-              aria-label={tr("lp.heritageCaption")}
-              style={{
-                backgroundImage: "url('/heritage/building-then-now.png')",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
+        <div className="relative isolate max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 overflow-hidden min-h-[300px]">
+          <div className="absolute inset-0 -z-10">
+            <Image
+              src="/landing/heritage-card.jpg"
+              alt={tr("lp.heritageCaption")}
+              fill
+              sizes="(max-width: 1400px) 100vw, 1400px"
+              className="object-cover"
             />
+            <div className="absolute inset-0 bg-[#0d0a07]/70 md:bg-transparent" />
           </div>
-          <div className="p-8 md:p-12">
+          <div className="p-8 md:p-12 md:ml-[45%] max-w-2xl">
             <h2
               className="display text-[1.6rem] md:text-[2.1rem] uppercase tracking-[0.02em] leading-[1.2] mb-5"
               style={{ color: GOLD }}
