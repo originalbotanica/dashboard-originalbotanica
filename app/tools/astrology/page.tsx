@@ -21,7 +21,6 @@ export default async function AstrologyToolPage() {
       heroImageUrl={`${OB_CDN}/cta-spiritual-services.jpg`}
       graphicSrc="/landing/birth-chart.png"
       graphicAlt="A natal birth chart"
-      graphicFit="contain"
     >
       <p className="eyebrow mb-3">{tr("mkt.astro.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">

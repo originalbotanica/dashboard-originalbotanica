@@ -79,7 +79,7 @@ export async function MarketingToolLayout({
 
       {/* Body content (passed by the specific tool page) */}
       <section className="border-t border-[var(--border)]">
-        <div className="max-w-3xl mx-auto px-6 pt-12 pb-20">
+        <div className="max-w-3xl mx-auto px-6 pt-12 pb-12 text-lg md:text-xl">
           {graphicSrc && (
             <div className="mb-14 flex justify-center">
               <div className="relative w-full max-w-md aspect-square rounded-md border border-[#b08d52]/60 overflow-hidden bg-[#0d0a07]">
@@ -119,7 +119,7 @@ export async function MarketingToolLayout({
             }}
           />
         </div>
-        <div className="max-w-2xl mx-auto px-6 py-24 text-center">
+        <div className="max-w-2xl mx-auto px-6 pt-14 pb-20 text-center">
           <h2 className="display text-3xl md:text-4xl mb-6 leading-tight">
             {t(locale, "mkt.ctaHeadline")}
           </h2>
