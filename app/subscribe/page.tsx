@@ -34,7 +34,7 @@ export default async function SubscribePage() {
     <main className="min-h-screen flex items-center justify-center px-6 py-16">
       <div className="auth-card text-center">
         <Image
-          src="/logo-original-botanica.svg"
+          src="/logo-ob-white-banner.png"
           alt="Original Botanica"
           width={100}
           height={70}

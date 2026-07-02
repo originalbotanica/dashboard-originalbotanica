@@ -19,7 +19,7 @@ export default async function LoginPage({
       <div className="auth-card">
         <Link href="/" className="flex flex-col items-center mb-8 leading-none">
           <Image
-            src="/logo-original-botanica.svg"
+            src="/logo-ob-white-banner.png"
             alt="Original Botanica"
             width={100}
             height={70}

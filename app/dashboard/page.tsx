@@ -161,7 +161,7 @@ export default async function DashboardPage() {
 
         {/* Centered logo, large and prominent */}
         <Image
-          src="/logo-original-botanica.svg"
+          src="/logo-ob-white-banner.png"
           alt="Original Botanica"
           width={180}
           height={130}

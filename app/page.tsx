@@ -341,7 +341,7 @@ export default async function HomePage({
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10 lg:gap-14 p-8 md:p-12">
             {/* Smaller logo so the storefronts and copy get the room. */}
             <Image
-              src="/logo-original-botanica-white.svg"
+              src="/logo-ob-white-banner.png"
               alt="Original Botanica"
               width={120}
               height={86}

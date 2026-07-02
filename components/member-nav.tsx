@@ -63,7 +63,7 @@ export function MemberNav({
       <div className="w-full px-4 sm:px-6 md:px-10 py-3 flex items-center justify-between gap-4">
         <Link href="/dashboard" className="flex items-center leading-none shrink-0">
           <Image
-            src="/logo-original-botanica.svg"
+            src="/logo-ob-white-banner.png"
             alt="Original Botanica"
             width={70}
             height={50}

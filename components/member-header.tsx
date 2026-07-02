@@ -31,7 +31,7 @@ export function MemberHeader({
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center leading-none">
           <Image
-            src="/logo-original-botanica.svg"
+            src="/logo-ob-white-banner.png"
             alt="Original Botanica"
             width={70}
             height={50}

@@ -94,7 +94,7 @@ export default async function PublicMemorialPage({
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center leading-none">
             <Image
-              src="/logo-original-botanica.svg"
+              src="/logo-ob-white-banner.png"
               alt="Original Botanica"
               width={70}
               height={50}
