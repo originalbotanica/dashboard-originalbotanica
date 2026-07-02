@@ -149,7 +149,7 @@ export function MemberNav({
                 key={tool.href}
                 href={tool.href}
                 onClick={() => setMenuOpen(false)}
-                className={`nav-link py-2 ${
+                className={`nav-link !text-[15px] py-2 text-center ${
                   isActive(tool.href) ? "text-[var(--accent)]" : "text-[var(--foreground)]"
                 }`}
               >
@@ -160,17 +160,20 @@ export function MemberNav({
               <Link
                 href="/account"
                 onClick={() => setMenuOpen(false)}
-                className="nav-link py-2 block text-[var(--foreground)]"
+                className="nav-link !text-[15px] py-2 block text-center text-[var(--foreground)]"
               >
                 {t("nav.accountBilling")}
               </Link>
               <form action="/auth/signout" method="post">
-                <button type="submit" className="nav-link py-2 block text-[var(--foreground)]">
+                <button
+                  type="submit"
+                  className="nav-link !text-[15px] py-2 block w-full text-center text-[var(--foreground)]"
+                >
                   {t("nav.signOut")}
                 </button>
               </form>
-              <div className="pt-3">
-                <LanguageToggle />
+              <div className="pt-3 flex justify-center">
+                <LanguageToggle className="!text-[15px]" />
               </div>
             </div>
           </nav>
