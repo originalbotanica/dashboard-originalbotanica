@@ -137,18 +137,18 @@ export default async function HomePage({
       <section className="relative flex flex-col items-center justify-center text-center px-6 pt-32 pb-16 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
-            src={`${OB_CDN}/spiritual-candles.png`}
+            src="/landing/hero.jpg"
             alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-50"
+            className="object-cover opacity-95"
           />
           <div
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, rgba(13,10,7,0.55) 0%, rgba(13,10,7,0.35) 40%, rgba(13,10,7,0.92) 88%, #0d0a07 100%)",
+                "linear-gradient(180deg, rgba(13,10,7,0.25) 0%, rgba(13,10,7,0.05) 45%, rgba(13,10,7,0.85) 92%, #0d0a07 100%)",
             }}
           />
         </div>
@@ -190,7 +190,7 @@ export default async function HomePage({
         <div className="max-w-5xl mx-auto rounded-md border border-[#2b241a] bg-[#120e0a] overflow-hidden grid md:grid-cols-[2fr_3fr]">
           <div className="relative min-h-[280px] md:min-h-full">
             <Image
-              src={`${OB_CDN}/cta-spiritual-services.jpg`}
+              src="/landing/intro-woman.jpg"
               alt=""
               fill
               sizes="(max-width: 768px) 100vw, 40vw"
@@ -222,42 +222,42 @@ export default async function HomePage({
         <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
           <ToolTile
             href="/tools/tarot"
-            imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
+            imageSrc="/landing/tile-tarot.jpg"
             title={tr("lp.toolTarotTitle")}
             body={tr("lp.toolTarotBody")}
             learnMore={tr("lp2.learnMore")}
           />
           <ToolTile
             href="/tools/astrology"
-            imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+            imageSrc="/landing/tile-astrologer.jpg"
             title={tr("lp.toolAstroTitle")}
             body={tr("lp.toolAstroBody")}
             learnMore={tr("lp2.learnMore")}
           />
           <ToolTile
             href="/tools/dreams"
-            imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+            imageSrc="/landing/tile-dreams.jpg"
             title={tr("lp.toolDreamsTitle")}
             body={tr("lp.toolDreamsBody")}
             learnMore={tr("lp2.learnMore")}
           />
           <ToolTile
             href="/tools/virtual-altar"
-            imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
+            imageSrc="/landing/tile-altar.jpg"
             title={tr("lp.toolAltarTitle")}
             body={tr("lp.toolAltarBody")}
             learnMore={tr("lp2.learnMore")}
           />
           <ToolTile
             href="/tools/ancestors"
-            imageSrc={`${OB_CDN}/spiritual-candles.png`}
+            imageSrc="/landing/tile-ancestors.jpg"
             title={tr("lp.toolAncestorsTitle")}
             body={tr("lp.toolAncestorsBody")}
             learnMore={tr("lp2.learnMore")}
           />
           <ToolTile
             href="/tools/rituals"
-            imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+            imageSrc="/landing/tile-rituals.jpg"
             title={tr("lp.toolRitualsTitle")}
             body={tr("lp.toolRitualsBody")}
             learnMore={tr("lp2.learnMore")}
@@ -270,17 +270,17 @@ export default async function HomePage({
         <div className="relative max-w-5xl mx-auto rounded-md border border-[#2b241a] overflow-hidden">
           <div className="absolute inset-0 -z-10">
             <Image
-              src={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+              src="/landing/banner-shelf.jpg"
               alt=""
               fill
               sizes="(max-width: 1024px) 100vw, 1024px"
-              className="object-cover opacity-70"
+              className="object-cover"
             />
             <div
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(13,10,7,0.97) 0%, rgba(13,10,7,0.88) 42%, rgba(13,10,7,0.25) 100%)",
+                  "linear-gradient(90deg, rgba(13,10,7,0.6) 0%, rgba(13,10,7,0.2) 45%, rgba(13,10,7,0) 100%)",
               }}
             />
           </div>
@@ -399,7 +399,7 @@ function ToolTile({
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(13,10,7,0.0) 32%, rgba(13,10,7,0.72) 68%, rgba(13,10,7,0.94) 100%)",
+            "linear-gradient(180deg, rgba(13,10,7,0) 40%, rgba(13,10,7,0.35) 60%, rgba(13,10,7,0.65) 100%)",
         }}
       />
       <div className="absolute inset-x-0 bottom-0 p-6">
