@@ -16,7 +16,7 @@ export async function MarketingHeader() {
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
       style={{ background: "rgba(10, 8, 6, 0.9) " }}
     >
-      <div className="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between gap-3">
+      <div className="w-full px-5 md:px-8 py-3 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center leading-none shrink-0">
           <Image
             src="/logo-original-botanica-white.svg"
@@ -28,7 +28,7 @@ export async function MarketingHeader() {
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}
-        <nav className="hidden lg:flex items-center gap-6 text-[20px] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
+        <nav className="hidden lg:flex flex-1 items-center justify-evenly gap-4 px-6 text-[20px] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
           {(
             [
               ["lp.featTarot", "/tools/tarot"],
