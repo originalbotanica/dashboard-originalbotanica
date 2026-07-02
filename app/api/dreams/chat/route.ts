@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
+import { getAnthropic, CHAT_MODEL } from "@/lib/astrologer/anthropic";
 import { buildDreamSystemPrompt, dreamTitleFromMessage } from "@/lib/dreams/prompt";
 import { getLocale } from "@/lib/i18n/server";
 import {
@@ -178,8 +178,8 @@ export async function POST(request: Request) {
       let assistantText = "";
       try {
         const claudeStream = await anthropic.messages.stream({
-          model: ASTROLOGER_MODEL,
-          max_tokens: 1500,
+          model: CHAT_MODEL,
+          max_tokens: 1000,
           system,
           messages: history,
         });

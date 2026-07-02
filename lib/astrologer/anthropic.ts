@@ -20,3 +20,12 @@ export function getAnthropic(): Anthropic {
  * fast. Bump deliberately when needed.
  */
 export const ASTROLOGER_MODEL = "claude-sonnet-4-5";
+
+/**
+ * Interactive chat (astrologer + dreams). The member waits for the whole
+ * reading before it appears, so the budget is 5 to 8 seconds end to end.
+ * Haiku writes several times faster than Sonnet and holds the house voice
+ * well at reading length. Background generations (forecast, compatibility,
+ * daily tarot) stay on ASTROLOGER_MODEL where latency doesn't matter.
+ */
+export const CHAT_MODEL = "claude-haiku-4-5";

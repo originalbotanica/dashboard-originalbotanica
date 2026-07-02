@@ -240,7 +240,7 @@ export function DreamChat({
       <div
         ref={scrollRef}
         className="relative z-10 flex-1 overflow-y-auto pr-2"
-        style={{ minHeight: "240px", maxHeight: "calc(100dvh - 300px)" }}
+        style={{ minHeight: "240px", maxHeight: "calc(100dvh - 150px)" }}
       >
         {isEmpty ? (
           <Welcome firstName={firstName} onPick={send} />
@@ -271,15 +271,14 @@ export function DreamChat({
               )}
           </div>
         )}
-      </div>
 
-      {/* "For this dream" cards, directly under the reading. */}
-      {!streaming && recs && <div className="relative z-10">{recs}</div>}
+        {error && <p className="form-error mt-3">{error}</p>}
 
-      {error && <p className="form-error mt-3">{error}</p>}
-
-      <form
-        className="relative z-10 mt-6 border-t border-[var(--border)] pt-4"
+        {/* The follow-up box sits right under the latest reading, so the
+            next question is asked where the reading ends, not pinned at
+            the bottom of the screen. */}
+        <form
+          className="mt-6 border-t border-[var(--border)] pt-4"
         onSubmit={(e) => {
           e.preventDefault();
           send(input);
@@ -313,10 +312,14 @@ export function DreamChat({
         <p className="text-xs text-[var(--foreground-subtle)] mt-2">
           {t("dr.enterHint")}
         </p>
-        <p className="text-xs text-[var(--foreground-subtle)] mt-1">
-          {t("dr.privateNote")}
-        </p>
-      </form>
+          <p className="text-xs text-[var(--foreground-subtle)] mt-1">
+            {t("dr.privateNote")}
+          </p>
+        </form>
+
+        {/* "For this dream" cards close out the reading, below the box. */}
+        {!streaming && recs}
+      </div>
     </div>
   );
 }
