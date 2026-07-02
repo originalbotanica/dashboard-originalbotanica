@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MarketingHeader } from "@/components/marketing-header";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
 
@@ -10,25 +12,23 @@ const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
  * Each tool passes its own hero (eyebrow + headline + subhead + image)
  * and body content as children. The layout handles the consistent shell:
  * floating header, atmospheric hero with backdrop image, body container,
- * trial CTA at the bottom.
+ * trial CTA at the bottom. Chrome strings are bilingual via the shared
+ * dictionary (mkt.* keys).
  */
-export function MarketingToolLayout({
+export async function MarketingToolLayout({
   eyebrow,
   headline,
   subhead,
   heroImageUrl,
   children,
-  ctaHeadline = "Try it for seven days.",
-  ctaBody = "No charge until day eight. Cancel any time. All seven tools open the moment you join.",
 }: {
   eyebrow: string;
   headline: string;
   subhead: string;
   heroImageUrl: string;
   children: React.ReactNode;
-  ctaHeadline?: string;
-  ctaBody?: string;
 }) {
+  const locale = await getLocale();
   return (
     <main className="flex-1">
       <MarketingHeader />
@@ -40,7 +40,7 @@ export function MarketingToolLayout({
           href="/"
           className="absolute top-24 left-6 z-10 inline-flex items-center gap-1.5 nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
         >
-          <span aria-hidden>←</span> All the tools
+          <span aria-hidden>←</span> {t(locale, "mkt.allTools")}
         </Link>
 
         <div className="absolute inset-0 -z-10">
@@ -95,17 +95,17 @@ export function MarketingToolLayout({
         </div>
         <div className="max-w-2xl mx-auto px-6 py-24 text-center">
           <h2 className="display text-3xl md:text-4xl mb-6 leading-tight">
-            {ctaHeadline}
+            {t(locale, "mkt.ctaHeadline")}
           </h2>
           <p className="text-[var(--foreground-muted)] leading-relaxed mb-10 max-w-lg mx-auto">
-            {ctaBody}
+            {t(locale, "mkt.ctaBody")}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/signup" className="btn-primary">
-              Start your trial
+              {t(locale, "mkt.startTrial")}
             </Link>
             <Link href="/" className="btn-ghost">
-              All the tools
+              {t(locale, "mkt.allTools")}
             </Link>
           </div>
         </div>

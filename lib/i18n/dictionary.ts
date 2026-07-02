@@ -581,6 +581,146 @@ const en: Dict = {
   "cmp.allReadings": "All readings",
   "cmp.hub": "Astrology hub",
   "cmp.delete": "Delete this reading",
+
+  // marketing tool detail pages (/tools/*)
+  "mkt.allTools": "All the tools",
+  "mkt.ctaHeadline": "Try it for seven days.",
+  "mkt.ctaBody":
+    "No charge until day eight. Cancel any time. All seven tools open the moment you join.",
+  "mkt.startTrial": "Start your trial",
+
+  "mkt.tarot.eyebrow": "Tarot",
+  "mkt.tarot.headline": "Spin the wheel. Meet your card.",
+  "mkt.tarot.subhead":
+    "One card a day, drawn on a hand-painted wheel — its meaning to carry with you.",
+  "mkt.tarot.s1Eyebrow": "The daily spin",
+  "mkt.tarot.s1Title":
+    "Set the wheel turning. Stop it when the moment feels right.",
+  "mkt.tarot.s1Body":
+    "Twenty-one hand-painted Major Arcana cards ring the wheel. Touch the center to spin it, and stop it when your gut says so. It comes to rest on the card meant for your day. Stopping chooses the moment, not the card — the pull is already yours.",
+  "mkt.tarot.s2Eyebrow": "Upright or upside down",
+  "mkt.tarot.s2Title": "Every card speaks two ways.",
+  "mkt.tarot.s2Body":
+    "A card that lands upright carries one message; the same card upside down turns it. The wheel reads whichever way yours falls and gives you its meaning in plain words — something to sit with, not a forecast.",
+  "mkt.tarot.s3Eyebrow": "One card a day",
+  "mkt.tarot.s3Body":
+    "Your card is drawn for you, and it holds steady from morning to night. Once you have turned the wheel, today's card stays with you. A new one waits when the wheel comes around again tomorrow.",
+  "mkt.tarot.liveNote":
+    "Live now for members. Your wheel is waiting on your dashboard.",
+
+  "mkt.astro.eyebrow": "Astrology",
+  "mkt.astro.headline": "Your astrologer.",
+  "mkt.astro.subhead":
+    "Trained on your chart. Speaks the traditions Original Botanica has served since 1959.",
+  "mkt.astro.s1Eyebrow": "What it does",
+  "mkt.astro.s1Title":
+    "A reading rooted in your actual chart, not a generic horoscope.",
+  "mkt.astro.s1Body":
+    "Tell us when and where you were born. We calculate your full natal chart, then load it into a conversation you can come back to. The astrologer references your specific placements. Sun in Scorpio, Moon in the 4th house, Saturn squaring your Venus. Not vibes. Real chart work.",
+  "mkt.astro.s2Eyebrow": "The voice",
+  "mkt.astro.s2Title": "Grounded, direct, warm. Honest about hard transits.",
+  "mkt.astro.s2Body":
+    "Trained on the traditions the botanica has served for three generations. Western astrology, Lucumí, Espiritismo, folk Catholic. Spanish appears where it fits. No love-and-light jargon. No empty reassurance. When a placement is hard, the reading says so.",
+  "mkt.astro.s3Eyebrow": "How readings end",
+  "mkt.astro.s3Title": "Every reading ends with a ritual.",
+  "mkt.astro.s3Body":
+    "Not abstract advice. A specific, concrete ritual for this week. Which candle to burn, what day of the week, what intention to set, where to place it. The kind of guidance you used to get from an elder at the kitchen table.",
+  "mkt.astro.s4Eyebrow": "What it will not do",
+  "mkt.astro.s4Body":
+    "No medical, legal, or financial advice. No predictions of death, catastrophic harm, or pregnancy outcomes. No analysis of named third parties. No readings for anyone under 18. If a conversation enters crisis territory, it pauses and offers real-world resources.",
+
+  "mkt.dreams.eyebrow": "Dreams",
+  "mkt.dreams.headline": "What did the night bring?",
+  "mkt.dreams.subhead":
+    "Describe a dream while it's still fresh. The interpretation honors the traditions Original Botanica has practiced for three generations.",
+  "mkt.dreams.s1Eyebrow": "How it works",
+  "mkt.dreams.s1Title":
+    "Type the dream in any order. The interpreter listens for what is charged.",
+  "mkt.dreams.s1Body":
+    "Water. Fire. Animals. The dead. Falling. Flying. Doors. Mirrors. The symbols carry weight in the traditions we serve. We name them, place them, and tell you what the dream is asking you to notice in waking life.",
+  "mkt.dreams.s2Eyebrow": "The traditions",
+  "mkt.dreams.s2Title": "Four lineages of dreamwork, woven together.",
+  "mkt.dreams.s2Body":
+    "Lucumí dream symbols. Espiritismo. Folk Catholic dreamwork. Western Jungian. The interpretation draws on whichever tradition carries the meaning best for the dream you brought. A dream of a dead loved one is almost always treated as a real visit. We honor that frame.",
+  "mkt.dreams.s3Eyebrow": "Your journal",
+  "mkt.dreams.s3Title": "Every dream you interpret is saved.",
+  "mkt.dreams.s3Body":
+    "Come back later. Reread. Notice the patterns. The same symbol appearing across months. The same person showing up at the same threshold. The journal is yours, private to your account, searchable when the library grows.",
+  "mkt.dreams.s4Eyebrow": "Crisis-aware",
+  "mkt.dreams.s4Body":
+    "If a conversation surfaces suicidal ideation, abuse, or trauma, the interpreter pauses the dream work and offers real-world resources. The dream can wait. Your safety cannot.",
+
+  "mkt.altar.eyebrow": "Altar",
+  "mkt.altar.headline": "Light a candle.",
+  "mkt.altar.subhead":
+    "For an intention. For protection. For someone you love who needs the prayer.",
+  "mkt.altar.s1Eyebrow": "The flame",
+  "mkt.altar.s1Title": "A candle lit and tended on your behalf.",
+  "mkt.altar.s1Body":
+    "Choose the color for the work you are calling in. Set the intention. The candle burns at the botanica for the days you choose. You see it lit on your altar surface every time you open the app.",
+  "mkt.altar.s2Eyebrow": "When to light one",
+  "mkt.altar.s2Title": "For the work that asks for fire.",
+  "mkt.altar.s2Body":
+    "A petition you have been carrying. A friend in crisis. A court date. A surgery. A cleansing after a hard week. The first day of a new year. The traditions Original Botanica serves have used candles for all of it. The virtual altar carries that practice into the days you cannot visit the botanica in person.",
+  "mkt.altar.s3Eyebrow": "Your altar surface",
+  "mkt.altar.s3Body":
+    "Every candle you light appears on your altar in the dashboard. Names of intentions. Days remaining. The light stays with you between sessions. The practice travels with you.",
+  "mkt.altar.liveNote":
+    "Live now for members. Your altar is waiting on your dashboard.",
+
+  "mkt.anc.eyebrow": "Ancestors",
+  "mkt.anc.headline": "A flame for those who came before.",
+  "mkt.anc.subhead":
+    "Memorialize the ones you carry. Their names lit. Their stories with you.",
+  "mkt.anc.s1Eyebrow": "The practice",
+  "mkt.anc.s1Title":
+    "Honoring the dead is not a metaphor in the traditions we serve.",
+  "mkt.anc.s1Body":
+    "Espiritismo, Lucumí, folk Catholic. Each tradition places the ancestors at the center. They guide. They protect. They ask to be remembered. The ancestors altar gives you a place to remember them well, every day, wherever you are.",
+  "mkt.anc.s2Eyebrow": "What you do",
+  "mkt.anc.s2Title": "Add a name. Add a photo. Light their flame.",
+  "mkt.anc.s2Body":
+    "Your grandmother. Your father. A child you lost. A teacher. A friend taken too early. Their face on your altar, their name spoken, their flame lit on the days that matter. Birthdays. Death dates. The ordinary Tuesdays when you miss them most.",
+  "mkt.anc.s3Eyebrow": "A flame that stays",
+  "mkt.anc.s3Body":
+    "Your ancestors altar travels with you between devices. Their candles keep burning between visits. The work of remembering them is part of your daily practice, not a one-time gesture.",
+  "mkt.anc.s4Eyebrow": "Share with family",
+  "mkt.anc.s4Body":
+    "Each memorial gets a private link you can send to family. They can view the candle and add their own light. They do not need to be members. Honoring is something the whole family can do together.",
+
+  "mkt.rit.eyebrow": "Rituals",
+  "mkt.rit.headline": "Sixty-six years of practice.",
+  "mkt.rit.subhead":
+    "Curated and searchable. Real entries from Original Botanica's archive.",
+  "mkt.rit.s1Eyebrow": "The archive",
+  "mkt.rit.s1Title": "Three generations of practice, finally indexed.",
+  "mkt.rit.s1Body":
+    "Since 1959 the botanica has guided people through cleansings, protections, love work, court work, road openings, ancestor work. The rituals library brings the most-asked-for of those rituals into a searchable shelf you can reach from anywhere.",
+  "mkt.rit.s2Eyebrow": "Search by need",
+  "mkt.rit.s2Title": "For grief. For protection. For love that needs to land.",
+  "mkt.rit.s2Body":
+    "Type the situation. The rituals that have served that situation for decades appear, ordered by relevance. Each entry tells you what you need, how to prepare, what day of the week, what to say, what to do with what is left over.",
+  "mkt.rit.s3Eyebrow": "Save your favorites",
+  "mkt.rit.s3Body":
+    "Tap the bookmark on any ritual and it lives on your saved shelf. Build the practice you keep coming back to.",
+  "mkt.rit.liveNote":
+    "Live now for members. More than four hundred rituals from the botanica's archive, organized by purpose: money drawing, uncrossing, road opening, protection, love, and more.",
+
+  "mkt.disc.eyebrow": "Member benefit",
+  "mkt.disc.headline": "10% off everything.",
+  "mkt.disc.subhead":
+    "At originalbotanica.com. Applied automatically at checkout when you sign in with the same email.",
+  "mkt.disc.s1Eyebrow": "How it works",
+  "mkt.disc.s1Title": "Sign in to the shop. The discount is already there.",
+  "mkt.disc.s1Body":
+    "Your membership account links to your shop account by email. When you check out at originalbotanica.com, the 10% is already applied to your cart. No code to remember. No coupon to clip.",
+  "mkt.disc.s2Eyebrow": "What it covers",
+  "mkt.disc.s2Title": "Every candle. Every oil. Every spiritual bath.",
+  "mkt.disc.s2Body":
+    "The full catalog. Candles for every working. Oils and waters for cleansings, attractions, protections, road openings. Herbs and roots, loose and bundled. Spiritual baths and washes. Incense, resins, sahumerios. Statues of the Orishas and the Saints. Amulets and talismans.",
+  "mkt.disc.s3Eyebrow": "Pays for itself",
+  "mkt.disc.s3Body":
+    "For most members, the discount alone covers the membership. Buy two 7-day candles, a despojo bath, and a Florida Water across the year, and you have already saved more than you spent on the membership. The tools are the rest.",
 };
 
 const es: Dict = {
@@ -1145,6 +1285,149 @@ const es: Dict = {
   "cmp.allReadings": "Todas las lecturas",
   "cmp.hub": "Centro de astrología",
   "cmp.delete": "Eliminar esta lectura",
+
+  // páginas de detalle de herramientas (/tools/*)
+  "mkt.allTools": "Todas las herramientas",
+  "mkt.ctaHeadline": "Pruébalo por siete días.",
+  "mkt.ctaBody":
+    "Sin cargo hasta el día ocho. Cancela cuando quieras. Las siete herramientas se abren desde el momento en que te unes.",
+  "mkt.startTrial": "Comienza tu prueba",
+
+  "mkt.tarot.eyebrow": "Tarot",
+  "mkt.tarot.headline": "Gira la rueda. Conoce tu carta.",
+  "mkt.tarot.subhead":
+    "Una carta al día, sacada en una rueda pintada a mano — su significado te acompaña.",
+  "mkt.tarot.s1Eyebrow": "El giro diario",
+  "mkt.tarot.s1Title":
+    "Pon la rueda a girar. Detenla cuando el momento se sienta correcto.",
+  "mkt.tarot.s1Body":
+    "Veintiuna cartas de Arcanos Mayores pintadas a mano rodean la rueda. Toca el centro para girarla y detenla cuando tu intuición lo diga. Se posa sobre la carta destinada a tu día. Al detenerla eliges el momento, no la carta — el llamado ya es tuyo.",
+  "mkt.tarot.s2Eyebrow": "Derecha o invertida",
+  "mkt.tarot.s2Title": "Cada carta habla de dos maneras.",
+  "mkt.tarot.s2Body":
+    "Una carta que cae derecha trae un mensaje; la misma carta invertida lo transforma. La rueda lee la posición en que cae la tuya y te da su significado en palabras claras — algo para reflexionar, no un pronóstico.",
+  "mkt.tarot.s3Eyebrow": "Una carta al día",
+  "mkt.tarot.s3Body":
+    "Tu carta se saca para ti y se mantiene firme de la mañana a la noche. Una vez que giras la rueda, la carta de hoy se queda contigo. Una nueva te espera cuando la rueda vuelva a girar mañana.",
+  "mkt.tarot.liveNote":
+    "Ya disponible para miembros. Tu rueda te espera en tu Inicio.",
+
+  "mkt.astro.eyebrow": "Astrología",
+  "mkt.astro.headline": "Tu astrólogo.",
+  "mkt.astro.subhead":
+    "Entrenado con tu carta natal. Habla las tradiciones que Original Botanica sirve desde 1959.",
+  "mkt.astro.s1Eyebrow": "Qué hace",
+  "mkt.astro.s1Title":
+    "Una lectura enraizada en tu carta real, no un horóscopo genérico.",
+  "mkt.astro.s1Body":
+    "Dinos cuándo y dónde naciste. Calculamos tu carta natal completa y la cargamos en una conversación a la que puedes volver. El astrólogo cita tus posiciones específicas. Sol en Escorpio, Luna en la casa 4, Saturno en cuadratura con tu Venus. No son vibras. Es trabajo real con tu carta.",
+  "mkt.astro.s2Eyebrow": "La voz",
+  "mkt.astro.s2Title":
+    "Con raíz, directa, cálida. Honesta ante los tránsitos difíciles.",
+  "mkt.astro.s2Body":
+    "Entrenado en las tradiciones que la botánica ha servido por tres generaciones. Astrología occidental, Lucumí, Espiritismo, catolicismo popular. El español aparece donde corresponde. Sin jerga de amor y luz. Sin consuelo vacío. Cuando una posición es difícil, la lectura lo dice.",
+  "mkt.astro.s3Eyebrow": "Cómo terminan las lecturas",
+  "mkt.astro.s3Title": "Cada lectura termina con un ritual.",
+  "mkt.astro.s3Body":
+    "No es consejo abstracto. Un ritual específico y concreto para esta semana. Qué vela encender, qué día de la semana, qué intención poner, dónde colocarla. La guía que antes recibías de un mayor en la mesa de la cocina.",
+  "mkt.astro.s4Eyebrow": "Lo que no hará",
+  "mkt.astro.s4Body":
+    "Sin consejos médicos, legales ni financieros. Sin predicciones de muerte, daño catastrófico ni resultados de embarazo. Sin análisis de terceras personas con nombre. Sin lecturas para menores de 18 años. Si una conversación entra en territorio de crisis, se pausa y ofrece recursos del mundo real.",
+
+  "mkt.dreams.eyebrow": "Sueños",
+  "mkt.dreams.headline": "¿Qué trajo la noche?",
+  "mkt.dreams.subhead":
+    "Describe un sueño mientras está fresco. La interpretación honra las tradiciones que Original Botanica ha practicado por tres generaciones.",
+  "mkt.dreams.s1Eyebrow": "Cómo funciona",
+  "mkt.dreams.s1Title":
+    "Escribe el sueño en cualquier orden. El intérprete escucha lo que está cargado.",
+  "mkt.dreams.s1Body":
+    "Agua. Fuego. Animales. Los muertos. Caer. Volar. Puertas. Espejos. Los símbolos llevan peso en las tradiciones que servimos. Los nombramos, los ubicamos y te decimos qué te está pidiendo notar el sueño en la vida despierta.",
+  "mkt.dreams.s2Eyebrow": "Las tradiciones",
+  "mkt.dreams.s2Title": "Cuatro linajes de trabajo con sueños, entretejidos.",
+  "mkt.dreams.s2Body":
+    "Símbolos de sueños Lucumí. Espiritismo. Tradición católica popular. Jungiano occidental. La interpretación se apoya en la tradición que mejor cargue el significado del sueño que traes. Un sueño con un ser querido fallecido casi siempre se trata como una visita real. Honramos ese marco.",
+  "mkt.dreams.s3Eyebrow": "Tu diario",
+  "mkt.dreams.s3Title": "Cada sueño que interpretas queda guardado.",
+  "mkt.dreams.s3Body":
+    "Vuelve más tarde. Relee. Nota los patrones. El mismo símbolo apareciendo a lo largo de los meses. La misma persona llegando al mismo umbral. El diario es tuyo, privado en tu cuenta, con búsqueda a medida que crece.",
+  "mkt.dreams.s4Eyebrow": "Atento a las crisis",
+  "mkt.dreams.s4Body":
+    "Si una conversación revela ideación suicida, abuso o trauma, el intérprete pausa el trabajo con el sueño y ofrece recursos del mundo real. El sueño puede esperar. Tu seguridad no.",
+
+  "mkt.altar.eyebrow": "Altar",
+  "mkt.altar.headline": "Enciende una vela.",
+  "mkt.altar.subhead":
+    "Por una intención. Por protección. Por alguien que amas y necesita la oración.",
+  "mkt.altar.s1Eyebrow": "La llama",
+  "mkt.altar.s1Title": "Una vela encendida y atendida en tu nombre.",
+  "mkt.altar.s1Body":
+    "Elige el color para el trabajo que estás llamando. Pon la intención. La vela arde en la botánica los días que elijas. La ves encendida en tu altar cada vez que abres la aplicación.",
+  "mkt.altar.s2Eyebrow": "Cuándo encender una",
+  "mkt.altar.s2Title": "Para el trabajo que pide fuego.",
+  "mkt.altar.s2Body":
+    "Una petición que vienes cargando. Una amistad en crisis. Una cita en la corte. Una cirugía. Una limpieza después de una semana dura. El primer día de un año nuevo. Las tradiciones que Original Botanica sirve han usado velas para todo eso. El altar virtual lleva esa práctica a los días en que no puedes visitar la botánica en persona.",
+  "mkt.altar.s3Eyebrow": "Tu altar",
+  "mkt.altar.s3Body":
+    "Cada vela que enciendes aparece en tu altar en el Inicio. Los nombres de las intenciones. Los días restantes. La luz permanece contigo entre visitas. La práctica viaja contigo.",
+  "mkt.altar.liveNote":
+    "Ya disponible para miembros. Tu altar te espera en tu Inicio.",
+
+  "mkt.anc.eyebrow": "Ancestros",
+  "mkt.anc.headline": "Una llama para los que vinieron antes.",
+  "mkt.anc.subhead":
+    "Conmemora a los que llevas contigo. Sus nombres encendidos. Sus historias contigo.",
+  "mkt.anc.s1Eyebrow": "La práctica",
+  "mkt.anc.s1Title":
+    "Honrar a los muertos no es una metáfora en las tradiciones que servimos.",
+  "mkt.anc.s1Body":
+    "Espiritismo, Lucumí, catolicismo popular. Cada tradición pone a los ancestros en el centro. Guían. Protegen. Piden ser recordados. El altar de ancestros te da un lugar para recordarlos bien, todos los días, dondequiera que estés.",
+  "mkt.anc.s2Eyebrow": "Lo que haces",
+  "mkt.anc.s2Title": "Agrega un nombre. Agrega una foto. Enciende su llama.",
+  "mkt.anc.s2Body":
+    "Tu abuela. Tu padre. Un hijo que perdiste. Una maestra. Un amigo que se fue demasiado pronto. Su rostro en tu altar, su nombre pronunciado, su llama encendida en los días que importan. Cumpleaños. Aniversarios de su partida. Los martes comunes en que más los extrañas.",
+  "mkt.anc.s3Eyebrow": "Una llama que permanece",
+  "mkt.anc.s3Body":
+    "Tu altar de ancestros viaja contigo entre dispositivos. Sus velas siguen ardiendo entre visitas. El trabajo de recordarlos es parte de tu práctica diaria, no un gesto de una sola vez.",
+  "mkt.anc.s4Eyebrow": "Comparte con la familia",
+  "mkt.anc.s4Body":
+    "Cada memorial recibe un enlace privado que puedes enviar a la familia. Pueden ver la vela y sumar su propia luz. No necesitan ser miembros. Honrar es algo que toda la familia puede hacer junta.",
+
+  "mkt.rit.eyebrow": "Rituales",
+  "mkt.rit.headline": "Sesenta y seis años de práctica.",
+  "mkt.rit.subhead":
+    "Curados y con búsqueda. Entradas reales del archivo de Original Botanica.",
+  "mkt.rit.s1Eyebrow": "El archivo",
+  "mkt.rit.s1Title": "Tres generaciones de práctica, por fin organizadas.",
+  "mkt.rit.s1Body":
+    "Desde 1959 la botánica ha guiado a la gente en limpiezas, protecciones, trabajos de amor, asuntos de corte, aperturas de camino, trabajo con ancestros. La biblioteca de rituales reúne los más pedidos en un estante con búsqueda que puedes alcanzar desde cualquier lugar.",
+  "mkt.rit.s2Eyebrow": "Busca por necesidad",
+  "mkt.rit.s2Title":
+    "Para el duelo. Para la protección. Para el amor que necesita llegar.",
+  "mkt.rit.s2Body":
+    "Escribe la situación. Aparecen los rituales que la han servido por décadas, ordenados por relevancia. Cada entrada te dice qué necesitas, cómo prepararte, qué día de la semana, qué decir y qué hacer con lo que sobra.",
+  "mkt.rit.s3Eyebrow": "Guarda tus favoritos",
+  "mkt.rit.s3Body":
+    "Toca el marcador en cualquier ritual y queda en tu estante de guardados. Construye la práctica a la que siempre vuelves.",
+  "mkt.rit.liveNote":
+    "Ya disponible para miembros. Más de cuatrocientos rituales del archivo de la botánica, organizados por propósito: atraer dinero, descruce, abrecaminos, protección, amor y más.",
+
+  "mkt.disc.eyebrow": "Beneficio de miembro",
+  "mkt.disc.headline": "10% de descuento en todo.",
+  "mkt.disc.subhead":
+    "En originalbotanica.com. Se aplica automáticamente al pagar cuando inicias sesión con el mismo correo.",
+  "mkt.disc.s1Eyebrow": "Cómo funciona",
+  "mkt.disc.s1Title":
+    "Inicia sesión en la tienda. El descuento ya está ahí.",
+  "mkt.disc.s1Body":
+    "Tu cuenta de membresía se vincula con tu cuenta de la tienda por correo electrónico. Cuando pagas en originalbotanica.com, el 10% ya está aplicado a tu carrito. Sin códigos que recordar. Sin cupones que recortar.",
+  "mkt.disc.s2Eyebrow": "Qué cubre",
+  "mkt.disc.s2Title": "Cada vela. Cada aceite. Cada baño espiritual.",
+  "mkt.disc.s2Body":
+    "El catálogo completo. Velas para cada trabajo. Aceites y aguas para limpiezas, atracciones, protecciones, aperturas de camino. Hierbas y raíces, sueltas y en manojos. Baños y lavados espirituales. Inciensos, resinas, sahumerios. Estatuas de los Orishas y los Santos. Amuletos y talismanes.",
+  "mkt.disc.s3Eyebrow": "Se paga solo",
+  "mkt.disc.s3Body":
+    "Para la mayoría de los miembros, el descuento por sí solo cubre la membresía. Compra dos velas de 7 días, un baño de despojo y un Florida Water en el año, y ya ahorraste más de lo que gastaste en la membresía. Las herramientas son lo demás.",
 };
 
 const MESSAGES: Record<Locale, Dict> = { en, es };

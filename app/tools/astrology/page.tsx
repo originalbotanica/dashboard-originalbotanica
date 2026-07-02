@@ -1,4 +1,6 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Your astrologer",
@@ -8,54 +10,43 @@ export const metadata = {
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
 
-export default function AstrologyToolPage() {
+export default async function AstrologyToolPage() {
+  const locale = await getLocale();
+  const tr = (k: string) => t(locale, k);
   return (
     <MarketingToolLayout
-      eyebrow="Astrology"
-      headline="Your astrologer."
-      subhead="Trained on your chart. Speaks the traditions Original Botanica has served since 1959."
+      eyebrow={tr("mkt.astro.eyebrow")}
+      headline={tr("mkt.astro.headline")}
+      subhead={tr("mkt.astro.subhead")}
       heroImageUrl={`${OB_CDN}/cta-spiritual-services.jpg`}
     >
-      <p className="eyebrow mb-3">What it does</p>
+      <p className="eyebrow mb-3">{tr("mkt.astro.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
-        A reading rooted in your actual chart, not a generic horoscope.
+        {tr("mkt.astro.s1Title")}
       </h2>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        Tell us when and where you were born. We calculate your full natal
-        chart, then load it into a conversation you can come back to. The
-        astrologer references your specific placements. Sun in Scorpio, Moon
-        in the 4th house, Saturn squaring your Venus. Not vibes. Real chart
-        work.
+        {tr("mkt.astro.s1Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">The voice</p>
+      <p className="eyebrow mb-3 mt-12">{tr("mkt.astro.s2Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
-        Grounded, direct, warm. Honest about hard transits.
+        {tr("mkt.astro.s2Title")}
       </h2>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        Trained on the traditions the botanica has served for three
-        generations. Western astrology, Lucum&iacute;, Espiritismo, folk
-        Catholic. Spanish appears where it fits. No love-and-light jargon. No
-        empty reassurance. When a placement is hard, the reading says so.
+        {tr("mkt.astro.s2Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">How readings end</p>
+      <p className="eyebrow mb-3 mt-12">{tr("mkt.astro.s3Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
-        Every reading ends with a ritual.
+        {tr("mkt.astro.s3Title")}
       </h2>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        Not abstract advice. A specific, concrete ritual for this week. Which
-        candle to burn, what day of the week, what intention to set, where to
-        place it. The kind of guidance you used to get from an elder at the
-        kitchen table.
+        {tr("mkt.astro.s3Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">What it will not do</p>
+      <p className="eyebrow mb-3 mt-12">{tr("mkt.astro.s4Eyebrow")}</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        No medical, legal, or financial advice. No predictions of death,
-        catastrophic harm, or pregnancy outcomes. No analysis of named third
-        parties. No readings for anyone under 18. If a conversation enters
-        crisis territory, it pauses and offers real-world resources.
+        {tr("mkt.astro.s4Body")}
       </p>
     </MarketingToolLayout>
   );

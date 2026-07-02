@@ -1,4 +1,6 @@
 import { MarketingToolLayout } from "@/components/marketing-tool-layout";
+import { getLocale } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/dictionary";
 
 export const metadata = {
   title: "Virtual altar",
@@ -8,45 +10,39 @@ export const metadata = {
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
 
-export default function VirtualAltarToolPage() {
+export default async function VirtualAltarToolPage() {
+  const locale = await getLocale();
+  const tr = (k: string) => t(locale, k);
   return (
     <MarketingToolLayout
-      eyebrow="Altar"
-      headline="Light a candle."
-      subhead="For an intention. For protection. For someone you love who needs the prayer."
+      eyebrow={tr("mkt.altar.eyebrow")}
+      headline={tr("mkt.altar.headline")}
+      subhead={tr("mkt.altar.subhead")}
       heroImageUrl={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
     >
-      <p className="eyebrow mb-3">The flame</p>
+      <p className="eyebrow mb-3">{tr("mkt.altar.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
-        A candle lit and tended on your behalf.
+        {tr("mkt.altar.s1Title")}
       </h2>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        Choose the color for the work you are calling in. Set the intention.
-        The candle burns at the botanica for the days you choose. You see it
-        lit on your altar surface every time you open the app.
+        {tr("mkt.altar.s1Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">When to light one</p>
+      <p className="eyebrow mb-3 mt-12">{tr("mkt.altar.s2Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
-        For the work that asks for fire.
+        {tr("mkt.altar.s2Title")}
       </h2>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        A petition you have been carrying. A friend in crisis. A court date.
-        A surgery. A cleansing after a hard week. The first day of a new
-        year. The traditions Original Botanica serves have used candles for
-        all of it. The virtual altar carries that practice into the days you
-        cannot visit the botanica in person.
+        {tr("mkt.altar.s2Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">Your altar surface</p>
+      <p className="eyebrow mb-3 mt-12">{tr("mkt.altar.s3Eyebrow")}</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
-        Every candle you light appears on your altar in the dashboard. Names
-        of intentions. Days remaining. The light stays with you between
-        sessions. The practice travels with you.
+        {tr("mkt.altar.s3Body")}
       </p>
 
       <div className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--accent)] pl-4 py-2 mt-12">
-        Live now for members. Your altar is waiting on your dashboard.
+        {tr("mkt.altar.liveNote")}
       </div>
     </MarketingToolLayout>
   );
