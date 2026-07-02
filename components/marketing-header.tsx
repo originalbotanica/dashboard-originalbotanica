@@ -14,9 +14,9 @@ export async function MarketingHeader() {
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
-      style={{ background: "rgba(20, 16, 11, 0.65)" }}
+      style={{ background: "rgba(10, 8, 6, 0.9) " }}
     >
-      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-3">
+      <div className="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between gap-3">
         <Link href="/" className="flex items-center leading-none shrink-0">
           <Image
             src="/logo-original-botanica.svg"
@@ -28,7 +28,7 @@ export async function MarketingHeader() {
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}
-        <nav className="hidden lg:flex items-center gap-5 text-[0.72rem] tracking-[0.14em] uppercase">
+        <nav className="hidden lg:flex items-center gap-8 text-[0.78rem] font-semibold tracking-[0.12em] uppercase">
           {(
             [
               ["lp.featTarot", "/tools/tarot"],
@@ -42,21 +42,28 @@ export async function MarketingHeader() {
             <Link
               key={href}
               href={href}
-              className="nav-link text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+              className="nav-link !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
             >
               {t(locale, key)}
             </Link>
           ))}
         </nav>
-        <nav className="flex items-center gap-3 md:gap-5">
-          <LanguageToggle />
+        <nav className="flex items-center gap-3 md:gap-4">
+          <span className="flex items-center gap-2 text-[0.78rem] font-semibold tracking-[0.12em] uppercase">
+            <LanguageToggle className="!text-[#d2ac66] hover:!text-[#f0d9a6]" />
+            <span aria-hidden className="text-[#d2ac66]">/</span>
+            <Link
+              href="/login"
+              className="nav-link !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors hidden sm:inline-flex"
+            >
+              {t(locale, "lp.signIn")}
+            </Link>
+          </span>
           <Link
-            href="/login"
-            className="nav-link text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors hidden sm:inline-flex"
+            href="/signup"
+            className="rounded-md px-6 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90"
+            style={{ background: "linear-gradient(180deg, #e8c983 0%, #c69a4e 100%)" }}
           >
-            {t(locale, "lp.signIn")}
-          </Link>
-          <Link href="/signup" className="btn-primary text-xs px-5 py-2.5">
             {t(locale, "lp.startTrial")}
           </Link>
         </nav>

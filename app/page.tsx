@@ -187,7 +187,7 @@ export default async function HomePage({
 
       {/* ── Intro card: photo + pitch ───────────────────────────────── */}
       <section className="px-6">
-        <div className="max-w-5xl mx-auto rounded-md border border-[#2b241a] bg-[#120e0a] overflow-hidden grid md:grid-cols-[2fr_3fr]">
+        <div className="max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 bg-[#120e0a] overflow-hidden grid md:grid-cols-[2fr_3fr]">
           <div className="relative min-h-[280px] md:min-h-full">
             <Image
               src="/landing/intro-woman.jpg"
@@ -219,7 +219,7 @@ export default async function HomePage({
 
       {/* ── The six tools ───────────────────────────────────────────── */}
       <section aria-label={tr("lp.toolsTitle")} className="px-6 py-8">
-        <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="max-w-[1400px] mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
           <ToolTile
             href="/tools/tarot"
             imageSrc="/landing/tile-tarot.jpg"
@@ -267,7 +267,7 @@ export default async function HomePage({
 
       {/* ── 10% off banner + primary CTA ────────────────────────────── */}
       <section className="px-6 py-8">
-        <div className="relative isolate max-w-5xl mx-auto rounded-md border border-[#2b241a] overflow-hidden">
+        <div className="relative isolate max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 overflow-hidden">
           <div className="absolute inset-0 -z-10">
             <Image
               src="/landing/banner-shelf.jpg"
@@ -326,7 +326,7 @@ export default async function HomePage({
 
       {/* ── Heritage: a real botanica since 1959 ────────────────────── */}
       <section className="px-6 pb-24 pt-2">
-        <div className="max-w-5xl mx-auto rounded-md border border-[#2b241a] bg-[#120e0a] overflow-hidden grid md:grid-cols-2">
+        <div className="max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 bg-[#120e0a] overflow-hidden grid md:grid-cols-2">
           <div className="grid grid-cols-[2fr_3fr] min-h-[280px]">
             <div className="relative flex items-center justify-center bg-[#3d1a49] p-6">
               <Image
@@ -386,7 +386,7 @@ function ToolTile({
   return (
     <Link
       href={href}
-      className="group relative block aspect-square rounded-md overflow-hidden border border-[#2b241a] hover:border-[#d2ac66] transition-colors"
+      className="group relative block aspect-square rounded-md overflow-hidden border border-[#b08d52]/60 hover:border-[#d2ac66] transition-colors"
     >
       <Image
         src={imageSrc}
