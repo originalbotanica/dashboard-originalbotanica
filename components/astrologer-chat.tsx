@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ProseBlock, buildProductLookup } from "@/lib/rag/render-prose";
-import { usePacedReveal } from "@/components/use-paced-reveal";
-import { FloatingProse } from "@/components/floating-prose";
 import { useT } from "@/components/locale-provider";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -35,38 +33,70 @@ export function AstrologerChat({
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const pendingNavRef = useRef<string | null>(null);
 
-  // Reveal the reading at a calm, ethereal pace — words flow in as they are
-  // written, rather than spilling out all at once or splashing in a block.
-  const reveal = usePacedReveal(
-    (text) =>
-      setMessages((m) => {
-        const next = m.slice();
-        if (next[next.length - 1]?.role === "assistant") {
-          next[next.length - 1] = { role: "assistant", content: text };
-        }
-        return next;
-      }),
-    () => {
-      setStreaming(false);
-      const nav = pendingNavRef.current;
-      if (nav) {
-        pendingNavRef.current = null;
-        router.replace(`/astrology/astrologer/${nav}`);
-      } else {
-        // Continuing thread: refresh so the "For this reading" cards update.
-        router.refresh();
-      }
-    },
-  );
+  // The reading arrives in one piece: the full response is buffered while the
+  // "consulting" indicator plays, then settles in as a complete block with
+  // the view positioned at its top — no word-by-word reveal, and no scrolling
+  // back up to start reading.
+  const latestReadingRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
+  function scrollToLatestReading(smooth: boolean) {
+    const container = scrollRef.current;
+    const el = latestReadingRef.current;
+    if (!container || !el) return;
+    const top =
+      el.getBoundingClientRect().top -
+      container.getBoundingClientRect().top +
+      container.scrollTop -
+      8;
+    container.scrollTo({
+      top: Math.max(0, top),
+      behavior: smooth ? "smooth" : "auto",
     });
-  }, [messages, streaming]);
+  }
+
+  // On first paint (including after navigating to a new thread's permanent
+  // URL), open at the top of the most recent reading rather than the bottom.
+  useEffect(() => {
+    scrollToLatestReading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // While waiting on the reading, keep the member's question and the
+  // indicator in view.
+  useEffect(() => {
+    if (streaming)
+      scrollRef.current?.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+  }, [streaming]);
+
+  // Settle the finished reading into place, then route/refresh.
+  function finishReading(content: string, nav: string | null) {
+    if (!content) {
+      // Nothing arrived (stopped before the first words) — withdraw the
+      // placeholder so no empty bubble lingers.
+      setMessages((m) => m.slice(0, -1));
+      setStreaming(false);
+      return;
+    }
+    setMessages((m) => {
+      const next = m.slice();
+      if (next[next.length - 1]?.role === "assistant") {
+        next[next.length - 1] = { role: "assistant", content };
+      }
+      return next;
+    });
+    setStreaming(false);
+    requestAnimationFrame(() => scrollToLatestReading(true));
+    if (nav) {
+      router.replace(`/astrology/astrologer/${nav}`);
+    } else {
+      // Continuing thread: refresh so the "For this reading" cards update.
+      router.refresh();
+    }
+  }
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -77,8 +107,8 @@ export function AstrologerChat({
     setMessages((m) => [...m, { role: "user", content: trimmed }]);
     setStreaming(true);
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
-    reveal.reset();
 
+    let buf = "";
     try {
       const controller = new AbortController();
       abortRef.current = controller;
@@ -107,23 +137,19 @@ export function AstrologerChat({
         return;
       }
 
-      let buf = "";
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
         buf += decoder.decode(value, { stream: true });
-        reveal.push(buf);
       }
-      // For a new conversation, route to its permanent URL once the reveal
-      // settles (handled in onSettled), so refresh/back work.
-      pendingNavRef.current = !threadId && newThreadId ? newThreadId : null;
-      reveal.finish();
+      // For a new conversation, finishReading routes to its permanent URL so
+      // refresh/back work.
+      finishReading(buf, !threadId && newThreadId ? newThreadId : null);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
-        // Stopped by the member — keep what arrived and settle gracefully.
-        reveal.finish();
+        // Stopped by the member — keep whatever had arrived.
+        finishReading(buf, null);
       } else {
-        reveal.reset();
         setError(err instanceof Error ? err.message : t("dr.unexpected"));
         setMessages((m) => m.slice(0, -1));
         setStreaming(false);
@@ -134,6 +160,15 @@ export function AstrologerChat({
   const stop = () => abortRef.current?.abort();
 
   const isEmpty = messages.length === 0;
+
+  // Anchor for "start reading at the top of the newest reading".
+  let lastAssistantIndex = -1;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].role === "assistant") {
+      lastAssistantIndex = i;
+      break;
+    }
+  }
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
@@ -147,13 +182,12 @@ export function AstrologerChat({
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
-              <Message
+              <div
                 key={i}
-                msg={m}
-                animate={
-                  streaming && i === messages.length - 1 && m.role === "assistant"
-                }
-              />
+                ref={i === lastAssistantIndex ? latestReadingRef : undefined}
+              >
+                <Message msg={m} />
+              </div>
             ))}
             {streaming &&
               messages[messages.length - 1]?.role === "assistant" && (
@@ -255,7 +289,7 @@ function Welcome({
   );
 }
 
-function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
+function Message({ msg }: { msg: Msg }) {
   const isUser = msg.role === "user";
   return (
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
@@ -269,22 +303,12 @@ function Message({ msg, animate = false }: { msg: Msg; animate?: boolean }) {
         {isUser ? (
           msg.content || <span className="opacity-50">...</span>
         ) : msg.content ? (
-          animate ? (
-            <FloatingProse
-              text={msg.content}
-              mode="astrologer"
-              lookup={EMPTY_LOOKUP}
-              optimisticBaseUrl={OB_BASE_URL}
-              className="leading-relaxed mb-3 last:mb-0"
-            />
-          ) : (
-            <ProseBlock
-              text={msg.content}
-              lookup={EMPTY_LOOKUP}
-              optimisticBaseUrl={OB_BASE_URL}
-              className="leading-relaxed mb-3 last:mb-0"
-            />
-          )
+          <ProseBlock
+            text={msg.content}
+            lookup={EMPTY_LOOKUP}
+            optimisticBaseUrl={OB_BASE_URL}
+            className="leading-relaxed mb-3 last:mb-0"
+          />
         ) : (
           <span className="opacity-50">...</span>
         )}
