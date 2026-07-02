@@ -24,11 +24,11 @@ export async function MarketingHeader() {
             width={70}
             height={50}
             priority
-            className="h-auto w-[56px] md:w-[70px]"
+            className="h-auto w-[64px] md:w-[84px]"
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}
-        <nav className="hidden lg:flex items-center gap-8 text-[0.78rem] font-semibold tracking-[0.12em] uppercase">
+        <nav className="hidden lg:flex items-center gap-8 text-[0.95rem] font-semibold tracking-[0.12em] uppercase">
           {(
             [
               ["lp.featTarot", "/tools/tarot"],
@@ -49,7 +49,7 @@ export async function MarketingHeader() {
           ))}
         </nav>
         <nav className="flex items-center gap-3 md:gap-4">
-          <span className="flex items-center gap-2 text-[0.78rem] font-semibold tracking-[0.12em] uppercase">
+          <span className="flex items-center gap-2 text-[0.95rem] font-semibold tracking-[0.12em] uppercase">
             <LanguageToggle className="!text-[#d2ac66] hover:!text-[#f0d9a6]" />
             <span aria-hidden className="text-[#d2ac66]">/</span>
             <Link
@@ -61,7 +61,7 @@ export async function MarketingHeader() {
           </span>
           <Link
             href="/signup"
-            className="rounded-md px-6 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90"
+            className="rounded-md px-7 py-3 text-sm font-bold uppercase tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90"
             style={{ background: "linear-gradient(180deg, #e8c983 0%, #c69a4e 100%)" }}
           >
             {t(locale, "lp.startTrial")}
