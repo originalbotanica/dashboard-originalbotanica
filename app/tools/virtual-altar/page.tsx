@@ -19,6 +19,8 @@ export default async function VirtualAltarToolPage() {
       headline={tr("mkt.altar.headline")}
       subhead={tr("mkt.altar.subhead")}
       heroImageUrl={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
+      graphicSrc="/landing/tile-altar.jpg"
+      graphicAlt="Virtual altar"
     >
       <p className="eyebrow mb-3">{tr("mkt.altar.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">

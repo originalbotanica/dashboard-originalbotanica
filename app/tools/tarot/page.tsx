@@ -19,6 +19,9 @@ export default async function TarotToolPage() {
       headline={tr("mkt.tarot.headline")}
       subhead={tr("mkt.tarot.subhead")}
       heroImageUrl={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
+      graphicSrc="/tarot-wheel/wheel_full.png"
+      graphicAlt="The daily tarot wheel"
+      graphicFit="contain"
     >
       <p className="eyebrow mb-3">{tr("mkt.tarot.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">

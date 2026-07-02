@@ -20,12 +20,19 @@ export async function MarketingToolLayout({
   headline,
   subhead,
   heroImageUrl,
+  graphicSrc,
+  graphicAlt,
+  graphicFit = "cover",
   children,
 }: {
   eyebrow: string;
   headline: string;
   subhead: string;
   heroImageUrl: string;
+  /** Feature graphic shown between the hero and the body copy. */
+  graphicSrc?: string;
+  graphicAlt?: string;
+  graphicFit?: "cover" | "contain";
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
@@ -72,7 +79,26 @@ export async function MarketingToolLayout({
 
       {/* Body content (passed by the specific tool page) */}
       <section className="border-t border-[var(--border)]">
-        <div className="max-w-3xl mx-auto px-6 py-20">{children}</div>
+        <div className="max-w-3xl mx-auto px-6 py-20">
+          {graphicSrc && (
+            <div className="mb-16 flex justify-center">
+              <div className="relative w-full max-w-md aspect-square rounded-md border border-[#b08d52]/60 overflow-hidden bg-[#0d0a07]">
+                <Image
+                  src={graphicSrc}
+                  alt={graphicAlt ?? ""}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 448px"
+                  className={
+                    graphicFit === "contain"
+                      ? "object-contain p-6"
+                      : "object-cover"
+                  }
+                />
+              </div>
+            </div>
+          )}
+          {children}
+        </div>
       </section>
 
       {/* Closing CTA on warm backdrop */}

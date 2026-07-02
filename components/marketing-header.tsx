@@ -28,7 +28,7 @@ export async function MarketingHeader() {
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}
-        <nav className="hidden lg:flex items-center gap-8 text-[0.95rem] font-semibold tracking-[0.12em] uppercase">
+        <nav className="hidden lg:flex items-center gap-8 text-[20px] font-semibold tracking-[0.12em] uppercase">
           {(
             [
               ["lp.featTarot", "/tools/tarot"],
@@ -49,7 +49,7 @@ export async function MarketingHeader() {
           ))}
         </nav>
         <nav className="flex items-center gap-3 md:gap-4">
-          <span className="flex items-center gap-2 text-[0.95rem] font-semibold tracking-[0.12em] uppercase">
+          <span className="flex items-center gap-2 text-[20px] font-semibold tracking-[0.12em] uppercase">
             <LanguageToggle className="!text-[#d2ac66] hover:!text-[#f0d9a6]" />
             <span aria-hidden className="text-[#d2ac66]">/</span>
             <Link

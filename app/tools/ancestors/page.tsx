@@ -19,6 +19,8 @@ export default async function AncestorsToolPage() {
       headline={tr("mkt.anc.headline")}
       subhead={tr("mkt.anc.subhead")}
       heroImageUrl={`${OB_CDN}/spiritual-candles.png`}
+      graphicSrc="/landing/tile-ancestors.jpg"
+      graphicAlt="Ancestor connection"
     >
       <p className="eyebrow mb-3">{tr("mkt.anc.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">

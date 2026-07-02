@@ -19,6 +19,8 @@ export default async function RitualsToolPage() {
       headline={tr("mkt.rit.headline")}
       subhead={tr("mkt.rit.subhead")}
       heroImageUrl={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+      graphicSrc="/landing/tile-rituals.jpg"
+      graphicAlt="Ritual library"
     >
       <p className="eyebrow mb-3">{tr("mkt.rit.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
