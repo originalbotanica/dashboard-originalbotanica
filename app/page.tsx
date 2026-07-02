@@ -3,13 +3,14 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { MarketingHeader } from "@/components/marketing-header";
-import { FeatureStrip } from "@/components/feature-strip";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
 
 /**
- * Marketing homepage (logged out). Sells the membership and drives the
- * 7-day free trial. Dark, candlelit, mobile-first, EN/ES. One primary CTA.
+ * Marketing homepage (logged out) — Jimmy's landing design.
+ * Hero wordmark, intro card, six photo tiles, 10%-off banner,
+ * heritage block. Dark + gold, EN/ES, all links functional.
+ * Photo assets are CDN stand-ins until the designer's exports arrive.
  */
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";
@@ -19,11 +20,11 @@ const OG_DESC =
   "A 7-day free trial into Original Botanica's spiritual membership: daily tarot, your birth chart, dream interpretation, a virtual altar, an ancestors altar, 400+ rituals — plus 10% off everything at the botanica. A real Bronx botanica, serving practitioners since 1959.";
 
 export const metadata = {
-  title: "Your spiritual home, online",
+  title: "The Practice — your virtual spiritual home",
   description: OG_DESC,
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Original Botanica — your spiritual home, online",
+    title: "The Practice — from Original Botanica",
     description: OG_DESC,
     url: "/",
     type: "website",
@@ -31,45 +32,11 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Original Botanica — your spiritual home, online",
+    title: "The Practice — from Original Botanica",
     description: OG_DESC,
     images: [OG_IMAGE],
   },
 };
-
-/** Voices from the Original Botanica family on using The Practice. */
-const TESTIMONIALS: { quote: string; name: string }[] = [
-  {
-    quote:
-      "I pull my card every morning before we open the shop. Two quiet minutes that set the whole day straight — I've come to need it.",
-    name: "Yessenia",
-  },
-  {
-    quote:
-      "Having the astrologer in my pocket is a different thing. I asked about a hard transit and it gave me the reading and the ritual to go with it. The botanica, just always open.",
-    name: "Lara",
-  },
-  {
-    quote:
-      "My family is back home and I can't always get to the altar. Lighting a candle for my grandmother here, wherever I am, means more than I expected.",
-    name: "Miguel",
-  },
-  {
-    quote:
-      "People ask me for the right ritual all day long. Now I carry four hundred of them in one place, each with what it needs. The whole shop's knowledge, with me.",
-    name: "Joseph",
-  },
-  {
-    quote:
-      "The part regulars love most: your membership takes 10% off everything at originalbotanica.com — even what's already on sale. For anyone who shops the botanica, it pays for itself in a couple of orders.",
-    name: "Carmen",
-  },
-  {
-    quote:
-      "I wrote down a dream that had been sitting with me for weeks. The interpretation finally gave it meaning, and a small ritual to lay it to rest. I slept easier that night.",
-    name: "Rosa",
-  },
-];
 
 export default async function HomePage({
   searchParams,
@@ -114,14 +81,15 @@ export default async function HomePage({
 
   // Case 3: logged out — marketing.
   const locale = await getLocale();
-  const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
+  const tr = (k: string, vars?: Record<string, string | number>) =>
+    t(locale, k, vars);
 
   return (
     <main className="flex-1">
       <MarketingHeader />
 
-      {/* ── Hero ──────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-6 pt-28 pb-20 overflow-hidden">
+      {/* ── Hero: The Practice wordmark ─────────────────────────────── */}
+      <section className="relative flex flex-col items-center justify-center text-center px-6 pt-40 pb-16 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
             src={`${OB_CDN}/spiritual-candles.png`}
@@ -129,306 +97,296 @@ export default async function HomePage({
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-30"
+            className="object-cover opacity-35"
           />
           <div
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(ellipse at center, rgba(20,16,11,0.55) 0%, rgba(20,16,11,0.92) 75%, rgba(20,16,11,1) 100%)",
+                "linear-gradient(180deg, rgba(20,16,11,0.45) 0%, rgba(20,16,11,0.85) 70%, rgba(20,16,11,1) 100%)",
             }}
           />
         </div>
 
-        <Image
-          src="/logo-original-botanica.svg"
-          alt="Original Botanica"
-          width={140}
-          height={100}
-          priority
-          className="h-auto w-[110px] md:w-[140px] mb-8"
-        />
-        <h1 className="display text-4xl md:text-6xl mb-5 max-w-3xl leading-tight">
-          {tr("lp.heroTitle")}
+        <p className="eyebrow mb-6 tracking-[0.3em]">{tr("lp2.introducing")}</p>
+
+        {/* Wordmark — the brand name stays the same in both languages. */}
+        <div className="flex items-center gap-4 text-[var(--accent)] mb-1">
+          <span aria-hidden className="h-px w-10 md:w-16 bg-[var(--accent)]" />
+          <span className="display text-2xl md:text-4xl tracking-[0.35em] uppercase">
+            The
+          </span>
+          <span aria-hidden className="h-px w-10 md:w-16 bg-[var(--accent)]" />
+        </div>
+        <h1 className="display text-6xl md:text-8xl uppercase tracking-[0.08em] text-[var(--accent)] leading-none mb-4">
+          Practice
         </h1>
-        <p className="invocation text-lg md:text-2xl text-[var(--foreground)] leading-relaxed mb-9 max-w-2xl">
-          {tr("lp.heroHook")}
-        </p>
-
-        <FeatureStrip
-          items={[
-            { key: "tarot", label: tr("lp.featTarot") },
-            { key: "astrology", label: tr("lp.featAstrology") },
-            { key: "dreams", label: tr("lp.featDreams") },
-            { key: "altar", label: tr("lp.featAltar") },
-            { key: "ancestors", label: tr("lp.featAncestors") },
-            { key: "rituals", label: tr("lp.featRituals") },
-          ]}
-        />
-
-        <p className="text-sm md:text-base text-[var(--foreground-muted)] leading-relaxed mb-9 max-w-xl">
-          {tr("lp.heroWhy")}
-        </p>
-
-        <Link href="/signup" className="btn-primary text-base">
-          {tr("lp.heroCta")}
-        </Link>
-        <p className="text-sm text-[var(--foreground-muted)] mt-5">
-          {tr("lp.heroMicro")}
-        </p>
-        <p className="text-sm mt-3">
-          <Link href="/gift" className="text-[var(--accent)] hover:underline">
-            {tr("lp.heroGift")}
-          </Link>
-        </p>
-        <p className="eyebrow mt-12 text-[var(--foreground-subtle)]">
-          {tr("lp.heroTrust")}
+        <p className="eyebrow tracking-[0.28em] mb-6">{tr("lp2.byline")}</p>
+        <p className="uppercase tracking-[0.2em] text-lg md:text-xl text-[var(--foreground)]">
+          {tr("lp2.tagline")}
         </p>
       </section>
 
-      {/* ── The 10% discount — headline benefit ───────────────────────── */}
-      <section className="border-t border-[var(--border)]">
-        <div className="max-w-3xl mx-auto px-6 py-20 md:py-24 text-center">
-          <p className="eyebrow mb-4 text-[var(--accent)]">{tr("lp.discountEyebrow")}</p>
-          <h2 className="display text-3xl md:text-4xl mb-5 leading-tight">
-            {tr("lp.discountTitle")}
-          </h2>
-          <p className="text-[var(--foreground-muted)] leading-relaxed mb-6 max-w-xl mx-auto">
-            {tr("lp.discountBody")}
-          </p>
-          <p className="text-sm text-[var(--foreground-subtle)] max-w-md mx-auto">
-            {tr("lp.discountTerms")}
-          </p>
-        </div>
-      </section>
-
-      {/* ── The tools ─────────────────────────────────────────────────── */}
-      <section
-        aria-label={tr("lp.toolsTitle")}
-        className="border-t border-[var(--border)]"
-      >
-        <div className="max-w-5xl mx-auto px-6 py-20 md:py-24">
-          <p className="eyebrow mb-3 text-center">{tr("lp.toolsEyebrow")}</p>
-          <h2 className="display text-3xl md:text-4xl mb-14 text-center max-w-2xl mx-auto leading-tight">
-            {tr("lp.toolsTitle")}
-          </h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-            <FeatureCard
-              href="/tools/tarot"
-              imageSrc="/tarot-wheel/wheel_full.png"
-              imageFit="contain"
-              title={tr("lp.toolTarotTitle")}
-              body={tr("lp.toolTarotBody")}
-            />
-            <FeatureCard
-              href="/tools/astrology"
-              imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
-              title={tr("lp.toolAstroTitle")}
-              body={tr("lp.toolAstroBody")}
-            />
-            <FeatureCard
-              href="/tools/dreams"
-              imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
-              title={tr("lp.toolDreamsTitle")}
-              body={tr("lp.toolDreamsBody")}
-            />
-            <FeatureCard
-              href="/tools/virtual-altar"
-              imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
-              title={tr("lp.toolAltarTitle")}
-              body={tr("lp.toolAltarBody")}
-            />
-            <FeatureCard
-              href="/tools/ancestors"
-              imageSrc={`${OB_CDN}/spiritual-candles.png`}
-              title={tr("lp.toolAncestorsTitle")}
-              body={tr("lp.toolAncestorsBody")}
-            />
-            <FeatureCard
-              href="/tools/rituals"
-              imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
-              title={tr("lp.toolRitualsTitle")}
-              body={tr("lp.toolRitualsBody")}
+      {/* ── Intro card: photo + pitch ───────────────────────────────── */}
+      <section className="px-6">
+        <div className="max-w-5xl mx-auto rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden grid md:grid-cols-[2fr_3fr]">
+          <div className="relative min-h-[260px] md:min-h-full">
+            <Image
+              src={`${OB_CDN}/cta-spiritual-services.jpg`}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 40vw"
+              className="object-cover"
             />
           </div>
-          <div className="text-center mt-14">
-            <Link href="/signup" className="btn-primary text-base">
-              {tr("lp.heroCta")}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Heritage / authenticity ───────────────────────────────────── */}
-      <section className="border-t border-[var(--border)]">
-        <div className="max-w-5xl mx-auto px-6 py-20 md:py-24 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="eyebrow mb-4 text-[var(--accent)]">{tr("lp.heritageEyebrow")}</p>
-            <h2 className="display text-3xl md:text-4xl mb-5 leading-tight">
-              {tr("lp.heritageTitle")}
+          <div className="p-8 md:p-12">
+            <h2 className="display text-2xl md:text-3xl uppercase tracking-wide text-[var(--accent)] mb-5 leading-snug">
+              {tr("lp2.introTitle")}
             </h2>
-            <p className="text-[var(--foreground-muted)] leading-relaxed">
-              {tr("lp.heritageBody")}
+            <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
+              {tr("lp2.introBody")}
+            </p>
+            <p className="invocation text-[var(--accent)] leading-relaxed border-t border-[var(--border)] pt-6">
+              {tr("lp2.introHighlight")}
             </p>
           </div>
-          <div>
-            {/* The building over the decades: A&P → Botanica Eligio's
-                Supplies → Original Products, on Webster Ave in the Bronx. */}
+        </div>
+      </section>
+
+      {/* ── The six tools — photo tiles ─────────────────────────────── */}
+      <section aria-label={tr("lp.toolsTitle")} className="px-6 pt-10 pb-4">
+        <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ToolTile
+            href="/tools/tarot"
+            imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
+            title={tr("lp.toolTarotTitle")}
+            body={tr("lp.toolTarotBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/astrology"
+            imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+            title={tr("lp.toolAstroTitle")}
+            body={tr("lp.toolAstroBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/dreams"
+            imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+            title={tr("lp.toolDreamsTitle")}
+            body={tr("lp.toolDreamsBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/virtual-altar"
+            imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
+            title={tr("lp.toolAltarTitle")}
+            body={tr("lp.toolAltarBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/ancestors"
+            imageSrc={`${OB_CDN}/spiritual-candles.png`}
+            title={tr("lp.toolAncestorsTitle")}
+            body={tr("lp.toolAncestorsBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/rituals"
+            imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+            title={tr("lp.toolRitualsTitle")}
+            body={tr("lp.toolRitualsBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+        </div>
+      </section>
+
+      {/* ── The six tools ───────────────────────────────────────────── */}
+      <section aria-label={tr("lp.toolsTitle")} className="px-6 py-10">
+        <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ToolTile
+            href="/tools/tarot"
+            imageSrc={`${OB_CDN}/transforms/Blog/_thumbnail/Tarot-Reading.jpg`}
+            title={tr("lp.toolTarotTitle")}
+            body={tr("lp.toolTarotBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/astrology"
+            imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
+            title={tr("lp.toolAstroTitle")}
+            body={tr("lp.toolAstroBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/dreams"
+            imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+            title={tr("lp.toolDreamsTitle")}
+            body={tr("lp.toolDreamsBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/virtual-altar"
+            imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
+            title={tr("lp.toolAltarTitle")}
+            body={tr("lp.toolAltarBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/ancestors"
+            imageSrc={`${OB_CDN}/spiritual-candles.png`}
+            title={tr("lp.toolAncestorsTitle")}
+            body={tr("lp.toolAncestorsBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+          <ToolTile
+            href="/tools/rituals"
+            imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+            title={tr("lp.toolRitualsTitle")}
+            body={tr("lp.toolRitualsBody")}
+            learnMore={tr("lp2.learnMore")}
+          />
+        </div>
+      </section>
+
+      {/* ── 10% off banner + primary CTA ────────────────────────────── */}
+      <section className="px-6 py-10">
+        <div className="relative max-w-5xl mx-auto rounded-xl border border-[var(--border)] overflow-hidden">
+          <div className="absolute inset-0 -z-10">
+            <Image
+              src={`${OB_CDN}/spiritual-baths-washes.png`}
+              alt=""
+              fill
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="object-cover opacity-45"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(20,16,11,0.95) 0%, rgba(20,16,11,0.75) 45%, rgba(20,16,11,0.35) 100%)",
+              }}
+            />
+          </div>
+          <div className="p-8 md:p-14 max-w-xl">
+            <p className="display uppercase tracking-wide text-3xl md:text-4xl leading-tight mb-1">
+              {tr("lp2.joinAndGet")}
+            </p>
+            <p className="display uppercase text-6xl md:text-7xl leading-none text-[var(--accent)] mb-1">
+              {tr("lp2.tenOff")}
+            </p>
+            <p className="display uppercase tracking-wide text-3xl md:text-4xl leading-tight mb-2">
+              {tr("lp2.everythingAt")}
+            </p>
+            <a
+              href="https://originalbotanica.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg md:text-xl text-[var(--foreground)] hover:text-[var(--accent)] underline underline-offset-4 transition-colors"
+            >
+              www.originalbotanica.com
+            </a>
+            <div className="mt-8">
+              <Link href="/signup" className="btn-primary text-sm uppercase tracking-wide">
+                {tr("lp.heroCta")}
+              </Link>
+            </div>
+            <p className="text-xs text-[var(--foreground-muted)] mt-4 leading-relaxed">
+              {tr("lp.heroMicro")}{" "}
+              <Link href="/gift" className="text-[var(--accent)] hover:underline">
+                {tr("lp.heroGift")}
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Heritage: a real botanica since 1959 ────────────────────── */}
+      <section className="px-6 pb-24">
+        <div className="max-w-5xl mx-auto rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden grid md:grid-cols-2">
+          <div className="grid grid-cols-[2fr_3fr]">
+            <div className="relative flex items-center justify-center bg-[#2a1430] p-6">
+              <Image
+                src="/logo-original-botanica.svg"
+                alt="Original Botanica"
+                width={120}
+                height={86}
+                className="h-auto w-full max-w-[120px]"
+              />
+            </div>
             <div
               role="img"
               aria-label={tr("lp.heritageCaption")}
-              className="aspect-[4/3] rounded-xl border border-[var(--border)] overflow-hidden bg-[var(--surface)]"
+              className="min-h-[240px]"
               style={{
                 backgroundImage: "url('/heritage/building-then-now.png')",
-                backgroundSize: "contain",
+                backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
               }}
             />
-            <p className="text-xs text-[var(--foreground-subtle)] mt-3 text-center">
-              {tr("lp.heritageCaption")}
+          </div>
+          <div className="p-8 md:p-12">
+            <h2 className="display text-2xl md:text-3xl uppercase tracking-wide text-[var(--accent)] mb-5 leading-snug">
+              {tr("lp2.heritageTitle")}
+            </h2>
+            <p className="text-[var(--foreground-muted)] leading-relaxed mb-5 border-t border-[var(--border)] pt-5">
+              {tr("lp2.heritageBody1")}
+            </p>
+            <p className="text-[var(--foreground)] leading-relaxed">
+              {tr("lp2.heritageBody2")}
             </p>
           </div>
-        </div>
-      </section>
-
-      {/* ── Testimonials ──────────────────────────────────────────────── */}
-      <section className="border-t border-[var(--border)]">
-        <div className="max-w-5xl mx-auto px-6 py-20 md:py-24">
-          <p className="eyebrow mb-3 text-center">{tr("lp.testimonialsEyebrow")}</p>
-          <h2 className="display text-3xl md:text-4xl mb-3 text-center max-w-2xl mx-auto leading-tight">
-            {tr("lp.testimonialsTitle")}
-          </h2>
-          <p className="text-sm text-[var(--foreground-subtle)] text-center mb-14">
-            {tr("lp.testimonialsNote")}
-          </p>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {TESTIMONIALS.map((tm) => (
-              <figure
-                key={tm.name}
-                className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6"
-              >
-                <blockquote className="invocation text-[var(--foreground)] leading-relaxed">
-                  “{tm.quote}”
-                </blockquote>
-                <figcaption className="eyebrow mt-4 text-[var(--accent)]">
-                  {tm.name}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Final CTA ─────────────────────────────────────────────────── */}
-      <section className="relative border-t border-[var(--border)] overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
-            alt=""
-            fill
-            sizes="100vw"
-            className="object-cover opacity-25"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(20,16,11,0.75) 0%, rgba(20,16,11,0.96) 80%, rgba(20,16,11,1) 100%)",
-            }}
-          />
-        </div>
-        <div className="max-w-2xl mx-auto px-6 py-24 text-center">
-          <h2 className="display text-3xl md:text-4xl mb-6 leading-tight">
-            {tr("lp.finalTitle")}
-          </h2>
-          <p className="text-[var(--foreground-muted)] leading-relaxed mb-10 max-w-lg mx-auto">
-            {tr("lp.finalBody")}
-          </p>
-          <Link href="/signup" className="btn-primary inline-flex text-base">
-            {tr("lp.heroCta")}
-          </Link>
-          <p className="text-sm mt-5">
-            <Link href="/gift" className="text-[var(--accent)] hover:underline">
-              {tr("lp.heroGift")}
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* ── FAQ / objections ──────────────────────────────────────────── */}
-      <section className="border-t border-[var(--border)]">
-        <div className="max-w-2xl mx-auto px-6 py-20 md:py-24">
-          <details className="group">
-            <summary className="cursor-pointer list-none select-none text-center [&::-webkit-details-marker]:hidden">
-              <p className="eyebrow mb-3">{tr("lp.faqEyebrow")}</p>
-              <h2 className="display text-3xl md:text-4xl leading-tight inline-flex items-center justify-center gap-3">
-                {tr("lp.faqTitle")}
-                <span className="text-[var(--accent)] text-2xl transition-transform group-open:rotate-45" aria-hidden>
-                  +
-                </span>
-              </h2>
-            </summary>
-
-            <div className="mt-10 border border-[var(--border)] rounded-xl bg-[var(--surface)] divide-y divide-[var(--border)]">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <details key={n} className="group/item px-5">
-                  <summary className="flex items-center justify-between cursor-pointer list-none text-[var(--foreground)] font-medium py-4 [&::-webkit-details-marker]:hidden">
-                    {tr(`lp.faqQ${n}`)}
-                    <span className="text-[var(--accent)] ml-4 transition-transform group-open/item:rotate-45" aria-hidden>
-                      +
-                    </span>
-                  </summary>
-                  <p className="text-[var(--foreground-muted)] leading-relaxed pb-4 text-sm">
-                    {tr(`lp.faqA${n}`)}
-                  </p>
-                </details>
-              ))}
-            </div>
-          </details>
         </div>
       </section>
     </main>
   );
 }
 
-function FeatureCard({
+/** A landing tile: full-bleed photo, title + one-liner, Learn more. */
+function ToolTile({
   href,
   imageSrc,
   title,
   body,
-  imageFit = "cover",
+  learnMore,
 }: {
   href: string;
   imageSrc: string;
   title: string;
   body: string;
-  imageFit?: "cover" | "contain";
+  learnMore: string;
 }) {
   return (
-    <Link href={href} className="group block">
-      <div className="relative aspect-[4/3] mb-5 rounded-xl overflow-hidden border border-[var(--border)] group-hover:border-[var(--accent)] transition-colors">
-        <Image
-          src={imageSrc}
-          alt=""
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className={`${imageFit === "contain" ? "object-contain p-4" : "object-cover"} transition-transform duration-500 group-hover:scale-105`}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(20,16,11,0) 50%, rgba(20,16,11,0.45) 100%)",
-          }}
-        />
+    <Link
+      href={href}
+      className="group relative block aspect-[10/11] rounded-xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-colors"
+    >
+      <Image
+        src={imageSrc}
+        alt=""
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(20,16,11,0.05) 30%, rgba(20,16,11,0.82) 78%, rgba(20,16,11,0.95) 100%)",
+        }}
+      />
+      <div className="absolute inset-x-0 bottom-0 p-5">
+        <h3 className="display uppercase tracking-wide text-2xl leading-tight text-[var(--foreground)] mb-2 border-b border-[var(--accent)] pb-2 inline-block group-hover:text-[var(--accent)] transition-colors">
+          {title}
+        </h3>
+        <p className="text-xs text-[var(--foreground-muted)] leading-relaxed mb-3 max-w-[26ch]">
+          {body}
+        </p>
+        <span className="eyebrow text-[0.65rem] tracking-[0.18em] text-[var(--accent)] border border-[var(--accent)] rounded-sm px-2.5 py-1 inline-block">
+          {learnMore}
+        </span>
       </div>
-      <h3 className="display text-xl mb-2 group-hover:text-[var(--accent)] transition-colors">
-        {title}
-      </h3>
-      <p className="text-[var(--foreground-muted)] leading-relaxed text-sm">
-        {body}
-      </p>
     </Link>
   );
 }

@@ -27,6 +27,27 @@ export async function MarketingHeader() {
             className="h-auto w-[56px] md:w-[70px]"
           />
         </Link>
+        {/* Tool links, center — desktop only (the tiles cover mobile). */}
+        <nav className="hidden lg:flex items-center gap-5 text-[0.72rem] tracking-[0.14em] uppercase">
+          {(
+            [
+              ["lp.featTarot", "/tools/tarot"],
+              ["lp.featAstrology", "/tools/astrology"],
+              ["lp.featDreams", "/tools/dreams"],
+              ["lp.featAltar", "/tools/virtual-altar"],
+              ["lp.featAncestors", "/tools/ancestors"],
+              ["lp.featRituals", "/tools/rituals"],
+            ] as const
+          ).map(([key, href]) => (
+            <Link
+              key={href}
+              href={href}
+              className="nav-link text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+            >
+              {t(locale, key)}
+            </Link>
+          ))}
+        </nav>
         <nav className="flex items-center gap-3 md:gap-5">
           <LanguageToggle />
           <Link

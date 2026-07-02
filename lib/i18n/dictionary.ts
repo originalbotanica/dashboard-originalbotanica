@@ -582,6 +582,26 @@ const en: Dict = {
   "cmp.hub": "Astrology hub",
   "cmp.delete": "Delete this reading",
 
+  // landing redesign (Jimmy's design)
+  "lp2.introducing": "Introducing",
+  "lp2.byline": "by Original Botanica",
+  "lp2.tagline": "Your virtual spiritual home",
+  "lp2.introTitle":
+    "Discover a unique, personalized experience with The Practice,",
+  "lp2.introBody":
+    "featuring daily tarot readings, dream interpretations, a virtual altar, and an ancestors altar. Enjoy access to over 400 rituals and receive astrologer readings tailored specifically to you—no generic horoscopes here!",
+  "lp2.introHighlight":
+    "Benefit from the expertise of a real Bronx Botanica that has been supporting practitioners since 1959.",
+  "lp2.learnMore": "Learn more",
+  "lp2.joinAndGet": "Join and get",
+  "lp2.tenOff": "10% off",
+  "lp2.everythingAt": "everything at",
+  "lp2.heritageTitle": "A real botanica since 1959",
+  "lp2.heritageBody1":
+    "Original Botanica is a family-run botanica in the Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years.",
+  "lp2.heritageBody2":
+    "This membership brings that same practice — the candles, the rituals, the guidance — online. Same family. Same tradition. Now wherever you are.",
+
   // marketing tool detail pages (/tools/*)
   "mkt.allTools": "All the tools",
   "mkt.ctaHeadline": "Try it for seven days.",
@@ -1285,6 +1305,26 @@ const es: Dict = {
   "cmp.allReadings": "Todas las lecturas",
   "cmp.hub": "Centro de astrología",
   "cmp.delete": "Eliminar esta lectura",
+
+  // rediseño de la página principal (diseño de Jimmy)
+  "lp2.introducing": "Presentamos",
+  "lp2.byline": "de Original Botanica",
+  "lp2.tagline": "Tu hogar espiritual virtual",
+  "lp2.introTitle":
+    "Descubre una experiencia única y personalizada con The Practice,",
+  "lp2.introBody":
+    "con lecturas diarias de tarot, interpretación de sueños, un altar virtual y un altar de ancestros. Disfruta acceso a más de 400 rituales y recibe lecturas del astrólogo hechas específicamente para ti — nada de horóscopos genéricos.",
+  "lp2.introHighlight":
+    "Aprovecha la experiencia de una botánica real del Bronx que acompaña a practicantes desde 1959.",
+  "lp2.learnMore": "Conocer más",
+  "lp2.joinAndGet": "Únete y recibe",
+  "lp2.tenOff": "10% de descuento",
+  "lp2.everythingAt": "en todo en",
+  "lp2.heritageTitle": "Una botánica real desde 1959",
+  "lp2.heritageBody1":
+    "Original Botanica es una botánica familiar en el Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares por más de sesenta y cinco años.",
+  "lp2.heritageBody2":
+    "Esta membresía lleva esa misma práctica — las velas, los rituales, la guía — al mundo en línea. La misma familia. La misma tradición. Ahora dondequiera que estés.",
 
   // páginas de detalle de herramientas (/tools/*)
   "mkt.allTools": "Todas las herramientas",
