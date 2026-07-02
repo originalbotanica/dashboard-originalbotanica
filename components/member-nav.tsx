@@ -60,7 +60,7 @@ export function MemberNav({
       className={wrapper}
       style={variant === "floating" ? { background: "rgba(20, 16, 11, 0.65)" } : undefined}
     >
-      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+      <div className="w-full px-4 sm:px-6 md:px-10 py-3 flex items-center justify-between gap-4">
         <Link href="/dashboard" className="flex items-center leading-none shrink-0">
           <Image
             src="/logo-original-botanica.svg"
@@ -73,12 +73,12 @@ export function MemberNav({
         </Link>
 
         {/* Desktop tools */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex flex-1 items-center justify-evenly gap-4 px-4 whitespace-nowrap">
           {TOOLS.map((tool) => (
             <Link
               key={tool.href}
               href={tool.href}
-              className={`nav-link transition-colors ${
+              className={`nav-link !text-[15px] lg:!text-[17px] xl:!text-[20px] transition-colors ${
                 isActive(tool.href)
                   ? "text-[var(--accent)]"
                   : "text-[var(--foreground)] hover:text-[var(--accent)]"
@@ -90,14 +90,14 @@ export function MemberNav({
         </nav>
 
         {/* Desktop language toggle + account menu */}
-        <div className="hidden md:flex items-center gap-5 shrink-0">
-          <LanguageToggle />
+        <div className="hidden md:flex items-center gap-5 shrink-0 whitespace-nowrap">
+          <LanguageToggle className="!text-[15px] lg:!text-[17px] xl:!text-[20px]" />
           <div className="relative">
             <button
               type="button"
               onClick={() => setAcctOpen((v) => !v)}
               onBlur={() => setTimeout(() => setAcctOpen(false), 150)}
-              className="nav-link text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
+              className="nav-link !text-[15px] lg:!text-[17px] xl:!text-[20px] text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
               aria-haspopup="true"
               aria-expanded={acctOpen}
             >
