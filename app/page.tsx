@@ -330,7 +330,7 @@ export default async function HomePage({
           <div className="grid grid-cols-[2fr_3fr] min-h-[280px]">
             <div className="relative flex items-center justify-center bg-[#3d1a49] p-6">
               <Image
-                src="/logo-original-botanica.svg"
+                src="/logo-original-botanica-white.svg"
                 alt="Original Botanica"
                 width={120}
                 height={86}

@@ -19,7 +19,7 @@ export async function MarketingHeader() {
       <div className="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between gap-3">
         <Link href="/" className="flex items-center leading-none shrink-0">
           <Image
-            src="/logo-original-botanica.svg"
+            src="/logo-original-botanica-white.svg"
             alt="Original Botanica"
             width={70}
             height={50}
