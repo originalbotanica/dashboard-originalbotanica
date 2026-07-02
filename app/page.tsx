@@ -129,12 +129,12 @@ export default async function HomePage({
     t(locale, k, vars);
 
   return (
-    <main className="relative flex-1 bg-[#0d0a07]">
+    <main className="relative isolate flex-1 bg-[#0d0a07]">
       <GeometryBackdrop />
       <MarketingHeader />
 
       {/* ── Hero: The Practice wordmark ─────────────────────────────── */}
-      <section className="relative flex flex-col items-center justify-center text-center px-6 pt-32 pb-16 overflow-hidden">
+      <section className="relative isolate flex flex-col items-center justify-center text-center px-6 pt-32 pb-16 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
             src="/landing/hero.jpg"
@@ -267,7 +267,7 @@ export default async function HomePage({
 
       {/* ── 10% off banner + primary CTA ────────────────────────────── */}
       <section className="px-6 py-8">
-        <div className="relative max-w-5xl mx-auto rounded-md border border-[#2b241a] overflow-hidden">
+        <div className="relative isolate max-w-5xl mx-auto rounded-md border border-[#2b241a] overflow-hidden">
           <div className="absolute inset-0 -z-10">
             <Image
               src="/landing/banner-shelf.jpg"
