@@ -28,7 +28,7 @@ export async function MarketingHeader() {
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}
-        <nav className="hidden lg:flex items-center gap-8 text-[20px] font-semibold tracking-[0.12em] uppercase">
+        <nav className="hidden lg:flex items-center gap-6 text-[20px] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
           {(
             [
               ["lp.featTarot", "/tools/tarot"],
@@ -49,7 +49,7 @@ export async function MarketingHeader() {
           ))}
         </nav>
         <nav className="flex items-center gap-3 md:gap-4">
-          <span className="flex items-center gap-2 text-[20px] font-semibold tracking-[0.12em] uppercase">
+          <span className="flex items-center gap-2 text-[20px] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
             <LanguageToggle className="!text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6]" />
             <span aria-hidden className="text-[#d2ac66]">/</span>
             <Link
@@ -61,7 +61,7 @@ export async function MarketingHeader() {
           </span>
           <Link
             href="/signup"
-            className="rounded-md px-7 py-3 text-sm font-bold uppercase tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90"
+            className="rounded-md px-7 py-3 text-sm font-bold uppercase tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90 whitespace-nowrap"
             style={{ background: "linear-gradient(180deg, #e8c983 0%, #c69a4e 100%)" }}
           >
             {t(locale, "lp.startTrial")}
