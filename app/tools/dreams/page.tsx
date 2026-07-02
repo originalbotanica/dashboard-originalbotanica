@@ -18,7 +18,7 @@ export default async function DreamsToolPage() {
       eyebrow={tr("mkt.dreams.eyebrow")}
       headline={tr("mkt.dreams.headline")}
       subhead={tr("mkt.dreams.subhead")}
-      heroImageUrl={`${OB_CDN}/incense-smudges-resins.png`}
+      heroImageUrl="/landing/gfx-dreams.jpg"
       graphicSrc="/landing/gfx-dreams.jpg"
       graphicAlt="Dream interpreter"
     >

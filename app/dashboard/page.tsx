@@ -263,7 +263,7 @@ export default async function DashboardPage() {
         body={tr("dash.dreamsBody")}
         href="/dreams/new"
         linkLabel={tr("dash.dreamsLink")}
-        imageSrc={`${OB_CDN}/incense-smudges-resins.png`}
+        imageSrc="/landing/gfx-dreams.jpg"
         imageSide="right"
       />
 

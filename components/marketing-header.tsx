@@ -19,12 +19,12 @@ export async function MarketingHeader() {
       <div className="w-full px-4 sm:px-6 md:px-12 py-3 flex items-center justify-between gap-3 md:gap-4">
         <Link href="/" className="flex items-center leading-none shrink-0">
           <Image
-            src="/logo-original-botanica-white.svg"
-            alt="Original Botanica"
-            width={70}
-            height={50}
+            src="/logo-ob-white-banner.png"
+            alt="Original Botanica — Spiritual Products, est. 1959"
+            width={943}
+            height={685}
             priority
-            className="h-auto w-[64px] md:w-[84px]"
+            className="h-auto w-[72px] md:w-[92px]"
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}

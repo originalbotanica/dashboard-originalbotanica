@@ -48,7 +48,7 @@ export default async function DreamsHubPage() {
       {/* Atmospheric backdrop */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src={`${OB_CDN}/incense-smudges-resins.png`}
+          src="/landing/gfx-dreams.jpg"
           alt=""
           fill
           priority
