@@ -17,6 +17,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
   const [pending, startTransition] = useTransition();
 
   const name = locale === "es" ? "Español" : "English";
+  const abbr = locale === "es" ? "ESP" : "ENG";
   const next = locale === "es" ? "en" : "es";
   const switchTo = next === "es" ? "Español" : "English";
 
@@ -38,7 +39,9 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
       className={`nav-link inline-flex items-center gap-1.5 text-[var(--foreground)] hover:text-[var(--accent)] transition-colors disabled:opacity-60 ${className}`}
     >
       <Globe />
-      <span>{name}</span>
+      {/* Full name on desktop; compact ENG/ESP on small screens. */}
+      <span className="md:hidden">{abbr}</span>
+      <span className="hidden md:inline">{name}</span>
     </button>
   );
 }
