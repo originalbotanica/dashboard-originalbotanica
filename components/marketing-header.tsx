@@ -42,7 +42,7 @@ export async function MarketingHeader() {
             <Link
               key={href}
               href={href}
-              className="nav-link !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
+              className="nav-link !text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
             >
               {t(locale, key)}
             </Link>
@@ -50,11 +50,11 @@ export async function MarketingHeader() {
         </nav>
         <nav className="flex items-center gap-3 md:gap-4">
           <span className="flex items-center gap-2 text-[20px] font-semibold tracking-[0.12em] uppercase">
-            <LanguageToggle className="!text-[#d2ac66] hover:!text-[#f0d9a6]" />
+            <LanguageToggle className="!text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6]" />
             <span aria-hidden className="text-[#d2ac66]">/</span>
             <Link
               href="/login"
-              className="nav-link !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors hidden sm:inline-flex"
+              className="nav-link !text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors hidden sm:inline-flex"
             >
               {t(locale, "lp.signIn")}
             </Link>
