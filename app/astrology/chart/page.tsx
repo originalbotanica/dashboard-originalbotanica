@@ -117,7 +117,7 @@ export default async function ChartPage() {
             <li className="flex justify-between border-b border-[var(--border)] pb-3">
               <span className="text-[var(--foreground-muted)]">{planetName("Rising", locale)}</span>
               <span className="display text-xl">
-                {hasTime ? signName(chart.risingSign, locale) : "—"}
+                {hasTime ? signName(chart.risingSign, locale) : "-"}
               </span>
             </li>
           </ul>

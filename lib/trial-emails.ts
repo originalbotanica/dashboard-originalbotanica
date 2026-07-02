@@ -78,11 +78,11 @@ export function trialReminderEmail(args: {
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:${INK};">
       Your free trial of The Practice ends on <strong>${esc(args.endDateLabel)}</strong>.
       The day it ends, your ${planLabel} begins and your card is charged for the
-      first time — so we wanted you to know ahead of time, with no surprises.
+      first time. We wanted you to know ahead of time, with no surprises.
     </p>
     <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:${INK};">
-      If The Practice has become part of your days — your daily tarot, your
-      astrologer, the altar, your ancestors, the rituals library — there's
+      If The Practice has become part of your days, from your daily tarot and your
+      astrologer to the altar, your ancestors, and the rituals library, there's
       nothing you need to do. It all simply continues. If the timing isn't
       right, you can cancel anytime from your account, and you won't be charged.
     </p>

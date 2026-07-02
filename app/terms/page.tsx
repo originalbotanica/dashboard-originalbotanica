@@ -55,7 +55,7 @@ export default function TermsPage() {
       <p>
         The site, its writing, and the artwork (including the tarot deck) belong to
         Original Botanica or its creators and are for your personal use within the
-        membership. What you write — your dreams and notes — remains yours; you
+        membership. What you write (your dreams and notes) remains yours; you
         grant us permission to store and process it to provide the service.
       </p>
 

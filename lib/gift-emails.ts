@@ -72,14 +72,14 @@ export function giftRecipientEmail(args: {
   const greeting = args.recipientName ? `Dear ${esc(args.recipientName)},` : "Dear friend,";
 
   const messageBlock = args.message
-    ? `<div style="margin:18px 0;padding:14px 18px;border-left:3px solid ${ACCENT};background:${CREAM};font-style:italic;color:${INK};">“${esc(args.message)}”<div style="font-style:normal;font-size:13px;color:${MUTED};margin-top:8px;">— ${from}</div></div>`
+    ? `<div style="margin:18px 0;padding:14px 18px;border-left:3px solid ${ACCENT};background:${CREAM};font-style:italic;color:${INK};">“${esc(args.message)}”<div style="font-style:normal;font-size:13px;color:${MUTED};margin-top:8px;">From ${from}</div></div>`
     : "";
 
   const inner = `
     <h1 style="margin:0 0 16px;font-size:25px;font-weight:normal;color:${ACCENT};">A gift has been made for you.</h1>
     <p style="margin:0 0 14px;font-size:16px;line-height:1.6;">${greeting}</p>
     <p style="margin:0 0 14px;font-size:16px;line-height:1.6;">
-      ${from} has gifted you <strong>${esc(args.termLabel)}</strong> of membership at Original Botanica —
+      ${from} has gifted you <strong>${esc(args.termLabel)}</strong> of membership at Original Botanica,
       the Bronx botánica serving practitioners since 1959.
     </p>
     <p style="margin:0 0 14px;font-size:16px;line-height:1.6;">
@@ -128,7 +128,7 @@ export function giftBuyerEmail(args: {
     ${codeBlock(args.code)}
     ${button(url, "View the redeem page")}
     <p style="margin:14px 0 0;font-size:13px;line-height:1.6;color:${MUTED};">
-      The gift is prepaid for the full term — nothing will auto-renew, and no one will be charged again.
+      The gift is prepaid for the full term. Nothing will auto-renew, and no one will be charged again.
     </p>`;
   return { subject: "Your Original Botanica gift is confirmed", html: shell(inner) };
 }

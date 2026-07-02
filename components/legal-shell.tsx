@@ -32,7 +32,7 @@ export function LegalShell({
         <h1 className="display text-3xl md:text-4xl leading-tight mb-6">{title}</h1>
 
         <div className="invocation text-[var(--foreground-muted)] border-l-2 border-[var(--accent)] pl-4 py-2 mb-10 text-sm">
-          Draft — for review. This is a starting point written for Original
+          Draft, for review. This is a starting point written for Original
           Botanica and has not yet been reviewed by an attorney. Please have it
           checked before relying on it at launch.
         </div>

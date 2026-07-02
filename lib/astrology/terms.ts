@@ -43,7 +43,7 @@ const PLANET_ES: Record<string, string> = {
 
 /** Zodiac sign name in the given locale. */
 export function signName(value: string | null | undefined, locale: Locale): string {
-  if (!value) return "—";
+  if (!value) return "-";
   return locale === "es" ? SIGN_ES[value] ?? value : value;
 }
 

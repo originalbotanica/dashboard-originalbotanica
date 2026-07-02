@@ -155,7 +155,11 @@ export function CalendarMonthGrid({
           {selLabel}
         </p>
         {selEvents.length === 0 ? (
-          <p className="text-sm text-[var(--foreground-muted)]">—</p>
+          <p className="text-sm text-[var(--foreground-muted)]">
+            {locale === "es"
+              ? "No hay nada marcado para este día."
+              : "Nothing marked for this day."}
+          </p>
         ) : (
           <ul className="space-y-4">
             {selEvents.map((e) => (

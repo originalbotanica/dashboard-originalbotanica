@@ -20,7 +20,7 @@ export async function MarketingHeader() {
         <Link href="/" className="flex items-center leading-none shrink-0">
           <Image
             src="/logo-ob-white-banner.png"
-            alt="Original Botanica — Spiritual Products, est. 1959"
+            alt="Original Botanica: Spiritual Products, est. 1959"
             width={943}
             height={685}
             priority
@@ -61,7 +61,7 @@ export async function MarketingHeader() {
           </span>
           <Link
             href="/signup"
-            className="rounded-md px-4 py-2.5 text-xs md:px-7 md:py-3 md:text-sm font-bold uppercase tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90 whitespace-nowrap shrink-0"
+            className="order-first md:order-none rounded-md px-4 py-2.5 text-xs md:px-7 md:py-3 md:text-sm font-bold uppercase tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90 whitespace-nowrap shrink-0"
             style={{ background: "linear-gradient(180deg, #e8c983 0%, #c69a4e 100%)" }}
           >
             {t(locale, "lp.startTrial")}

@@ -49,8 +49,8 @@ export default function PrivacyPage() {
 
       <h2 className="display text-xl text-[var(--foreground)] pt-2">AI-generated readings</h2>
       <p>
-        Some readings — your dream interpretations and parts of your astrology
-        guidance — are generated with the help of AI. Content you submit (for
+        Some readings, including your dream interpretations and parts of your
+        astrology guidance, are generated with the help of AI. Content you submit (for
         example, a dream you describe) may be processed by our AI provider to
         generate your reading. These readings are for reflection, not professional
         advice.
@@ -59,9 +59,9 @@ export default function PrivacyPage() {
       <h2 className="display text-xl text-[var(--foreground)] pt-2">Who we share with</h2>
       <p>
         We share information only with the service providers that make the
-        membership work — our hosting and database provider, Stripe for payments,
-        and our AI provider for readings — and where required by law or in
-        connection with a business transfer. <strong className="text-[var(--foreground)]">We do not sell your personal information.</strong>
+        membership work: our hosting and database provider, Stripe for payments,
+        and our AI provider for readings. We also share where required by law or
+        in connection with a business transfer. <strong className="text-[var(--foreground)]">We do not sell your personal information.</strong>
       </p>
 
       <h2 className="display text-xl text-[var(--foreground)] pt-2">Your choices</h2>

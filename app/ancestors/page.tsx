@@ -127,7 +127,7 @@ export default async function AncestorsHubPage() {
 function formatYears(birth: string | null | undefined, death: string | null | undefined, locale: Locale): string {
   const b = birth ? new Date(birth).getUTCFullYear() : null;
   const d = death ? new Date(death).getUTCFullYear() : null;
-  if (b && d) return `${b} – ${d}`;
+  if (b && d) return `${b} - ${d}`;
   if (d) return t(locale, "anc.passed", { y: d });
   if (b) return t(locale, "anc.born", { y: b });
   return "";

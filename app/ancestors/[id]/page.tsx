@@ -159,7 +159,7 @@ function formatDates(birth: string | null | undefined, death: string | null | un
       : null;
   const b = fmt(birth);
   const d = fmt(death);
-  if (b && d) return `${b} – ${d}`;
+  if (b && d) return `${b} - ${d}`;
   if (d) return t(locale, "anc.passed", { y: d });
   if (b) return t(locale, "anc.born", { y: b });
   return "";

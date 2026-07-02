@@ -35,9 +35,9 @@ export async function generateMetadata({
   const { id } = await params;
   const { r } = await searchParams;
   const found = resolve(id, r);
-  if (!found) return { title: "Tarot — Original Botanica" };
+  if (!found) return { title: "Original Botanica Tarot" };
   const orient = found.reversed ? " (upside down)" : "";
-  const title = `${found.card.name}${orient} — Original Botanica Tarot`;
+  const title = `Original Botanica Tarot: ${found.card.name}${orient}`;
   return {
     title,
     description: found.reading,
@@ -105,7 +105,7 @@ export default async function PublicCardPage({
           </h2>
           <p className="text-[var(--foreground-muted)] leading-relaxed max-w-md mb-6">
             A daily card, your natal chart, dream interpretation, a virtual
-            altar, and sixty-six years of rituals from the Bronx — your
+            altar, and sixty-six years of rituals from the Bronx. Your
             spiritual home, online.
           </p>
           <Link href="/signup" className="btn-primary">

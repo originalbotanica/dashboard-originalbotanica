@@ -49,7 +49,7 @@ export function ShareCardButton({
   const nativeShare = async () => {
     try {
       await navigator.share({
-        title: "Original Botanica — Tarot Today",
+        title: "Original Botanica · Tarot Today",
         text: buildText(),
         url: buildUrl(),
       });

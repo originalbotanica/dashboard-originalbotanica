@@ -28,7 +28,7 @@ export default function CancellationPage() {
       <h2 className="display text-xl text-[var(--foreground)] pt-2">Refunds</h2>
       <p>
         Subscription charges are generally non-refundable, and cancelling stops
-        future charges rather than refunding the current period — except where a
+        future charges rather than refunding the current period, except where a
         refund is required by law. If you were charged in error or something went
         wrong, reach out and we&apos;ll make it right.
       </p>

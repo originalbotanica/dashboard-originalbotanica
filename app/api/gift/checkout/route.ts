@@ -123,7 +123,7 @@ export async function POST(request: Request) {
           currency: "usd",
           unit_amount: term.amountCents,
           product_data: {
-            name: `Original Botanica Membership — ${termLabel(term.months)} gift`,
+            name: `Original Botanica Membership: ${termLabel(term.months)} gift`,
             description: "A prepaid gift membership. One-time payment, no auto-renewal.",
           },
         },

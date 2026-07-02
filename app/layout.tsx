@@ -32,7 +32,7 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "The Practice — Your Spiritual Home Online",
+    default: "The Practice: Your Spiritual Home Online",
     template: "%s | The Practice",
   },
   description:
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    siteName: "The Practice — from Original Botanica",
-    title: "The Practice — Your Spiritual Home Online",
+    siteName: "The Practice, from Original Botanica",
+    title: "The Practice: Your Spiritual Home Online",
     description:
       "Daily tarot, personal astrology, virtual altar, ancestor altar, rituals library. Rooted in the Bronx since 1959.",
     url: "/",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Practice — from Original Botanica",
+    title: "The Practice, from Original Botanica",
     description:
       "Your spiritual home online. Rooted in the Bronx since 1959.",
   },

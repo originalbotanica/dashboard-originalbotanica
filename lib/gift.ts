@@ -18,7 +18,7 @@ export type GiftTerm = {
 export const GIFT_TERMS: GiftTerm[] = [
   { months: 3, amountCents: 6900, label: "3 months", tagline: "A season of guidance" },
   { months: 6, amountCents: 12900, label: "6 months", tagline: "Half a year of practice" },
-  { months: 12, amountCents: 19900, label: "12 months", tagline: "A full year — our best value" },
+  { months: 12, amountCents: 19900, label: "12 months", tagline: "A full year, our best value" },
 ];
 
 export function giftTerm(months: number): GiftTerm | null {

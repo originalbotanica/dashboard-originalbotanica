@@ -56,7 +56,7 @@ export async function lightCandleAction(formData: FormData) {
     return redirect(
       "/altar/virtual/new?error=" +
         encodeURIComponent(
-          `You've lit ${ALTAR_DAILY_LIMIT} candles today. Please return tomorrow to light another — your prayers are heard.`,
+          `You've lit ${ALTAR_DAILY_LIMIT} candles today. Please return tomorrow to light another. Your prayers are heard.`,
         ),
     );
   }

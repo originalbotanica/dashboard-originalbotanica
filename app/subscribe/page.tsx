@@ -43,7 +43,7 @@ export default async function SubscribePage() {
         />
         <h1 className="display text-2xl mb-3">Start your 7-day free trial.</h1>
         <p className="text-foreground-muted leading-relaxed text-sm mb-2">
-          {profile.first_name}, every tool opens today — daily tarot, your
+          {profile.first_name}, every tool opens today: daily tarot, your
           astrologer, the altar, and the rituals library. No charge until day 8.
           Cancel anytime.
         </p>

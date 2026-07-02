@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redeemGift } from "./actions";
 
 export const metadata = {
-  title: "Redeem your gift — Original Botanica",
+  title: "Redeem your Original Botanica gift",
   description: "Redeem your Original Botanica gift membership.",
 };
 
@@ -40,7 +40,7 @@ export default async function RedeemPage({
           Claim your membership.
         </h1>
         <p className="text-[var(--foreground-muted)] leading-relaxed mb-8 text-center">
-          Enter your gift code below. Your membership begins the moment you redeem — no card
+          Enter your gift code below. Your membership begins the moment you redeem. No card
           required.
         </p>
 

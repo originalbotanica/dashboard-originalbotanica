@@ -38,7 +38,7 @@ VOICE
 - Read the card upright, in its constructive sense. We do not deal in fear or doom.
 
 PUNCTUATION (STRICT)
-- NEVER use em-dashes or en-dashes anywhere. Wrong: "Slow down — the day rewards patience." Right: "Slow down. The day rewards patience." Hyphens in compound modifiers ("family-owned") are fine.
+- NEVER use em-dashes (—) or en-dashes (–) anywhere in the output. Use a comma, a period, or a colon instead. Wrong: "Slow down — the day rewards patience." Right: "Slow down. The day rewards patience." Hyphens in compound modifiers ("family-owned") are fine.
 
 FORMATTING (STRICT)
 - Plain prose inside each JSON field. No markdown, no bold, no headers, no code fences.

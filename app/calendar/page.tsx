@@ -17,7 +17,7 @@ import { CalendarMonthGrid } from "@/components/calendar-month-grid";
 export const metadata = {
   title: "The spiritual calendar",
   description:
-    "Saint and Orisha feast days, the new and full moons, and the turning of the seasons — with an action for each.",
+    "Saint and Orisha feast days, the new and full moons, and the turning of the seasons, with an action for each.",
 };
 
 export default async function CalendarPage() {

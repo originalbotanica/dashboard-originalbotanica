@@ -263,8 +263,8 @@ export function DailyTarotCard({
               </h2>
               <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
                 One card, pulled for you this {dayName(dateLabel)}. Shuffle the
-                deck, turn the card, and read it in the voice of the botanica —
-                with a question to sit with for the day.
+                deck, turn the card, and read it in the voice of the botanica.
+                It comes with a question to sit with for the day.
               </p>
               <button type="button" onClick={shuffle} className="btn-ghost">
                 Shuffle the deck

@@ -177,7 +177,7 @@ export function GiftForm() {
           : `Continue · ${selected.label} for ${formatUsd(selected.amountCents)}`}
       </button>
       <p className="text-[var(--foreground-subtle)] text-xs mt-4 text-center">
-        A one-time payment. Nothing renews — no one is ever charged again.
+        A one-time payment. Nothing renews, and no one is ever charged again.
       </p>
     </form>
   );

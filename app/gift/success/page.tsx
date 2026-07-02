@@ -4,7 +4,7 @@ import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { termLabel, formatLongDate } from "@/lib/gift";
 
-export const metadata = { title: "Your gift is confirmed — Original Botanica" };
+export const metadata = { title: "Your Original Botanica gift is confirmed" };
 
 export default async function GiftSuccessPage({
   searchParams,

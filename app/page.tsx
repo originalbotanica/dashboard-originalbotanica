@@ -21,14 +21,14 @@ const GOLD_SOFT = "rgba(210, 172, 102, 0.55)";
 
 const OG_IMAGE = `${OB_CDN}/Banners/original-botanica.png`;
 const OG_DESC =
-  "A 7-day free trial into Original Botanica's spiritual membership: daily tarot, your birth chart, dream interpretation, a virtual altar, an ancestors altar, 400+ rituals — plus 10% off everything at the botanica. A real Bronx botanica, serving practitioners since 1959.";
+  "A 7-day free trial into Original Botanica's spiritual membership: daily tarot, your birth chart, dream interpretation, a virtual altar, an ancestors altar, 400+ rituals, plus 10% off everything at the botanica. A real Bronx botanica, serving practitioners since 1959.";
 
 export const metadata = {
-  title: "The Practice — your virtual spiritual home",
+  title: "The Practice: your virtual spiritual home",
   description: OG_DESC,
   alternates: { canonical: "/" },
   openGraph: {
-    title: "The Practice — from Original Botanica",
+    title: "The Practice, from Original Botanica",
     description: OG_DESC,
     url: "/",
     type: "website",
@@ -36,7 +36,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Practice — from Original Botanica",
+    title: "The Practice, from Original Botanica",
     description: OG_DESC,
     images: [OG_IMAGE],
   },
