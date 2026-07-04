@@ -10,6 +10,7 @@ import {
   getEventsBetween,
   getActiveNovena,
   addDays,
+  eventTitle,
   type CalEvent,
 } from "@/lib/calendar/events";
 import { CalendarMonthGrid } from "@/components/calendar-month-grid";
@@ -146,7 +147,7 @@ export default async function CalendarPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <h2 className="display text-lg leading-tight">
-                              {e.title}
+                              {eventTitle(e, locale)}
                             </h2>
                             {isToday && (
                               <span

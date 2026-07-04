@@ -28,8 +28,10 @@ export type CalEvent = {
   m: number; // 1-12
   d: number; // 1-31, US Eastern
   type: CalType;
-  /** Display title, e.g. "Santa Bárbara · Changó". */
+  /** Display title (English default), e.g. "St. Barbara · Changó". */
   title: string;
+  /** Display title, Spanish, e.g. "Santa Bárbara · Changó". */
+  title_es?: string;
   /** Short line, English. */
   en: string;
   /** Short line, Spanish. */
@@ -49,6 +51,7 @@ type Feast = {
   d: number;
   id: string;
   title: string;
+  title_es?: string;
   en: string;
   es: string;
   color: string;
@@ -60,7 +63,8 @@ const FEASTS: Feast[] = [
     m: 1,
     d: 6,
     id: "reyes",
-    title: "Día de Reyes: Three Kings",
+    title: "Three Kings Day",
+    title_es: "Día de Reyes",
     en: "Epiphany. A day of blessing for the year ahead; light a candle for protection and clear roads.",
     es: "Epifanía. Un día de bendición para el año; enciende una vela por protección y caminos abiertos.",
     color: "#e8ac7c",
@@ -70,7 +74,8 @@ const FEASTS: Feast[] = [
     m: 2,
     d: 2,
     id: "candelaria",
-    title: "La Candelaria · Oyá",
+    title: "Candlemas · Oyá",
+    title_es: "La Candelaria · Oyá",
     en: "Candlemas, honored with Oyá, keeper of the gates of change. Light a candle for transformation.",
     es: "La Candelaria, honrada con Oyá, guardiana de los cambios. Enciende una vela por la transformación.",
     color: "#b98cf0",
@@ -80,7 +85,8 @@ const FEASTS: Feast[] = [
     m: 6,
     d: 13,
     id: "san-antonio",
-    title: "San Antonio · Eleguá",
+    title: "St. Anthony · Eleguá",
+    title_es: "San Antonio · Eleguá",
     en: "St. Anthony, honored with Eleguá, who opens the roads. Light a red and black candle to clear the way.",
     es: "San Antonio, honrado con Eleguá, quien abre los caminos. Enciende una vela roja y negra para abrir camino.",
     color: "#f0855a",
@@ -90,7 +96,8 @@ const FEASTS: Feast[] = [
     m: 6,
     d: 24,
     id: "san-juan",
-    title: "San Juan Bautista",
+    title: "St. John the Baptist",
+    title_es: "San Juan Bautista",
     en: "The feast of St. John the Baptist, a night of cleansing waters. Light a candle for renewal.",
     es: "La fiesta de San Juan Bautista, noche de aguas de limpieza. Enciende una vela por la renovación.",
     color: "#7bb6f2",
@@ -100,7 +107,8 @@ const FEASTS: Feast[] = [
     m: 7,
     d: 25,
     id: "santiago",
-    title: "Santiago Apóstol · Oggún",
+    title: "St. James the Apostle · Oggún",
+    title_es: "Santiago Apóstol · Oggún",
     en: "St. James, honored with Oggún, the worker of iron and strength. Light a candle for the strength to push through.",
     es: "Santiago, honrado con Oggún, dueño del hierro y la fuerza. Enciende una vela por la fuerza para seguir.",
     color: "#86cf9a",
@@ -110,7 +118,8 @@ const FEASTS: Feast[] = [
     m: 9,
     d: 7,
     id: "regla",
-    title: "La Virgen de Regla · Yemayá",
+    title: "Our Lady of Regla · Yemayá",
+    title_es: "La Virgen de Regla · Yemayá",
     en: "Honored with Yemayá, mother of the ocean. Light a blue candle for protection, motherhood, and deep healing.",
     es: "Honrada con Yemayá, madre del mar. Enciende una vela azul por protección, maternidad y sanación profunda.",
     color: "#7bb6f2",
@@ -120,7 +129,8 @@ const FEASTS: Feast[] = [
     m: 9,
     d: 8,
     id: "caridad",
-    title: "La Caridad del Cobre · Ochún",
+    title: "Our Lady of Charity of El Cobre · Ochún",
+    title_es: "La Caridad del Cobre · Ochún",
     en: "Cuba's patroness, honored with Ochún, Orisha of love, sweetness, and rivers. Light a yellow candle for love and abundance.",
     es: "Patrona de Cuba, honrada con Ochún, Orisha del amor, la dulzura y los ríos. Enciende una vela amarilla por amor y abundancia.",
     color: "#e8c34a",
@@ -130,7 +140,8 @@ const FEASTS: Feast[] = [
     m: 9,
     d: 24,
     id: "mercedes",
-    title: "Las Mercedes · Obatalá",
+    title: "Our Lady of Mercy · Obatalá",
+    title_es: "Las Mercedes · Obatalá",
     en: "Our Lady of Mercy, honored with Obatalá, father of peace and clarity. Light a white candle for calm and wisdom.",
     es: "La Virgen de las Mercedes, honrada con Obatalá, padre de la paz y la claridad. Enciende una vela blanca por calma y sabiduría.",
     color: "#efe7d6",
@@ -140,7 +151,8 @@ const FEASTS: Feast[] = [
     m: 9,
     d: 29,
     id: "san-miguel",
-    title: "San Miguel Arcángel",
+    title: "St. Michael the Archangel",
+    title_es: "San Miguel Arcángel",
     en: "The archangel of protection. Light a candle and ask for his shield over you and your home.",
     es: "El arcángel de la protección. Enciende una vela y pide su escudo sobre ti y tu hogar.",
     color: "#7bb6f2",
@@ -150,7 +162,8 @@ const FEASTS: Feast[] = [
     m: 10,
     d: 4,
     id: "san-francisco",
-    title: "San Francisco · Orula",
+    title: "St. Francis of Assisi · Orula",
+    title_es: "San Francisco · Orula",
     en: "St. Francis, honored with Orula, who holds wisdom and destiny. Light a candle for guidance on your path.",
     es: "San Francisco, honrado con Orula, dueño de la sabiduría y el destino. Enciende una vela por guía en tu camino.",
     color: "#86cf9a",
@@ -160,7 +173,8 @@ const FEASTS: Feast[] = [
     m: 11,
     d: 2,
     id: "difuntos",
-    title: "Día de los Difuntos: All Souls",
+    title: "All Souls' Day",
+    title_es: "Día de los Difuntos",
     en: "The day of the faithful departed. Honor your ancestors: light their flame and speak their names.",
     es: "El día de los fieles difuntos. Honra a tus ancestros: enciende su llama y di sus nombres.",
     color: "#ec9aa6",
@@ -170,7 +184,8 @@ const FEASTS: Feast[] = [
     m: 12,
     d: 4,
     id: "barbara",
-    title: "Santa Bárbara · Changó",
+    title: "St. Barbara · Changó",
+    title_es: "Santa Bárbara · Changó",
     en: "Honored with Changó, Orisha of fire, thunder, and justice. Light a red candle for power, courage, and victory.",
     es: "Honrada con Changó, Orisha del fuego, el trueno y la justicia. Enciende una vela roja por poder, valor y victoria.",
     color: "#f0552f",
@@ -180,7 +195,8 @@ const FEASTS: Feast[] = [
     m: 12,
     d: 17,
     id: "lazaro",
-    title: "San Lázaro · Babalú-Ayé",
+    title: "St. Lazarus · Babalú-Ayé",
+    title_es: "San Lázaro · Babalú-Ayé",
     en: "Honored with Babalú-Ayé, who heals sickness and suffering. Light a candle for health and relief.",
     es: "Honrado con Babalú-Ayé, quien sana la enfermedad y el sufrimiento. Enciende una vela por la salud y el alivio.",
     color: "#b98cf0",
@@ -188,7 +204,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 1, d: 21, id: "altagracia",
-    title: "Virgen de Altagracia",
+    title: "Our Lady of Altagracia",
+    title_es: "Virgen de Altagracia",
     en: "Protectress of the Dominican people. Light a candle for protection and blessings on your home.",
     es: "Protectora del pueblo dominicano. Enciende una vela por protección y bendiciones para tu hogar.",
     color: "#5b8fd8",
@@ -196,7 +213,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 5, d: 13, id: "fatima",
-    title: "Nuestra Señora de Fátima",
+    title: "Our Lady of Fátima",
+    title_es: "Nuestra Señora de Fátima",
     en: "Our Lady of Fátima. Light a candle for peace, conversion, and protection.",
     es: "Nuestra Señora de Fátima. Enciende una vela por la paz, la conversión y la protección.",
     color: "#7bb6f2",
@@ -205,6 +223,7 @@ const FEASTS: Feast[] = [
   {
     m: 6, d: 27, id: "perpetua",
     title: "Our Lady of Perpetual Help",
+    title_es: "Nuestra Señora del Perpetuo Socorro",
     en: "For those in urgent need. Light a candle when you need help that cannot wait.",
     es: "Para quienes están en necesidad urgente. Enciende una vela cuando necesites ayuda que no puede esperar.",
     color: "#6f8fd0",
@@ -212,7 +231,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 7, d: 16, id: "carmen",
-    title: "Virgen del Carmen",
+    title: "Our Lady of Mount Carmel",
+    title_es: "Virgen del Carmen",
     en: "Patroness of the sea and safe passage. Light a candle for protection over travelers and sailors.",
     es: "Patrona del mar y del buen camino. Enciende una vela por protección para viajeros y marineros.",
     color: "#b98a5e",
@@ -220,7 +240,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 7, d: 17, id: "san-alejo",
-    title: "San Alejo",
+    title: "St. Alexius",
+    title_es: "San Alejo",
     en: "Invoked to keep enemies and harmful people far away. Light a candle for distance from trouble.",
     es: "Se le invoca para alejar a los enemigos y a las personas dañinas. Enciende una vela para alejar los problemas.",
     color: "#9b7bd0",
@@ -228,7 +249,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 7, d: 26, id: "santa-ana",
-    title: "Santa Ana",
+    title: "St. Anne",
+    title_es: "Santa Ana",
     en: "Mother of the Virgin Mary. Light a candle for family, mothers, and fertility.",
     es: "Madre de la Virgen María. Enciende una vela por la familia, las madres y la fertilidad.",
     color: "#cdae5a",
@@ -236,7 +258,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 7, d: 29, id: "santa-marta",
-    title: "Santa Marta la Dominadora",
+    title: "St. Martha the Dominator",
+    title_es: "Santa Marta la Dominadora",
     en: "Santa Marta la Dominadora, who tamed the dragon. Light a candle for peace and dominion over a hard situation.",
     es: "Santa Marta la Dominadora, que amansó al dragón. Enciende una vela por paz y dominio sobre una situación difícil.",
     color: "#3f8f5a",
@@ -244,7 +267,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 9, d: 15, id: "dolorosa",
-    title: "Nuestra Señora de los Dolores",
+    title: "Our Lady of Sorrows",
+    title_es: "Nuestra Señora de los Dolores",
     en: "Our Lady of Sorrows. Light a candle for comfort in grief and hardship.",
     es: "Nuestra Señora de los Dolores. Enciende una vela por consuelo en el dolor y la dificultad.",
     color: "#6f7bbf",
@@ -253,6 +277,7 @@ const FEASTS: Feast[] = [
   {
     m: 10, d: 2, id: "guardian-angel",
     title: "Holy Guardian Angels",
+    title_es: "Santos Ángeles Custodios",
     en: "The feast of the Guardian Angels. Light a candle and ask yours to watch over you.",
     es: "La fiesta de los Ángeles de la Guarda. Enciende una vela y pide al tuyo que te cuide.",
     color: "#8fb6e8",
@@ -260,7 +285,8 @@ const FEASTS: Feast[] = [
   },
   {
     m: 12, d: 12, id: "guadalupe",
-    title: "Virgen de Guadalupe",
+    title: "Our Lady of Guadalupe",
+    title_es: "Virgen de Guadalupe",
     en: "Patroness of the Americas. Light a candle for protection and grace over you and your family.",
     es: "Patrona de las Américas. Enciende una vela por protección y gracia para ti y tu familia.",
     color: "#3fae8f",
@@ -286,6 +312,14 @@ export function easternToday(now: Date = new Date()): { y: number; m: number; d:
 
 const key = (e: { y: number; m: number; d: number }) =>
   e.y * 10000 + e.m * 100 + e.d;
+
+/** Locale-aware event title: Spanish when available, English otherwise. */
+export function eventTitle(
+  e: { title: string; title_es?: string | null },
+  locale: "en" | "es",
+): string {
+  return locale === "es" && e.title_es ? e.title_es : e.title;
+}
 
 /** Equinoxes and solstices for a year, computed from solar longitude. */
 function seasonalForYear(year: number): CalEvent[] {
@@ -360,6 +394,7 @@ function movableFeastsForYear(year: number): CalEvent[] {
       ...sh,
       type: "feast",
       title: "Sacred Heart of Jesus",
+      title_es: "Sagrado Corazón de Jesús",
       en: "The Sacred Heart of Jesus. Light a candle for love, mercy, and healing.",
       es: "El Sagrado Corazón de Jesús. Enciende una vela por amor, misericordia y sanación.",
       color: "#f0552f",
@@ -382,6 +417,7 @@ function feastEventsForYear(year: number): CalEvent[] {
       d: f.d,
       type: "feast" as const,
       title: f.title,
+      title_es: f.title_es,
       en: f.en,
       es: f.es,
       color: f.color,
@@ -436,6 +472,7 @@ function mercuryEvents(): CalEvent[] {
     d: r.d,
     type: "planet" as const,
     title: "Mercury Retrograde begins",
+    title_es: "Comienza Mercurio retrógrado",
     en: `Mercury turns retrograde in ${r.sign}. Slow down with messages, signings, and travel. Take time to reflect.`,
     es: `Mercurio se vuelve retrógrado en ${r.sign}. Ve con calma con mensajes, contratos y viajes. Tómate un tiempo para reflexionar.`,
     color: "#b98cf0",

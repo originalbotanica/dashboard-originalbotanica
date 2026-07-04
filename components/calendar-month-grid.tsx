@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import type { CalEvent } from "@/lib/calendar/events";
+import { eventTitle, type CalEvent } from "@/lib/calendar/events";
 
 type Day = { y: number; m: number; d: number };
 
@@ -170,7 +170,7 @@ export function CalendarMonthGrid({
                   style={{ width: 10, height: 10, background: e.color, boxShadow: `0 0 10px ${e.color}` }}
                 />
                 <div>
-                  <p className="display text-base leading-tight">{e.title}</p>
+                  <p className="display text-base leading-tight">{eventTitle(e, locale)}</p>
                   <p className="text-sm text-[var(--foreground-muted)] leading-relaxed mt-0.5">
                     {locale === "es" ? e.es : e.en}
                   </p>

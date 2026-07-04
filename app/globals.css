@@ -395,7 +395,17 @@ h1, h2, h3, h4, h5, h6 {
   );
   filter: drop-shadow(0 0 16px rgba(255, 170, 60, 0.85));
   transform-origin: 50% 100%;
-  animation: flame-flicker-outer 1.9s ease-in-out infinite alternate;
+  /* Own keyframes: the altar flicker bakes in translateX(-50%) for elements
+     centered via left:50%, but this flame sits inside an already-centered
+     wrapper, so that shift knocked it off the wick. */
+  animation: flame-flicker-saint 1.9s ease-in-out infinite alternate;
+}
+@keyframes flame-flicker-saint {
+  0%   { transform: scaleX(1)    scaleY(1)    rotate(-1.5deg); opacity: 0.92; }
+  25%  { transform: scaleX(0.92) scaleY(1.05) rotate(1deg);    opacity: 1; }
+  50%  { transform: scaleX(1.04) scaleY(0.96) rotate(-0.5deg); opacity: 0.88; }
+  75%  { transform: scaleX(0.95) scaleY(1.04) rotate(1.5deg);  opacity: 0.95; }
+  100% { transform: scaleX(1.02) scaleY(0.98) rotate(-1deg);   opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .saint-flame {

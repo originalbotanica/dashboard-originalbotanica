@@ -7,6 +7,7 @@ import {
   getUpcoming,
   getActiveNovena,
   addDays,
+  eventTitle,
   type CalEvent,
 } from "@/lib/calendar/events";
 
@@ -53,7 +54,7 @@ export async function CalendarToday() {
                 : `${t(locale, "cal.upcomingEyebrow")} · ${relativeLabel(today, event, locale)}`}
             </p>
             <p className="display text-xl md:text-2xl leading-tight">
-              {event.title}
+              {eventTitle(event, locale)}
             </p>
             <p className="text-[var(--foreground-muted)] text-sm leading-relaxed mt-1 max-w-2xl">
               {line}

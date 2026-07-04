@@ -24,6 +24,7 @@ import { join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
 import { PURPOSES, PURPOSE_SLUGS, getPurpose } from "../lib/rituals/purposes";
+import { cleanText, cleanMaterial } from "../lib/rituals/clean";
 
 // ---------- load .env.local ----------
 function loadEnv() {
@@ -191,11 +192,11 @@ async function materialsFor(productSlugs: string[]): Promise<Array<{ name: strin
     .from("ob_products")
     .select("slug, url, name")
     .in("slug", productSlugs);
-  return (data ?? []).map((p: { slug: string; url: string; name: string }) => ({
-    name: p.name,
-    url: p.url,
-    slug: p.slug,
-  }));
+  // Product names arrive from the store feed and can carry HTML entities
+  // or markdown; clean before storing so the library stays presentable.
+  return (data ?? []).map((p: { slug: string; url: string; name: string }) =>
+    cleanMaterial({ name: p.name, url: p.url, slug: p.slug }),
+  ) as Array<{ name: string; url: string; slug: string }>;
 }
 
 function validExtract(e: Extracted): boolean {
@@ -261,12 +262,12 @@ async function main() {
 
     const purpose = getPurpose(e.purpose)!;
     const materials = await materialsFor(post.product_slugs ?? []);
-    const steps = e.steps.map(stripDashes);
+    const steps = e.steps.map((s) => cleanText(stripDashes(s)));
     const row = {
       slug: post.slug,
-      title_en: stripDashes(e.title),
+      title_en: cleanText(stripDashes(e.title)),
       body_en: steps.join("\n\n"),
-      summary: stripDashes(e.summary || ""),
+      summary: cleanText(stripDashes(e.summary || "")),
       steps,
       purpose: e.purpose,
       intention: purpose.intention,
@@ -277,7 +278,7 @@ async function main() {
       best_moon_phase: e.best_moon_phase || null,
       materials,
       keywords: post.keywords ?? [],
-      warnings: e.warnings ? stripDashes(e.warnings) : null,
+      warnings: e.warnings ? cleanText(stripDashes(e.warnings)) : null,
       image_url: post.image_url,
       source_url: post.url,
       source_type: "blog",

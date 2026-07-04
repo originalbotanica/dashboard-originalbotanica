@@ -10,6 +10,7 @@ import { createClient } from "@/utils/supabase/server";
  */
 
 import { t, type Locale } from "@/lib/i18n/dictionary";
+import { cleanText, cleanMaterial, cleanCardFields } from "./clean";
 
 export type RitualMaterial = {
   name: string;
@@ -91,7 +92,7 @@ export async function listRitualsByPurpose(
     .not("published_at", "is", null)
     .order("title_en");
   if (error) return [];
-  return (data ?? []) as never;
+  return ((data ?? []) as RitualCardData[]).map(cleanCardFields);
 }
 
 /** One full ritual by slug. */
@@ -107,11 +108,25 @@ export async function getRitualBySlug(slug: string): Promise<Ritual | null> {
     .maybeSingle();
   if (error || !data) return null;
   const r = data as Record<string, unknown>;
-  return {
+  const ritual: Ritual = {
     ...(r as unknown as Ritual),
     steps: Array.isArray(r.steps) ? (r.steps as string[]) : [],
     steps_es: Array.isArray(r.steps_es) ? (r.steps_es as string[]) : [],
     materials: Array.isArray(r.materials) ? (r.materials as RitualMaterial[]) : [],
+  };
+  // Scrub encoding artifacts (HTML entities, leaked markdown) everywhere.
+  return {
+    ...ritual,
+    title_en: cleanText(ritual.title_en),
+    title_es: ritual.title_es != null ? cleanText(ritual.title_es) : null,
+    summary: cleanText(ritual.summary),
+    summary_es: ritual.summary_es != null ? cleanText(ritual.summary_es) : null,
+    intention: ritual.intention != null ? cleanText(ritual.intention) : null,
+    warnings: cleanText(ritual.warnings),
+    warnings_es: ritual.warnings_es != null ? cleanText(ritual.warnings_es) : null,
+    steps: ritual.steps.map((s) => cleanText(s)),
+    steps_es: ritual.steps_es.map((s) => cleanText(s)),
+    materials: ritual.materials.map(cleanMaterial),
   };
 }
 
@@ -166,7 +181,7 @@ async function keywordSearchRituals(term: string): Promise<RitualCardData[]> {
     .order("title_en")
     .limit(50);
   if (error) return [];
-  return (data ?? []) as never;
+  return ((data ?? []) as RitualCardData[]).map(cleanCardFields);
 }
 
 /** Semantic pass: embed the query, match posts, map to library rituals. */
@@ -224,7 +239,7 @@ export async function getLibraryRitualsBySlugs(
     .in("slug", slugs)
     .not("published_at", "is", null);
   if (error) return [];
-  return (data ?? []) as never;
+  return ((data ?? []) as RitualCardData[]).map(cleanCardFields);
 }
 
 /** Published rituals tagged for a given moon phase (new|waxing|full|waning). */
@@ -241,7 +256,7 @@ export async function getRitualsByMoonPhase(
     .order("title_en")
     .limit(limit);
   if (error) return [];
-  return (data ?? []) as never;
+  return ((data ?? []) as RitualCardData[]).map(cleanCardFields);
 }
 
 /** The set of ritual ids this member has saved. Used to show saved state. */
@@ -272,7 +287,8 @@ export async function listSavedRituals(userId: string): Promise<RitualCardData[]
   }>;
   return rows
     .map((row) => (Array.isArray(row.rituals) ? row.rituals[0] : row.rituals))
-    .filter((r): r is RitualCardData => !!r);
+    .filter((r): r is RitualCardData => !!r)
+    .map(cleanCardFields);
 }
 
 /** Day-of-week label, 0=Sunday. */
