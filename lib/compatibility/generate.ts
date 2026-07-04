@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/utils/supabase/admin";
-import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
+import { getAnthropic, CHAT_MODEL } from "@/lib/astrologer/anthropic";
 import {
   getNatalChart,
   geocode,
@@ -45,17 +45,17 @@ export async function createCompatibilityReading(args: {
   relationshipNote?: string | null;
   locale?: "en" | "es";
 }): Promise<CompatibilityReading | null> {
-  // 1. Subscriber chart
-  const subscriberCtx = await loadAstrologerContext(args.userId);
-  if (!subscriberCtx) return null;
-
-  // 2. Other person's chart
-  const otherChart = await computeOtherChart({
-    birthDate: args.otherBirthDate,
-    birthTime: args.otherBirthTime,
-    birthCity: args.otherBirthCity,
-  });
-  if (!otherChart) return null;
+  // 1 + 2. Both charts in parallel — the member is waiting on this,
+  // so we don't serialize two independent network round-trips.
+  const [subscriberCtx, otherChart] = await Promise.all([
+    loadAstrologerContext(args.userId),
+    computeOtherChart({
+      birthDate: args.otherBirthDate,
+      birthTime: args.otherBirthTime,
+      birthCity: args.otherBirthCity,
+    }),
+  ]);
+  if (!subscriberCtx || !otherChart) return null;
 
   // 3. RAG: retrieve archive rituals relevant to this pairing
   const ragQuery = `Relationship rituals between ${subscriberCtx.chart.sunSign} and ${otherChart.sunSign}. ${args.relationshipNote || "Love, partnership, communication, healing."}`;
@@ -91,8 +91,10 @@ export async function createCompatibilityReading(args: {
 
   const anthropic = getAnthropic();
   const response = await anthropic.messages.create({
-    model: ASTROLOGER_MODEL,
-    max_tokens: 2500,
+    // Haiku: the member waits on this screen, so speed matters more
+    // than the marginal quality gain from Sonnet at this length.
+    model: CHAT_MODEL,
+    max_tokens: 1200,
     system,
     messages: [{ role: "user", content: user }],
   });

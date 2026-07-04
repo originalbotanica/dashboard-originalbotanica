@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { getAnthropic, ASTROLOGER_MODEL } from "@/lib/astrologer/anthropic";
+import { getAnthropic, CHAT_MODEL } from "@/lib/astrologer/anthropic";
 import { loadAstrologerContext } from "@/lib/astrologer/context";
 import {
   buildForecastPrompt,
@@ -111,8 +111,10 @@ export async function getOrGenerateMonthlyForecast(
 
   const anthropic = getAnthropic();
   const response = await anthropic.messages.create({
-    model: ASTROLOGER_MODEL,
-    max_tokens: 3000,
+    // Haiku: the member waits on screen for the forecast to reveal,
+    // so the budget is under 10 seconds end to end.
+    model: CHAT_MODEL,
+    max_tokens: 1400,
     system,
     messages: [{ role: "user", content: user }],
   });
