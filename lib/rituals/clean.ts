@@ -27,7 +27,13 @@ const NAMED_ENTITIES: Record<string, string> = {
   "&Ntilde;": "Ñ",
 };
 
-/** Decode numeric (&#039; / &#x27;) and common named HTML entities. */
+/**
+ * Decode numeric (&#039; / &#x27;) and common named HTML entities.
+ *
+ * SECURITY: this un-escapes markup (e.g. "&lt;script&gt;" becomes
+ * "<script>"). Every consumer must render the result as a React text node
+ * only. NEVER pass cleaned text to dangerouslySetInnerHTML or any HTML sink.
+ */
 export function decodeEntities(s: string): string {
   if (!s || s.indexOf("&") === -1) return s;
   let out = s.replace(/&#(\d+);/g, (_, code) =>

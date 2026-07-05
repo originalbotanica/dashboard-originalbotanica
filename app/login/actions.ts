@@ -9,7 +9,14 @@ export async function loginAction(formData: FormData) {
 
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
-  const redirectTo = String(formData.get("redirectTo") || "/dashboard");
+  // Only allow internal, single-slash paths. A raw value could be an
+  // absolute URL ("https://evil.com") or protocol-relative ("//evil.com"),
+  // turning the trusted login page into an open redirect for phishing.
+  const rawRedirect = String(formData.get("redirectTo") || "/dashboard");
+  const redirectTo =
+    rawRedirect.startsWith("/") && !rawRedirect.startsWith("//")
+      ? rawRedirect
+      : "/dashboard";
 
   if (!email || !password) {
     return redirect("/login?error=Email%20and%20password%20required");

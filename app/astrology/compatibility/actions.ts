@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { createCompatibilityReading } from "@/lib/compatibility/generate";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { getLocale } from "@/lib/i18n/server";
 
 /**
@@ -16,6 +17,17 @@ export async function createCompatibilityAction(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  // Subscription gate. This action generates a reading (AstrologyAPI +
+  // Claude) and is directly invocable, so it must enforce the paywall
+  // itself — the page gate alone does not protect it. Mirrors the
+  // astrologer and dream chat routes.
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) {
+    return redirect(
+      "/astrology/compatibility?error=An%20active%20subscription%20is%20required.",
+    );
+  }
 
   const other_name = String(formData.get("other_name") || "").trim();
   const other_birth_date = String(

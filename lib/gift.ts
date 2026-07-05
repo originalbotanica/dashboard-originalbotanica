@@ -6,6 +6,8 @@
  * one-off price on the fly and Jason can change tiers without touching Stripe.
  */
 
+import { randomInt } from "crypto";
+
 export type GiftTermMonths = 3 | 6 | 12;
 
 export type GiftTerm = {
@@ -43,10 +45,13 @@ export function termLabel(months: number): string {
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 
 export function generateGiftCode(): string {
+  // These codes gate paid memberships, so use a CSPRNG (not Math.random)
+  // to pick alphabet indices — the codes must be unpredictable, not just
+  // unique. randomInt is unbiased over the range.
   const block = () =>
     Array.from(
       { length: 4 },
-      () => CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)],
+      () => CODE_ALPHABET[randomInt(CODE_ALPHABET.length)],
     ).join("");
   return `OB-GIFT-${block()}-${block()}`;
 }

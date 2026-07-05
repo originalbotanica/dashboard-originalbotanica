@@ -28,6 +28,28 @@ function makeHash(): string {
   return "c" + raw.slice(0, 9);
 }
 
+/**
+ * A memorial photo must live in our own Supabase Storage (that's where the
+ * upload route puts it). The URL arrives from a hidden form field, so a
+ * member could otherwise point it at any external address — rendered as a
+ * raw <img> on the public /candle/[hash] page, that would hotlink off-site
+ * or beacon a viewer's IP. Accept only our storage origin; drop anything else.
+ */
+function safePhotoUrl(raw: string | null): string | null {
+  if (!raw) return null;
+  try {
+    const u = new URL(raw);
+    const supaHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).host;
+    const ok =
+      u.protocol === "https:" &&
+      u.host === supaHost &&
+      u.pathname.includes("/storage/v1/object/public/");
+    return ok ? u.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function createAncestorAction(formData: FormData) {
   const supabase = await createClient();
   const {
@@ -43,7 +65,9 @@ export async function createAncestorAction(formData: FormData) {
   const birth_date = String(formData.get("birth_date") || "").trim() || null;
   const death_date = String(formData.get("death_date") || "").trim() || null;
   const dedication = String(formData.get("dedication") || "").trim() || null;
-  const photo_url = String(formData.get("photo_url") || "").trim() || null;
+  const photo_url = safePhotoUrl(
+    String(formData.get("photo_url") || "").trim() || null,
+  );
   const is_public = formData.get("is_public") === "on";
 
   if (!name) {
@@ -131,7 +155,9 @@ export async function updateAncestorAction(formData: FormData) {
   const birth_date = String(formData.get("birth_date") || "").trim() || null;
   const death_date = String(formData.get("death_date") || "").trim() || null;
   const dedication = String(formData.get("dedication") || "").trim() || null;
-  const photo_url = String(formData.get("photo_url") || "").trim() || null;
+  const photo_url = safePhotoUrl(
+    String(formData.get("photo_url") || "").trim() || null,
+  );
   const is_public = formData.get("is_public") === "on";
 
   if (!name) {
