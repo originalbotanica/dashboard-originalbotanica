@@ -61,17 +61,29 @@ export const metadata: Metadata = {
       "Daily tarot, personal astrology, virtual altar, ancestor altar, rituals library. Rooted in the Bronx since 1959.",
     url: "/",
     locale: "en_US",
+    // Default share image for every page; individual pages can override.
+    images: [
+      {
+        url: "https://dlkhclkmyx18n.cloudfront.net/Banners/original-botanica.png",
+        width: 1200,
+        height: 800,
+        alt: "Original Botanica",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "The Practice, from Original Botanica",
     description:
       "Your spiritual home online. Rooted in the Bronx since 1959.",
+    images: ["https://dlkhclkmyx18n.cloudfront.net/Banners/original-botanica.png"],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  // Index the production site; keep Vercel preview deployments out of Google
+  // so they never compete with the real domain.
+  robots:
+    process.env.VERCEL_ENV === "preview"
+      ? { index: false, follow: false }
+      : { index: true, follow: true },
 };
 
 export default async function RootLayout({
