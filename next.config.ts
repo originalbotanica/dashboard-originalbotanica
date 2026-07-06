@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
   // Internationalization is handled at the App Router level via a [lang]
   // segment + dictionaries in /i18n. We do not use the legacy `i18n` config
   // option from pages router.
+  async redirects() {
+    return [
+      // Guessable URL: the altar hub lives at /altar/virtual.
+      { source: "/altar", destination: "/altar/virtual", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;
