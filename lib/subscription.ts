@@ -65,16 +65,24 @@ export async function getSubscriptionStatus(
 
   // A live Stripe subscription wins.
   if (sub && (sub.status === "active" || sub.status === "trialing")) {
+    const trialEnd = sub.trial_end ? new Date(sub.trial_end) : null;
+    // Stripe can briefly report "trialing" after the trial date has passed
+    // (webhook lag), and stale rows would otherwise show "trial ends today"
+    // forever. Once trial_end is in the past, present it as a plain active
+    // membership.
+    const stillTrialing =
+      sub.status === "trialing" &&
+      (!trialEnd || trialEnd.getTime() > Date.now());
     return {
       isActive: true,
-      isTrialing: sub.status === "trialing",
+      isTrialing: stillTrialing,
       plan: sub.plan as "monthly" | "annual" | null,
       cancelAtPeriodEnd: !!sub.cancel_at_period_end,
       currentPeriodEnd: sub.current_period_end
         ? new Date(sub.current_period_end)
         : null,
-      trialEnd: sub.trial_end ? new Date(sub.trial_end) : null,
-      rawStatus: sub.status,
+      trialEnd,
+      rawStatus: stillTrialing ? sub.status : "active",
     };
   }
 

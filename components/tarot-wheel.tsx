@@ -625,10 +625,10 @@ export function TarotWheel({
         {phase === "ready" || phase === "spinning" || phase === "stopping" ? (
           <p className="invocation text-[var(--foreground-muted)] mt-6 text-center max-w-md leading-relaxed">
             {phase === "spinning"
-              ? "When the right vibe hits, click the center again to stop the wheel."
+              ? "When the moment feels right, click the center again to stop the wheel."
               : phase === "stopping"
                 ? "The wheel is settling…"
-                : "When the right vibe hits, stop the wheel to reveal your tarot fortune for today."}
+                : "When the moment feels right, stop the wheel and meet your card for today."}
           </p>
         ) : null}
 

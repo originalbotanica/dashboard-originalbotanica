@@ -3,6 +3,9 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { eventTitle, type CalEvent } from "@/lib/calendar/events";
+import { getMoon, moonGuidance } from "@/lib/astrology/moon";
+import { moonPhaseName } from "@/lib/astrology/terms";
+import { MoonPhase } from "@/components/moon-phase";
 
 type Day = { y: number; m: number; d: number };
 
@@ -155,11 +158,45 @@ export function CalendarMonthGrid({
           {selLabel}
         </p>
         {selEvents.length === 0 ? (
-          <p className="text-sm text-[var(--foreground-muted)]">
-            {locale === "es"
-              ? "No hay nada marcado para este día."
-              : "Nothing marked for this day."}
-          </p>
+          (() => {
+            // No feast or observance — the night still speaks. Show the
+            // moon for the selected day (computed locally, ~noon Eastern).
+            const moon = getMoon(
+              new Date(Date.UTC(sel.y, sel.m - 1, sel.d, 16)),
+            );
+            const guide = moonGuidance(moon.bucket, locale);
+            return (
+              <div className="flex items-start gap-4">
+                <div className="shrink-0 mt-0.5">
+                  <MoonPhase
+                    illumination={moon.illumination}
+                    waxing={moon.waxing}
+                    size={40}
+                  />
+                </div>
+                <div>
+                  <p className="display text-base leading-tight">
+                    {moonPhaseName(moon.phaseName, locale)} ·{" "}
+                    {moon.illuminationPct}%{" "}
+                    {locale === "es" ? "iluminada" : "lit"}
+                  </p>
+                  <p className="text-sm text-[var(--foreground-muted)] leading-relaxed mt-0.5">
+                    {guide.title}{" "}
+                    {locale === "es"
+                      ? `Buen día para: ${guide.goodFor.join(", ").toLowerCase()}.`
+                      : `A good day for: ${guide.goodFor.join(", ").toLowerCase()}.`}
+                  </p>
+                  <Link
+                    href="/astrology/moon"
+                    className="nav-link inline-flex items-center gap-2 mt-2 text-sm text-[var(--accent)]"
+                  >
+                    {locale === "es" ? "La guía lunar" : "The lunar guide"}
+                    <span aria-hidden>→</span>
+                  </Link>
+                </div>
+              </div>
+            );
+          })()
         ) : (
           <ul className="space-y-4">
             {selEvents.map((e) => (
