@@ -260,12 +260,20 @@ export function LightCandleForm({
         </div>
       </fieldset>
 
-      <label className="flex items-start gap-3 cursor-pointer">
-        <input type="checkbox" name="is_public" defaultChecked className="mt-1" />
-        <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
-          {t("lcf.publicLabel")}
-        </span>
-      </label>
+      <div className="space-y-3">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" name="is_public" defaultChecked className="mt-1" />
+          <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
+            {t("lcf.publicLabel")}
+          </span>
+        </label>
+        <label className="flex items-start gap-3 cursor-pointer pl-7">
+          <input type="checkbox" name="petition_public" className="mt-1" />
+          <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
+            {t("lcf.petitionPublicLabel")}
+          </span>
+        </label>
+      </div>
 
       {lit ? (
         <PendingSubmit

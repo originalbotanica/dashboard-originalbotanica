@@ -27,6 +27,9 @@ export async function lightCandleAction(formData: FormData) {
   const petition = String(formData.get("petition") || "").trim();
   const days = parseInt(String(formData.get("days") || "7"), 10);
   const is_public = formData.get("is_public") === "on";
+  // The petition can only be public if the candle is. Default is private.
+  const petition_public =
+    is_public && formData.get("petition_public") === "on";
 
   if (!DESIRES.some((d) => d.slug === candle_type)) {
     return redirect("/altar/virtual/new?error=Please%20choose%20an%20intention");
@@ -73,6 +76,7 @@ export async function lightCandleAction(formData: FormData) {
       intention: intention.slice(0, 200),
       petition: petition ? petition.slice(0, 2000) : null,
       is_public,
+      petition_public,
       lit_at: new Date().toISOString(),
       expires_at,
     })

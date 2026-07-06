@@ -55,6 +55,7 @@ const en: Dict = {
   "saint.petitionPlaceholder": "Speak your prayer here. What are you asking for, and for whom.",
   "saint.duration": "How long it burns",
   "saint.public": "Add my candle to the community altar, so others can hold the intention with me.",
+  "saint.petitionPublic": "Also share my petition. Leave unchecked to keep your prayer private, even on a public candle.",
   "saint.place": "Place it on the altar",
   "lang.label": "Language",
 
@@ -421,6 +422,7 @@ const en: Dict = {
   "lcf.petitionPh": "Speak your prayer here. What are you asking for, and for whom.",
   "lcf.duration": "How long it burns",
   "lcf.publicLabel": "Add my candle to the community altar, so others can see its flame and hold the intention with me. Uncheck to keep it private to your own altar.",
+  "lcf.petitionPublicLabel": "Also share my petition. Leave unchecked to keep your prayer private, even on a public candle.",
   "lcf.lighting": "Lighting…",
   "lcf.lightBtn": "Light the candle",
 
@@ -779,6 +781,7 @@ const es: Dict = {
   "saint.petitionPlaceholder": "Di aquí tu oración. Qué pides, y por quién.",
   "saint.duration": "Cuánto tiempo arde",
   "saint.public": "Agrega mi vela al altar comunitario, para que otros sostengan la intención conmigo.",
+  "saint.petitionPublic": "Comparte también mi petición. Déjala sin marcar para mantener tu oración privada, aunque la vela sea pública.",
   "saint.place": "Colócala en el altar",
   "lang.label": "Idioma",
 
@@ -1145,6 +1148,7 @@ const es: Dict = {
   "lcf.petitionPh": "Di tu oración aquí. Qué pides, y para quién.",
   "lcf.duration": "Cuánto tiempo arde",
   "lcf.publicLabel": "Agrega mi vela al altar comunitario, para que otros vean su llama y sostengan la intención conmigo. Desmarca para mantenerla privada en tu propio altar.",
+  "lcf.petitionPublicLabel": "Comparte también mi petición. Déjala sin marcar para mantener tu oración privada, aunque la vela sea pública.",
   "lcf.lighting": "Encendiendo…",
   "lcf.lightBtn": "Enciende la vela",
 

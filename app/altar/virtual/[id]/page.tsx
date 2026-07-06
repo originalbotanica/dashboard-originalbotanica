@@ -42,7 +42,7 @@ export default async function CandleDetailPage({
   const sub = await getSubscriptionStatus(user.id);
   if (!sub.isActive) redirect("/tools/virtual-altar");
 
-  const candle = await getCandle(id);
+  const candle = await getCandle(id, user.id);
   if (!candle) notFound();
 
   const { data: owned } = await supabase

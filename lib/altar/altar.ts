@@ -10,9 +10,10 @@ import { createClient } from "@/utils/supabase/server";
  * Candles live in the `candles` table; we reuse its columns:
  *   candle_type   -> desire slug (the category)
  *   candle_color  -> chosen candle slug (the specific prepared candle)
- *   intention     -> the dedication line shown publicly under the candle
- *   petition      -> the longer prayer (private detail)
- *   is_public     -> show on the community wall
+ *   intention       -> the dedication line shown publicly under the candle
+ *   petition        -> the longer prayer (private by default)
+ *   is_public       -> show the candle on the community wall
+ *   petition_public -> also show the petition on a public candle
  *   lit_at / expires_at -> burn window
  *   archived_at   -> extinguished / burned out
  */
@@ -21,17 +22,19 @@ export * from "./catalog";
 
 export type Candle = {
   id: string;
+  user_id?: string;
   candle_type: string | null; // desire slug
   candle_color: string | null; // candle slug
   intention: string;
   petition: string | null;
   is_public: boolean;
+  petition_public: boolean;
   lit_at: string;
   expires_at: string | null;
 };
 
 const CANDLE_FIELDS =
-  "id, candle_type, candle_color, intention, petition, is_public, lit_at, expires_at";
+  "id, user_id, candle_type, candle_color, intention, petition, is_public, petition_public, lit_at, expires_at";
 
 /** How many candles a member may light in a rolling 24-hour window.
  *  Generous enough that sincere use never hits it; low enough to stop
@@ -88,11 +91,25 @@ export async function listCommunityCandles(
   if (desire) q = q.eq("candle_type", desire);
   const { data, error } = await q;
   if (error) return [];
-  return (data ?? []) as Candle[];
+  // Community view: never expose another member's petition unless they chose
+  // to share it, even though the row-level policy would return the column.
+  return ((data ?? []) as Candle[]).map((c) => ({
+    ...c,
+    petition: c.petition_public ? c.petition : null,
+  }));
 }
 
-/** A single candle the member may view (their own, or any public one). */
-export async function getCandle(id: string): Promise<Candle | null> {
+/**
+ * A single candle the member may view (their own, or any public one).
+ *
+ * Pass the viewer's id so a petition is withheld from anyone but the owner
+ * unless the owner marked it public. This keeps the private prayer private
+ * at the data layer, not just in the template.
+ */
+export async function getCandle(
+  id: string,
+  viewerId?: string,
+): Promise<Candle | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("candles")
@@ -101,5 +118,10 @@ export async function getCandle(id: string): Promise<Candle | null> {
     .is("archived_at", null)
     .maybeSingle();
   if (error || !data) return null;
-  return data as Candle;
+  const candle = data as Candle;
+  const isOwner = !!viewerId && candle.user_id === viewerId;
+  if (!isOwner && !candle.petition_public) {
+    candle.petition = null;
+  }
+  return candle;
 }
