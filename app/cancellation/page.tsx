@@ -4,7 +4,7 @@ export const metadata = { title: "Cancellation & Refunds" };
 
 export default function CancellationPage() {
   return (
-    <LegalShell title="Cancellation & Refunds" updated="Draft · June 2026">
+    <LegalShell title="Cancellation & Refunds" updated="Last updated: July 2026">
       <p>
         We want the membership to feel like a welcome, not a trap. Here&apos;s
         exactly how cancelling and refunds work.
@@ -37,6 +37,15 @@ export default function CancellationPage() {
       <p>
         Annual members keep access through the end of the paid year after
         cancelling, and the plan does not renew once cancelled.
+      </p>
+
+      <h2 className="display text-xl text-[var(--foreground)] pt-2">Gift memberships</h2>
+      <p>
+        Gifts are a one-time payment for a fixed term: they never renew, and no
+        one is ever charged again. A gift that hasn&apos;t been redeemed can be
+        refunded to the purchaser; once redeemed, it runs its full term. If a
+        gift reached the wrong address or something else went wrong, reach out
+        and we&apos;ll make it right.
       </p>
 
       <h2 className="display text-xl text-[var(--foreground)] pt-2">Need help?</h2>
