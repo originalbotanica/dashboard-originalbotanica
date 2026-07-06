@@ -131,7 +131,7 @@ const en: Dict = {
   "dash.ancestorsBody": "Memorialize the ones you carry. Their names lit. Their stories with you. Share a private link with family so they can add their light.",
   "dash.ancestorsLink": "Visit your ancestors",
   "dash.ritualsEyebrow": "The rituals library",
-  "dash.ritualsHeadline": "More than four hundred rituals, organized by purpose.",
+  "dash.ritualsHeadline": "Hundreds of rituals, organized by purpose.",
   "dash.ritualsBody": "Money drawing. Uncrossing. Road opening. Protection. Love that needs to land. Real workings from sixty-six years of practice, each with its steps, its supplies, and the day to do it. Search by your need and save the ones you return to.",
   "dash.ritualsLink": "Browse the library",
   "dash.benefitEyebrow": "A member benefit",
@@ -214,7 +214,7 @@ const en: Dict = {
   "lp.signIn": "Sign in",
   "lp.startTrial": "Start trial",
   "lp.heroTitle": "Your spiritual home, online.",
-  "lp.heroSub": "Daily tarot, your birth chart, dream interpretation, a virtual altar, a flame for your ancestors, and 400+ rituals, all from a real Bronx botanica serving practitioners since 1959.",
+  "lp.heroSub": "Daily tarot, your birth chart, dream interpretation, a virtual altar, a flame for your ancestors, and hundreds of rituals, all from a real Bronx botanica serving practitioners since 1959.",
   "lp.heroHook": "Light a candle. Pull a card. Ask the astrologer, wherever you are.",
   "lp.heroWhy": "Everything a botanica offers, open every day, even where you can't light a real candle. Private, and always with you.",
   "lp.featTarot": "Tarot",
@@ -244,7 +244,7 @@ const en: Dict = {
   "lp.toolAltarBody": "Light a candle for an intention, for protection, for someone you love, and let it burn on your altar and the community's.",
   "lp.toolAncestorsTitle": "Ancestors altar",
   "lp.toolAncestorsBody": "A flame for those who came before. Their names lit, their stories with you, a private link to share with family.",
-  "lp.toolRitualsTitle": "400+ rituals",
+  "lp.toolRitualsTitle": "Hundreds of rituals",
   "lp.toolRitualsBody": "Sixty-six years of practice in the Bronx, organized by purpose: money, protection, love, cleansing. Each comes with its steps and supplies.",
   "lp.heritageEyebrow": "Since 1959",
   "lp.heritageTitle": "A real botanica. Not an app.",
@@ -258,7 +258,7 @@ const en: Dict = {
   "lp.faqQ1": "Is this legit? Who's behind it?",
   "lp.faqA1": "Original Botanica is a family-run botanica in the Bronx, open since 1959, at 2486 Webster Avenue. This membership is ours: the same family and the same practice, brought online.",
   "lp.faqQ2": "What exactly do I get?",
-  "lp.faqA2": "Daily tarot, your birth chart and an astrologer to ask, dream interpretation, a virtual altar, an ancestors altar, and a library of 400+ rituals, plus 10% off everything at originalbotanica.com while you're a member.",
+  "lp.faqA2": "Daily tarot, your birth chart and an astrologer to ask, dream interpretation, a virtual altar, an ancestors altar, and a library of hundreds of rituals, plus 10% off everything at originalbotanica.com while you're a member.",
   "lp.faqQ3": "Can I cancel?",
   "lp.faqA3": "Yes. Anytime, in two clicks from your account. The first 7 days are free; you're not charged until day eight.",
   "lp.faqQ4": "Do I need to be an expert?",
@@ -726,7 +726,7 @@ const en: Dict = {
   "mkt.rit.s3Body":
     "Tap the bookmark on any ritual and it lives on your saved shelf. Build the practice you keep coming back to.",
   "mkt.rit.liveNote":
-    "Live now for members. More than four hundred rituals from the botanica's archive, organized by purpose: money drawing, uncrossing, road opening, protection, love, and more.",
+    "Live now for members. Hundreds of rituals from the botanica's archive, organized by purpose: money drawing, uncrossing, road opening, protection, love, and more.",
 
   "mkt.disc.eyebrow": "Member benefit",
   "mkt.disc.headline": "10% off everything.",
@@ -857,7 +857,7 @@ const es: Dict = {
   "dash.ancestorsBody": "Honra a los que llevas contigo. Sus nombres encendidos. Sus historias contigo. Comparte un enlace privado con tu familia para que puedan añadir su luz.",
   "dash.ancestorsLink": "Visita a tus ancestros",
   "dash.ritualsEyebrow": "La biblioteca de rituales",
-  "dash.ritualsHeadline": "Más de cuatrocientos rituales, organizados por propósito.",
+  "dash.ritualsHeadline": "Cientos de rituales, organizados por propósito.",
   "dash.ritualsBody": "Atracción de dinero. Descruce. Apertura de caminos. Protección. Amor que necesita llegar. Trabajos reales de sesenta y seis años de práctica, cada uno con sus pasos, sus materiales y el día para hacerlo. Busca por tu necesidad y guarda los que vuelvas a usar.",
   "dash.ritualsLink": "Explorar la biblioteca",
   "dash.benefitEyebrow": "Un beneficio de membresía",
@@ -1454,7 +1454,7 @@ const es: Dict = {
   "mkt.rit.s3Body":
     "Toca el marcador en cualquier ritual y queda en tu estante de guardados. Construye la práctica a la que siempre vuelves.",
   "mkt.rit.liveNote":
-    "Ya disponible para miembros. Más de cuatrocientos rituales del archivo de la botánica, organizados por propósito: atraer dinero, descruce, abrecaminos, protección, amor y más.",
+    "Ya disponible para miembros. Cientos de rituales del archivo de la botánica, organizados por propósito: atraer dinero, descruce, abrecaminos, protección, amor y más.",
 
   "mkt.disc.eyebrow": "Beneficio de miembro",
   "mkt.disc.headline": "10% de descuento en todo.",

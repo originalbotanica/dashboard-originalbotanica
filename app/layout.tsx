@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: "%s | The Practice",
   },
   description:
-    "Daily tarot, personal astrology, your virtual altar, ancestor altar, and a library of 400+ rituals from 66 years of practice. From Original Botanica, the Bronx, since 1959.",
+    "Daily tarot, personal astrology, your virtual altar, ancestor altar, and a library of hundreds of rituals from 66 years of practice. From Original Botanica, the Bronx, since 1959.",
   applicationName: "The Practice",
   authors: [{ name: "Original Botanica" }],
   keywords: [
