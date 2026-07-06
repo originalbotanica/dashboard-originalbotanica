@@ -262,7 +262,8 @@ export function LightCandleForm({
 
       <div className="space-y-3">
         <label className="flex items-start gap-3 cursor-pointer">
-          <input type="checkbox" name="is_public" defaultChecked className="mt-1" />
+          {/* Private by default: sharing on the community wall is a choice. */}
+          <input type="checkbox" name="is_public" className="mt-1" />
           <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
             {t("lcf.publicLabel")}
           </span>

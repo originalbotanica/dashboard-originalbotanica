@@ -83,7 +83,7 @@ export default async function DashboardPage() {
   // the promise means Claude is called once, not once per section.
   const horoscopePromise: Promise<DailyHoroscope | null> =
     sunSign && isValidSign(sunSign)
-      ? getOrGenerateDailyHoroscope(sunSign).catch(() => null)
+      ? getOrGenerateDailyHoroscope(sunSign, locale).catch(() => null)
       : Promise.resolve(null);
 
   const today = new Date().toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {

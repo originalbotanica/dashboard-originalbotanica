@@ -295,7 +295,9 @@ export function MemorialForm({
           <input
             type="checkbox"
             name="is_public"
-            defaultChecked={initial?.is_public !== false}
+            // Private by default for a new memorial; enable when ready to
+            // share the family link. Existing memorials keep their setting.
+            defaultChecked={initial?.is_public === true}
             className="mt-1"
           />
           <span className="text-sm text-[var(--foreground-muted)] leading-relaxed">

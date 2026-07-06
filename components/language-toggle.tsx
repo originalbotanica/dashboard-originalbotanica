@@ -16,10 +16,14 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const name = locale === "es" ? "Español" : "English";
-  const abbr = locale === "es" ? "ESP" : "ENG";
+  // Label the button with the language you'd SWITCH TO, not the current one.
+  // "ENGLISH" on an English page reads as a statement, not a button; a
+  // Spanish-speaking visitor scanning for their language needs to see
+  // "ESPAÑOL". While the switch is in flight, say so in the target language.
   const next = locale === "es" ? "en" : "es";
   const switchTo = next === "es" ? "Español" : "English";
+  const switchAbbr = next === "es" ? "ESP" : "ENG";
+  const pendingLabel = next === "es" ? "Cambiando…" : "Switching…";
 
   function toggle() {
     if (pending) return;
@@ -34,14 +38,17 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
       type="button"
       onClick={toggle}
       disabled={pending}
-      aria-label={`Language: ${name}. Switch to ${switchTo}.`}
-      title={`Switch to ${switchTo}`}
+      aria-live="polite"
+      aria-label={
+        pending ? pendingLabel : `${next === "es" ? "Cambiar a" : "Switch to"} ${switchTo}`
+      }
+      title={`${next === "es" ? "Cambiar a" : "Switch to"} ${switchTo}`}
       className={`nav-link inline-flex items-center gap-1.5 text-[var(--foreground)] hover:text-[var(--accent)] transition-colors disabled:opacity-60 ${className}`}
     >
       <Globe />
       {/* Full name on desktop; compact ENG/ESP on small screens. */}
-      <span className="md:hidden">{abbr}</span>
-      <span className="hidden md:inline">{name}</span>
+      <span className="md:hidden">{pending ? "…" : switchAbbr}</span>
+      <span className="hidden md:inline">{pending ? pendingLabel : switchTo}</span>
     </button>
   );
 }

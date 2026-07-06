@@ -65,7 +65,19 @@ export async function getOrGenerateDailyHoroscope(
     .eq("locale", locale)
     .maybeSingle();
 
-  if (existing?.content) {
+  // The moon changes sign every ~2.5 days, sometimes mid-day. The page
+  // header computes the sky live, so a reading cached this morning can
+  // contradict tonight's header ("Moon in Aries" vs "Moon in Pisces" in the
+  // text). If the moon has moved since generation, regenerate rather than
+  // serve a reading that argues with the sky. Rows written before this
+  // change (no _sky marker) are served as-is until tomorrow.
+  const currentMoonSign = getTodaysSky().moonSign;
+  const cachedMoonSign = (
+    existing?.content as (DailyHoroscopeContent & { _sky?: { moon?: string } }) | null
+  )?._sky?.moon;
+  const moonMoved = !!cachedMoonSign && cachedMoonSign !== currentMoonSign;
+
+  if (existing?.content && !moonMoved) {
     return {
       sign: existing.sign as Sign,
       date: existing.date,
@@ -128,7 +140,12 @@ export async function getOrGenerateDailyHoroscope(
   }
 
   // Defense in depth. Scrub em/en-dashes the prompt should have prevented.
-  const clean = sanitizeStringsDeep(parsed);
+  // Tag the reading with the sky it was written under, so the cache check
+  // above can tell when the moon has since moved on.
+  const clean = {
+    ...sanitizeStringsDeep(parsed),
+    _sky: { moon: sky.moonSign, sun: sky.sunSign },
+  };
 
   // Persist (idempotent; another concurrent request may have written first).
   await supabase.from("daily_horoscopes").upsert(

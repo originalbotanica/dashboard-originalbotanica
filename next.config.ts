@@ -15,8 +15,11 @@ const nextConfig: NextConfig = {
   // option from pages router.
   async redirects() {
     return [
-      // Guessable URL: the altar hub lives at /altar/virtual.
+      // Guessable URLs found in QA: send them somewhere real.
       { source: "/altar", destination: "/altar/virtual", permanent: false },
+      { source: "/tools", destination: "/", permanent: false },
+      { source: "/join", destination: "/signup", permanent: false },
+      { source: "/subscribe/cancel", destination: "/subscribe", permanent: false },
     ];
   },
 };
