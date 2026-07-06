@@ -171,6 +171,17 @@ const FEASTS: Feast[] = [
   },
   {
     m: 11,
+    d: 1,
+    id: "todos-los-santos",
+    title: "All Saints' Day",
+    title_es: "Día de Todos los Santos",
+    en: "The feast of all the saints, named and unnamed. Light a white candle in their honor and ask their blessing on your house.",
+    es: "La fiesta de todos los santos, con nombre y sin nombre. Enciende una vela blanca en su honor y pide su bendición para tu casa.",
+    color: "#efe7d6",
+    action: { href: CANDLE("For all the saints: bless this house"), en: "Light a candle", es: "Enciende una vela" },
+  },
+  {
+    m: 11,
     d: 2,
     id: "difuntos",
     title: "All Souls' Day",

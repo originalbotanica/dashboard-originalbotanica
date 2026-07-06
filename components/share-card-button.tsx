@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Share the day's tarot card. Opens a menu with explicit social options
@@ -20,6 +20,14 @@ export function ShareCardButton({
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // The button often sits at the very bottom of the reveal page, so the
+  // menu (which opens downward) could land below the fold — it looked like
+  // the button did nothing. Scroll the menu into view when it opens.
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (open) menuRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [open]);
 
   const buildUrl = () => {
     const base = typeof window !== "undefined" ? window.location.origin : "";
@@ -83,6 +91,7 @@ export function ShareCardButton({
 
       {open ? (
         <div
+          ref={menuRef}
           className="absolute top-full mt-2 z-30 rounded-lg border border-[var(--border)] bg-[var(--surface)] py-1 shadow-lg"
           style={{ minWidth: 190 }}
         >

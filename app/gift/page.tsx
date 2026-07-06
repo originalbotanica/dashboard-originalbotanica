@@ -63,6 +63,11 @@ export default async function GiftPage({
             A gift is prepaid for the full term and never renews. When it ends, it&apos;s
             entirely up to them whether to continue.
           </p>
+          <p className="text-[var(--foreground-subtle)] text-sm mt-3 leading-relaxed">
+            Already a member? Gift codes never expire, so they can hold it and
+            redeem when their current plan ends — the gift takes over from
+            there. An unredeemed gift can always be refunded.
+          </p>
         </aside>
 
         {/* Purchase form */}

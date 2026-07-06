@@ -81,6 +81,17 @@ export const DESIRES: Desire[] = [
     ],
   },
   {
+    // Placed early on purpose: someone lighting a candle in grief should
+    // not have to scroll past gambling and court cases to find it.
+    slug: "in-memory",
+    label: "In Memory",
+    purpose: "ancestor-work",
+    candles: [
+      { slug: "remember-honor", name: "Remember, Burn & Honor Tribute Candle", tagline: "To remember and honor a loved one" },
+      { slug: "white-candle", name: "White Candle", tagline: "A pure light for their spirit" },
+    ],
+  },
+  {
     slug: "open-road",
     label: "Open Road",
     purpose: "road-opening",
@@ -183,8 +194,6 @@ export const DESIRES: Desire[] = [
     candles: [
       { slug: "peace-in-the-home", name: "Peace In The Home Candle", tagline: "For peace in the home" },
       { slug: "peace", name: "Peace Candle", tagline: "For a peaceful relationship" },
-      { slug: "remember-honor", name: "Remember, Burn & Honor Tribute Candle", tagline: "To remember and honor a loved one" },
-      { slug: "white-candle", name: "White Candle", tagline: "For a tranquil life" },
       { slug: "birthday-blessings", name: "Birthday Blessings Candle", tagline: "For birthday health and happiness" },
     ],
   },
@@ -251,6 +260,7 @@ const DESIRE_ES: Record<string, string> = {
   "money-wealth": "Dinero y Riqueza",
   "love-attraction": "Amor y Atracción",
   "protection": "Protección",
+  "in-memory": "En Memoria",
   "open-road": "Abre Camino",
   "luck-gambling": "Suerte y Juego",
   "spiritual-cleansing": "Limpieza Espiritual",
@@ -258,7 +268,7 @@ const DESIRE_ES: Record<string, string> = {
   "go-away-evil": "Aleja el Mal",
   "success-prosperity": "Éxito y Prosperidad",
   "win-in-court": "Ganar en la Corte",
-  "reverse-magic": "Magia Reversible",
+  "reverse-magic": "Magia de Reversión",
   "peace": "Paz",
   "saints": "Santos y Orishas",
 };
