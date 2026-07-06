@@ -591,7 +591,7 @@ const en: Dict = {
   "lp2.introTitle":
     "Discover a unique, personalized experience with The Practice,",
   "lp2.introBody":
-    "featuring daily tarot readings, dream interpretations, a virtual altar, and an ancestors altar. Enjoy access to over 400 rituals and receive astrologer readings tailored specifically to you. No generic horoscopes here!",
+    "Featuring daily tarot readings, dream interpretations, a virtual altar, and an ancestors altar. Enjoy access to hundreds of rituals and receive astrologer readings tailored specifically to you. No generic horoscopes here!",
   "lp2.introHighlight":
     "Benefit from the expertise of a real Bronx Botanica that has been supporting practitioners since 1959.",
   "lp2.learnMore": "Learn more",
@@ -1317,7 +1317,7 @@ const es: Dict = {
   "lp2.introTitle":
     "Descubre una experiencia única y personalizada con The Practice,",
   "lp2.introBody":
-    "con lecturas diarias de tarot, interpretación de sueños, un altar virtual y un altar de ancestros. Disfruta acceso a más de 400 rituales y recibe lecturas del astrólogo hechas específicamente para ti. Nada de horóscopos genéricos.",
+    "Con lecturas diarias de tarot, interpretación de sueños, un altar virtual y un altar de ancestros. Disfruta acceso a cientos de rituales y recibe lecturas del astrólogo hechas específicamente para ti. Nada de horóscopos genéricos.",
   "lp2.introHighlight":
     "Aprovecha la experiencia de una botánica real del Bronx que acompaña a practicantes desde 1959.",
   "lp2.learnMore": "Conocer más",
