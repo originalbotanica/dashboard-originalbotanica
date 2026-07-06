@@ -65,6 +65,19 @@ export default async function SignupPage({
           <button type="submit" className="btn-primary mt-2">
             Create Account
           </button>
+
+          <p className="text-center text-xs text-[var(--foreground-subtle)] leading-relaxed">
+            By creating an account, you agree to our{" "}
+            <Link href="/terms" className="underline hover:text-[var(--accent)]">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="underline hover:text-[var(--accent)]">
+              Privacy Policy
+            </Link>
+            . After your 7-day free trial, the membership is $24.95/month or
+            $199.95/year and renews automatically until you cancel.
+          </p>
         </form>
 
         <p className="mt-6 text-center text-sm text-[var(--foreground-muted)]">
