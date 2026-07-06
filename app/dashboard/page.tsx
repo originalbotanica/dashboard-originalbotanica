@@ -219,6 +219,18 @@ export default async function DashboardPage() {
         <AstrologySection sunSign={sunSign} horoscopePromise={horoscopePromise} />
       </Suspense>
 
+      {/* ── Your astrologer — the membership's headline benefit gets its
+             own full section, not just a small link under the reading ──── */}
+      <ToolSection
+        eyebrow={tr("dash.astrologerEyebrow")}
+        headline={tr("dash.astrologerHeadline")}
+        body={tr("dash.astrologerBody")}
+        href="/astrology"
+        linkLabel={tr("dash.astrologerLink")}
+        imageSrc="/landing/tile-astrologer.jpg"
+        imageSide="right"
+      />
+
       {/* ── Tonight's moon — compact daily touchpoint ─────────────────── */}
       <section aria-label="Tonight's moon" className="border-t border-[var(--border)]">
         <Link

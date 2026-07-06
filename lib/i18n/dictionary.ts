@@ -118,6 +118,11 @@ const en: Dict = {
   "dash.astroBodyAdd": "Add your birth date and city to receive a daily reading personal to you, and to begin conversations with the astrologer.",
   "dash.astroBodyFallback": "The astrologer is reading for you. For a longer reading rooted in your full chart, speak with the astrologer.",
   "dash.astroLink": "Ask your astrologer",
+  "dash.astrologerEyebrow": "Your astrologer",
+  "dash.astrologerHeadline": "A real reading, whenever you need one.",
+  "dash.astrologerBody":
+    "Your birth chart is loaded and your astrologer is ready. Ask about love, work, a decision, a hard season. The answers come from your placements, not a generic horoscope.",
+  "dash.astrologerLink": "Talk to your astrologer",
   "dash.dreamsEyebrow": "Dreams",
   "dash.dreamsHeadline": "What did the night bring?",
   "dash.dreamsBody": "Describe a dream while it's still fresh. The interpretation honors Lucumí, Espiritismo, folk Catholic, and Western traditions. Every dream ends with a ritual.",
@@ -844,6 +849,11 @@ const es: Dict = {
   "dash.astroBodyAdd": "Agrega tu fecha de nacimiento y ciudad para recibir una lectura diaria personal, y para comenzar conversaciones con el astrólogo.",
   "dash.astroBodyFallback": "El astrólogo está leyendo para ti. Para una lectura más profunda arraigada en tu carta completa, habla con el astrólogo.",
   "dash.astroLink": "Consulta a tu astrólogo",
+  "dash.astrologerEyebrow": "Tu astrólogo",
+  "dash.astrologerHeadline": "Una lectura de verdad, cuando la necesites.",
+  "dash.astrologerBody":
+    "Tu carta natal está cargada y tu astrólogo está listo. Pregunta sobre el amor, el trabajo, una decisión, una temporada difícil. Las respuestas salen de tus posiciones, no de un horóscopo genérico.",
+  "dash.astrologerLink": "Habla con tu astrólogo",
   "dash.dreamsEyebrow": "Sueños",
   "dash.dreamsHeadline": "¿Qué trajo la noche?",
   "dash.dreamsBody": "Describe un sueño mientras aún está fresco. La interpretación honra las tradiciones Lucumí, Espiritismo, católica popular y occidental. Cada sueño termina con un ritual.",
