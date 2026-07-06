@@ -466,16 +466,34 @@ function ToolSection({
   imageSide: "left" | "right";
   external?: boolean;
 }) {
-  const imageBlock = (
-    <div className="md:col-span-2 relative aspect-square rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--surface)]">
-      <Image
-        src={imageSrc}
-        alt=""
-        fill
-        sizes="(max-width: 768px) 100vw, 40vw"
-        className="object-cover"
-      />
-    </div>
+  // The photo is a tap target too — on a phone the image is the biggest
+  // thing on screen, and tapping it should open the tool, not just the
+  // text link beneath it.
+  const imageClasses =
+    "md:col-span-2 relative aspect-square rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--surface)] block transition-opacity hover:opacity-90";
+  const imageInner = (
+    <Image
+      src={imageSrc}
+      alt=""
+      fill
+      sizes="(max-width: 768px) 100vw, 40vw"
+      className="object-cover"
+    />
+  );
+  const imageBlock = external ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={linkLabel}
+      className={imageClasses}
+    >
+      {imageInner}
+    </a>
+  ) : (
+    <Link href={href} aria-label={linkLabel} className={imageClasses}>
+      {imageInner}
+    </Link>
   );
   const textBlock = (
     <div className="md:col-span-3">
