@@ -300,7 +300,7 @@ export default async function DashboardPage() {
         body={tr("dash.ancestorsBody")}
         href="/ancestors"
         linkLabel={tr("dash.ancestorsLink")}
-        imageSrc={`${OB_CDN}/spiritual-candles.png`}
+        imageSrc={`${OB_CDN}/transforms/Blog/_1200x630_crop_center-center_82_none/how-to-create-an-ancestor-altar.jpg`}
         imageSide="left"
       />
 
@@ -311,7 +311,7 @@ export default async function DashboardPage() {
         body={tr("dash.ritualsBody")}
         href="/rituals"
         linkLabel={tr("dash.ritualsLink")}
-        imageSrc={`${OB_CDN}/herbs-roots_2022-09-13-200156_sxob.png`}
+        imageSrc={`${OB_CDN}/transforms/_1200x630_crop_center-center_82_none/beltane-rituals-altar.jpg`}
         imageSide="right"
       />
 
@@ -323,7 +323,7 @@ export default async function DashboardPage() {
         href="https://originalbotanica.com"
         linkLabel={tr("dash.benefitLink")}
         external
-        imageSrc={`${OB_CDN}/spiritual-baths-washes.png`}
+        imageSrc={`${OB_CDN}/transforms/_1200x630_crop_center-center_82_none/about-original-botanica.jpg`}
         imageSide="left"
       />
 
