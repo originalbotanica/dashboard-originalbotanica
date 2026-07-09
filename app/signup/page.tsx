@@ -75,8 +75,8 @@ export default async function SignupPage({
             <Link href="/privacy" className="underline hover:text-[var(--accent)]">
               Privacy Policy
             </Link>
-            . After your 7-day free trial, the membership is $24.95/month or
-            $199.95/year and renews automatically until you cancel.
+            . After your 7-day free trial, the membership is $29.95/month or
+            $299.95/year and renews automatically until you cancel.
           </p>
         </form>
 

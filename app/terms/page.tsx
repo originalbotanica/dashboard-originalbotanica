@@ -30,7 +30,7 @@ export default function TermsPage() {
 
       <h2 className="display text-xl text-[var(--foreground)] pt-2">Membership &amp; billing</h2>
       <p>
-        The membership is a subscription: $24.95 per month or $199.95 per year,
+        The membership is a subscription: $29.95 per month or $299.95 per year,
         with a 7-day free trial for new members. After the trial, your plan renews
         automatically each period until you cancel. Payments are processed by
         Stripe. If we change the price, we&apos;ll tell you at least 30 days

@@ -112,7 +112,7 @@ export default async function PublicCardPage({
             Start your 7-day free trial
           </Link>
           <p className="text-xs text-[var(--foreground-subtle)] mt-3">
-            $24.95/month or $199.95/year. Cancel anytime.
+            $29.95/month or $299.95/year. Cancel anytime.
           </p>
           <p className="text-sm mt-5">
             <Link href="/gift" className="text-[var(--accent)] hover:underline">
