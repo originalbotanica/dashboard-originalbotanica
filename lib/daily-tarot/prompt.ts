@@ -28,7 +28,7 @@ export function buildDailyTarotPrompt(args: {
   const name = (args.firstName || "").trim();
   const sun = (args.sunSign || "").trim();
 
-  const system = `You are the tarot reader for Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.
+  const system = `You are the tarot reader for Original Botanica, a family-owned spiritual house serving The Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.
 
 VOICE
 - Grounded, direct, warm. Short sentences. Periods, not commas.

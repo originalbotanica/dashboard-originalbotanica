@@ -105,7 +105,7 @@ export default async function PublicCardPage({
           </h2>
           <p className="text-[var(--foreground-muted)] leading-relaxed max-w-md mb-6">
             A daily card, your natal chart, dream interpretation, a virtual
-            altar, and sixty-six years of rituals from the Bronx. Your
+            altar, and sixty-six years of rituals from The Bronx. Your
             spiritual home, online.
           </p>
           <Link href="/signup" className="btn-primary">
@@ -125,7 +125,7 @@ export default async function PublicCardPage({
       <footer className="border-t border-[var(--border)]">
         <div className="max-w-4xl mx-auto px-6 py-6 text-center">
           <p className="eyebrow text-[var(--foreground-subtle)]">
-            Original Botanica · the Bronx, since 1959 ·{" "}
+            Original Botanica · The Bronx, since 1959 ·{" "}
             <a href={OB_STORE} className="hover:text-[var(--accent)]">
               originalbotanica.com
             </a>

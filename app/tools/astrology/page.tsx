@@ -5,7 +5,7 @@ import { t } from "@/lib/i18n/dictionary";
 export const metadata = {
   title: "Your astrologer",
   description:
-    "An AI astrologer trained on your chart and the traditions Original Botanica has served since 1959. Western, Lucumí, Espiritismo, folk Catholic.",
+    "An AI astrologer trained on your chart and the traditions Original Botanica has served since 1959. Western, Lucumí, Espiritismo, folk Catholic, Wiccan.",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";

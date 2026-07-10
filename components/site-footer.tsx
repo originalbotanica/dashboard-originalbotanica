@@ -51,7 +51,7 @@ export function SiteFooter() {
       <footer className="border-t border-[var(--border)] mt-auto">
         <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <p className="text-xs text-[var(--foreground-subtle)]">
-            © {year} Original Botanica · 2486-88 Webster Avenue, the Bronx, NY 10458 · since 1959
+            © {year} Original Botanica · 2486-88 Webster Avenue, The Bronx, NY 10458 · since 1959
           </p>
           <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {LEGAL_LINKS.map((l) => (

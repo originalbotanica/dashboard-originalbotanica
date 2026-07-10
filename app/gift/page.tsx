@@ -34,7 +34,7 @@ export default async function GiftPage({
           Give someone a season of light.
         </h1>
         <p className="invocation text-[var(--foreground-muted)] max-w-xl mx-auto leading-relaxed">
-          A membership to Original Botanica, the Bronx botánica serving practitioners since 1959.
+          A membership to Original Botanica, The Bronx botánica serving practitioners since 1959.
           A gift for a new practitioner, a grieving friend, or anyone walking a spiritual road.
         </p>
       </section>

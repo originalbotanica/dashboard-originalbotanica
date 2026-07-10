@@ -35,7 +35,7 @@ export function buildExtractionPrompt(args: {
 }): { system: string; user: string } {
   const purposeList = PURPOSES.map((p) => `- ${p.slug}: ${p.label} (${p.blurb})`).join("\n");
 
-  const system = `You are the archivist for Original Botanica, a family-owned spiritual house in the Bronx since 1959. You are turning the house's content into a curated ritual library.
+  const system = `You are the archivist for Original Botanica, a family-owned spiritual house in The Bronx since 1959. You are turning the house's content into a curated ritual library.
 
 YOUR JOB
 Read one ${args.sourceLabel}. Decide if it genuinely teaches a performable ritual, spell, or working (with real, followable steps). If it does, extract it into structured form. If it is only an article, history, product talk, horoscope, listicle, or general explanation with no concrete performable steps, mark is_ritual false.

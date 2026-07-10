@@ -184,7 +184,7 @@ const en: Dict = {
   "footer.myAccount": "My account",
   "footer.signIn": "Sign in",
   "footer.legal": "Legal",
-  "footer.tagline": "Spiritual products · the Bronx, since 1959",
+  "footer.tagline": "Spiritual products · The Bronx, since 1959",
   "footer.fromOB": "from Original Botanica",
   "footer.callPhone": "Call {phone}",
   // moon strip
@@ -253,15 +253,15 @@ const en: Dict = {
   "lp.toolRitualsBody": "Sixty-six years of practice in The Bronx, organized by purpose and desire: find everything you need on matters of Protection, Love, Cleansing, Success, and Money. Each comes with its steps and supplies.",
   "lp.heritageEyebrow": "Since 1959",
   "lp.heritageTitle": "A real botanica. Not an app.",
-  "lp.heritageBody": "Original Botanica is a family-run botanica in the Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years. This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
-  "lp.heritageCaption": "Our corner of the Bronx, then and now.",
+  "lp.heritageBody": "Original Botanica is a family-run botanica in The Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years. This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
+  "lp.heritageCaption": "Our corner of The Bronx, then and now.",
   "lp.testimonialsEyebrow": "What members say",
   "lp.testimonialsTitle": "Real experiences with The Practice.",
   "lp.testimonialsNote": "In their own words.",
   "lp.faqEyebrow": "Questions",
   "lp.faqTitle": "FAQ's",
   "lp.faqQ1": "Is this legit? Who's behind it?",
-  "lp.faqA1": "Original Botanica is a family-run botanica in the Bronx, open since 1959, at 2486 Webster Avenue. This membership is ours: the same family and the same practice, brought online.",
+  "lp.faqA1": "Original Botanica is a family-run botanica in The Bronx, open since 1959, at 2486 Webster Avenue. This membership is ours: the same family and the same practice, brought online.",
   "lp.faqQ2": "What exactly do I get?",
   "lp.faqA2": "Daily tarot, your birth chart and an astrologer to ask, dream interpretation, a virtual altar, an ancestors altar, and a library of hundreds of rituals, plus 10% off everything at originalbotanica.com while you're a member.",
   "lp.faqQ3": "Can I cancel?",
@@ -382,7 +382,7 @@ const en: Dict = {
   "cand.addLight": "Add your light",
   "cand.lightsOne": "{n} light has been added in their memory",
   "cand.lightsMany": "{n} lights have been added in their memory",
-  "cand.houseLine": "This flame is kept at Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959.",
+  "cand.houseLine": "This flame is kept at Original Botanica, a family-owned spiritual house serving The Bronx and the world since 1959.",
   "cand.about": "About the practice",
 
   // virtual altar
@@ -605,7 +605,7 @@ const en: Dict = {
   "lp2.everythingAt": "everything at",
   "lp2.heritageTitle": "A real botanica since 1959",
   "lp2.heritageBody1":
-    "Original Botanica is a family-run botanica in the Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years.",
+    "Original Botanica is a family-run botanica in The Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years.",
   "lp2.heritageBody2":
     "This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
 
@@ -647,7 +647,7 @@ const en: Dict = {
   "mkt.astro.s2Eyebrow": "The voice",
   "mkt.astro.s2Title": "Grounded, direct, warm. Honest about hard transits.",
   "mkt.astro.s2Body":
-    "Trained on the traditions the botanica has served for three generations. Western astrology, Lucumí, Espiritismo, folk Catholic. Spanish appears where it fits. No love-and-light jargon. No empty reassurance. When a placement is hard, the reading says so.",
+    "Trained on the traditions the botanica has served for three generations. Western astrology, Lucumí, Espiritismo, folk Catholic, Wiccan. Spanish appears where it fits. No love-and-light jargon. No empty reassurance. When a placement is hard, the reading says so.",
   "mkt.astro.s3Eyebrow": "How readings end",
   "mkt.astro.s3Title": "Every reading ends with a ritual.",
   "mkt.astro.s3Body":
@@ -915,7 +915,7 @@ const es: Dict = {
   "footer.myAccount": "Mi cuenta",
   "footer.signIn": "Iniciar sesión",
   "footer.legal": "Legal",
-  "footer.tagline": "Productos espirituales · the Bronx, desde 1959",
+  "footer.tagline": "Productos espirituales · El Bronx, desde 1959",
   "footer.fromOB": "de Original Botanica",
   "footer.callPhone": "Llama al {phone}",
   // moon strip
@@ -963,7 +963,7 @@ const es: Dict = {
   "lp.heroCta": "Comienza tu prueba gratis de 7 días",
   "lp.heroMicro": "Luego $29.95/mes o $299.95/año. Cancela cuando quieras.",
   "lp.heroGift": "O regálalo →",
-  "lp.heroTrust": "the Bronx, desde 1959",
+  "lp.heroTrust": "El Bronx, desde 1959",
   "lp.discountEyebrow": "Un beneficio de membresía",
   "lp.discountTitle": "Tu membresía puede pagarse sola.",
   "lp.discountBody": "Los miembros reciben 10% de descuento en todo en originalbotanica.com, incluyendo artículos en oferta, y se combina con códigos promocionales. Si compras en la botánica con regularidad, el descuento por sí solo puede cubrir el costo de la membresía.",
@@ -984,7 +984,7 @@ const es: Dict = {
   "lp.toolRitualsBody": "Sesenta y seis años de práctica en el Bronx, organizados por propósito y deseo: encuentra todo lo que necesitas en asuntos de Protección, Amor, Limpieza, Éxito y Dinero. Cada uno viene con sus pasos y materiales.",
   "lp.heritageEyebrow": "Desde 1959",
   "lp.heritageTitle": "Una botánica de verdad. No una app.",
-  "lp.heritageBody": "Original Botanica es una botánica familiar en the Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares desde hace más de sesenta y cinco años. Esta membresía lleva esa misma práctica en línea: las velas, los rituales, la guía. La misma familia. La misma tradición. Ahora dondequiera que estés.",
+  "lp.heritageBody": "Original Botanica es una botánica familiar en El Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares desde hace más de sesenta y cinco años. Esta membresía lleva esa misma práctica en línea: las velas, los rituales, la guía. La misma familia. La misma tradición. Ahora dondequiera que estés.",
   "lp.heritageCaption": "Nuestra esquina del Bronx, entonces y ahora.",
   "lp.testimonialsEyebrow": "Lo que dicen los miembros",
   "lp.testimonialsTitle": "Experiencias reales con The Practice.",
@@ -992,7 +992,7 @@ const es: Dict = {
   "lp.faqEyebrow": "Preguntas",
   "lp.faqTitle": "Preguntas frecuentes",
   "lp.faqQ1": "¿Es esto legítimo? ¿Quién está detrás?",
-  "lp.faqA1": "Original Botanica es una botánica familiar en the Bronx, abierta desde 1959, en 2486 Webster Avenue. Esta membresía es nuestra: la misma familia y la misma práctica, llevadas en línea.",
+  "lp.faqA1": "Original Botanica es una botánica familiar en El Bronx, abierta desde 1959, en 2486 Webster Avenue. Esta membresía es nuestra: la misma familia y la misma práctica, llevadas en línea.",
   "lp.faqQ2": "¿Qué obtengo exactamente?",
   "lp.faqA2": "Tarot diario, tu carta natal y un astrólogo a quien preguntar, interpretación de sueños, un altar virtual, un altar de ancestros y una biblioteca de más de 400 rituales, además de 10% de descuento en todo en originalbotanica.com mientras seas miembro.",
   "lp.faqQ3": "¿Puedo cancelar?",
@@ -1113,7 +1113,7 @@ const es: Dict = {
   "cand.addLight": "Añade tu luz",
   "cand.lightsOne": "{n} luz ha sido añadida en su memoria",
   "cand.lightsMany": "{n} luces han sido añadidas en su memoria",
-  "cand.houseLine": "Esta llama se mantiene en Original Botanica, una casa espiritual familiar que sirve a the Bronx y al mundo desde 1959.",
+  "cand.houseLine": "Esta llama se mantiene en Original Botanica, una casa espiritual familiar que sirve a El Bronx y al mundo desde 1959.",
   "cand.about": "Sobre la práctica",
 
   // virtual altar
@@ -1379,7 +1379,7 @@ const es: Dict = {
   "mkt.astro.s2Title":
     "Con raíz, directa, cálida. Honesta ante los tránsitos difíciles.",
   "mkt.astro.s2Body":
-    "Entrenado en las tradiciones que la botánica ha servido por tres generaciones. Astrología occidental, Lucumí, Espiritismo, catolicismo popular. El español aparece donde corresponde. Sin jerga de amor y luz. Sin consuelo vacío. Cuando una posición es difícil, la lectura lo dice.",
+    "Entrenado en las tradiciones que la botánica ha servido por tres generaciones. Astrología occidental, Lucumí, Espiritismo, catolicismo popular, wicca. El español aparece donde corresponde. Sin jerga de amor y luz. Sin consuelo vacío. Cuando una posición es difícil, la lectura lo dice.",
   "mkt.astro.s3Eyebrow": "Cómo terminan las lecturas",
   "mkt.astro.s3Title": "Cada lectura termina con un ritual.",
   "mkt.astro.s3Body":

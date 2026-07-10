@@ -53,7 +53,7 @@ export function buildCompatibilityPrompt(args: {
       )
       .join("\n");
 
-  const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving the Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.${langRule}
+  const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving The Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.${langRule}
 
 This is a synastry reading. Two charts, read in relation to each other. You are reading ${a}'s chart against ${b}'s chart. The reading is for ${a}.
 

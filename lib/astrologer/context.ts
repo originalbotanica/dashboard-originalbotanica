@@ -97,7 +97,7 @@ async function computeChart(
     year: yyyy,
     hour: birthTime ? hh : 12,
     min: birthTime ? mn : 0,
-    lat: geo?.lat ?? 40.8448,   // default: the Bronx
+    lat: geo?.lat ?? 40.8448,   // default: The Bronx
     lon: geo?.lon ?? -73.8648,
     tzone: geo?.tzone ?? -5,
   };

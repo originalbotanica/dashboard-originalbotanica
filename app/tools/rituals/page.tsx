@@ -5,7 +5,7 @@ import { t } from "@/lib/i18n/dictionary";
 export const metadata = {
   title: "Rituals library",
   description:
-    "Sixty-six years of practice in the Bronx, curated and searchable. For grief, protection, love that needs to land.",
+    "Sixty-six years of practice in The Bronx, curated and searchable. For grief, protection, love that needs to land.",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";

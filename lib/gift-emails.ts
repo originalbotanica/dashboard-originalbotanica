@@ -36,7 +36,7 @@ function shell(inner: string): string {
           ${inner}
         </td></tr>
         <tr><td style="padding:20px 32px;border-top:1px solid #eee2cd;text-align:center;font-family:Georgia,serif;font-size:12px;color:${MUTED};">
-          With care, Original Botanica · the Bronx, since 1959
+          With care, Original Botanica · The Bronx, since 1959
         </td></tr>
       </table>
     </td></tr>
@@ -80,7 +80,7 @@ export function giftRecipientEmail(args: {
     <p style="margin:0 0 14px;font-size:16px;line-height:1.6;">${greeting}</p>
     <p style="margin:0 0 14px;font-size:16px;line-height:1.6;">
       ${from} has gifted you <strong>${esc(args.termLabel)}</strong> of membership at Original Botanica,
-      the Bronx botánica serving practitioners since 1959.
+      The Bronx botánica serving practitioners since 1959.
     </p>
     <p style="margin:0 0 14px;font-size:16px;line-height:1.6;">
       Inside you'll find ${TOOLS_LINE}.

@@ -17,7 +17,7 @@ import { RitualCard } from "@/components/ritual-card";
 export const metadata = {
   title: "Ritual library",
   description:
-    "Sixty-six years of practice in the Bronx, curated and organized by purpose. Search by your need, browse by intention.",
+    "Sixty-six years of practice in The Bronx, curated and organized by purpose. Search by your need, browse by intention.",
 };
 
 export default async function RitualsLibraryPage({

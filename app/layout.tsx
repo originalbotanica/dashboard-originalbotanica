@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: "%s | The Practice",
   },
   description:
-    "Daily tarot, personal astrology, your virtual altar, ancestor altar, and a library of hundreds of rituals from 66 years of practice. From Original Botanica, the Bronx, since 1959.",
+    "Daily tarot, personal astrology, your virtual altar, ancestor altar, and a library of hundreds of rituals from 66 years of practice. From Original Botanica, The Bronx, since 1959.",
   applicationName: "The Practice",
   authors: [{ name: "Original Botanica" }],
   keywords: [
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     siteName: "The Practice, from Original Botanica",
     title: "The Practice: Your Spiritual Home Online",
     description:
-      "Daily tarot, personal astrology, virtual altar, ancestor altar, rituals library. Rooted in the Bronx since 1959.",
+      "Daily tarot, personal astrology, virtual altar, ancestor altar, rituals library. Rooted in The Bronx since 1959.",
     url: "/",
     locale: "en_US",
     // Default share image for every page; individual pages can override.
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "The Practice, from Original Botanica",
     description:
-      "Your spiritual home online. Rooted in the Bronx since 1959.",
+      "Your spiritual home online. Rooted in The Bronx since 1959.",
     images: ["https://dlkhclkmyx18n.cloudfront.net/Banners/original-botanica.png"],
   },
   // Index the production site; keep Vercel preview deployments out of Google

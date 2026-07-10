@@ -36,7 +36,7 @@ function shell(inner: string): string {
           ${inner}
         </td></tr>
         <tr><td style="padding:20px 32px;border-top:1px solid #eee2cd;text-align:center;font-family:Georgia,serif;font-size:12px;color:${MUTED};">
-          With care, Original Botanica · the Bronx, since 1959
+          With care, Original Botanica · The Bronx, since 1959
         </td></tr>
       </table>
     </td></tr>
