@@ -242,7 +242,7 @@ const en: Dict = {
   "lp.toolTarotTitle": "Daily tarot",
   "lp.toolTarotBody": "Spin the wheel each morning for your card: one of 21 hand-painted cards, with its meaning to carry through the day.",
   "lp.toolAstroTitle": "Your astrologer",
-  "lp.toolAstroBody": "Your birth chart, read in the traditions: Western, Lucumí, Espiritismo, folk Catholic. Ask it anything.",
+  "lp.toolAstroBody": "Your birth chart, read in the traditions: Western, Lucumí, Espiritismo, folk Catholic, Wiccan. Enjoy a new, comprehensive look at your stars.",
   "lp.toolDreamsTitle": "Dream interpretation",
   "lp.toolDreamsBody": "Describe a dream while it's still fresh. Read through the traditions, and every dream ends with a small ritual.",
   "lp.toolAltarTitle": "Virtual altar",
@@ -250,7 +250,7 @@ const en: Dict = {
   "lp.toolAncestorsTitle": "Ancestors altar",
   "lp.toolAncestorsBody": "A flame for those who came before. Their names lit, their stories with you, a private link to share with family.",
   "lp.toolRitualsTitle": "Hundreds of rituals",
-  "lp.toolRitualsBody": "Sixty-six years of practice in the Bronx, organized by purpose: money, protection, love, cleansing. Each comes with its steps and supplies.",
+  "lp.toolRitualsBody": "Sixty-six years of practice in The Bronx, organized by purpose and desire: find everything you need on matters of Protection, Love, Cleansing, Success, and Money. Each comes with its steps and supplies.",
   "lp.heritageEyebrow": "Since 1959",
   "lp.heritageTitle": "A real botanica. Not an app.",
   "lp.heritageBody": "Original Botanica is a family-run botanica in the Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years. This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
@@ -596,7 +596,7 @@ const en: Dict = {
   "lp2.introTitle":
     "Discover a unique, personalized experience with The Practice,",
   "lp2.introBody":
-    "Featuring daily tarot readings, dream interpretations, a virtual altar, and an ancestors altar. Enjoy access to hundreds of rituals and receive astrologer readings tailored specifically to you. No generic horoscopes here!",
+    "Featuring daily tarot readings, dream interpretations, a virtual altar, and an ancestors altar. Enjoy access to hundreds of rituals and receive astrologer readings tailored specifically to you.",
   "lp2.introHighlight":
     "Benefit from the expertise of a real Bronx Botanica that has been supporting practitioners since 1959.",
   "lp2.learnMore": "Begin",
@@ -973,7 +973,7 @@ const es: Dict = {
   "lp.toolTarotTitle": "Tarot diario",
   "lp.toolTarotBody": "Gira la rueda cada mañana por tu carta: una de 21 cartas pintadas a mano, con su significado para llevar durante el día.",
   "lp.toolAstroTitle": "Tu astrólogo",
-  "lp.toolAstroBody": "Tu carta natal, leída en las tradiciones: occidental, Lucumí, Espiritismo, católica popular. Pregúntale lo que quieras.",
+  "lp.toolAstroBody": "Tu carta natal, leída en las tradiciones: occidental, Lucumí, Espiritismo, católica popular, wicca. Disfruta una mirada nueva y completa a tus estrellas.",
   "lp.toolDreamsTitle": "Interpretación de sueños",
   "lp.toolDreamsBody": "Describe un sueño mientras aún está fresco. Leído a través de las tradiciones, y cada sueño termina con un pequeño ritual.",
   "lp.toolAltarTitle": "Altar virtual",
@@ -981,7 +981,7 @@ const es: Dict = {
   "lp.toolAncestorsTitle": "Altar de ancestros",
   "lp.toolAncestorsBody": "Una llama para quienes vinieron antes. Sus nombres encendidos, sus historias contigo, un enlace privado para compartir con la familia.",
   "lp.toolRitualsTitle": "Más de 400 rituales",
-  "lp.toolRitualsBody": "Sesenta y seis años de práctica en the Bronx, organizados por propósito: dinero, protección, amor, limpieza. Cada uno con sus pasos y materiales.",
+  "lp.toolRitualsBody": "Sesenta y seis años de práctica en el Bronx, organizados por propósito y deseo: encuentra todo lo que necesitas en asuntos de Protección, Amor, Limpieza, Éxito y Dinero. Cada uno viene con sus pasos y materiales.",
   "lp.heritageEyebrow": "Desde 1959",
   "lp.heritageTitle": "Una botánica de verdad. No una app.",
   "lp.heritageBody": "Original Botanica es una botánica familiar en the Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares desde hace más de sesenta y cinco años. Esta membresía lleva esa misma práctica en línea: las velas, los rituales, la guía. La misma familia. La misma tradición. Ahora dondequiera que estés.",
@@ -1327,7 +1327,7 @@ const es: Dict = {
   "lp2.introTitle":
     "Descubre una experiencia única y personalizada con The Practice,",
   "lp2.introBody":
-    "Con lecturas diarias de tarot, interpretación de sueños, un altar virtual y un altar de ancestros. Disfruta acceso a cientos de rituales y recibe lecturas del astrólogo hechas específicamente para ti. Nada de horóscopos genéricos.",
+    "Con lecturas diarias de tarot, interpretación de sueños, un altar virtual y un altar de ancestros. Disfruta acceso a cientos de rituales y recibe lecturas del astrólogo hechas específicamente para ti.",
   "lp2.introHighlight":
     "Aprovecha la experiencia de una botánica real del Bronx que acompaña a practicantes desde 1959.",
   "lp2.learnMore": "Comienza",
