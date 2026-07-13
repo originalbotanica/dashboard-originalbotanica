@@ -122,7 +122,7 @@ export default async function DashboardPage() {
       {/* ── 1. Hero — candlelit invocation ────────────────────────────── */}
       <section
         aria-label="Today"
-        className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-6 pt-24 pb-24 overflow-hidden"
+        className="relative flex flex-col items-center text-center px-6 pt-28 pb-14 overflow-hidden"
       >
         <MemberNav variant="floating" />
 
@@ -199,23 +199,11 @@ export default async function DashboardPage() {
         <AstrologySection sunSign={sunSign} horoscopePromise={horoscopePromise} />
       </Suspense>
 
-      {/* ── Your astrologer — the membership's headline benefit gets its
-             own full section, not just a small link under the reading ──── */}
-      <ToolSection
-        eyebrow={tr("dash.astrologerEyebrow")}
-        headline={tr("dash.astrologerHeadline")}
-        body={tr("dash.astrologerBody")}
-        href="/astrology"
-        linkLabel={tr("dash.astrologerLink")}
-        imageSrc="/landing/tile-astrologer.jpg"
-        imageSide="right"
-      />
+      {/* ── 3. Daily tarot — straight from the reading to the wheel ────── */}
+      <DailyTarotTeaser />
 
       {/* ── Today on the spiritual calendar ───────────────────────────── */}
       <CalendarToday />
-
-      {/* ── 3. Daily tarot — teaser linking to the dedicated pull page ─── */}
-      <DailyTarotTeaser />
 
       {/* ── 4. Dreams — image right ───────────────────────────────────── */}
       <ToolSection

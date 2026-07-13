@@ -164,7 +164,29 @@ export async function POST(request: Request) {
   // of dead air before the reading begins. Instead the reading streams right
   // away, and we await this promise after the stream to persist the matched
   // ritual/product slugs (the cards then arrive on the post-stream refresh).
-  const retrievalPromise = retrieveRituals(userMessage, 3).catch((e) => {
+  //
+  // The raw question alone embeds poorly ("how does the sky affect my love
+  // life" was pulling protection mojo bags and go-away-evil supplies), so we
+  // detect the question's topic and steer the search toward the matching
+  // shelves of the archive.
+  const TOPIC_HINTS: Array<[RegExp, string]> = [
+    [/love|relationship|partner|romance|marri|crush|ex\b|amor|pareja|novi[oa]/i, "love drawing, attraction, sweetening a connection"],
+    [/friend|amista|social|communit/i, "peace, blessing, sweetening relationships"],
+    [/money|financ|debt|bill|prosper|abundan|dinero|deuda/i, "money drawing, prosperity, abundance"],
+    [/job|work|career|business|promotion|trabajo|negocio/i, "success, steady work, better business"],
+    [/protect|enem|evil|curse|hex|envy|envidia|protecci/i, "protection, uncrossing, reversal"],
+    [/health|heal|sick|salud|enferm/i, "healing and wellness"],
+    [/home|house|casa|family|familia/i, "peace in the home, house blessing"],
+    [/luck|suerte|gambl|lotter/i, "luck and good fortune"],
+    [/stuck|blocked|obstacle|road|camino|abre/i, "road opening, clearing obstacles"],
+    [/cleans|limpia|negativ|drain|heavy/i, "spiritual cleansing"],
+    [/grie|loss|died|passed|ancestor|difunt|luto/i, "ancestor work, comfort in grief"],
+  ];
+  const topicHints = TOPIC_HINTS.filter(([re]) => re.test(userMessage)).map(([, hint]) => hint);
+  const retrievalQuery = topicHints.length
+    ? `${userMessage}\nRituals and supplies for: ${topicHints.join("; ")}.`
+    : userMessage;
+  const retrievalPromise = retrieveRituals(retrievalQuery, 3).catch((e) => {
     console.error("Astrologer retrieval error:", e);
     return [];
   });

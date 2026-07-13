@@ -430,7 +430,9 @@ h1, h2, h3, h4, h5, h6 {
    --fw (flame width) custom property set on .altar-flame. */
 .altar-flame {
   position: absolute;
-  left: 50%;
+  /* Horizontal wick position; candles whose product photo isn't centered
+     (e.g. a pullout candle posed beside its glass) override via --fx. */
+  left: var(--fx, 50%);
   transform: translateX(-50%);
   width: var(--fw);
   height: 0;

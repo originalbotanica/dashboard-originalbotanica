@@ -71,21 +71,16 @@ export default async function PublicMemorialPage({
 
   return (
     <main className="min-h-screen relative">
-      {/* Atmospheric backdrop */}
+      {/* Atmospheric backdrop — pure warm candle-glow. Deliberately no
+          photographic imagery here: faded product photos read wrong on a
+          page of grief (a saint candle's artwork looked like skeletal
+          hands at 20% opacity). */}
       <div className="absolute inset-0 -z-10">
-        <Image
-          src={`${OB_CDN}/spiritual-candles.png`}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-20"
-        />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(20,16,11,0.75) 0%, rgba(20,16,11,0.96) 80%)",
+              "radial-gradient(circle at 50% 30%, rgba(232,172,124,0.14) 0%, rgba(232,172,124,0.04) 30%, transparent 55%), radial-gradient(ellipse at center, rgba(20,16,11,0.2) 0%, rgba(13,10,7,0.9) 85%)",
           }}
         />
       </div>

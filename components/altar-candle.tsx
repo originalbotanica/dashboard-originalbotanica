@@ -26,12 +26,18 @@ const H = { wall: 300, hero: 460 } as const;
 const FW = { wall: 14, hero: 21 } as const;
 const FTOP = { wall: 36, hero: 55 } as const;
 
-function Flame({ size }: { size: "wall" | "hero" }) {
+function Flame({ size, fx }: { size: "wall" | "hero"; fx?: number }) {
   return (
     <span
       aria-hidden
       className="altar-flame"
-      style={{ "--fw": `${FW[size]}px`, top: FTOP[size] } as CSSProperties}
+      style={
+        {
+          "--fw": `${FW[size]}px`,
+          top: FTOP[size],
+          ...(fx ? { "--fx": `${fx}%` } : {}),
+        } as CSSProperties
+      }
     >
       <span className="af-halo" />
       <span className="af-cast" />
@@ -99,7 +105,7 @@ export function AltarCandle({
         className="rounded-xl block"
         style={{ height: h, width: "auto" }}
       />
-      <Flame size={size} />
+      <Flame size={size} fx={art?.flameX} />
     </span>
   );
 }
