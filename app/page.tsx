@@ -396,26 +396,29 @@ function ToolTile({
   return (
     <Link
       href={href}
-      // aspect-square sets the tile's preferred shape, but the caption lives
-      // in normal flow (not absolutely positioned), so on narrow phones a
-      // longer caption stretches the tile taller instead of clipping off the
-      // top (seen on Android at ~360px wide).
-      className="group relative flex flex-col justify-end aspect-square rounded-md overflow-hidden border border-[#b08d52]/60 hover:border-[#d2ac66] transition-colors"
+      // aspect-square is the tile's preferred shape; the caption lives in
+      // normal flow so a longer caption stretches the tile taller. The
+      // overflow clipping lives on the inner image layer, NOT here — an
+      // overflow-hidden container refuses to grow for its content, which
+      // clipped the title off the top on narrow Android screens.
+      className="group relative flex flex-col justify-end aspect-square rounded-md border border-[#b08d52]/60 hover:border-[#d2ac66] transition-colors"
     >
-      <Image
-        src={imageSrc}
-        alt=""
-        fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(13,10,7,0) 40%, rgba(13,10,7,0.35) 60%, rgba(13,10,7,0.65) 100%)",
-        }}
-      />
+      <span className="absolute inset-0 overflow-hidden rounded-md" aria-hidden>
+        <Image
+          src={imageSrc}
+          alt=""
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <span
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(13,10,7,0) 40%, rgba(13,10,7,0.35) 60%, rgba(13,10,7,0.65) 100%)",
+          }}
+        />
+      </span>
       <div className="relative p-6">
         <h3 className="display uppercase text-[1.7rem] leading-[1.05] text-white mb-2.5">
           {title}
