@@ -643,11 +643,11 @@ const en: Dict = {
   "mkt.astro.s1Title":
     "A reading rooted in your actual chart, not a generic horoscope.",
   "mkt.astro.s1Body":
-    "Tell us when and where you were born. We calculate your full natal chart, then load it into a conversation you can come back to. The astrologer references your specific placements. Sun in Scorpio, Moon in the 4th house, Saturn squaring your Venus. Not vibes. Real chart work.",
+    "Tell us when and where you were born. We calculate your full natal birth chart, then load it into a conversation you can come back to. The astrologer references your specific placements. Sun in Scorpio, Moon in the 4th house, Saturn squaring your Venus. Real chart work.",
   "mkt.astro.s2Eyebrow": "The voice",
   "mkt.astro.s2Title": "Grounded, direct, warm. Honest about hard transits.",
   "mkt.astro.s2Body":
-    "Trained on the traditions the botanica has served for three generations. Western astrology, Lucumí, Espiritismo, folk Catholic, Wiccan. Spanish appears where it fits. No love-and-light jargon. No empty reassurance. When a placement is hard, the reading says so.",
+    "Trained on the traditions the botanica has served for three generations. Traditional Western astrology, Lucumí, Espiritismo, folk Catholic, Wiccan. Spanish appears where it fits. No love-and-light jargon. No empty reassurance. When a placement is hard, the reading says so.",
   "mkt.astro.s3Eyebrow": "How readings end",
   "mkt.astro.s3Title": "Every reading ends with a ritual.",
   "mkt.astro.s3Body":
@@ -1374,12 +1374,12 @@ const es: Dict = {
   "mkt.astro.s1Title":
     "Una lectura enraizada en tu carta real, no un horóscopo genérico.",
   "mkt.astro.s1Body":
-    "Dinos cuándo y dónde naciste. Calculamos tu carta natal completa y la cargamos en una conversación a la que puedes volver. El astrólogo cita tus posiciones específicas. Sol en Escorpio, Luna en la casa 4, Saturno en cuadratura con tu Venus. No son vibras. Es trabajo real con tu carta.",
+    "Dinos cuándo y dónde naciste. Calculamos tu carta natal completa y la cargamos en una conversación a la que puedes volver. El astrólogo cita tus posiciones específicas. Sol en Escorpio, Luna en la casa 4, Saturno en cuadratura con tu Venus. Es trabajo real con tu carta.",
   "mkt.astro.s2Eyebrow": "La voz",
   "mkt.astro.s2Title":
     "Con raíz, directa, cálida. Honesta ante los tránsitos difíciles.",
   "mkt.astro.s2Body":
-    "Entrenado en las tradiciones que la botánica ha servido por tres generaciones. Astrología occidental, Lucumí, Espiritismo, catolicismo popular, wicca. El español aparece donde corresponde. Sin jerga de amor y luz. Sin consuelo vacío. Cuando una posición es difícil, la lectura lo dice.",
+    "Entrenado en las tradiciones que la botánica ha servido por tres generaciones. Astrología occidental tradicional, Lucumí, Espiritismo, catolicismo popular, wicca. El español aparece donde corresponde. Sin jerga de amor y luz. Sin consuelo vacío. Cuando una posición es difícil, la lectura lo dice.",
   "mkt.astro.s3Eyebrow": "Cómo terminan las lecturas",
   "mkt.astro.s3Title": "Cada lectura termina con un ritual.",
   "mkt.astro.s3Body":

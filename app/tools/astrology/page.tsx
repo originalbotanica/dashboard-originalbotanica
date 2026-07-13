@@ -22,7 +22,7 @@ export default async function AstrologyToolPage() {
       graphicSrc="/landing/birth-chart.png"
       graphicAlt="A natal birth chart"
     >
-      <p className="eyebrow mb-3">{tr("mkt.astro.s1Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3">{tr("mkt.astro.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.astro.s1Title")}
       </h2>
@@ -30,7 +30,7 @@ export default async function AstrologyToolPage() {
         {tr("mkt.astro.s1Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.astro.s2Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.astro.s2Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.astro.s2Title")}
       </h2>
@@ -38,7 +38,7 @@ export default async function AstrologyToolPage() {
         {tr("mkt.astro.s2Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.astro.s3Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.astro.s3Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.astro.s3Title")}
       </h2>
@@ -46,7 +46,7 @@ export default async function AstrologyToolPage() {
         {tr("mkt.astro.s3Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.astro.s4Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.astro.s4Eyebrow")}</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
         {tr("mkt.astro.s4Body")}
       </p>
