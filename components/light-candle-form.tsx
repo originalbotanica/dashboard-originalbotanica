@@ -12,6 +12,7 @@ import {
   type Desire,
   type CandleArt,
 } from "@/lib/altar/catalog";
+import { FLAME_POS } from "@/lib/altar/flame-pos";
 import { useT, useLocale } from "@/components/locale-provider";
 
 /**
@@ -150,7 +151,15 @@ export function LightCandleForm({
             <span
               aria-hidden
               className="altar-flame"
-              style={{ "--fw": "20px", top: 47 } as CSSProperties}
+              style={
+                {
+                  "--fw": "20px",
+                  top: FLAME_POS[candle.slug] ? `${FLAME_POS[candle.slug].y}%` : 47,
+                  ...(FLAME_POS[candle.slug]
+                    ? { "--fx": `${FLAME_POS[candle.slug].x}%` }
+                    : {}),
+                } as CSSProperties
+              }
             >
               <span className="af-halo" />
               <span className="af-cast" />
