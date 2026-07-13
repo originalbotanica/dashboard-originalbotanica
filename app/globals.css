@@ -110,6 +110,17 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
+/* Larger eyebrow for section labels that carry more weight on a page
+   (e.g. the tool pages' "The daily spin" / "Upright or upside down"). */
+.eyebrow-lg {
+  font-size: 0.875rem;
+}
+@media (min-width: 768px) {
+  .eyebrow-lg {
+    font-size: 1rem;
+  }
+}
+
 /* Red sub-label — used beneath the Original Botanica logo */
 .sublabel {
   font-family: var(--font-body), system-ui, sans-serif;
