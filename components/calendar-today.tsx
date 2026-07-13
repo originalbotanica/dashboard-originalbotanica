@@ -13,16 +13,19 @@ import {
 
 /**
  * "Today on the calendar" — the daily spiritual-calendar touchpoint on the
- * dashboard. Shows what today holds (a feast/Orisha day, a new or full moon,
- * a season turning, Mercury retrograde) with a one-tap action. If nothing
- * falls today, it gently points to the next thing coming up.
+ * dashboard. Shows what today holds (a feast/Orisha day, a season turning,
+ * Mercury retrograde) with a one-tap action. If nothing falls today, it
+ * gently points to the next thing coming up. Moon phases are deliberately
+ * excluded here (per Jason, the dashboard stays moon-free); they still
+ * appear on the full calendar and in the lunar guide.
  */
 export async function CalendarToday() {
   const locale = await getLocale();
   const today = easternToday();
 
-  const todays = getObservancesFor(today);
-  const event = todays[0] ?? getUpcoming(today, 90, 1)[0];
+  const notLunar = (e: CalEvent) => e.type !== "lunar";
+  const todays = getObservancesFor(today).filter(notLunar);
+  const event = todays[0] ?? getUpcoming(today, 90, 8).filter(notLunar)[0];
   if (!event) return null;
 
   const isToday = todays.length > 0;
