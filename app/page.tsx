@@ -294,24 +294,26 @@ export default async function HomePage({
               }}
             />
           </div>
-          <div className="px-8 py-12 md:px-14 md:py-16 max-w-2xl">
-            <p className="display uppercase text-4xl md:text-5xl leading-tight text-white mb-1">
+          {/* Type scales down a notch at phone widths so nothing overflows
+              the rounded banner (clipped on ~360px Android). */}
+          <div className="px-6 py-10 md:px-14 md:py-16 max-w-2xl">
+            <p className="display uppercase text-3xl sm:text-4xl md:text-5xl leading-tight text-white mb-1 break-words">
               {tr("lp2.joinAndGet")}
             </p>
             <p
-              className="display uppercase text-7xl md:text-[6.5rem] leading-[0.95] mb-1"
+              className="display uppercase text-5xl sm:text-7xl md:text-[6.5rem] leading-[0.95] mb-1 break-words"
               style={{ color: GOLD }}
             >
               {tr("lp2.tenOff")}
             </p>
-            <p className="display uppercase text-4xl md:text-5xl leading-tight text-white mb-3">
+            <p className="display uppercase text-3xl sm:text-4xl md:text-5xl leading-tight text-white mb-3 break-words">
               {tr("lp2.everythingAt")}
             </p>
             <a
               href="https://originalbotanica.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xl md:text-2xl font-semibold text-white hover:underline underline-offset-4"
+              className="text-lg sm:text-xl md:text-2xl font-semibold text-white hover:underline underline-offset-4 break-all"
             >
               www.originalbotanica.com
             </a>

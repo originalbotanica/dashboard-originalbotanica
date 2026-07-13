@@ -67,7 +67,15 @@ export default async function DashboardPage() {
   const locale = await getLocale();
   const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
 
-  const hour = new Date().getHours();
+  // The server runs in UTC; greet by the botanica's clock, not the server's.
+  // (Was: "Good afternoon" at 10:42 AM New York time.)
+  const hour = Number(
+    new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: "America/New_York",
+    }).format(new Date()),
+  );
   const greeting =
     hour < 12
       ? tr("dash.greetingMorning")
@@ -90,6 +98,7 @@ export default async function DashboardPage() {
     weekday: "long",
     month: "long",
     day: "numeric",
+    timeZone: "America/New_York",
   });
 
   // Tonight's moon — a small daily touchpoint. Pure calculation, no API.
