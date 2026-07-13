@@ -10,7 +10,7 @@ export const FLAME_POS: Record<string, { x: number; y: number }> = {
   "bayberry": { x: 50.0, y: 12.4 },
   "better-business": { x: 50.0, y: 12.7 },
   "bingo": { x: 50.0, y: 11.4 },
-  "birthday-blessings": { x: 27.0, y: 6.4 },
+  "birthday-blessings": { x: 64, y: 13 }, // hand-tuned: pale pillar beside glass
   "black-cat": { x: 50.0, y: 11.9 },
   "black-list": { x: 49.5, y: 5.5 },
   "blockbreaker": { x: 50.0, y: 13.0 },
@@ -18,7 +18,7 @@ export const FLAME_POS: Record<string, { x: number; y: number }> = {
   "chango-macho": { x: 50.0, y: 8.7 },
   "chuparrosa": { x: 50.0, y: 11.7 },
   "come-to-me": { x: 50.0, y: 11.2 },
-  "condition": { x: 16.0, y: 3.0 },
+  "condition": { x: 50, y: 9 }, // hand-tuned: measurer caught the photo edge
   "court-case": { x: 49.5, y: 6.0 },
   "domination": { x: 50.0, y: 10.7 },
   "don-dinero": { x: 50.0, y: 3.5 },
@@ -51,8 +51,8 @@ export const FLAME_POS: Record<string, { x: number; y: number }> = {
   "peace": { x: 50.0, y: 11.7 },
   "peace-in-the-home": { x: 50.0, y: 11.7 },
   "psalm-23": { x: 50.0, y: 11.7 },
-  "remember-honor": { x: 50.0, y: 8.0 },
-  "remove-obstacles": { x: 73.2, y: 18.4 },
+  "remember-honor": { x: 64, y: 7 }, // hand-tuned: pale pillar beside glass
+  "remove-obstacles": { x: 68, y: 16 }, // hand-tuned: pale pillar beside glass
   "reversible": { x: 50.0, y: 5.0 },
   "ruda": { x: 63.6, y: 3.0 },
   "run-devil-run": { x: 50.0, y: 11.2 },
@@ -63,7 +63,7 @@ export const FLAME_POS: Record<string, { x: number; y: number }> = {
   "san-deshacedor": { x: 50.0, y: 11.4 },
   "steady-work": { x: 50.0, y: 11.9 },
   "success": { x: 50.0, y: 11.2 },
-  "uncrossing": { x: 36.9, y: 13.4 },
-  "unlock-my-path": { x: 50.0, y: 6.0 },
-  "white-candle": { x: 50.0, y: 2.5 },
+  "uncrossing": { x: 50, y: 11 }, // hand-tuned: white seven-knob pillar
+  "unlock-my-path": { x: 63, y: 14 }, // hand-tuned: pale pillar beside glass
+  "white-candle": { x: 50, y: 10 }, // hand-tuned: photo is white-on-white
 };
