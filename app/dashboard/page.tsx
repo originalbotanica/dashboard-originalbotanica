@@ -9,15 +9,13 @@ import {
   getOrGenerateDailyHoroscope,
   type DailyHoroscope,
 } from "@/lib/daily-horoscope/generate";
-import { isValidSign, FOCI } from "@/lib/daily-horoscope/prompt";
+import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberNav } from "@/components/member-nav";
 import { MembershipPrompt } from "@/components/membership-prompt";
 import { Candle } from "@/components/candle";
 import { CalendarToday } from "@/components/calendar-today";
 import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
-import { getMoon, moonGuidance } from "@/lib/astrology/moon";
-import { getTodaysSky } from "@/lib/astrology/sky";
-import { MoonPhase } from "@/components/moon-phase";
+
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
@@ -119,35 +117,6 @@ export default async function DashboardPage() {
     timeZone: memberTz,
   });
 
-  // Tonight's moon — a small daily touchpoint. Pure calculation, no API.
-  const moon = getMoon();
-  const moonGuide = moonGuidance(moon.bucket);
-  const sky = getTodaysSky();
-
-  const PHASE_KEYS: Record<string, string> = {
-    "New Moon": "moon.phaseNew",
-    "Waxing Crescent": "moon.phaseWaxingCrescent",
-    "First Quarter": "moon.phaseFirstQuarter",
-    "Waxing Gibbous": "moon.phaseWaxingGibbous",
-    "Full Moon": "moon.phaseFull",
-    "Waning Gibbous": "moon.phaseWaningGibbous",
-    "Last Quarter": "moon.phaseLastQuarter",
-    "Waning Crescent": "moon.phaseWaningCrescent",
-  };
-  const GUIDE_KEYS: Record<string, string> = {
-    new: "moon.guideNew",
-    waxing: "moon.guideWaxing",
-    full: "moon.guideFull",
-    waning: "moon.guideWaning",
-  };
-  const moonPhaseLabel = PHASE_KEYS[moon.phaseName]
-    ? tr(PHASE_KEYS[moon.phaseName])
-    : moon.phaseName;
-  const moonSignLabel = tr("sign." + String(sky.moonSign).toLowerCase());
-  const moonGuideTitle = GUIDE_KEYS[moon.bucket]
-    ? tr(GUIDE_KEYS[moon.bucket])
-    : moonGuide.title;
-
   return (
     <main className="flex-1">
       {/* ── 1. Hero — candlelit invocation ────────────────────────────── */}
@@ -207,25 +176,9 @@ export default async function DashboardPage() {
           <Candle size="large" lit />
         </div>
 
-        {/* Today's invocation — daily horoscope or fallback. Streams in
-            behind Suspense so the hero never blocks on generation. */}
-        <Suspense
-          fallback={
-            <>
-              <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-                {sunSign ? `${sunSign}.` : tr("dash.heroWelcomeTitle")}
-              </h1>
-              <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed animate-pulse">
-                {sunSign
-                  ? tr("dash.heroReadingFor")
-                  : tr("dash.heroWelcomeBody")}
-              </p>
-            </>
-          }
-        >
-          <HeroInvocation sunSign={sunSign} horoscopePromise={horoscopePromise} />
-        </Suspense>
-
+        {/* Per Jason: no "Today the focus is…" block here — the hero stays
+            quiet (date, greeting, flame) and the page goes straight into
+            Today's Reading below. */}
         <MembershipPrompt sub={sub} trialLeft={trialLeft} locale={locale} />
       </section>
 
@@ -258,44 +211,13 @@ export default async function DashboardPage() {
         imageSide="right"
       />
 
-      {/* ── Tonight's moon — compact daily touchpoint ─────────────────── */}
-      <section aria-label="Tonight's moon" className="border-t border-[var(--border)]">
-        <Link
-          href="/astrology/moon"
-          className="group block max-w-5xl mx-auto px-6 py-10"
-        >
-          <div className="flex items-center gap-5 md:gap-8">
-            <div className="shrink-0">
-              <MoonPhase
-                illumination={moon.illumination}
-                waxing={moon.waxing}
-                size={64}
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="eyebrow mb-1 text-[var(--foreground-muted)]">
-                {tr("dash.moonEyebrow")}
-              </p>
-              <p className="display text-xl md:text-2xl leading-tight">
-                {moonPhaseLabel} {tr("moon.in")} {moonSignLabel} · {moon.illuminationPct}
-                {tr("moon.litSuffix")}
-              </p>
-              <p className="text-[var(--foreground-muted)] text-sm leading-relaxed mt-1">
-                {moonGuideTitle}
-              </p>
-            </div>
-            <span className="nav-link text-[var(--accent)] hidden sm:inline-flex items-center gap-2 shrink-0">
-              {tr("dash.lunarGuide")}
-              <span aria-hidden>→</span>
-            </span>
-          </div>
-        </Link>
-      </section>
-
       {/* ── Today on the spiritual calendar ───────────────────────────── */}
       <CalendarToday />
 
-      {/* ── 3. Dreams — image right ───────────────────────────────────── */}
+      {/* ── 3. Daily tarot — teaser linking to the dedicated pull page ─── */}
+      <DailyTarotTeaser />
+
+      {/* ── 4. Dreams — image right ───────────────────────────────────── */}
       <ToolSection
         eyebrow={tr("dash.dreamsEyebrow")}
         headline={tr("dash.dreamsHeadline")}
@@ -305,9 +227,6 @@ export default async function DashboardPage() {
         imageSrc="/landing/gfx-dreams.jpg"
         imageSide="right"
       />
-
-      {/* ── 4. Daily tarot — teaser linking to the dedicated pull page ─── */}
-      <DailyTarotTeaser />
 
       {/* ── 5. Virtual altar — image right ────────────────────────────── */}
       <ToolSection
@@ -375,67 +294,6 @@ export default async function DashboardPage() {
         </div>
       </section>
     </main>
-  );
-}
-
-/**
- * The hero's daily invocation. Awaits the shared horoscope promise behind
- * Suspense. When generation fails the member sees an honest note instead of
- * a silent generic welcome.
- */
-async function HeroInvocation({
-  sunSign,
-  horoscopePromise,
-}: {
-  sunSign: string | null;
-  horoscopePromise: Promise<DailyHoroscope | null>;
-}) {
-  const dailyHoroscope = await horoscopePromise;
-  const locale = await getLocale();
-  const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
-  if (sunSign && dailyHoroscope) {
-    return (
-      <>
-        <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-          {sunSign}. {tr("dash.heroFocusPre")}{" "}
-          <span className="italic text-[var(--accent)]">
-            {(FOCI as readonly string[]).includes(dailyHoroscope.content.focus)
-              ? tr(`focus.${dailyHoroscope.content.focus}`)
-              : dailyHoroscope.content.focus}
-          </span>
-          .
-        </h1>
-        <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-          <ProseLine
-            text={dailyHoroscope.content.summary}
-            lookup={EMPTY_LOOKUP}
-            optimisticBaseUrl={OB_BASE_URL}
-          />
-        </p>
-      </>
-    );
-  }
-  if (sunSign) {
-    return (
-      <>
-        <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-          {tr("dash.heroSignCandle", { sign: sunSign })}
-        </h1>
-        <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-          {tr("dash.heroSignError")}
-        </p>
-      </>
-    );
-  }
-  return (
-    <>
-      <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-        {tr("dash.heroWelcomeTitle")}
-      </h1>
-      <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] mt-8 max-w-2xl leading-relaxed">
-        {tr("dash.heroWelcomeBody")}
-      </p>
-    </>
   );
 }
 
