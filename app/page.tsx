@@ -394,7 +394,11 @@ function ToolTile({
   return (
     <Link
       href={href}
-      className="group relative block aspect-square rounded-md overflow-hidden border border-[#b08d52]/60 hover:border-[#d2ac66] transition-colors"
+      // aspect-square sets the tile's preferred shape, but the caption lives
+      // in normal flow (not absolutely positioned), so on narrow phones a
+      // longer caption stretches the tile taller instead of clipping off the
+      // top (seen on Android at ~360px wide).
+      className="group relative flex flex-col justify-end aspect-square rounded-md overflow-hidden border border-[#b08d52]/60 hover:border-[#d2ac66] transition-colors"
     >
       <Image
         src={imageSrc}
@@ -410,7 +414,7 @@ function ToolTile({
             "linear-gradient(180deg, rgba(13,10,7,0) 40%, rgba(13,10,7,0.35) 60%, rgba(13,10,7,0.65) 100%)",
         }}
       />
-      <div className="absolute inset-x-0 bottom-0 p-6">
+      <div className="relative p-6">
         <h3 className="display uppercase text-[1.7rem] leading-[1.05] text-white mb-2.5">
           {title}
         </h3>
