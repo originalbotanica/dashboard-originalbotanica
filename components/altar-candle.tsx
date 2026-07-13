@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { candleImageUrl, getCandleArt, getSaintCandle } from "@/lib/altar/catalog";
+import { FLAME_POS } from "@/lib/altar/flame-pos";
 import { Candle } from "@/components/candle";
 
 /**
@@ -26,7 +27,10 @@ const H = { wall: 300, hero: 460 } as const;
 const FW = { wall: 14, hero: 21 } as const;
 const FTOP = { wall: 36, hero: 55 } as const;
 
-function Flame({ size, fx }: { size: "wall" | "hero"; fx?: number }) {
+function Flame({ size, slug }: { size: "wall" | "hero"; slug?: string }) {
+  // Measured wick position for this candle's photo (x% across, y% down);
+  // photos without a measurement use the centered defaults.
+  const pos = slug ? FLAME_POS[slug] : undefined;
   return (
     <span
       aria-hidden
@@ -34,8 +38,8 @@ function Flame({ size, fx }: { size: "wall" | "hero"; fx?: number }) {
       style={
         {
           "--fw": `${FW[size]}px`,
-          top: FTOP[size],
-          ...(fx ? { "--fx": `${fx}%` } : {}),
+          top: pos ? `${pos.y}%` : FTOP[size],
+          ...(pos ? { "--fx": `${pos.x}%` } : {}),
         } as CSSProperties
       }
     >
@@ -105,7 +109,7 @@ export function AltarCandle({
         className="rounded-xl block"
         style={{ height: h, width: "auto" }}
       />
-      <Flame size={size} fx={art?.flameX} />
+      <Flame size={size} slug={slug} />
     </span>
   );
 }

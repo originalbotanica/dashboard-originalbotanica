@@ -23,10 +23,7 @@ export function candleImageUrl(slug: string): string {
 
 export type CandleArt = {
   slug: string; // also the stored candle id and the image filename
-  /** Wick x-position as a % of the photo width, for photos where the candle
-   *  isn't horizontally centered (pullout candles posed beside their glass).
-   *  Defaults to 50. */
-  flameX?: number;
+  // (Flame position lives in lib/altar/flame-pos.ts, measured per photo.)
   name: string;
   tagline: string;
   /** Saint/Orisha candles render as a themed glass candle (this color +
@@ -196,7 +193,7 @@ export const DESIRES: Desire[] = [
     label: "Peace",
     purpose: "blessing-peace",
     candles: [
-      { slug: "peace-in-the-home", name: "Peace In The Home Candle", tagline: "For peace in the home", flameX: 60 },
+      { slug: "peace-in-the-home", name: "Peace In The Home Candle", tagline: "For peace in the home" },
       { slug: "peace", name: "Peace Candle", tagline: "For a peaceful relationship" },
       { slug: "birthday-blessings", name: "Birthday Blessings Candle", tagline: "For birthday health and happiness" },
     ],
