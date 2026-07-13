@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
@@ -67,15 +68,32 @@ export default async function DashboardPage() {
   const locale = await getLocale();
   const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
 
-  // The server runs in UTC; greet by the botanica's clock, not the server's.
-  // (Was: "Good afternoon" at 10:42 AM New York time.)
-  const hour = Number(
-    new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      hour12: false,
-      timeZone: "America/New_York",
-    }).format(new Date()),
-  );
+  // Greet each member by their own clock: Vercel geolocates the request and
+  // passes the visitor's IANA timezone in this header. Fall back to the
+  // botanica's clock (never the server's UTC, which said "Good afternoon"
+  // at 10:42 AM New York time).
+  const reqHeaders = await headers();
+  let memberTz = reqHeaders.get("x-vercel-ip-timezone") || "America/New_York";
+  let hour: number;
+  try {
+    hour = Number(
+      new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        hour12: false,
+        timeZone: memberTz,
+      }).format(new Date()),
+    );
+  } catch {
+    // Unrecognized timezone string from the header — use the botanica's.
+    memberTz = "America/New_York";
+    hour = Number(
+      new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        hour12: false,
+        timeZone: memberTz,
+      }).format(new Date()),
+    );
+  }
   const greeting =
     hour < 12
       ? tr("dash.greetingMorning")
@@ -98,7 +116,7 @@ export default async function DashboardPage() {
     weekday: "long",
     month: "long",
     day: "numeric",
-    timeZone: "America/New_York",
+    timeZone: memberTz,
   });
 
   // Tonight's moon — a small daily touchpoint. Pure calculation, no API.
