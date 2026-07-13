@@ -305,12 +305,37 @@ const FEASTS: Feast[] = [
   },
 ];
 
-// ── Mercury retrograde — curated, dated (yearly refresh) ───────────────────
-const MERCURY_RETRO: Array<{ y: number; m: number; d: number; sign: string }> = [
-  { y: 2026, m: 2, d: 26, sign: "Pisces" },
-  { y: 2026, m: 6, d: 29, sign: "Cancer" },
-  { y: 2026, m: 10, d: 24, sign: "Scorpio" },
+// ── Mercury retrograde — curated, dated windows (yearly refresh) ────────────
+// Full station-retrograde → station-direct windows, so the calendar can mark
+// the beginning, the end, and the ongoing condition in between.
+export type RetroWindow = {
+  from: { y: number; m: number; d: number };
+  to: { y: number; m: number; d: number };
+  sign: string;
+};
+export const MERCURY_RETRO: RetroWindow[] = [
+  { from: { y: 2026, m: 2, d: 26 }, to: { y: 2026, m: 3, d: 20 }, sign: "Pisces" },
+  { from: { y: 2026, m: 6, d: 29 }, to: { y: 2026, m: 7, d: 23 }, sign: "Cancer" },
+  { from: { y: 2026, m: 10, d: 24 }, to: { y: 2026, m: 11, d: 13 }, sign: "Scorpio" },
+  { from: { y: 2027, m: 2, d: 9 }, to: { y: 2027, m: 3, d: 3 }, sign: "Pisces" },
+  { from: { y: 2027, m: 6, d: 10 }, to: { y: 2027, m: 7, d: 4 }, sign: "Cancer" },
+  { from: { y: 2027, m: 10, d: 7 }, to: { y: 2027, m: 10, d: 28 }, sign: "Scorpio" },
 ];
+
+/** The retrograde window containing the given Eastern day, if any. */
+export function activeMercuryRetrograde(day: {
+  y: number;
+  m: number;
+  d: number;
+}): RetroWindow | null {
+  const k = day.y * 10000 + day.m * 100 + day.d;
+  for (const w of MERCURY_RETRO) {
+    const lo = w.from.y * 10000 + w.from.m * 100 + w.from.d;
+    const hi = w.to.y * 10000 + w.to.m * 100 + w.to.d;
+    if (k >= lo && k <= hi) return w;
+  }
+  return null;
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -476,19 +501,39 @@ function lunarEventsForRange(
 }
 
 function mercuryEvents(): CalEvent[] {
-  return MERCURY_RETRO.map((r) => ({
-    id: `mercury-${r.y}-${r.m}`,
-    y: r.y,
-    m: r.m,
-    d: r.d,
-    type: "planet" as const,
-    title: "Mercury Retrograde begins",
-    title_es: "Comienza Mercurio retrógrado",
-    en: `Mercury turns retrograde in ${r.sign}. Slow down with messages, signings, and travel. Take time to reflect.`,
-    es: `Mercurio se vuelve retrógrado en ${r.sign}. Ve con calma con mensajes, contratos y viajes. Tómate un tiempo para reflexionar.`,
-    color: "#b98cf0",
-    action: { href: "/astrology/astrologer", en: "Ask your astrologer", es: "Pregunta a tu astrólogo" },
-  }));
+  const action = {
+    href: "/astrology/astrologer",
+    en: "Ask your astrologer",
+    es: "Pregunta a tu astrólogo",
+  };
+  return MERCURY_RETRO.flatMap((r) => [
+    {
+      id: `mercury-${r.from.y}-${r.from.m}`,
+      y: r.from.y,
+      m: r.from.m,
+      d: r.from.d,
+      type: "planet" as const,
+      title: "Mercury Retrograde begins",
+      title_es: "Comienza Mercurio retrógrado",
+      en: `Mercury turns retrograde in ${r.sign}. Slow down with messages, signings, and travel. Take time to reflect.`,
+      es: `Mercurio se vuelve retrógrado en ${r.sign}. Ve con calma con mensajes, contratos y viajes. Tómate un tiempo para reflexionar.`,
+      color: "#b98cf0",
+      action,
+    },
+    {
+      id: `mercury-direct-${r.to.y}-${r.to.m}`,
+      y: r.to.y,
+      m: r.to.m,
+      d: r.to.d,
+      type: "planet" as const,
+      title: "Mercury goes direct",
+      title_es: "Mercurio retoma su curso",
+      en: "Mercury stations direct. The air clears: send the message, sign the paper, book the trip.",
+      es: "Mercurio retoma su curso directo. El aire se despeja: manda el mensaje, firma el papel, reserva el viaje.",
+      color: "#b98cf0",
+      action,
+    },
+  ]);
 }
 
 /** All events between two Eastern dates (inclusive), sorted ascending. */

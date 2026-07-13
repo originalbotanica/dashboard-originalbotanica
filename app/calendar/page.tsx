@@ -9,6 +9,7 @@ import {
   getUpcoming,
   getEventsBetween,
   getActiveNovena,
+  activeMercuryRetrograde,
   addDays,
   eventTitle,
   type CalEvent,
@@ -45,6 +46,17 @@ export default async function CalendarPage() {
   const gridEvents = getEventsBetween(gridFrom, addDays(gridFrom, 280));
   const novena = getActiveNovena(today);
 
+  // Ongoing condition: Mercury retrograde spans weeks, not a day — surface
+  // it for the whole window, not just its start date.
+  const retro = activeMercuryRetrograde(today);
+  const retroThrough = retro
+    ? new Date(Date.UTC(retro.to.y, retro.to.m - 1, retro.to.d)).toLocaleDateString(intl, {
+        month: "long",
+        day: "numeric",
+        timeZone: "UTC",
+      })
+    : null;
+
   // Group by month for headers.
   const groups: { label: string; items: CalEvent[] }[] = [];
   for (const e of events) {
@@ -78,6 +90,24 @@ export default async function CalendarPage() {
           {t(locale, "cal.addToCalendar")}
           <span aria-hidden>↓</span>
         </a>
+
+        {retro && retroThrough && (
+          <div
+            className="flex items-start gap-3 rounded-lg border px-4 py-3 mb-10 text-sm leading-relaxed"
+            style={{ borderColor: "#b98cf066", color: "#cbb3ee" }}
+          >
+            <span
+              aria-hidden
+              className="mt-1.5 shrink-0 rounded-full"
+              style={{ width: 8, height: 8, background: "#b98cf0", boxShadow: "0 0 10px #b98cf0" }}
+            />
+            <span>
+              {locale === "es"
+                ? `Mercurio está retrógrado en ${retro.sign} hasta el ${retroThrough}. Ve con calma con mensajes, contratos y viajes.`
+                : `Mercury is retrograde in ${retro.sign} through ${retroThrough}. Go gently with messages, signings, and travel.`}
+            </span>
+          </div>
+        )}
 
         {novena && (
           <Link
