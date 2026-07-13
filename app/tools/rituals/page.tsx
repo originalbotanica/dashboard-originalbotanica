@@ -22,7 +22,7 @@ export default async function RitualsToolPage() {
       graphicSrc="/landing/tile-rituals.jpg"
       graphicAlt="Ritual library"
     >
-      <p className="eyebrow mb-3">{tr("mkt.rit.s1Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3">{tr("mkt.rit.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.rit.s1Title")}
       </h2>
@@ -30,7 +30,7 @@ export default async function RitualsToolPage() {
         {tr("mkt.rit.s1Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.rit.s2Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.rit.s2Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.rit.s2Title")}
       </h2>
@@ -38,7 +38,7 @@ export default async function RitualsToolPage() {
         {tr("mkt.rit.s2Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.rit.s3Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.rit.s3Eyebrow")}</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
         {tr("mkt.rit.s3Body")}
       </p>

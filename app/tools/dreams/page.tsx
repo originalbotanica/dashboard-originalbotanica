@@ -22,7 +22,7 @@ export default async function DreamsToolPage() {
       graphicSrc="/landing/gfx-dreams.jpg"
       graphicAlt="Dream interpreter"
     >
-      <p className="eyebrow mb-3">{tr("mkt.dreams.s1Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3">{tr("mkt.dreams.s1Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.dreams.s1Title")}
       </h2>
@@ -30,7 +30,7 @@ export default async function DreamsToolPage() {
         {tr("mkt.dreams.s1Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.dreams.s2Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.dreams.s2Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.dreams.s2Title")}
       </h2>
@@ -38,7 +38,7 @@ export default async function DreamsToolPage() {
         {tr("mkt.dreams.s2Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.dreams.s3Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.dreams.s3Eyebrow")}</p>
       <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
         {tr("mkt.dreams.s3Title")}
       </h2>
@@ -46,7 +46,7 @@ export default async function DreamsToolPage() {
         {tr("mkt.dreams.s3Body")}
       </p>
 
-      <p className="eyebrow mb-3 mt-12">{tr("mkt.dreams.s4Eyebrow")}</p>
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.dreams.s4Eyebrow")}</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
         {tr("mkt.dreams.s4Body")}
       </p>
