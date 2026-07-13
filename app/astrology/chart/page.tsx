@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { loadAstrologerContext } from "@/lib/astrologer/context";
+import { loadAstrologerContext, type AstrologerContext } from "@/lib/astrologer/context";
+import { getOrGenerateChartReading } from "@/lib/astrology/chart-reading";
 import { ChartWheel } from "@/components/chart-wheel";
 import { getLocale } from "@/lib/i18n/server";
 import { t, type Locale } from "@/lib/i18n/dictionary";
@@ -144,6 +146,28 @@ export default async function ChartPage() {
           </section>
         )}
 
+        {/* The written reading — what all of the above MEANS. Streams in
+            behind Suspense; the first visit generates it, then it's cached. */}
+        {!isUnderEighteen && !chart.isMocked && (
+          <section className="mb-12 border-t border-[var(--border)] pt-10">
+            <p className="eyebrow eyebrow-lg mb-6">{t(locale, "chart.readingEyebrow")}</p>
+            <Suspense
+              fallback={
+                <p className="invocation text-[var(--foreground-muted)] animate-pulse">
+                  {t(locale, "chart.readingLoading")}
+                </p>
+              }
+            >
+              <ChartReadingSectionView
+                userId={user.id}
+                context={context}
+                firstName={profile.first_name}
+                locale={locale}
+              />
+            </Suspense>
+          </section>
+        )}
+
         <div className="mt-12 flex gap-4 flex-wrap">
           <Link
             href="/astrology/astrologer"
@@ -157,6 +181,45 @@ export default async function ChartPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+async function ChartReadingSectionView({
+  userId,
+  context,
+  firstName,
+  locale,
+}: {
+  userId: string;
+  context: AstrologerContext;
+  firstName: string;
+  locale: Locale;
+}) {
+  const reading = await getOrGenerateChartReading(userId, context, firstName, locale).catch(
+    () => null,
+  );
+  if (!reading) {
+    return (
+      <p className="text-[var(--foreground-muted)] text-sm">
+        {t(locale, "chart.readingFail")}
+      </p>
+    );
+  }
+  return (
+    <div className="space-y-8">
+      <p className="invocation text-lg text-[var(--foreground-muted)] leading-relaxed">
+        {reading.opening}
+      </p>
+      {reading.sections.map((s) => (
+        <div key={s.title}>
+          <h2 className="display text-xl mb-2">{s.title}</h2>
+          <p className="text-[var(--foreground-muted)] leading-relaxed">{s.body}</p>
+        </div>
+      ))}
+      <p className="invocation text-[var(--foreground-muted)] leading-relaxed border-l-2 border-[var(--accent)] pl-4 py-1">
+        {reading.closing}
+      </p>
+    </div>
   );
 }
 
