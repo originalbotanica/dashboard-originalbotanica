@@ -8,9 +8,17 @@
 
 export type DailyHoroscopeContent = {
   summary: string;   // 2-3 sentences setting the day's tone for this sign
-  focus: string;     // which area is asking attention: love / work / spirit / body / mind
+  focus: string;     // which area is asking attention (see FOCI)
   action: string;    // one concrete thing to do today
 };
+
+/** The areas a day can ask attention from. Wider than the original five so
+ *  the hero line doesn't cycle "spirit/mind" all week; each has a matching
+ *  focus.* dictionary entry for the Spanish dashboard. */
+export const FOCI = [
+  "love", "work", "money", "spirit", "body", "mind",
+  "home", "protection", "release", "roads", "gratitude",
+] as const;
 
 export const SIGNS = [
   "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
@@ -27,11 +35,13 @@ export function buildDailyHoroscopePrompt(args: {
   dateLabel: string;   // e.g. "Saturday, May 16, 2026"
   retrievedRituals?: string; // Optional RAG context from OB blog corpus
   skyContext?: string; // Computed real sky for today (moon sign, phase, aspect)
+  recentReadings?: string; // The last few days' focus/action, to avoid repeats
   locale?: "en" | "es";
 }): { system: string; user: string } {
+  const fociList = FOCI.join(", ");
   const langRule =
     args.locale === "es"
-      ? `\n\nLANGUAGE\n- Write the "summary" and "action" fields entirely in natural, warm Latin American Spanish.\n- Keep the "focus" field as one of the English enum words (love, work, spirit, body, mind) exactly.`
+      ? `\n\nLANGUAGE\n- Write the "summary" and "action" fields entirely in natural, warm Latin American Spanish.\n- Keep the "focus" field as one of the English enum words (${fociList}) exactly.`
       : "";
   const system = `You are the astrologer for Original Botanica, a family-owned spiritual house serving The Bronx and the world since 1959. You speak as the institutional voice of the house, not as a named individual.${langRule}
 
@@ -64,9 +74,19 @@ Return a single JSON object with this exact shape. No markdown fences, no commen
 
 {
   "summary": "<2-3 sentences setting the day's tone for ${args.sign}. Specific to today's energy, not generic Sun-sign content.>",
-  "focus": "<one of: love, work, spirit, body, mind. Whichever area today most asks attention from>",
+  "focus": "<one of: ${fociList}. Whichever area today most asks attention from>",
   "action": "<one concrete thing for ${args.sign} to do today. Not a feeling. A verb. If the archive rituals below match, name the specific products and wrap each real Original Botanica product reference in [[Product Name|product-slug]] format using slugs from the archive. Plain text for generic supplies.>"
 }
+
+VARIETY (STRICT)
+- The botanica's shelf is deep: baths, floor washes, oils, colognes, herbs, incense, written petitions, offerings, a glass of water, a walk to a crossroads. Rotate through it. A candle is one tool among many, not the default.
+- A plain white candle may anchor the action at most once a week. If the recent readings below already used one, choose a different working entirely.
+- Vary the VERB day to day: not always "light". Bathe, sweep, write, burn, carry, pour, speak, clean, offer, walk.${args.recentReadings ? `
+
+THE LAST FEW DAYS (do not repeat yourself)
+${args.recentReadings}
+- Choose a "focus" different from all of the above.
+- The "action" must differ in kind from the recent ones (different tool, different verb, different intention).` : ""}
 
 When you reference a real Original Botanica product, wrap it as [[Display Name|product-slug]] using a slug from the archive below. Never invent a slug. Do not announce the markup; write naturally.
 ${args.retrievedRituals ? `

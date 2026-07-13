@@ -9,7 +9,7 @@ import {
   getOrGenerateDailyHoroscope,
   type DailyHoroscope,
 } from "@/lib/daily-horoscope/generate";
-import { isValidSign } from "@/lib/daily-horoscope/prompt";
+import { isValidSign, FOCI } from "@/lib/daily-horoscope/prompt";
 import { MemberNav } from "@/components/member-nav";
 import { MembershipPrompt } from "@/components/membership-prompt";
 import { Candle } from "@/components/candle";
@@ -397,9 +397,11 @@ async function HeroInvocation({
     return (
       <>
         <h1 className="display text-4xl md:text-6xl max-w-3xl leading-[1.05]">
-          {sunSign}. Today the focus is{" "}
+          {sunSign}. {tr("dash.heroFocusPre")}{" "}
           <span className="italic text-[var(--accent)]">
-            {dailyHoroscope.content.focus}
+            {(FOCI as readonly string[]).includes(dailyHoroscope.content.focus)
+              ? tr(`focus.${dailyHoroscope.content.focus}`)
+              : dailyHoroscope.content.focus}
           </span>
           .
         </h1>

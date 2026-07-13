@@ -92,9 +92,42 @@ export async function getOrGenerateDailyHoroscope(
   // Generate fresh.
   const dateLabel = formatDateLabel(date);
 
-  // RAG: retrieve archive rituals relevant to this sign's daily energy.
-  const ragQuery = `Daily ritual for ${sign}. Personal grounding, intention, simple practice.`;
-  const retrieved = await retrieveRituals(ragQuery, 2);
+  // What did we tell this sign the last few days? Feed it back so the
+  // writer never repeats a focus or leans on the same working (the
+  // "white candle every day" problem).
+  const { data: recentRows } = await supabase
+    .from("daily_horoscopes")
+    .select("date, content")
+    .eq("sign", sign)
+    .eq("locale", locale)
+    .lt("date", date)
+    .order("date", { ascending: false })
+    .limit(3);
+  const recentReadings = (recentRows ?? [])
+    .map((r) => {
+      const c = r.content as DailyHoroscopeContent | null;
+      return c ? `- ${r.date}: focus was "${c.focus}"; action was: ${c.action}` : null;
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  // RAG: retrieve archive rituals for this sign's day. The query rotates
+  // with the traditional planetary day and tonight's moon, so Monday pulls
+  // cleansing-and-home workings, Friday pulls love, Saturday uncrossing —
+  // instead of the same "grounding" rituals (and the same candle) every day.
+  const DAY_THEMES = [
+    "blessing, success, gratitude",              // Sunday · Sun
+    "intuition, cleansing, home and family",     // Monday · Moon
+    "protection, courage, strength",             // Tuesday · Mars
+    "road opening, communication, luck",         // Wednesday · Mercury
+    "money drawing, abundance, prosperity",      // Thursday · Jupiter
+    "love, attraction, sweetness",               // Friday · Venus
+    "uncrossing, banishing, release, boundaries" // Saturday · Saturn
+  ];
+  const weekday = new Date(`${date}T12:00:00-05:00`).getUTCDay();
+  const moonNow = getMoon();
+  const ragQuery = `${DAY_THEMES[weekday]} ritual for ${sign}. The moon is ${moonNow.bucket}. A simple practice for today.`;
+  const retrieved = await retrieveRituals(ragQuery, 3);
   const ritualsContext = [
     formatRitualsForPrompt(retrieved),
     formatCommonSuppliesForPrompt(),
@@ -118,6 +151,7 @@ export async function getOrGenerateDailyHoroscope(
     dateLabel,
     retrievedRituals: ritualsContext,
     skyContext,
+    recentReadings: recentReadings || undefined,
     locale,
   });
 
