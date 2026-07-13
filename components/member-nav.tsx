@@ -91,7 +91,7 @@ export function MemberNav({
 
         {/* Desktop language toggle + account menu */}
         <div className="hidden md:flex items-center gap-5 shrink-0 whitespace-nowrap">
-          <LanguageToggle className="!text-[15px] lg:!text-[17px] xl:!text-[20px]" />
+          <LanguageToggle className="!text-[15px] lg:!text-[17px] xl:!text-[20px] mr-3 lg:mr-4" />
           <div className="relative">
             <button
               type="button"
