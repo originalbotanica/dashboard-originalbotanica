@@ -14,6 +14,11 @@ export const metadata = {
   title: "Your Natal Chart",
 };
 
+// The first visit writes the member's chart reading (a one-time ~30s
+// generation, cached afterward); the default function limit would kill it
+// mid-sentence and strand the loading state.
+export const maxDuration = 60;
+
 /**
  * Natal chart display.
  *
