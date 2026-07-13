@@ -628,8 +628,8 @@ const en: Dict = {
   "mkt.tarot.s2Eyebrow": "Upright or upside down",
   "mkt.tarot.s2Title": "Every card speaks two ways.",
   "mkt.tarot.s2Body":
-    "A card that lands upright carries one message; the same card upside down turns it. The wheel reads whichever way yours falls and gives you its meaning in plain words: something to sit with, not a forecast.",
-  "mkt.tarot.s3Eyebrow": "One card a day",
+    "A card that lands upright carries one message: the same card upside down turns it. The wheel reads whichever way your card falls and gives you the meaning in plain words.",
+  "mkt.tarot.s3Eyebrow": "One card a day · Tarot Today",
   "mkt.tarot.s3Body":
     "Your card is drawn for you, and it holds steady from morning to night. Once you have turned the wheel, today's card stays with you. A new one waits when the wheel comes around again tomorrow.",
   "mkt.tarot.liveNote":
@@ -1359,8 +1359,8 @@ const es: Dict = {
   "mkt.tarot.s2Eyebrow": "Derecha o invertida",
   "mkt.tarot.s2Title": "Cada carta habla de dos maneras.",
   "mkt.tarot.s2Body":
-    "Una carta que cae derecha trae un mensaje; la misma carta invertida lo transforma. La rueda lee la posición en que cae la tuya y te da su significado en palabras claras: algo para reflexionar, no un pronóstico.",
-  "mkt.tarot.s3Eyebrow": "Una carta al día",
+    "Una carta que cae derecha trae un mensaje: la misma carta invertida lo transforma. La rueda lee la posición en que cae tu carta y te da el significado en palabras claras.",
+  "mkt.tarot.s3Eyebrow": "Una carta al día · Tarot Today",
   "mkt.tarot.s3Body":
     "Tu carta se saca para ti y se mantiene firme de la mañana a la noche. Una vez que giras la rueda, la carta de hoy se queda contigo. Una nueva te espera cuando la rueda vuelva a girar mañana.",
   "mkt.tarot.liveNote":
