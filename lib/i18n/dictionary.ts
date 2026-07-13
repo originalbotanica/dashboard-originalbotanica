@@ -624,7 +624,7 @@ const en: Dict = {
   "mkt.tarot.s1Title":
     "Set the wheel turning. Stop it when the moment feels right.",
   "mkt.tarot.s1Body":
-    "Twenty-one hand-painted cards of the Major Arcana ring the wheel. The Fool, ever the wanderer, walks outside it. Touch the center to set the wheel turning, and stop it when your gut says so. It comes to rest on the card meant for your day. Stopping chooses the moment, not the card. The pull is already yours.",
+    "Begin by setting the wheel in motion, mixing the 21 hand-painted Major Arcana cards. Stop it when the moment feels right. An inspirational fortune awaits you as you start your day.",
   "mkt.tarot.s2Eyebrow": "Upright or upside down",
   "mkt.tarot.s2Title": "Every card speaks two ways.",
   "mkt.tarot.s2Body":
@@ -1355,7 +1355,7 @@ const es: Dict = {
   "mkt.tarot.s1Title":
     "Pon la rueda a girar. Detenla cuando el momento se sienta correcto.",
   "mkt.tarot.s1Body":
-    "Veintiuna cartas de los Arcanos Mayores pintadas a mano rodean la rueda. El Loco, siempre andariego, camina fuera de ella. Toca el centro para girarla y detenla cuando tu intuición lo diga. Se posa sobre la carta destinada a tu día. Al detenerla eliges el momento, no la carta. El llamado ya es tuyo.",
+    "Comienza poniendo la rueda en movimiento, mezclando las 21 cartas de los Arcanos Mayores pintadas a mano. Detenla cuando el momento se sienta correcto. Una fortuna inspiradora te espera al comenzar tu día.",
   "mkt.tarot.s2Eyebrow": "Derecha o invertida",
   "mkt.tarot.s2Title": "Cada carta habla de dos maneras.",
   "mkt.tarot.s2Body":
