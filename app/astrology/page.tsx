@@ -3,7 +3,10 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { MemberNav } from "@/components/member-nav";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { loadAstrologerContext } from "@/lib/astrologer/context";
+import { getOrGenerateChartReading } from "@/lib/astrology/chart-reading";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getTodaysSky, aspectPhrase, aspectMeaning } from "@/lib/astrology/sky";
 import { getOrGenerateDailyHoroscope } from "@/lib/daily-horoscope/generate";
@@ -55,6 +58,24 @@ export default async function AstrologyHubPage() {
   // Today's sky, computed locally. No API, nothing to wait on.
   const sky = getTodaysSky();
   const locale = await getLocale();
+
+  // Warm the member's written chart reading in the background: most members
+  // pass through this hub before opening their chart, so the one-time ~30s
+  // generation happens invisibly here and the chart page opens instant.
+  // after() runs once the response is sent; failures are silent by design
+  // (the chart page can still generate on demand).
+  if (hasBirthData && hasChart && sub.isActive) {
+    after(async () => {
+      try {
+        const ctx = await loadAstrologerContext(user.id);
+        if (ctx) {
+          await getOrGenerateChartReading(user.id, ctx, profile.first_name!, locale);
+        }
+      } catch {
+        /* warm-up only */
+      }
+    });
+  }
 
   return (
     <main className="min-h-screen relative">
