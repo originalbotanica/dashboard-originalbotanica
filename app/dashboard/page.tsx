@@ -13,7 +13,6 @@ import { isValidSign } from "@/lib/daily-horoscope/prompt";
 import { MemberNav } from "@/components/member-nav";
 import { MembershipPrompt } from "@/components/membership-prompt";
 import { Candle } from "@/components/candle";
-import { CalendarToday } from "@/components/calendar-today";
 import { DailyTarotTeaser } from "@/components/daily-tarot-teaser";
 
 import { ProseLine, buildProductLookup } from "@/lib/rag/render-prose";
@@ -23,7 +22,7 @@ import { t } from "@/lib/i18n/dictionary";
 export const metadata = {
   title: "Your practice today",
   description:
-    "Today's reading, tonight's moon, your daily card, and the work of the day.",
+    "Today's reading, your daily card, and the work of the day.",
 };
 
 const EMPTY_LOOKUP = buildProductLookup([]);
@@ -202,8 +201,8 @@ export default async function DashboardPage() {
       {/* ── 3. Daily tarot — straight from the reading to the wheel ────── */}
       <DailyTarotTeaser />
 
-      {/* ── Today on the spiritual calendar ───────────────────────────── */}
-      <CalendarToday />
+      {/* (Calendar touchpoint removed per Jason — the calendar lives in the
+          menu and at /calendar.) */}
 
       {/* ── 4. Dreams — image right ───────────────────────────────────── */}
       <ToolSection
