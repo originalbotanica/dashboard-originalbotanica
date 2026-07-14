@@ -28,7 +28,7 @@ export async function MarketingHeader() {
           />
         </Link>
         {/* Tool links, center — desktop only (the tiles cover mobile). */}
-        <nav className="hidden lg:flex flex-1 items-center justify-evenly gap-4 px-6 text-[20px] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
+        <nav className="hidden lg:flex flex-1 items-center justify-evenly gap-4 px-6 text-[15px] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
           {(
             [
               ["lp.featTarot", "/tools/tarot"],
@@ -42,7 +42,7 @@ export async function MarketingHeader() {
             <Link
               key={href}
               href={href}
-              className="nav-link !text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
+              className="nav-link !text-[15px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
             >
               {t(locale, key)}
             </Link>
@@ -51,12 +51,12 @@ export async function MarketingHeader() {
         {/* Right side sizes down hard at phone widths so "Sign in" never
             clips off the edge on ~360px Android screens. */}
         <nav className="flex items-center gap-1.5 md:gap-4 shrink-0">
-          <span className="flex items-center gap-1 sm:gap-1.5 md:gap-2 text-[13px] sm:text-[15px] md:text-[20px] font-semibold tracking-[0.06em] sm:tracking-[0.12em] uppercase whitespace-nowrap">
-            <LanguageToggle className="!text-[13px] sm:!text-[15px] md:!text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6]" />
+          <span className="flex items-center gap-1 sm:gap-1.5 md:gap-2 text-[13px] sm:text-[15px] md:text-[15px] font-semibold tracking-[0.06em] sm:tracking-[0.12em] uppercase whitespace-nowrap">
+            <LanguageToggle className="!text-[13px] sm:!text-[15px] md:!text-[15px] !text-[#d2ac66] hover:!text-[#f0d9a6]" />
             <span aria-hidden className="text-[#d2ac66] hidden sm:inline">/</span>
             <Link
               href="/login"
-              className="nav-link !text-[13px] sm:!text-[15px] md:!text-[20px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
+              className="nav-link !text-[13px] sm:!text-[15px] md:!text-[15px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
             >
               {t(locale, "lp.signIn")}
             </Link>
