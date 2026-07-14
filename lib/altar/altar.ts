@@ -36,17 +36,45 @@ export type Candle = {
 const CANDLE_FIELDS =
   "id, user_id, candle_type, candle_color, intention, petition, is_public, petition_public, lit_at, expires_at";
 
-/** How many candles a member may light in a rolling 24-hour window.
+/** How many candles a member may light per day (their local day).
  *  Generous enough that sincere use never hits it; low enough to stop
  *  spam on the shared community wall. */
 export const ALTAR_DAILY_LIMIT = 5;
 
-/** Count candles this member has lit in the last 24 hours (counts
- *  extinguished/burned-out ones too, so light-then-relight can't be
- *  used to evade the limit). */
-export async function candlesLitInLast24h(userId: string): Promise<number> {
+/** Midnight today in the given IANA timezone, as an absolute instant.
+ *  Falls back to America/New_York (the botanica's home) if the zone is
+ *  missing or invalid. */
+function localMidnight(tz?: string | null): Date {
+  const zone = tz || "America/New_York";
+  const now = new Date();
+  let parts: string;
+  try {
+    parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: zone,
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }).format(now);
+  } catch {
+    return localMidnight("America/New_York");
+  }
+  const [h, m, s] = parts.split(":").map(Number);
+  // "24" can appear for midnight in some ICU versions; treat as 0.
+  const secondsIntoDay = ((h === 24 ? 0 : h) * 3600 + m * 60 + s) * 1000;
+  return new Date(now.getTime() - secondsIntoDay);
+}
+
+/** Count candles this member has lit TODAY — since midnight in their own
+ *  timezone — so the limit resets each morning rather than trailing a
+ *  rolling 24-hour window. Counts extinguished/burned-out ones too, so
+ *  light-then-relight can't be used to evade the limit. */
+export async function candlesLitToday(
+  userId: string,
+  tz?: string | null,
+): Promise<number> {
   const supabase = await createClient();
-  const since = new Date(Date.now() - 86_400_000).toISOString();
+  const since = localMidnight(tz).toISOString();
   const { count } = await supabase
     .from("candles")
     .select("id", { count: "exact", head: true })

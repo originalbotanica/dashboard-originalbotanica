@@ -2,13 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import {
   DESIRES,
   DURATIONS,
   getCandleArt,
   desireForCandle,
-  candlesLitInLast24h,
+  candlesLitToday,
   ALTAR_DAILY_LIMIT,
 } from "@/lib/altar/altar";
 import { containsProhibitedLanguage } from "@/lib/moderation";
@@ -54,7 +55,10 @@ export async function lightCandleAction(formData: FormData) {
   }
 
   // Gentle daily rate limit to keep the community wall free of spam.
-  const litToday = await candlesLitInLast24h(user.id);
+  // "Today" is the member's own calendar day, so the limit resets at
+  // their midnight instead of trailing a rolling 24-hour window.
+  const memberTz = (await headers()).get("x-vercel-ip-timezone");
+  const litToday = await candlesLitToday(user.id, memberTz);
   if (litToday >= ALTAR_DAILY_LIMIT) {
     return redirect(
       "/altar/virtual/new?error=" +
