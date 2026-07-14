@@ -49,8 +49,10 @@ export async function MarketingHeader() {
           ))}
         </nav>
         {/* Right side sizes down hard at phone widths so "Sign in" never
-            clips off the edge on ~360px Android screens. */}
-        <nav className="flex items-center gap-1.5 md:gap-4 shrink-0">
+            clips off the edge on ~360px Android screens. Below lg the center
+            tool links are hidden, so this nav takes the leftover width and
+            spreads its items instead of leaving a gap after the logo. */}
+        <nav className="flex flex-1 lg:flex-none items-center justify-evenly lg:justify-end gap-1.5 md:gap-4 shrink-0">
           <span className="flex items-center gap-1 sm:gap-1.5 md:gap-2 text-[13px] sm:text-[15px] md:text-[15px] font-semibold tracking-[0.06em] sm:tracking-[0.12em] uppercase whitespace-nowrap">
             <LanguageToggle className="!text-[13px] sm:!text-[15px] md:!text-[15px] !text-[#d2ac66] hover:!text-[#f0d9a6]" />
             <span aria-hidden className="text-[#d2ac66] hidden sm:inline">/</span>
