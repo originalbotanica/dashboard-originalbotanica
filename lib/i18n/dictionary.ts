@@ -694,9 +694,9 @@ const en: Dict = {
   "mkt.altar.subhead":
     "For an intention. For protection. For someone you love who needs the prayer.",
   "mkt.altar.s1Eyebrow": "The flame",
-  "mkt.altar.s1Title": "A candle lit and tended on your behalf.",
+  "mkt.altar.s1Title": "A candle lit with real intention.",
   "mkt.altar.s1Body":
-    "Choose the color for the work you are calling in. Set the intention. The candle burns at the botanica for the days you choose. You see it lit on your altar surface every time you open the app.",
+    "Choose the candle for the work you are calling in — the same candles that sit on our shelves in the Bronx. Write your dedication, light the wick, and it burns on your virtual altar for seven days. You see its flame every time you open the app.",
   "mkt.altar.s2Eyebrow": "When to light one",
   "mkt.altar.s2Title": "For the work that asks for fire.",
   "mkt.altar.s2Body":
@@ -1438,9 +1438,9 @@ const es: Dict = {
   "mkt.altar.subhead":
     "Por una intención. Por protección. Por alguien que amas y necesita la oración.",
   "mkt.altar.s1Eyebrow": "La llama",
-  "mkt.altar.s1Title": "Una vela encendida y atendida en tu nombre.",
+  "mkt.altar.s1Title": "Una vela encendida con verdadera intención.",
   "mkt.altar.s1Body":
-    "Elige el color para el trabajo que estás llamando. Pon la intención. La vela arde en la botánica los días que elijas. La ves encendida en tu altar cada vez que abres la aplicación.",
+    "Elige la vela para el trabajo que estás llamando — las mismas velas que están en nuestros estantes en el Bronx. Escribe tu dedicatoria, enciende la mecha, y arde en tu altar virtual por siete días. Ves su llama cada vez que abres la aplicación.",
   "mkt.altar.s2Eyebrow": "Cuándo encender una",
   "mkt.altar.s2Title": "Para el trabajo que pide fuego.",
   "mkt.altar.s2Body":
