@@ -684,7 +684,7 @@ const en: Dict = {
   "mkt.dreams.s3Eyebrow": "Your journal",
   "mkt.dreams.s3Title": "Every dream you interpret is saved.",
   "mkt.dreams.s3Body":
-    "Come back later. Reread. Notice the patterns. The same symbol appearing across months. The same person showing up at the same threshold. The journal is yours, private to your account, searchable when the library grows.",
+    "Come back later. Reread. Notice the patterns. The same symbols re appearing. The same person repeatedly showing up. The journal is yours, private to your account.",
   "mkt.dreams.s4Eyebrow": "Crisis-aware",
   "mkt.dreams.s4Body":
     "If a conversation surfaces suicidal ideation, abuse, or trauma, the interpreter pauses the dream work and offers real-world resources. The dream can wait. Your safety cannot.",
@@ -1428,7 +1428,7 @@ const es: Dict = {
   "mkt.dreams.s3Eyebrow": "Tu diario",
   "mkt.dreams.s3Title": "Cada sueño que interpretas queda guardado.",
   "mkt.dreams.s3Body":
-    "Vuelve más tarde. Relee. Nota los patrones. El mismo símbolo apareciendo a lo largo de los meses. La misma persona llegando al mismo umbral. El diario es tuyo, privado en tu cuenta, con búsqueda a medida que crece.",
+    "Vuelve más tarde. Relee. Nota los patrones. Los mismos símbolos reapareciendo. La misma persona presentándose una y otra vez. El diario es tuyo, privado en tu cuenta.",
   "mkt.dreams.s4Eyebrow": "Atento a las crisis",
   "mkt.dreams.s4Body":
     "Si una conversación revela ideación suicida, abuso o trauma, el intérprete pausa el trabajo con el sueño y ofrece recursos del mundo real. El sueño puede esperar. Tu seguridad no.",
