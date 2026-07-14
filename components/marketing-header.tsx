@@ -53,9 +53,13 @@ export async function MarketingHeader() {
             tool links are hidden, so this nav takes the leftover width and
             spreads its items instead of leaving a gap after the logo. */}
         <nav className="flex flex-1 lg:flex-none items-center justify-evenly lg:justify-end gap-1.5 md:gap-4 shrink-0">
-          <span className="flex items-center gap-1 sm:gap-1.5 md:gap-2 text-[13px] sm:text-[15px] md:text-[15px] font-semibold tracking-[0.06em] sm:tracking-[0.12em] uppercase whitespace-nowrap">
+          {/* Below lg the wrapper dissolves (display: contents) so the globe
+              toggle and Sign In become separate flex items, spaced evenly
+              between Start Trial and the edge. At lg+ they regroup into the
+              classic "ESPAÑOL / SIGN IN" cluster. */}
+          <span className="contents lg:flex lg:items-center lg:gap-2 text-[13px] sm:text-[15px] font-semibold tracking-[0.06em] sm:tracking-[0.12em] uppercase whitespace-nowrap">
             <LanguageToggle className="!text-[13px] sm:!text-[15px] md:!text-[15px] !text-[#d2ac66] hover:!text-[#f0d9a6]" />
-            <span aria-hidden className="text-[#d2ac66] hidden sm:inline">/</span>
+            <span aria-hidden className="text-[#d2ac66] hidden lg:inline">/</span>
             <Link
               href="/login"
               className="nav-link !text-[13px] sm:!text-[15px] md:!text-[15px] !text-[#d2ac66] hover:!text-[#f0d9a6] transition-colors"
@@ -65,7 +69,7 @@ export async function MarketingHeader() {
           </span>
           <Link
             href="/signup"
-            className="order-first md:order-none rounded-md px-2.5 py-2 text-[11px] sm:px-4 sm:py-2.5 sm:text-xs md:px-7 md:py-3 md:text-sm font-bold uppercase tracking-[0.06em] sm:tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90 whitespace-nowrap shrink-0"
+            className="order-first lg:order-none rounded-md px-2.5 py-2 text-[11px] sm:px-4 sm:py-2.5 sm:text-xs md:px-7 md:py-3 md:text-sm font-bold uppercase tracking-[0.06em] sm:tracking-[0.12em] text-[#241a08] border border-[#f0d9a6]/70 transition-opacity hover:opacity-90 whitespace-nowrap shrink-0"
             style={{ background: "linear-gradient(180deg, #e8c983 0%, #c69a4e 100%)" }}
           >
             {t(locale, "lp.startTrial")}
