@@ -703,7 +703,7 @@ const en: Dict = {
     "A petition you have been carrying. A friend in crisis. A court date. A surgery. A cleansing after a hard week. The first day of a new year. The traditions Original Botanica serves have used candles for all of it. The virtual altar carries that practice into the days you cannot visit the botanica in person.",
   "mkt.altar.s3Eyebrow": "Your altar surface",
   "mkt.altar.s3Body":
-    "Every candle you light appears on your altar in the dashboard. Names of intentions. Days remaining. The light stays with you between sessions. The practice travels with you.",
+    "Every candle you light appears on your altar in the dashboard. Your intentions. Days remaining. The light stays with you between sessions. The practice travels with you.",
   "mkt.altar.liveNote":
     "Live now for members. Your altar is waiting on your dashboard.",
 
@@ -1447,7 +1447,7 @@ const es: Dict = {
     "Una petición que vienes cargando. Una amistad en crisis. Una cita en la corte. Una cirugía. Una limpieza después de una semana dura. El primer día de un año nuevo. Las tradiciones que Original Botanica sirve han usado velas para todo eso. El altar virtual lleva esa práctica a los días en que no puedes visitar la botánica en persona.",
   "mkt.altar.s3Eyebrow": "Tu altar",
   "mkt.altar.s3Body":
-    "Cada vela que enciendes aparece en tu altar en el Inicio. Los nombres de las intenciones. Los días restantes. La luz permanece contigo entre visitas. La práctica viaja contigo.",
+    "Cada vela que enciendes aparece en tu altar en el Inicio. Tus intenciones. Los días restantes. La luz permanece contigo entre visitas. La práctica viaja contigo.",
   "mkt.altar.liveNote":
     "Ya disponible para miembros. Tu altar te espera en tu Inicio.",
 
