@@ -713,7 +713,7 @@ const en: Dict = {
     "Memorialize the ones you carry. Their names lit. Their stories with you.",
   "mkt.anc.s1Eyebrow": "The practice",
   "mkt.anc.s1Title":
-    "Honoring the dead is not a metaphor in the traditions we serve.",
+    "Honoring those who passed is not a metaphor in the traditions we serve.",
   "mkt.anc.s1Body":
     "Espiritismo, Lucumí, folk Catholic. Each tradition places the ancestors at the center. They guide. They protect. They ask to be remembered. The ancestors altar gives you a place to remember them well, every day, wherever you are.",
   "mkt.anc.s2Eyebrow": "What you do",
@@ -722,7 +722,7 @@ const en: Dict = {
     "Your grandmother. Your father. A child you lost. A teacher. A friend taken too early. Their face on your altar, their name spoken, their flame lit on the days that matter. Birthdays. Death dates. The ordinary Tuesdays when you miss them most.",
   "mkt.anc.s3Eyebrow": "A flame that stays",
   "mkt.anc.s3Body":
-    "Your ancestors altar travels with you between devices. Their candles keep burning between visits. The work of remembering them is part of your daily practice, not a one-time gesture.",
+    "Your ancestors altar travels with you. Their candles keep burning between visits. The work of remembering them is part of your daily practice, not a one-time gesture.",
   "mkt.anc.s4Eyebrow": "Share with family",
   "mkt.anc.s4Body":
     "Each memorial gets a private link you can send to family. They can view the candle and add their own light. They do not need to be members. Honoring is something the whole family can do together.",
@@ -1457,7 +1457,7 @@ const es: Dict = {
     "Conmemora a los que llevas contigo. Sus nombres encendidos. Sus historias contigo.",
   "mkt.anc.s1Eyebrow": "La práctica",
   "mkt.anc.s1Title":
-    "Honrar a los muertos no es una metáfora en las tradiciones que servimos.",
+    "Honrar a quienes partieron no es una metáfora en las tradiciones que servimos.",
   "mkt.anc.s1Body":
     "Espiritismo, Lucumí, catolicismo popular. Cada tradición pone a los ancestros en el centro. Guían. Protegen. Piden ser recordados. El altar de ancestros te da un lugar para recordarlos bien, todos los días, dondequiera que estés.",
   "mkt.anc.s2Eyebrow": "Lo que haces",
@@ -1466,7 +1466,7 @@ const es: Dict = {
     "Tu abuela. Tu padre. Un hijo que perdiste. Una maestra. Un amigo que se fue demasiado pronto. Su rostro en tu altar, su nombre pronunciado, su llama encendida en los días que importan. Cumpleaños. Aniversarios de su partida. Los martes comunes en que más los extrañas.",
   "mkt.anc.s3Eyebrow": "Una llama que permanece",
   "mkt.anc.s3Body":
-    "Tu altar de ancestros viaja contigo entre dispositivos. Sus velas siguen ardiendo entre visitas. El trabajo de recordarlos es parte de tu práctica diaria, no un gesto de una sola vez.",
+    "Tu altar de ancestros viaja contigo. Sus velas siguen ardiendo entre visitas. El trabajo de recordarlos es parte de tu práctica diaria, no un gesto de una sola vez.",
   "mkt.anc.s4Eyebrow": "Comparte con la familia",
   "mkt.anc.s4Body":
     "Cada memorial recibe un enlace privado que puedes enviar a la familia. Pueden ver la vela y sumar su propia luz. No necesitan ser miembros. Honrar es algo que toda la familia puede hacer junta.",
