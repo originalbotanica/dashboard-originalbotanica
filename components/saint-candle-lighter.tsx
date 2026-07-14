@@ -4,7 +4,6 @@ import { useRef, useState, type CSSProperties } from "react";
 import { Candle } from "@/components/candle";
 import { lightCandleAction } from "@/app/altar/virtual/actions";
 import { PendingSubmit } from "@/components/pending-submit";
-import { DURATIONS } from "@/lib/altar/catalog";
 import { t, type Locale } from "@/lib/i18n/dictionary";
 
 /**
@@ -171,17 +170,11 @@ export function SaintCandleLighter({
           />
         </div>
 
-        <fieldset>
-          <legend className="form-label mb-3">{t(locale, "saint.duration")}</legend>
-          <div className="flex flex-wrap gap-3">
-            {DURATIONS.map((d, i) => (
-              <label key={d.days} className="altar-choice altar-choice-sm">
-                <input type="radio" name="days" value={d.days} defaultChecked={i === 0} />
-                <span>{d.label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        {/* All veladoras burn seven days, like the real thing — no picker. */}
+        <input type="hidden" name="days" value="7" />
+        <p className="text-sm text-[var(--foreground-muted)]">
+          {t(locale, "lcf.burnsSeven")}
+        </p>
 
         <div className="space-y-3">
           <label className="flex items-start gap-3 cursor-pointer">

@@ -150,7 +150,9 @@ export default async function VirtualAltarPage({
           <p className="text-[var(--foreground-muted)] text-center leading-relaxed">
             {query || desire
               ? t(locale, "altar.noMatch")
-              : t(locale, "altar.noneYet")}
+              : mine.length > 0
+                ? t(locale, "altar.nonePublic")
+                : t(locale, "altar.noneYet")}
           </p>
         ) : (
           <CandleGrid candles={community} locale={locale} />

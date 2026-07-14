@@ -5,10 +5,8 @@ import { lightCandleAction } from "@/app/altar/virtual/actions";
 import { PendingSubmit } from "@/components/pending-submit";
 import {
   DESIRES,
-  DURATIONS,
   candleImageUrl,
   desireLabel,
-  durationLabel,
   type Desire,
   type CandleArt,
 } from "@/lib/altar/catalog";
@@ -257,17 +255,11 @@ export function LightCandleForm({
         />
       </div>
 
-      <fieldset>
-        <legend className="form-label mb-3">{t("lcf.duration")}</legend>
-        <div className="flex flex-wrap gap-3">
-          {DURATIONS.map((d, i) => (
-            <label key={d.days} className="altar-choice altar-choice-sm">
-              <input type="radio" name="days" value={d.days} defaultChecked={i === 0} />
-              <span>{durationLabel(d.days, locale)}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      {/* All veladoras burn seven days, like the real thing — no picker. */}
+      <input type="hidden" name="days" value="7" />
+      <p className="text-sm text-[var(--foreground-muted)]">
+        {t("lcf.burnsSeven")}
+      </p>
 
       <div className="space-y-3">
         <label className="flex items-start gap-3 cursor-pointer">
