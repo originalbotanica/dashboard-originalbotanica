@@ -78,7 +78,7 @@ export function MemberNav({
             <Link
               key={tool.href}
               href={tool.href}
-              className={`nav-link !text-[15px] lg:!text-[17px] xl:!text-[20px] transition-colors ${
+              className={`nav-link !text-[13px] lg:!text-[14px] xl:!text-[15px] transition-colors ${
                 isActive(tool.href)
                   ? "text-[var(--accent)]"
                   : "text-[var(--foreground)] hover:text-[var(--accent)]"
@@ -91,13 +91,13 @@ export function MemberNav({
 
         {/* Desktop language toggle + account menu */}
         <div className="hidden md:flex items-center gap-5 shrink-0 whitespace-nowrap">
-          <LanguageToggle className="!text-[15px] lg:!text-[17px] xl:!text-[20px] mr-3 lg:mr-4" />
+          <LanguageToggle className="!text-[13px] lg:!text-[14px] xl:!text-[15px] mr-3 lg:mr-4" />
           <div className="relative">
             <button
               type="button"
               onClick={() => setAcctOpen((v) => !v)}
               onBlur={() => setTimeout(() => setAcctOpen(false), 150)}
-              className="nav-link !text-[15px] lg:!text-[17px] xl:!text-[20px] text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
+              className="nav-link !text-[13px] lg:!text-[14px] xl:!text-[15px] text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
               aria-haspopup="true"
               aria-expanded={acctOpen}
             >
