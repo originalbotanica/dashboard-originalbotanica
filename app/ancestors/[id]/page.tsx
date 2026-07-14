@@ -128,7 +128,6 @@ export default async function MemorialDetailPage({
         </div>
 
         <div className="mt-16 border-t border-[var(--border)] pt-8">
-          <p className="eyebrow mb-3 text-[var(--ember)]">{t(locale, "anc.dangerZone")}</p>
           <p className="text-sm text-[var(--foreground-muted)] mb-4 leading-relaxed max-w-lg">
             {t(locale, "anc.removeBody")}
           </p>
