@@ -728,17 +728,17 @@ const en: Dict = {
     "Each memorial gets a private link you can send to family. They can view the candle and add their own light. They do not need to be members. Honoring is something the whole family can do together.",
 
   "mkt.rit.eyebrow": "Rituals",
-  "mkt.rit.headline": "Sixty-six years of practice.",
+  "mkt.rit.headline": "66 years of practice.",
   "mkt.rit.subhead":
     "Curated and searchable. Real entries from Original Botanica's archive.",
   "mkt.rit.s1Eyebrow": "The archive",
-  "mkt.rit.s1Title": "Three generations of practice, finally indexed.",
+  "mkt.rit.s1Title": "Three generations of practice, finally indexed, easy to access.",
   "mkt.rit.s1Body":
     "Since 1959 the botanica has guided people through cleansings, protections, love work, court work, road openings, ancestor work. The rituals library brings the most-asked-for of those rituals into a searchable shelf you can reach from anywhere.",
-  "mkt.rit.s2Eyebrow": "Search by need",
-  "mkt.rit.s2Title": "For grief. For protection. For love that needs to land.",
+  "mkt.rit.s2Eyebrow": "Search by need or search by desire",
+  "mkt.rit.s2Title": "For protection. For luck and money. For love that needs to land.",
   "mkt.rit.s2Body":
-    "Type the situation. The rituals that have served that situation for decades appear, ordered by relevance. Each entry tells you what you need, how to prepare, what day of the week, what to say, what to do with what is left over.",
+    "Search your desire. The rituals that have served that situation for decades appear. Each entry explains clearly how to follow certain relevant rituals. All details clearly and simply explained. All right at your fingertips.",
   "mkt.rit.s3Eyebrow": "Save your favorites",
   "mkt.rit.s3Body":
     "Tap the bookmark on any ritual and it lives on your saved shelf. Build the practice you keep coming back to.",
@@ -1472,18 +1472,18 @@ const es: Dict = {
     "Cada memorial recibe un enlace privado que puedes enviar a la familia. Pueden ver la vela y sumar su propia luz. No necesitan ser miembros. Honrar es algo que toda la familia puede hacer junta.",
 
   "mkt.rit.eyebrow": "Rituales",
-  "mkt.rit.headline": "Sesenta y seis años de práctica.",
+  "mkt.rit.headline": "66 años de práctica.",
   "mkt.rit.subhead":
     "Curados y con búsqueda. Entradas reales del archivo de Original Botanica.",
   "mkt.rit.s1Eyebrow": "El archivo",
-  "mkt.rit.s1Title": "Tres generaciones de práctica, por fin organizadas.",
+  "mkt.rit.s1Title": "Tres generaciones de práctica, por fin organizadas, fáciles de acceder.",
   "mkt.rit.s1Body":
     "Desde 1959 la botánica ha guiado a la gente en limpiezas, protecciones, trabajos de amor, asuntos de corte, aperturas de camino, trabajo con ancestros. La biblioteca de rituales reúne los más pedidos en un estante con búsqueda que puedes alcanzar desde cualquier lugar.",
-  "mkt.rit.s2Eyebrow": "Busca por necesidad",
+  "mkt.rit.s2Eyebrow": "Busca por necesidad o busca por deseo",
   "mkt.rit.s2Title":
-    "Para el duelo. Para la protección. Para el amor que necesita llegar.",
+    "Para la protección. Para la suerte y el dinero. Para el amor que necesita llegar.",
   "mkt.rit.s2Body":
-    "Escribe la situación. Aparecen los rituales que la han servido por décadas, ordenados por relevancia. Cada entrada te dice qué necesitas, cómo prepararte, qué día de la semana, qué decir y qué hacer con lo que sobra.",
+    "Busca tu deseo. Aparecen los rituales que han servido esa situación por décadas. Cada entrada explica con claridad cómo seguir los rituales relevantes. Todos los detalles explicados de forma clara y sencilla. Todo al alcance de tu mano.",
   "mkt.rit.s3Eyebrow": "Guarda tus favoritos",
   "mkt.rit.s3Body":
     "Toca el marcador en cualquier ritual y queda en tu estante de guardados. Construye la práctica a la que siempre vuelves.",
