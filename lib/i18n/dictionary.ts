@@ -137,7 +137,7 @@ const en: Dict = {
   "dash.ancestorsLink": "Visit your ancestors",
   "dash.ritualsEyebrow": "The rituals library",
   "dash.ritualsHeadline": "Hundreds of rituals, organized by purpose.",
-  "dash.ritualsBody": "Money drawing. Uncrossing. Road opening. Protection. Love that needs to land. Real workings from sixty-six years of practice, each with its steps, its supplies, and the day to do it. Search by your need and save the ones you return to.",
+  "dash.ritualsBody": "Money drawing. Uncrossing. Road opening. Protection. Love that needs to land. Real workings from 66 years of practice, each with its steps, its supplies, and the day to do it. Search by your need and save the ones you return to.",
   "dash.ritualsLink": "Browse the library",
   "dash.benefitEyebrow": "A member benefit",
   "dash.benefitHeadline": "10% off at the botanica.",
@@ -250,7 +250,7 @@ const en: Dict = {
   "lp.toolAncestorsTitle": "Ancestors altar",
   "lp.toolAncestorsBody": "A flame for those who came before. Their names lit, their stories with you, a private link to share with family.",
   "lp.toolRitualsTitle": "Hundreds of rituals",
-  "lp.toolRitualsBody": "Sixty-six years of practice in The Bronx, organized by purpose and desire: find everything you need on matters of Protection, Love, Cleansing, Success, and Money. Each comes with its steps and supplies.",
+  "lp.toolRitualsBody": "66 years of practice in The Bronx, organized by purpose and desire: find everything you need on matters of Protection, Love, Cleansing, Success, and Money. Each comes with its steps and supplies.",
   "lp.heritageEyebrow": "Since 1959",
   "lp.heritageTitle": "A real botanica. Not an app.",
   "lp.heritageBody": "Original Botanica is a family-run botanica in The Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years. This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
@@ -275,7 +275,7 @@ const en: Dict = {
 
   // rituals
   "rit.archiveEyebrow": "The archive",
-  "rit.homeTitle": "Sixty-six years of practice, organized by purpose.",
+  "rit.homeTitle": "66 years of practice, organized by purpose.",
   "rit.homeIntro": "Real rituals from the botanica's archive. Search by what you need, or browse the shelves below.",
   "rit.homeGrowing": "New rituals are added regularly. The archive keeps growing, so check back often.",
   "rit.searchPlaceholder": "Search by need: money, protection, a lover who left...",
@@ -880,7 +880,7 @@ const es: Dict = {
   "dash.ancestorsLink": "Visita a tus ancestros",
   "dash.ritualsEyebrow": "La biblioteca de rituales",
   "dash.ritualsHeadline": "Cientos de rituales, organizados por propósito.",
-  "dash.ritualsBody": "Atracción de dinero. Descruce. Apertura de caminos. Protección. Amor que necesita llegar. Trabajos reales de sesenta y seis años de práctica, cada uno con sus pasos, sus materiales y el día para hacerlo. Busca por tu necesidad y guarda los que vuelvas a usar.",
+  "dash.ritualsBody": "Atracción de dinero. Descruce. Apertura de caminos. Protección. Amor que necesita llegar. Trabajos reales de 66 años de práctica, cada uno con sus pasos, sus materiales y el día para hacerlo. Busca por tu necesidad y guarda los que vuelvas a usar.",
   "dash.ritualsLink": "Explorar la biblioteca",
   "dash.benefitEyebrow": "Un beneficio de membresía",
   "dash.benefitHeadline": "10% de descuento en la botánica.",
@@ -993,7 +993,7 @@ const es: Dict = {
   "lp.toolAncestorsTitle": "Altar de ancestros",
   "lp.toolAncestorsBody": "Una llama para quienes vinieron antes. Sus nombres encendidos, sus historias contigo, un enlace privado para compartir con la familia.",
   "lp.toolRitualsTitle": "Más de 400 rituales",
-  "lp.toolRitualsBody": "Sesenta y seis años de práctica en el Bronx, organizados por propósito y deseo: encuentra todo lo que necesitas en asuntos de Protección, Amor, Limpieza, Éxito y Dinero. Cada uno viene con sus pasos y materiales.",
+  "lp.toolRitualsBody": "66 años de práctica en el Bronx, organizados por propósito y deseo: encuentra todo lo que necesitas en asuntos de Protección, Amor, Limpieza, Éxito y Dinero. Cada uno viene con sus pasos y materiales.",
   "lp.heritageEyebrow": "Desde 1959",
   "lp.heritageTitle": "Una botánica de verdad. No una app.",
   "lp.heritageBody": "Original Botanica es una botánica familiar en El Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares desde hace más de sesenta y cinco años. Esta membresía lleva esa misma práctica en línea: las velas, los rituales, la guía. La misma familia. La misma tradición. Ahora dondequiera que estés.",
@@ -1018,7 +1018,7 @@ const es: Dict = {
 
   // rituals
   "rit.archiveEyebrow": "El archivo",
-  "rit.homeTitle": "Sesenta y seis años de práctica, organizados por propósito.",
+  "rit.homeTitle": "66 años de práctica, organizados por propósito.",
   "rit.homeIntro": "Rituales reales del archivo de la botánica. Busca por lo que necesitas, o explora los estantes abajo.",
   "rit.homeGrowing": "Agregamos rituales con regularidad. El archivo sigue creciendo, así que vuelve seguido.",
   "rit.searchPlaceholder": "Busca por necesidad: dinero, protección, un amor que se fue...",
