@@ -253,7 +253,7 @@ const en: Dict = {
   "lp.toolRitualsBody": "66 years of practice in The Bronx, organized by purpose and desire: find everything you need on matters of Protection, Love, Cleansing, Success, and Money. Each comes with its steps and supplies.",
   "lp.heritageEyebrow": "Since 1959",
   "lp.heritageTitle": "A real botanica. Not an app.",
-  "lp.heritageBody": "Original Botanica is a family-run botanica in The Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years. This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
+  "lp.heritageBody": "Original Botanica is a family-run botanica in The Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over 66 years. This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
   "lp.heritageCaption": "Our corner of The Bronx, then and now.",
   "lp.testimonialsEyebrow": "What members say",
   "lp.testimonialsTitle": "Real experiences with The Practice.",
@@ -617,7 +617,7 @@ const en: Dict = {
   "lp2.everythingAt": "everything at",
   "lp2.heritageTitle": "A real botanica since 1959",
   "lp2.heritageBody1":
-    "Original Botanica is a family-run botanica in The Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over sixty-five years.",
+    "Original Botanica is a family-run botanica in The Bronx, serving practitioners of Santería, Espiritismo, Hoodoo, and folk Catholic traditions for over 66 years.",
   "lp2.heritageBody2":
     "This membership brings that same practice online: the candles, the rituals, the guidance. Same family. Same tradition. Now wherever you are.",
 
@@ -996,7 +996,7 @@ const es: Dict = {
   "lp.toolRitualsBody": "66 años de práctica en el Bronx, organizados por propósito y deseo: encuentra todo lo que necesitas en asuntos de Protección, Amor, Limpieza, Éxito y Dinero. Cada uno viene con sus pasos y materiales.",
   "lp.heritageEyebrow": "Desde 1959",
   "lp.heritageTitle": "Una botánica de verdad. No una app.",
-  "lp.heritageBody": "Original Botanica es una botánica familiar en El Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares desde hace más de sesenta y cinco años. Esta membresía lleva esa misma práctica en línea: las velas, los rituales, la guía. La misma familia. La misma tradición. Ahora dondequiera que estés.",
+  "lp.heritageBody": "Original Botanica es una botánica familiar en El Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares desde hace más de 66 años. Esta membresía lleva esa misma práctica en línea: las velas, los rituales, la guía. La misma familia. La misma tradición. Ahora dondequiera que estés.",
   "lp.heritageCaption": "Nuestra esquina del Bronx, entonces y ahora.",
   "lp.testimonialsEyebrow": "Lo que dicen los miembros",
   "lp.testimonialsTitle": "Experiencias reales con The Practice.",
@@ -1360,7 +1360,7 @@ const es: Dict = {
   "lp2.everythingAt": "en todo en",
   "lp2.heritageTitle": "Una botánica real desde 1959",
   "lp2.heritageBody1":
-    "Original Botanica es una botánica familiar en el Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares por más de sesenta y cinco años.",
+    "Original Botanica es una botánica familiar en el Bronx, que sirve a practicantes de Santería, Espiritismo, Hoodoo y tradiciones católicas populares por más de 66 años.",
   "lp2.heritageBody2":
     "Esta membresía lleva esa misma práctica al mundo en línea: las velas, los rituales, la guía. La misma familia. La misma tradición. Ahora dondequiera que estés.",
 
