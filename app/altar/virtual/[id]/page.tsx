@@ -6,12 +6,12 @@ import { getCandle, getDesire, getCandleArt, daysLeft, desireLabel } from "@/lib
 import { AltarCandle } from "@/components/altar-candle";
 import { listRitualsByPurpose, getSavedRitualIds } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
-import { extinguishCandleAction, tendCandleAction } from "../actions";
+import { extinguishCandleAction } from "../actions";
 import { getTendingState } from "@/lib/altar/tend";
 import { headers } from "next/headers";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
-import { PendingSubmit } from "@/components/pending-submit";
+import { TendCandle } from "@/components/tend-candle";
 
 export async function generateMetadata({
   params,
@@ -129,21 +129,12 @@ export default async function CandleDetailPage({
                 </p>
               </>
             ) : (
-              <form action={tendCandleAction}>
-                <input type="hidden" name="id" value={candle.id} />
-                <PendingSubmit
-                  label={t(locale, "tend.btn")}
-                  pendingLabel={t(locale, "tend.pending")}
-                />
-                <p className="text-sm text-[var(--foreground-subtle)] mt-3 max-w-sm mx-auto leading-relaxed">
-                  {tending.daysTended > 0
-                    ? t(locale, "tend.count", {
-                        n: tending.daysTended,
-                        d: tending.totalDays,
-                      })
-                    : t(locale, "tend.hint")}
-                </p>
-              </form>
+              <TendCandle
+                candleId={candle.id}
+                daysTended={tending.daysTended}
+                totalDays={tending.totalDays}
+                locale={locale}
+              />
             )}
           </div>
         )}
