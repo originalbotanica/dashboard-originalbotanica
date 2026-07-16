@@ -86,7 +86,9 @@ export default async function CandleDetailPage({
       </header>
 
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-12 text-center">
-        <div className="flex justify-center mb-10">
+        {/* id target: tending redirects here so the member sees the flame
+            answer (the halo swells the moment the candle is tended). */}
+        <div id="candle-flame" className="flex justify-center mb-10 scroll-mt-24">
           <AltarCandle
             candleSlug={candle.candle_color}
             size="hero"

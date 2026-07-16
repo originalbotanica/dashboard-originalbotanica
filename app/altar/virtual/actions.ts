@@ -138,7 +138,8 @@ export async function tendCandleAction(formData: FormData) {
 
   revalidatePath(`/altar/virtual/${id}`);
   revalidatePath("/altar/virtual");
-  redirect(`/altar/virtual/${id}`);
+  // Land on the flame itself so the member sees it answer the tending.
+  redirect(`/altar/virtual/${id}#candle-flame`);
 }
 
 /** Extinguish (archive) a candle the member owns. */
