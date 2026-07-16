@@ -491,7 +491,7 @@ h1, h2, h3, h4, h5, h6 {
 .tend-dim {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 36%, rgba(10, 7, 4, 0.55) 0%, rgba(4, 3, 2, 0.94) 72%);
+  background: radial-gradient(circle at 50% 34%, rgba(6, 4, 2, 0.82) 0%, rgba(2, 1, 1, 0.97) 70%);
   opacity: 0;
   transition: opacity 1s ease;
   z-index: 40;
@@ -499,18 +499,18 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 12vh;
+  padding-bottom: 16vh;
 }
 .tend-dim.on {
   opacity: 1;
 }
 .tend-dim-line {
   color: var(--accent);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   letter-spacing: 0.02em;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 1.1s ease 1.1s, transform 1.1s ease 1.1s;
+  transition: opacity 1s ease 0.9s, transform 1s ease 0.9s;
 }
 .tend-dim.on .tend-dim-line {
   opacity: 1;
@@ -522,53 +522,62 @@ h1, h2, h3, h4, h5, h6 {
 #candle-flame.tending {
   z-index: 50;
 }
+/* The photo itself falls into shadow, so the flame and its halo are the
+   only light left on the page. The img's own transition carries it back. */
+#candle-flame img {
+  transition: filter 1s ease;
+}
+#candle-flame.tending img {
+  filter: brightness(0.34) saturate(0.8);
+}
 .tending .altar-flame .af-outer {
-  animation: tend-flare 2.6s ease-in-out;
+  animation: tend-flare 2.8s ease-in-out;
 }
 .tending .altar-flame .af-inner {
-  animation: tend-flare-inner 2.6s ease-in-out;
+  animation: tend-flare-inner 2.8s ease-in-out;
 }
 .tending .altar-flame .af-halo {
-  animation: tend-halo-bloom 2.6s ease-in-out;
+  animation: tend-halo-bloom 2.8s ease-in-out;
 }
 @keyframes tend-flare {
   0%   { transform: translateX(-50%) scale(1); }
-  20%  { transform: translateX(-50%) scaleY(2.1) scaleX(1.3);
+  22%  { transform: translateX(-50%) scaleY(1.55) scaleX(1.2);
          filter: drop-shadow(0 0 calc(var(--fw) * 1.6) rgba(255, 175, 60, 1)); }
-  45%  { transform: translateX(-50%) scaleY(1.55) scaleX(1.15); }
-  70%  { transform: translateX(-50%) scaleY(1.8) scaleX(1.2);
-         filter: drop-shadow(0 0 calc(var(--fw) * 1.2) rgba(255, 165, 55, 0.95)); }
+  48%  { transform: translateX(-50%) scaleY(1.25) scaleX(1.08); }
+  72%  { transform: translateX(-50%) scaleY(1.45) scaleX(1.15);
+         filter: drop-shadow(0 0 calc(var(--fw) * 1.3) rgba(255, 165, 55, 0.95)); }
   100% { transform: translateX(-50%) scale(1); }
 }
 @keyframes tend-flare-inner {
   0%   { transform: translateX(-50%) scale(1); }
-  20%  { transform: translateX(-50%) scaleY(1.9) scaleX(1.2); }
-  50%  { transform: translateX(-50%) scaleY(1.4) scaleX(1.1); }
+  22%  { transform: translateX(-50%) scaleY(1.45) scaleX(1.12); }
+  55%  { transform: translateX(-50%) scaleY(1.2) scaleX(1.05); }
   100% { transform: translateX(-50%) scale(1); }
 }
 @keyframes tend-halo-bloom {
   0%   { transform: translateX(-50%) scale(1); opacity: 0.85; }
-  30%  { transform: translateX(-50%) scale(2.3); opacity: 1; }
-  65%  { transform: translateX(-50%) scale(1.7); opacity: 1; }
+  30%  { transform: translateX(-50%) scale(2.4); opacity: 1; }
+  65%  { transform: translateX(-50%) scale(1.9); opacity: 1; }
   100% { transform: translateX(-50%) scale(1); }
 }
 .tend-ember {
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: #ffd271;
-  box-shadow: 0 0 6px rgba(255, 190, 90, 0.9);
+  background: #ffe6a8;
+  box-shadow: 0 0 8px 2px rgba(255, 190, 90, 0.95);
   opacity: 0;
-  animation: tend-ember-rise 2s ease-out var(--ed, 0s) both;
+  animation: tend-ember-rise 2.1s ease-out var(--ed, 0s) both;
   pointer-events: none;
+  z-index: 2;
 }
 @keyframes tend-ember-rise {
   0%   { transform: translate(-50%, 0) scale(1); opacity: 0; }
   12%  { opacity: 1; }
-  100% { transform: translate(calc(-50% + var(--ex, 0px)), -130px) scale(0.4); opacity: 0; }
+  100% { transform: translate(calc(-50% + var(--ex, 0px)), -150px) scale(0.35); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tending .altar-flame .af-outer,
