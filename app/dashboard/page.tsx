@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Suspense } from "react";
 import { headers } from "next/headers";
+import { hasUntendedCandles } from "@/lib/altar/tend";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
@@ -108,6 +109,10 @@ export default async function DashboardPage() {
     sunSign && isValidSign(sunSign)
       ? getOrGenerateDailyHoroscope(sunSign, locale).catch(() => null)
       : Promise.resolve(null);
+
+  // Tending nudge: when a burning candle hasn't been held today, the altar
+  // section's link becomes the day's small call to devotion.
+  const needsTending = await hasUntendedCandles(user.id, memberTz);
 
   const today = new Date().toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     weekday: "long",
@@ -221,7 +226,7 @@ export default async function DashboardPage() {
         headline={tr("dash.altarHeadline")}
         body={tr("dash.altarBody")}
         href="/altar/virtual"
-        linkLabel={tr("dash.altarLink")}
+        linkLabel={tr(needsTending ? "dash.altarTendLink" : "dash.altarLink")}
         imageSrc={`${OB_CDN}/transforms/_miscImage/virtual-candle-altar.jpg`}
         imageSide="right"
       />

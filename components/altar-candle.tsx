@@ -27,14 +27,22 @@ const H = { wall: 300, hero: 460 } as const;
 const FW = { wall: 14, hero: 21 } as const;
 const FTOP = { wall: 36, hero: 55 } as const;
 
-function Flame({ size, slug }: { size: "wall" | "hero"; slug?: string }) {
+function Flame({
+  size,
+  slug,
+  bright = false,
+}: {
+  size: "wall" | "hero";
+  slug?: string;
+  bright?: boolean;
+}) {
   // Measured wick position for this candle's photo (x% across, y% down);
   // photos without a measurement use the centered defaults.
   const pos = slug ? FLAME_POS[slug] : undefined;
   return (
     <span
       aria-hidden
-      className="altar-flame"
+      className={`altar-flame${bright ? " altar-flame-bright" : ""}`}
       style={
         {
           "--fw": `${FW[size]}px`,
@@ -54,9 +62,12 @@ function Flame({ size, slug }: { size: "wall" | "hero"; slug?: string }) {
 export function AltarCandle({
   candleSlug,
   size = "wall",
+  bright = false,
 }: {
   candleSlug: string | null;
   size?: "wall" | "hero";
+  /** A tended candle's flame is held: slightly larger halo, warmer light. */
+  bright?: boolean;
 }) {
   const h = H[size];
   const saint = getSaintCandle(candleSlug);
@@ -76,7 +87,7 @@ export function AltarCandle({
             className="rounded-xl block"
             style={{ height: h, width: "auto" }}
           />
-          <Flame size={size} />
+          <Flame size={size} bright={bright} />
         </span>
       );
     }
@@ -109,7 +120,7 @@ export function AltarCandle({
         className="rounded-xl block"
         style={{ height: h, width: "auto" }}
       />
-      <Flame size={size} slug={slug} />
+      <Flame size={size} slug={slug} bright={bright} />
     </span>
   );
 }

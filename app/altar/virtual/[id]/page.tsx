@@ -6,9 +6,12 @@ import { getCandle, getDesire, getCandleArt, daysLeft, desireLabel } from "@/lib
 import { AltarCandle } from "@/components/altar-candle";
 import { listRitualsByPurpose, getSavedRitualIds } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
-import { extinguishCandleAction } from "../actions";
+import { extinguishCandleAction, tendCandleAction } from "../actions";
+import { getTendingState } from "@/lib/altar/tend";
+import { headers } from "next/headers";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
+import { PendingSubmit } from "@/components/pending-submit";
 
 export async function generateMetadata({
   params,
@@ -57,6 +60,14 @@ export default async function CandleDetailPage({
   const desire = getDesire(candle.candle_type);
   const art = getCandleArt(candle.candle_color);
   const left = daysLeft(candle.expires_at);
+  const burning = left !== null && left > 0;
+
+  // Tending — the daily act of holding the intention (owner only).
+  const memberTz = (await headers()).get("x-vercel-ip-timezone");
+  const tending =
+    isOwner && burning
+      ? await getTendingState(candle.id, candle.lit_at, candle.expires_at, memberTz)
+      : null;
 
   const [rituals, savedIds] = await Promise.all([
     desire ? listRitualsByPurpose(desire.purpose) : Promise.resolve([]),
@@ -76,7 +87,11 @@ export default async function CandleDetailPage({
 
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-12 text-center">
         <div className="flex justify-center mb-10">
-          <AltarCandle candleSlug={candle.candle_color} size="hero" />
+          <AltarCandle
+            candleSlug={candle.candle_color}
+            size="hero"
+            bright={!!tending?.tendedToday}
+          />
         </div>
 
         {desire ? <p className="eyebrow mb-3">{desireLabel(desire, locale)}</p> : null}
@@ -94,6 +109,41 @@ export default async function CandleDetailPage({
               ? t(locale, left === 1 ? "altar.burningOne" : "altar.burningMany", { n: left })
               : t(locale, "altar.burnedOut")}
           </p>
+        )}
+
+        {/* Tending — return each day the candle burns to hold the intention. */}
+        {tending && (
+          <div className="mt-8">
+            {tending.tendedToday ? (
+              <>
+                <p className="invocation text-[var(--accent)]">
+                  {t(locale, "tend.done")}
+                </p>
+                <p className="text-sm text-[var(--foreground-subtle)] mt-2">
+                  {t(locale, "tend.count", {
+                    n: tending.daysTended,
+                    d: tending.totalDays,
+                  })}
+                </p>
+              </>
+            ) : (
+              <form action={tendCandleAction}>
+                <input type="hidden" name="id" value={candle.id} />
+                <PendingSubmit
+                  label={t(locale, "tend.btn")}
+                  pendingLabel={t(locale, "tend.pending")}
+                />
+                <p className="text-sm text-[var(--foreground-subtle)] mt-3 max-w-sm mx-auto leading-relaxed">
+                  {tending.daysTended > 0
+                    ? t(locale, "tend.count", {
+                        n: tending.daysTended,
+                        d: tending.totalDays,
+                      })
+                    : t(locale, "tend.hint")}
+                </p>
+              </form>
+            )}
+          </div>
         )}
 
         {candle.petition ? (

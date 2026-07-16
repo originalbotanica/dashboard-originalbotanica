@@ -485,6 +485,18 @@ h1, h2, h3, h4, h5, h6 {
   transform-origin: 50% 100%;
   animation: flame-flicker-inner 1.2s ease-in-out infinite alternate;
 }
+/* A tended flame is held: the halo swells and warms for the rest of the
+   day, so the member sees their devotion answered. */
+.altar-flame-bright .af-halo {
+  width: calc(var(--fw) * 5.2);
+  height: calc(var(--fw) * 5.2);
+  bottom: calc(var(--fw) * -1.8);
+  background: radial-gradient(circle at 50% 58%, rgba(255, 215, 120, 0.7) 0%, rgba(255, 150, 40, 0.32) 40%, transparent 70%);
+}
+.altar-flame-bright .af-outer {
+  filter: drop-shadow(0 0 calc(var(--fw) * 0.9) rgba(255, 165, 55, 0.9));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .altar-flame span {
     animation: none;

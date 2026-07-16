@@ -431,6 +431,13 @@ const en: Dict = {
   "lcf.petitionPublicLabel": "Also share my petition. Leave unchecked to keep your prayer private, even on a public candle.",
   "lcf.lighting": "Lighting…",
   "lcf.lightBtn": "Light the candle",
+  // tending
+  "tend.btn": "Tend this candle",
+  "tend.pending": "Tending…",
+  "tend.done": "Tended today. The flame is held.",
+  "tend.hint": "Return each day it burns to hold the intention.",
+  "tend.count": "Tended {n} of {d} days",
+  "dash.altarTendLink": "Tend your candles",
 
   // dreams
   "dr.journalEyebrow": "Dream journal",
@@ -1174,6 +1181,13 @@ const es: Dict = {
   "lcf.petitionPublicLabel": "Comparte también mi petición. Déjala sin marcar para mantener tu oración privada, aunque la vela sea pública.",
   "lcf.lighting": "Encendiendo…",
   "lcf.lightBtn": "Enciende la vela",
+  // tending
+  "tend.btn": "Atiende esta vela",
+  "tend.pending": "Atendiendo…",
+  "tend.done": "Atendida hoy. La llama está sostenida.",
+  "tend.hint": "Vuelve cada día que arda para sostener la intención.",
+  "tend.count": "Atendida {n} de {d} días",
+  "dash.altarTendLink": "Atiende tus velas",
 
   // dreams
   "dr.journalEyebrow": "Diario de sueños",

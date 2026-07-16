@@ -13,6 +13,7 @@ import {
   ALTAR_DAILY_LIMIT,
 } from "@/lib/altar/altar";
 import { containsProhibitedLanguage } from "@/lib/moderation";
+import { localToday } from "@/lib/altar/tend";
 
 /** Light a candle: insert into `candles` for the current member. */
 export async function lightCandleAction(formData: FormData) {
@@ -95,6 +96,49 @@ export async function lightCandleAction(formData: FormData) {
 
   revalidatePath("/altar/virtual");
   redirect(`/altar/virtual/${data.id}`);
+}
+
+/** Tend a burning candle: one tap per candle per local day. Holding the
+ *  intention marks the day in the devotion log and brightens the flame. */
+export async function tendCandleAction(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return redirect("/login");
+
+  const id = String(formData.get("id") || "");
+  if (!id) return;
+
+  // Must be the member's own, still-burning candle.
+  const { data: candle } = await supabase
+    .from("candles")
+    .select("id, expires_at, archived_at")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (
+    !candle ||
+    candle.archived_at ||
+    (candle.expires_at && new Date(candle.expires_at) <= new Date())
+  ) {
+    return redirect(`/altar/virtual/${id}`);
+  }
+
+  const memberTz = (await headers()).get("x-vercel-ip-timezone");
+  // Ignore duplicate taps for the same day (primary key candle_id + date).
+  await supabase.from("candle_tendings").upsert(
+    {
+      candle_id: id,
+      user_id: user.id,
+      tended_on: localToday(memberTz),
+    },
+    { onConflict: "candle_id,tended_on", ignoreDuplicates: true },
+  );
+
+  revalidatePath(`/altar/virtual/${id}`);
+  revalidatePath("/altar/virtual");
+  redirect(`/altar/virtual/${id}`);
 }
 
 /** Extinguish (archive) a candle the member owns. */
