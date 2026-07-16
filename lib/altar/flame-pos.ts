@@ -63,7 +63,7 @@ export const FLAME_POS: Record<string, { x: number; y: number }> = {
   "saint-alex": { x: 50.0, y: 11.2 },
   "saint-clare": { x: 50.0, y: 16.7 },
   "saint-lazarus": { x: 50.0, y: 14.4 },
-  "saint-michael": { x: 50.0, y: 11.7 },
+  "saint-michael": { x: 49.5, y: 18 }, // hand-measured: red 7-day photo (swapped from green)
   "san-deshacedor": { x: 50.0, y: 11.4 },
   "steady-work": { x: 50.0, y: 11.9 },
   "success": { x: 50.0, y: 11.2 },
