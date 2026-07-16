@@ -30,19 +30,30 @@ export function TendCandle({
   const [, startTransition] = useTransition();
   const busy = phase !== "idle";
 
-  async function tend() {
+  async function tend(e: React.MouseEvent<HTMLButtonElement>) {
     if (busy) return;
     const target = document.getElementById("candle-flame");
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    // Scroll FIRST, from an unfocused button: disabling a focused control or
+    // re-rendering mid-scroll cancels smooth scrolling in several browsers
+    // (the bug where tending never brought the flame into view).
+    e.currentTarget.blur();
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      const top = Math.max(
+        0,
+        window.scrollY + rect.top - (window.innerHeight - rect.height) / 2,
+      );
+      window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+    }
+    // Let the scroll begin before the ritual re-render starts.
+    await new Promise((r) => setTimeout(r, 60));
+
     setPhase("ritual");
     if (target) {
-      target.scrollIntoView({
-        behavior: reduced ? "auto" : "smooth",
-        block: "center",
-      });
       if (!reduced) {
         target.classList.add("tending");
         const flame = target.querySelector(".altar-flame");
