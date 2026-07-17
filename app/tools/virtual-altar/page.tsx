@@ -38,6 +38,14 @@ export default async function VirtualAltarToolPage() {
         {tr("mkt.altar.s2Body")}
       </p>
 
+      <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.altar.feedEyebrow")}</p>
+      <h2 className="display text-2xl md:text-3xl mb-6 leading-tight">
+        {tr("mkt.altar.feedTitle")}
+      </h2>
+      <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
+        {tr("mkt.altar.feedBody")}
+      </p>
+
       <p className="eyebrow eyebrow-lg mb-3 mt-12">{tr("mkt.altar.s3Eyebrow")}</p>
       <p className="text-[var(--foreground-muted)] leading-relaxed mb-8">
         {tr("mkt.altar.s3Body")}
