@@ -685,7 +685,7 @@ const en: Dict = {
     "Describe a dream while it's still fresh. The interpretation honors the traditions Original Botanica has practiced for three generations.",
   "mkt.dreams.s1Eyebrow": "How it works",
   "mkt.dreams.s1Title":
-    "Describe the dream as you remember it. The interpreter finds what matters.",
+    "You remember an important dream. You write it down as quickly as you can. Now describe it and let us interpret what the dream is asking you to notice in your waking life. Try to recall any symbols like falling, flying, doors, mirrors.",
   "mkt.dreams.s1Body":
     "Water. Fire. Animals. The dead. Falling. Flying. Doors. Mirrors. The symbols carry weight in the traditions we serve. We name them, place them, and tell you what the dream is asking you to notice in waking life.",
   "mkt.dreams.s2Eyebrow": "The traditions",
@@ -1444,7 +1444,7 @@ const es: Dict = {
     "Describe un sueño mientras está fresco. La interpretación honra las tradiciones que Original Botanica ha practicado por tres generaciones.",
   "mkt.dreams.s1Eyebrow": "Cómo funciona",
   "mkt.dreams.s1Title":
-    "Describe el sueño como lo recuerdes. El intérprete encuentra lo que importa.",
+    "Recuerdas un sueño importante. Lo escribes tan pronto como puedes. Ahora descríbelo y deja que interpretemos qué te está pidiendo notar el sueño en tu vida despierta. Trata de recordar símbolos como caer, volar, puertas, espejos.",
   "mkt.dreams.s1Body":
     "Agua. Fuego. Animales. Los muertos. Caer. Volar. Puertas. Espejos. Los símbolos llevan peso en las tradiciones que servimos. Los nombramos, los ubicamos y te decimos qué te está pidiendo notar el sueño en la vida despierta.",
   "mkt.dreams.s2Eyebrow": "Las tradiciones",
