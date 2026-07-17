@@ -58,13 +58,21 @@ export function TendCandle({
         target.classList.add("tending");
         const flame = target.querySelector(".altar-flame");
         if (flame) {
-          for (let i = 0; i < 7; i++) {
+          // Sparks fly around the flame: three staggered bursts, each spark
+          // with its own direction — up, out, and arcing sideways.
+          for (let i = 0; i < 18; i++) {
             const s = document.createElement("span");
-            s.className = "tend-ember";
-            s.style.setProperty("--ed", `${(0.5 + i * 0.22).toFixed(2)}s`);
+            s.className = "tend-spark";
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 34 + Math.random() * 86;
+            const sx = Math.cos(angle) * dist;
+            // bias upward: sparks lift, few dive
+            const sy = Math.sin(angle) * dist * 0.7 - 46 - Math.random() * 40;
+            s.style.setProperty("--sx", `${sx.toFixed(0)}px`);
+            s.style.setProperty("--sy", `${sy.toFixed(0)}px`);
             s.style.setProperty(
-              "--ex",
-              `${(Math.random() * 44 - 22).toFixed(0)}px`,
+              "--sd",
+              `${(0.35 + Math.floor(i / 6) * 0.55 + Math.random() * 0.3).toFixed(2)}s`,
             );
             flame.appendChild(s);
           }
@@ -84,7 +92,7 @@ export function TendCandle({
     setTimeout(() => {
       target?.classList.remove("tending");
       target
-        ?.querySelectorAll(".tend-ember")
+        ?.querySelectorAll(".tend-spark")
         .forEach((e) => e.remove());
       setPhase("idle");
     }, 1000);

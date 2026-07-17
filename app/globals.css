@@ -536,9 +536,6 @@ h1, h2, h3, h4, h5, h6 {
 .tending .altar-flame .af-inner {
   animation: tend-flare-inner 2.8s ease-in-out;
 }
-.tending .altar-flame .af-halo {
-  animation: tend-halo-bloom 2.8s ease-in-out;
-}
 @keyframes tend-flare {
   0%   { transform: translateX(-50%) scale(1); }
   22%  { transform: translateX(-50%) scaleY(1.55) scaleX(1.2);
@@ -554,36 +551,31 @@ h1, h2, h3, h4, h5, h6 {
   55%  { transform: translateX(-50%) scaleY(1.2) scaleX(1.05); }
   100% { transform: translateX(-50%) scale(1); }
 }
-@keyframes tend-halo-bloom {
-  0%   { transform: translateX(-50%) scale(1); opacity: 0.85; }
-  30%  { transform: translateX(-50%) scale(2.4); opacity: 1; }
-  65%  { transform: translateX(-50%) scale(1.9); opacity: 1; }
-  100% { transform: translateX(-50%) scale(1); }
-}
-.tend-ember {
+/* Sparks: the charge. They burst from the flame and fly around it —
+   short bright streaks in every direction, each on its own delay. */
+.tend-spark {
   position: absolute;
   left: 50%;
-  bottom: 0;
-  width: 5px;
-  height: 5px;
+  bottom: calc(var(--fw, 14px) * 0.8);
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: #ffe6a8;
-  box-shadow: 0 0 8px 2px rgba(255, 190, 90, 0.95);
+  background: #fff3c8;
+  box-shadow: 0 0 7px 2px rgba(255, 205, 95, 1), 0 0 14px 4px rgba(255, 160, 50, 0.55);
   opacity: 0;
-  animation: tend-ember-rise 2.1s ease-out var(--ed, 0s) both;
+  animation: tend-spark-fly 1.1s cubic-bezier(0.15, 0.6, 0.45, 1) var(--sd, 0s) both;
   pointer-events: none;
   z-index: 2;
 }
-@keyframes tend-ember-rise {
-  0%   { transform: translate(-50%, 0) scale(1); opacity: 0; }
-  12%  { opacity: 1; }
-  100% { transform: translate(calc(-50% + var(--ex, 0px)), -150px) scale(0.35); opacity: 0; }
+@keyframes tend-spark-fly {
+  0%   { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+  8%   { opacity: 1; transform: translate(-50%, 0) scale(1.15); }
+  100% { transform: translate(calc(-50% + var(--sx, 0px)), var(--sy, -80px)) scale(0.3); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tending .altar-flame .af-outer,
   .tending .altar-flame .af-inner,
-  .tending .altar-flame .af-halo,
-  .tend-ember {
+  .tend-spark {
     animation: none;
   }
 }
