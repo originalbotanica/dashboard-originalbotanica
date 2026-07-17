@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { headers } from "next/headers";
 import { hasUntendedCandles } from "@/lib/altar/tend";
+import { dailyCandle } from "@/lib/altar/daily-candle";
+import { candleImageUrl, desireLabel } from "@/lib/altar/catalog";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
@@ -303,6 +305,16 @@ async function AstrologySection({
   const dailyHoroscope = await horoscopePromise;
   const locale = await getLocale();
   const tr = (k: string, vars?: Record<string, string | number>) => t(locale, k, vars);
+
+  // The astrologer's candle of the day: the reading's focus, answered on
+  // the altar. Same candle all day for everyone the sky gave that focus.
+  const rec = dailyHoroscope
+    ? dailyCandle(
+        dailyHoroscope.content.focus,
+        new Date().toISOString().slice(0, 10),
+      )
+    : null;
+
   return (
     <ToolSection
       eyebrow={tr("dash.astroEyebrow")}
@@ -326,6 +338,34 @@ async function AstrologySection({
       linkLabel={tr("dash.astroLink")}
       imageSrc={`${OB_CDN}/cta-spiritual-services.jpg`}
       imageSide="left"
+      afterNode={
+        rec ? (
+          <div className="mt-10 flex items-center gap-6 border-t border-[var(--border)] pt-8">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={candleImageUrl(rec.candle.slug)}
+              alt={rec.candle.name}
+              className="h-28 w-auto rounded-lg shrink-0"
+              style={{ filter: "drop-shadow(0 0 12px rgba(240, 176, 110, 0.35))" }}
+            />
+            <div>
+              <p className="eyebrow mb-2">{tr("dash.candleEyebrow")}</p>
+              <p className="text-[var(--foreground-muted)] leading-relaxed mb-3">
+                {tr("dash.candleLine", {
+                  purpose: desireLabel(rec.desire, locale).toLowerCase(),
+                  name: rec.candle.name,
+                })}
+              </p>
+              <Link
+                href={`/altar/virtual/new?candle=${rec.candle.slug}`}
+                className="nav-link text-[var(--accent)]"
+              >
+                {tr("dash.candleCta")} →
+              </Link>
+            </div>
+          </div>
+        ) : undefined
+      }
     />
   );
 }
@@ -346,6 +386,7 @@ function ToolSection({
   imageSrc,
   imageSide,
   external = false,
+  afterNode,
 }: {
   eyebrow: string;
   headline?: string;
@@ -356,6 +397,8 @@ function ToolSection({
   imageSrc: string;
   imageSide: "left" | "right";
   external?: boolean;
+  /** Optional extra content under the link (e.g. the candle of the day). */
+  afterNode?: React.ReactNode;
 }) {
   // The photo is a tap target too — on a phone the image is the biggest
   // thing on screen, and tapping it should open the tool, not just the
@@ -414,6 +457,7 @@ function ToolSection({
           <span aria-hidden>→</span>
         </Link>
       )}
+      {afterNode}
     </div>
   );
 

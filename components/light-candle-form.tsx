@@ -7,6 +7,8 @@ import {
   DESIRES,
   candleImageUrl,
   desireLabel,
+  getCandleArt,
+  desireForCandle,
   type Desire,
   type CandleArt,
 } from "@/lib/altar/catalog";
@@ -19,11 +21,21 @@ import { useT, useLocale } from "@/components/locale-provider";
  */
 export function LightCandleForm({
   initialIntention,
+  initialCandle,
 }: {
   initialIntention?: string;
+  /** Candle slug to pre-select (e.g. the astrologer's candle of the day):
+   *  lands the member on step 3 with desire + candle already chosen. */
+  initialCandle?: string;
 }) {
-  const [desire, setDesire] = useState<Desire | null>(null);
-  const [candle, setCandle] = useState<CandleArt | null>(null);
+  const presetArt = initialCandle ? getCandleArt(initialCandle) : undefined;
+  const presetDesire = initialCandle ? desireForCandle(initialCandle) : undefined;
+  const [desire, setDesire] = useState<Desire | null>(
+    presetArt && presetDesire ? presetDesire : null,
+  );
+  const [candle, setCandle] = useState<CandleArt | null>(
+    presetArt && presetDesire ? presetArt : null,
+  );
   const [lit, setLit] = useState(false);
   // "armed" = the member has filled the details and pressed "Light the
   // candle"; now we send them up to tap the wick. The wick tap lights the

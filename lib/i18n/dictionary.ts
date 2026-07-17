@@ -438,6 +438,10 @@ const en: Dict = {
   "tend.hint": "Return each day it burns to keep the intention alive.",
   "tend.count": "Fed {n} of {d} days",
   "dash.altarTendLink": "Feed your flames",
+  // the astrologer's candle of the day
+  "dash.candleEyebrow": "The astrologer's candle",
+  "dash.candleLine": "Today asks for {purpose}. Light {name} on your altar.",
+  "dash.candleCta": "Light this candle",
 
   // dreams
   "dr.journalEyebrow": "Dream journal",
@@ -1192,6 +1196,10 @@ const es: Dict = {
   "tend.hint": "Vuelve cada día que arda para mantener viva la intención.",
   "tend.count": "Alimentada {n} de {d} días",
   "dash.altarTendLink": "Alimenta tus llamas",
+  // the astrologer's candle of the day
+  "dash.candleEyebrow": "La vela del astrólogo",
+  "dash.candleLine": "Hoy pide {purpose}. Enciende {name} en tu altar.",
+  "dash.candleCta": "Enciende esta vela",
 
   // dreams
   "dr.journalEyebrow": "Diario de sueños",
