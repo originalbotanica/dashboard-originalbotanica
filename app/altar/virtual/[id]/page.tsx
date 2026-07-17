@@ -93,6 +93,8 @@ export default async function CandleDetailPage({
             candleSlug={candle.candle_color}
             size="hero"
             bright={!!tending?.tendedToday}
+            litAt={candle.lit_at}
+            burnedOut={left !== null && left <= 0}
           />
         </div>
 

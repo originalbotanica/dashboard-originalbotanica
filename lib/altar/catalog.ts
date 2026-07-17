@@ -11,7 +11,7 @@
  * components (the light-a-candle picker).
  */
 
-const CANDLE_ART_BASE =
+export const CANDLE_ART_BASE =
   "https://beeayiskwueqnugithaw.supabase.co/storage/v1/object/public/candle-art";
 
 export function candleImageUrl(slug: string): string {

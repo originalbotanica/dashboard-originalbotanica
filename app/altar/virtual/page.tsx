@@ -173,7 +173,11 @@ function CandleGrid({ candles, locale }: { candles: Candle[]; locale: Locale }) 
             href={`/altar/virtual/${c.id}`}
             className="group flex flex-col items-center text-center"
           >
-            <AltarCandle candleSlug={c.candle_color} />
+            <AltarCandle
+              candleSlug={c.candle_color}
+              litAt={c.lit_at}
+              burnedOut={left !== null && left <= 0}
+            />
             <p className="display text-sm mt-5 group-hover:text-[var(--accent)] transition-colors line-clamp-2">
               {c.intention}
             </p>

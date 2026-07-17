@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { candleImageUrl, getCandleArt, getSaintCandle } from "@/lib/altar/catalog";
 import { FLAME_POS } from "@/lib/altar/flame-pos";
+import { burnDay, stagedImageUrl, burnFlamePos } from "@/lib/altar/burn-geom";
 import { Candle } from "@/components/candle";
 
 /**
@@ -31,14 +32,17 @@ function Flame({
   size,
   slug,
   bright = false,
+  posOverride,
 }: {
   size: "wall" | "hero";
   slug?: string;
   bright?: boolean;
+  /** Explicit anchor (burn-down stages seat the flame at the wax line). */
+  posOverride?: { x: number; y: number } | null;
 }) {
   // Measured wick position for this candle's photo (x% across, y% down);
   // photos without a measurement use the centered defaults.
-  const pos = slug ? FLAME_POS[slug] : undefined;
+  const pos = posOverride ?? (slug ? FLAME_POS[slug] : undefined);
   return (
     <span
       aria-hidden
@@ -63,11 +67,18 @@ export function AltarCandle({
   candleSlug,
   size = "wall",
   bright = false,
+  litAt = null,
+  burnedOut = false,
 }: {
   candleSlug: string | null;
   size?: "wall" | "hero";
   /** A tended candle's flame is held: slightly larger halo, warmer light. */
   bright?: boolean;
+  /** When set, the candle renders at its burn stage: the wax level drops
+   *  each day and the flame rides it down. Absent = fresh day-1 art. */
+  litAt?: string | null;
+  /** Expired candles show the emptied glass, flame out. */
+  burnedOut?: boolean;
 }) {
   const h = H[size];
   const saint = getSaintCandle(candleSlug);
@@ -107,20 +118,46 @@ export function AltarCandle({
   const slug = art ? candleSlug! : "white-candle";
   const name = art ? art.name : "Prayer candle";
 
+  // Burn-down: pick the stage image + wax-line flame anchor for this
+  // candle's age. Candles without stage art (label jars) stay day-1.
+  let src = candleImageUrl(slug);
+  let flamePos: { x: number; y: number } | null = null;
+  let showFlame = true;
+  if (burnedOut) {
+    const outSrc = stagedImageUrl(slug, "out");
+    if (outSrc) {
+      src = outSrc;
+      showFlame = false;
+    }
+  } else if (litAt) {
+    const day = burnDay(litAt);
+    const staged = stagedImageUrl(slug, day);
+    if (staged) {
+      src = staged;
+      flamePos = burnFlamePos(slug, day);
+    }
+  }
+
   return (
     <span
       className="relative inline-block"
       aria-label={name}
-      style={{ filter: "drop-shadow(0 0 16px rgba(240, 176, 110, 0.45))" }}
+      style={{
+        filter: showFlame
+          ? "drop-shadow(0 0 16px rgba(240, 176, 110, 0.45))"
+          : "none",
+      }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={candleImageUrl(slug)}
+        src={src}
         alt={name}
         className="rounded-xl block"
-        style={{ height: h, width: "auto" }}
+        style={{ height: h, width: "auto", opacity: showFlame ? 1 : 0.8 }}
       />
-      <Flame size={size} slug={slug} bright={bright} />
+      {showFlame && (
+        <Flame size={size} slug={slug} bright={bright} posOverride={flamePos} />
+      )}
     </span>
   );
 }
