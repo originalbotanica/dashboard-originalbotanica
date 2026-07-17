@@ -25,6 +25,10 @@ const SPIN_SPEED = 0.75;
 const LAND_MS = 3600;
 const LAND_SPINS = 3;
 const MUSIC_SRC = "/tarot-wheel/sounds/background-full.mp3";
+// The mechanical click of the wheel catching, played the instant the hub is
+// tapped — with a first nudge of the ring — before the music enters.
+const CLICK_SRC = "/tarot-wheel/sounds/click.wav";
+const NUDGE_MS = 360;
 // Ethereal closing track. Has a built-in ~4.4s silent lead-in, so starting it
 // the moment the wheel settles lands the swell right as the card is revealed.
 const ENDING_SRC = "/tarot-wheel/sounds/after_click.wav";
@@ -463,32 +467,54 @@ export function TarotWheel({
     }
 
     setPhase("spinning");
-    // Music begins the instant the wheel turns. The track is preloaded while
-    // the wheel sits ready (see the preload effect), so play() fires with no
-    // network wait and the sound is in step with the very first rotation.
+
+    // 1. The click: the wheel catches. Sound + a first nudge of the ring,
+    //    so the tap has a physical answer before the music enters.
     try {
-      let audio = audioRef.current;
-      if (!audio) {
-        audio = new Audio(MUSIC_SRC);
-        audio.loop = true;
-        audio.preload = "auto";
-        audioRef.current = audio;
-      }
-      audio.muted = muted;
-      audio.volume = 0.6;
-      try {
-        audio.currentTime = 0;
-      } catch {
-        /* ignore */
-      }
-      audio.play().catch(() => {});
+      const click = new Audio(CLICK_SRC);
+      click.muted = muted;
+      click.volume = 0.8;
+      click.play().catch(() => {});
     } catch {
       /* audio is optional */
     }
+    if (ringRef.current) {
+      ringRef.current.style.transition = `transform ${NUDGE_MS}ms cubic-bezier(0.34, 0.04, 0.26, 1)`;
+      rotationRef.current += STEP * 0.75;
+      applyRotation();
+    }
 
-    if (ringRef.current) ringRef.current.style.transition = "none";
-    lastTsRef.current = 0;
-    rafRef.current = requestAnimationFrame(loop);
+    // 2. The spin proper: music begins as the continuous rotation takes
+    //    over from the nudge. The track is preloaded while the wheel sits
+    //    ready (see the preload effect), so play() fires with no network
+    //    wait. Guarded: if the member already stopped the wheel during the
+    //    nudge, the landing animation owns the ring now.
+    window.setTimeout(() => {
+      if (phaseRef.current !== "spinning") return;
+      try {
+        let audio = audioRef.current;
+        if (!audio) {
+          audio = new Audio(MUSIC_SRC);
+          audio.loop = true;
+          audio.preload = "auto";
+          audioRef.current = audio;
+        }
+        audio.muted = muted;
+        audio.volume = 0.6;
+        try {
+          audio.currentTime = 0;
+        } catch {
+          /* ignore */
+        }
+        audio.play().catch(() => {});
+      } catch {
+        /* audio is optional */
+      }
+
+      if (ringRef.current) ringRef.current.style.transition = "none";
+      lastTsRef.current = 0;
+      rafRef.current = requestAnimationFrame(loop);
+    }, NUDGE_MS);
   }, [phase, index, muted, loop, settle, primeEnding]);
 
   const stop = useCallback(() => {

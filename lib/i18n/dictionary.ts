@@ -687,7 +687,7 @@ const en: Dict = {
   "mkt.dreams.s1Title":
     "You remember an important dream. You write it down as quickly as you can. Now describe it and let us interpret what the dream is asking you to notice in your waking life. Try to recall any symbols like falling, flying, doors, mirrors.",
   "mkt.dreams.s1Body":
-    "Water. Fire. Animals. The dead. Falling. Flying. Doors. Mirrors. The symbols carry weight in the traditions we serve. We name them, place them, and tell you what the dream is asking you to notice in waking life.",
+    "The symbols carry weight in the traditions we serve. We name them, place them, and tell you what they mean.",
   "mkt.dreams.s2Eyebrow": "The traditions",
   "mkt.dreams.s2Title": "Four lineages of dreamwork, woven together.",
   "mkt.dreams.s2Body":
@@ -1446,7 +1446,7 @@ const es: Dict = {
   "mkt.dreams.s1Title":
     "Recuerdas un sueño importante. Lo escribes tan pronto como puedes. Ahora descríbelo y deja que interpretemos qué te está pidiendo notar el sueño en tu vida despierta. Trata de recordar símbolos como caer, volar, puertas, espejos.",
   "mkt.dreams.s1Body":
-    "Agua. Fuego. Animales. Los muertos. Caer. Volar. Puertas. Espejos. Los símbolos llevan peso en las tradiciones que servimos. Los nombramos, los ubicamos y te decimos qué te está pidiendo notar el sueño en la vida despierta.",
+    "Los símbolos llevan peso en las tradiciones que servimos. Los nombramos, los ubicamos y te decimos qué significan.",
   "mkt.dreams.s2Eyebrow": "Las tradiciones",
   "mkt.dreams.s2Title": "Cuatro linajes de trabajo con sueños, entretejidos.",
   "mkt.dreams.s2Body":
