@@ -366,10 +366,13 @@ export function TarotWheel({
     el.style.transition = "none";
     el.style.opacity = "0";
     el.style.transform =
-      "translate(-50%, -50%) perspective(1100px) scale(0.5) rotateX(48deg) rotateZ(-6deg)";
+      "translate(-50%, -50%) perspective(1100px) scale(0.62) rotateX(38deg) rotateZ(-5deg)";
     void el.offsetWidth;
+    // Slow bloom: gentle start so the card rises to meet you instead of
+    // jumping — growth is spread across the full 4.4s, opacity eases in
+    // over 2.4s alongside it.
     el.style.transition =
-      "transform 3.4s cubic-bezier(0.2,0.75,0.2,1), opacity 1.3s ease";
+      "transform 4.4s cubic-bezier(0.32,0.08,0.18,1), opacity 2.4s ease";
     el.style.opacity = "1";
     el.style.transform =
       "translate(-50%, -50%) perspective(1100px) scale(1.06) rotateX(-11deg) rotateY(8deg)";
@@ -394,12 +397,12 @@ export function TarotWheel({
         const dy = r.top + r.height / 2 - window.innerHeight / 2;
         const k = r.width / presentRef.current.offsetWidth;
         presentRef.current.style.transition =
-          "transform 1.5s cubic-bezier(0.4,0,0.15,1)";
+          "transform 1.9s cubic-bezier(0.45,0,0.15,1)";
         presentRef.current.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) perspective(1100px) scale(${k}) rotateX(0deg) rotateY(0deg)`;
-      }, 4600),
+      }, 5800),
     );
 
-    timers.push(window.setTimeout(() => setPhase("revealed"), 6250));
+    timers.push(window.setTimeout(() => setPhase("revealed"), 7900));
 
     return () => timers.forEach(clearTimeout);
   }, [phase]);
