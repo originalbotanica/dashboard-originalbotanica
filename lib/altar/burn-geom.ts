@@ -17,7 +17,7 @@ export const BURN_GEOM: Record<string, { cx: number; top: number; bot: number }>
   "birthday-blessings": { cx: 68, top: 10.8, bot: 93 },
   "black-cat": { cx: 46.7, top: 11, bot: 92 },
   "black-list": { cx: 49.9, top: 5.5, bot: 92 },
-  "blockbreaker": { cx: 46.4, top: 11, bot: 78.5 },
+  "blockbreaker": { cx: 47, top: 11, bot: 92 },
   "buddha": { cx: 48.2, top: 11, bot: 91.9 },
   "chango-macho": { cx: 47.8, top: 8.6, bot: 92 },
   "chuparrosa": { cx: 47.3, top: 11, bot: 92 },
@@ -26,16 +26,16 @@ export const BURN_GEOM: Record<string, { cx: number; top: number; bot: number }>
   "court-case": { cx: 49.8, top: 6, bot: 91.9 },
   "domination": { cx: 54.2, top: 10.6, bot: 91.9 },
   "don-dinero": { cx: 49.7, top: 3.5, bot: 92 },
-  "double-action-evil-eye": { cx: 47.6, top: 11, bot: 81.6 },
-  "double-action-heart": { cx: 48.4, top: 11, bot: 55.6 },
-  "double-action-money": { cx: 46.2, top: 9.6, bot: 47.8 },
+  "double-action-evil-eye": { cx: 47.6, top: 11, bot: 92 },
+  "double-action-heart": { cx: 48.5, top: 11, bot: 91.9 },
+  "double-action-money": { cx: 46.2, top: 9.6, bot: 91.9 },
   "elegua": { cx: 50, top: 11, bot: 92 },
   "fast-luck": { cx: 46.8, top: 11, bot: 92 },
   "fast-money": { cx: 65.9, top: 11, bot: 93 },
   "forgive-cleanse": { cx: 58.9, top: 5.4, bot: 93 },
-  "fruit-of-life": { cx: 47.9, top: 11, bot: 81.1 },
+  "fruit-of-life": { cx: 47.9, top: 11, bot: 92 },
   "go-away-evil": { cx: 40, top: 10.9, bot: 91.6 },
-  "gregorio-hernandez": { cx: 43.7, top: 11, bot: 79.9 },
+  "gregorio-hernandez": { cx: 47.3, top: 11, bot: 92 },
   "guided-spirits": { cx: 65.9, top: 11, bot: 93 },
   "healthy-ways": { cx: 65.9, top: 11, bot: 93 },
   "high-john": { cx: 46.4, top: 11, bot: 92 },
@@ -44,7 +44,7 @@ export const BURN_GEOM: Record<string, { cx: number; top: number; bot: number }>
   "jinx-removing": { cx: 50, top: 11, bot: 91.5 },
   "just-judge": { cx: 49.6, top: 10.6, bot: 92 },
   "law-stay-away": { cx: 47, top: 11, bot: 91.5 },
-  "lords-prayer": { cx: 49.2, top: 11, bot: 80.3 },
+  "lords-prayer": { cx: 49.2, top: 11, bot: 92 },
   "lotto": { cx: 48.5, top: 11, bot: 91.9 },
   "love-drawing": { cx: 48.4, top: 11, bot: 91.9 },
   "love-spice": { cx: 63.9, top: 11, bot: 93 },
@@ -59,9 +59,9 @@ export const BURN_GEOM: Record<string, { cx: number; top: number; bot: number }>
   "remove-obstacles": { cx: 63, top: 11, bot: 93 },
   "reversible": { cx: 50.9, top: 5, bot: 92 },
   "ruda": { cx: 50.3, top: 3, bot: 92 },
-  "run-devil-run": { cx: 47.2, top: 11, bot: 55 },
+  "run-devil-run": { cx: 45.3, top: 11, bot: 91.9 },
   "saint-alex": { cx: 54.3, top: 11, bot: 91.9 },
-  "saint-clare": { cx: 48, top: 11, bot: 84.3 },
+  "saint-clare": { cx: 48.3, top: 11, bot: 91.9 },
   "saint-lazarus": { cx: 48.6, top: 11, bot: 92 },
   "saint-michael": { cx: 48.2, top: 11, bot: 91.9 },
   "san-deshacedor": { cx: 47.4, top: 11, bot: 92 },
@@ -91,9 +91,9 @@ export function burnDay(litAt: string, expiresAt?: string | null): number {
 /** Image URL for a candle at a given burn stage; null = use day-1 art. */
 export function stagedImageUrl(slug: string, stage: number | "out"): string | null {
   if (!BURN_GEOM[slug]) return null;
-  if (stage === "out") return `${CANDLE_ART_BASE}/${slug}-out.jpg?v=4`;
+  if (stage === "out") return `${CANDLE_ART_BASE}/${slug}-out.jpg?v=5`;
   if (stage < 2) return null;
-  return `${CANDLE_ART_BASE}/${slug}-d${stage}.jpg?v=4`;
+  return `${CANDLE_ART_BASE}/${slug}-d${stage}.jpg?v=5`;
 }
 
 /** Flame anchor for a burning candle at a given day: on the wax line. */
