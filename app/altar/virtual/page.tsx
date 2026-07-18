@@ -176,6 +176,7 @@ function CandleGrid({ candles, locale }: { candles: Candle[]; locale: Locale }) 
             <AltarCandle
               candleSlug={c.candle_color}
               litAt={c.lit_at}
+              expiresAt={c.expires_at}
               burnedOut={left !== null && left <= 0}
             />
             <p className="display text-sm mt-5 group-hover:text-[var(--accent)] transition-colors line-clamp-2">

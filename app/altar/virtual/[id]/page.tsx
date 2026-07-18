@@ -94,6 +94,7 @@ export default async function CandleDetailPage({
             size="hero"
             bright={!!tending?.tendedToday}
             litAt={candle.lit_at}
+            expiresAt={candle.expires_at}
             burnedOut={left !== null && left <= 0}
           />
         </div>

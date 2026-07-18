@@ -68,6 +68,7 @@ export function AltarCandle({
   size = "wall",
   bright = false,
   litAt = null,
+  expiresAt = null,
   burnedOut = false,
 }: {
   candleSlug: string | null;
@@ -77,6 +78,9 @@ export function AltarCandle({
   /** When set, the candle renders at its burn stage: the wax level drops
    *  each day and the flame rides it down. Absent = fresh day-1 art. */
   litAt?: string | null;
+  /** Expiry timestamp: keeps the wax level in lockstep with the
+   *  "X days left" label (same rounding). */
+  expiresAt?: string | null;
   /** Expired candles show the emptied glass, flame out. */
   burnedOut?: boolean;
 }) {
@@ -130,7 +134,7 @@ export function AltarCandle({
       showFlame = false;
     }
   } else if (litAt) {
-    const day = burnDay(litAt);
+    const day = burnDay(litAt, expiresAt);
     const staged = stagedImageUrl(slug, day);
     if (staged) {
       src = staged;

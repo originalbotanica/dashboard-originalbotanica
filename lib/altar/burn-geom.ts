@@ -72,8 +72,18 @@ export const BURN_GEOM: Record<string, { cx: number; top: number; bot: number }>
   "white-candle": { cx: 50, top: 10, bot: 87.9 },
 };
 
-/** Which day of its seven-day burn a candle is in (1..7). */
-export function burnDay(litAt: string): number {
+/** Which day of its seven-day burn a candle is in (1..7).
+ *
+ *  Derived from expires_at with the same ceil-rounding as the "X days
+ *  left" label (daysLeft in catalog.ts), so the wax level and the label
+ *  can never disagree: "6 days left" is always day-2 wax, on every
+ *  candle. Falls back to lit_at when there is no expiry. */
+export function burnDay(litAt: string, expiresAt?: string | null): number {
+  if (expiresAt) {
+    const ms = new Date(expiresAt).getTime() - Date.now();
+    const left = Math.ceil(ms / 86_400_000); // mirrors daysLeft()
+    return Math.min(7, Math.max(1, 8 - left));
+  }
   const days = Math.floor((Date.now() - new Date(litAt).getTime()) / 86_400_000) + 1;
   return Math.min(7, Math.max(1, days));
 }
