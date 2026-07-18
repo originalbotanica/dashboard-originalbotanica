@@ -81,9 +81,9 @@ export function burnDay(litAt: string): number {
 /** Image URL for a candle at a given burn stage; null = use day-1 art. */
 export function stagedImageUrl(slug: string, stage: number | "out"): string | null {
   if (!BURN_GEOM[slug]) return null;
-  if (stage === "out") return `${CANDLE_ART_BASE}/${slug}-out.jpg?v=1`;
+  if (stage === "out") return `${CANDLE_ART_BASE}/${slug}-out.jpg?v=2`;
   if (stage < 2) return null;
-  return `${CANDLE_ART_BASE}/${slug}-d${stage}.jpg?v=1`;
+  return `${CANDLE_ART_BASE}/${slug}-d${stage}.jpg?v=2`;
 }
 
 /** Flame anchor for a burning candle at a given day: on the wax line. */
