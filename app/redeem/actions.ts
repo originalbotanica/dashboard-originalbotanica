@@ -49,6 +49,42 @@ export async function redeemGift(formData: FormData) {
   }
 
   const admin = createAdminClient();
+
+  // Durable cross-instance throttle: the in-memory limiter above is
+  // per-serverless-instance, so an attacker spread across instances could
+  // slip past it. Every attempt is also logged to a small table and counted
+  // over a 10-minute window. Best-effort: if the table is missing the
+  // redemption still works (the in-memory limiter still applies).
+  let overLimit = false;
+  try {
+    const windowStart = new Date(Date.now() - 10 * 60_000).toISOString();
+    await admin.from("redeem_attempts").insert({ user_id: user.id, ip });
+    const [byUserDb, byIpDb] = await Promise.all([
+      admin
+        .from("redeem_attempts")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .gte("attempted_at", windowStart),
+      admin
+        .from("redeem_attempts")
+        .select("id", { count: "exact", head: true })
+        .eq("ip", ip)
+        .gte("attempted_at", windowStart),
+    ]);
+    overLimit = (byUserDb.count ?? 0) > 10 || (byIpDb.count ?? 0) > 20;
+    // Opportunistic cleanup so the log can't grow without bound.
+    await admin
+      .from("redeem_attempts")
+      .delete()
+      .lt("attempted_at", new Date(Date.now() - 86_400_000).toISOString());
+  } catch {
+    /* table not present yet — in-memory limiter still stands */
+  }
+  if (overLimit) {
+    redirect(
+      errorUrl("Too many attempts. Please wait a few minutes and try again."),
+    );
+  }
   const { data: gift } = await admin
     .from("gift_purchases")
     .select("id, term_months, status")

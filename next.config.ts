@@ -13,6 +13,27 @@ const nextConfig: NextConfig = {
   // Internationalization is handled at the App Router level via a [lang]
   // segment + dictionaries in /i18n. We do not use the legacy `i18n` config
   // option from pages router.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          // No page on this site should ever render inside someone
+          // else's frame (clickjacking).
+          { key: "X-Frame-Options", value: "DENY" },
+          // Browsers must respect our content types, not sniff them.
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Don't leak full member URLs to external sites.
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // We use none of these; say so explicitly.
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       // Guessable URLs found in QA: send them somewhere real.
