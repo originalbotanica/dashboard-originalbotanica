@@ -263,7 +263,7 @@ export default async function DashboardPage() {
         href="https://originalbotanica.com"
         linkLabel={tr("dash.benefitLink")}
         external
-        imageSrc={`${OB_CDN}/transforms/_1200x630_crop_center-center_82_none/about-original-botanica.jpg`}
+        imageSrc="/landing/tile-botanica-sign.jpg"
         imageSide="left"
       />
 
