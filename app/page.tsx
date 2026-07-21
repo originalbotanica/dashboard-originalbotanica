@@ -280,7 +280,7 @@ export default async function HomePage({
         <div className="relative isolate max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 overflow-hidden">
           <div className="absolute inset-0 -z-10">
             <Image
-              src="/landing/banner-shelf.jpg"
+              src="/landing/banner-botanica.jpg"
               alt=""
               fill
               sizes="(max-width: 1024px) 100vw, 1024px"
