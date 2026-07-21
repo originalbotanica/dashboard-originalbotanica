@@ -378,8 +378,10 @@ export function TarotWheel({
     el.style.transition =
       "transform 4.4s cubic-bezier(0.32,0.08,0.18,1), opacity 2.4s ease";
     el.style.opacity = "1";
+    // The card arrives STRAIGHT: the 3D tilt lives only in the lift-out,
+    // so center stage presents it square to the member.
     el.style.transform =
-      "translate(-50%, -50%) perspective(1100px) scale(1.06) rotateX(-11deg) rotateY(8deg)";
+      "translate(-50%, -50%) perspective(1100px) scale(1.06)";
 
     // Center the whole card + reading block in the viewport now (the reading
     // is laid out, just faded) so the card flies to an on-screen slot and the
