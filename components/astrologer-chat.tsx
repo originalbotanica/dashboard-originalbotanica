@@ -275,6 +275,9 @@ function Welcome({
       <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
         {t("achat.welcome", { name: firstName })}
       </p>
+      <h2 className="display text-2xl md:text-3xl leading-tight mb-2">
+        {t("achat.askHead")}
+      </h2>
       <p className="sublabel mb-3">{t("achat.startWith")}</p>
       <div className="grid sm:grid-cols-2 gap-3">
         {starters.map((q) => (
