@@ -332,6 +332,11 @@ export default async function HomePage({
                 {tr("lp.heroGift")}
               </Link>
             </p>
+            <p className="text-xs text-[#b9b0a2] mt-2 leading-relaxed max-w-xs">
+              <Link href="/redeem" className="hover:underline" style={{ color: GOLD }}>
+                {tr("lp.heroRedeem")}
+              </Link>
+            </p>
           </div>
         </div>
       </section>

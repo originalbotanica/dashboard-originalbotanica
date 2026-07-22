@@ -83,6 +83,12 @@ export default async function LoginPage({
               Start your 7-day trial
             </Link>
           </p>
+          <p className="text-[var(--foreground-muted)]">
+            Received a gift?{" "}
+            <Link href="/redeem" className="text-[var(--accent)] hover:underline">
+              Redeem your code
+            </Link>
+          </p>
         </div>
       </div>
     </main>

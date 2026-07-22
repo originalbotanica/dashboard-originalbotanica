@@ -124,6 +124,14 @@ export function SiteFooter() {
                   {t("footer.giftMembership")}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/redeem"
+                  className="nav-link text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)]"
+                >
+                  {t("footer.redeemGift")}
+                </Link>
+              </li>
             </ul>
           </div>
 
