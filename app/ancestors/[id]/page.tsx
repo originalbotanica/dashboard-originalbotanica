@@ -163,18 +163,8 @@ export default async function MemorialDetailPage({
                 )}
             </p>
           )}
-          <p className="text-xs text-[var(--foreground-subtle)] mt-3 leading-relaxed">
+          <p className="invocation text-base text-[var(--foreground-muted)] mt-4 leading-relaxed">
             {t(locale, "off.weekly")}
-          </p>
-          <p className="text-xs mt-4 leading-relaxed">
-            <a
-              href="https://originalbotanica.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--foreground-subtle)] hover:text-[var(--accent)] underline underline-offset-2"
-            >
-              {t(locale, "off.shop")}
-            </a>
           </p>
         </div>
 
