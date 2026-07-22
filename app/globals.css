@@ -1157,3 +1157,159 @@ h1, h2, h3, h4, h5, h6 {
   .dream-glow, .dream-mote { animation: none; }
   .dream-line { animation: none; }
 }
+
+/* ── Offerings ritual (ancestors altar) ───────────────────────────────
+   The room dims and the offering lives its moment: water fills the
+   glass, blossoms open, steam rises from the coffee, the golden sheet
+   of ancestor money catches from below and burns upward with embers. */
+.offer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  background:
+    radial-gradient(ellipse at center, rgba(6, 4, 2, 0.82) 0%, rgba(2, 1, 1, 0.96) 78%);
+  animation: offer-dim-in 0.7s ease both;
+}
+@keyframes offer-dim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.offer-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 11rem;
+}
+.offer-done-line {
+  color: var(--foreground-muted);
+  font-size: 1.05rem;
+  text-align: center;
+  max-width: 22rem;
+  padding: 0 1.5rem;
+  animation: offer-line-in 0.9s ease both;
+}
+@keyframes offer-line-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Water: the glass fills. */
+.offer-water {
+  transform: translateY(96px);
+  animation: offer-water-fill 2.4s cubic-bezier(0.3, 0.1, 0.25, 1) 0.5s forwards;
+}
+@keyframes offer-water-fill {
+  to { transform: translateY(0); }
+}
+
+/* Flowers: blossoms open, stems settle in. */
+.offer-bloom {
+  opacity: 0;
+  transform: scale(0.2);
+  animation: offer-bloom-open 1.3s cubic-bezier(0.2, 0.7, 0.3, 1.05) both;
+}
+@keyframes offer-bloom-open {
+  to { opacity: 1; transform: scale(1); }
+}
+.offer-stems {
+  opacity: 0;
+  animation: offer-line-in 1s ease 0.3s both;
+}
+
+/* Coffee: steam rises and fades, surface shimmers. */
+.offer-steam {
+  opacity: 0;
+  animation: offer-steam-rise 2.6s ease-in-out 0.4s infinite;
+}
+@keyframes offer-steam-rise {
+  0% { opacity: 0; transform: translateY(8px); }
+  30% { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+.offer-coffee-surface {
+  animation: offer-coffee-shimmer 2.2s ease-in-out infinite alternate;
+}
+@keyframes offer-coffee-shimmer {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
+}
+
+/* Ancestor money: the sheet is consumed from the bottom up. */
+.offer-money {
+  position: relative;
+  width: 7rem;
+  height: 10rem;
+}
+.offer-money-sheet {
+  animation: offer-money-burn 2.6s cubic-bezier(0.4, 0.1, 0.7, 0.9) 0.7s forwards;
+  clip-path: inset(0 0 0 0);
+  filter: drop-shadow(0 0 14px rgba(228, 160, 84, 0.28));
+}
+@keyframes offer-money-burn {
+  0% { clip-path: inset(0 0 0 0); }
+  92% { clip-path: inset(0 0 99% 0); opacity: 1; }
+  100% { clip-path: inset(0 0 100% 0); opacity: 0; }
+}
+/* The glowing burn front travels up the sheet. */
+.offer-burn-front {
+  position: absolute;
+  left: -6%;
+  width: 112%;
+  height: 10px;
+  bottom: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 214, 140, 0.95) 0%, rgba(240, 130, 40, 0.75) 45%, rgba(180, 60, 10, 0) 78%);
+  filter: blur(1px);
+  opacity: 0;
+  animation: offer-burn-front-rise 2.6s cubic-bezier(0.4, 0.1, 0.7, 0.9) 0.7s forwards;
+}
+@keyframes offer-burn-front-rise {
+  0% { bottom: 0; opacity: 0; }
+  6% { opacity: 1; }
+  92% { bottom: 99%; opacity: 1; }
+  100% { bottom: 100%; opacity: 0; }
+}
+/* Embers lift off the burn front. */
+.offer-ember {
+  position: absolute;
+  bottom: 12%;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ffd9a0 0%, #f08228 55%, rgba(240, 130, 40, 0) 100%);
+  opacity: 0;
+  animation: offer-ember-rise 1.5s ease-out both;
+}
+@keyframes offer-ember-rise {
+  0% { opacity: 0; transform: translateY(0) scale(1); }
+  12% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-110px) translateX(8px) scale(0.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offer-overlay,
+  .offer-done-line,
+  .offer-water,
+  .offer-bloom,
+  .offer-stems,
+  .offer-steam,
+  .offer-coffee-surface,
+  .offer-burn-front,
+  .offer-ember {
+    animation: none;
+  }
+  .offer-water { transform: translateY(24px); }
+  .offer-bloom { opacity: 1; transform: none; }
+  .offer-stems { opacity: 1; }
+  .offer-steam { opacity: 0.5; }
+  /* Reduced motion: the sheet simply dissolves rather than burning. */
+  .offer-money-sheet { animation: none; opacity: 0.6; }
+  .offer-burn-front { display: none; }
+}

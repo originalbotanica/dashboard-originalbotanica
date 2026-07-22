@@ -1,8 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { Candle } from "@/components/candle";
+import { MakeOffering } from "@/components/make-offering";
 import { addLightAction } from "../../ancestors/actions";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
@@ -63,6 +65,15 @@ export default async function PublicMemorialPage({
 
   const locale = await getLocale();
   const dates = formatDates(memorial.birth_date, memorial.death_date, locale);
+
+  // Family offerings: total count, plus whether this browser already
+  // offered today (same cookie the guest offering action sets).
+  const { count: offeringCount } = await admin
+    .from("ancestor_offerings")
+    .select("id", { count: "exact", head: true })
+    .eq("ancestor_id", memorial.id);
+  const jar = await cookies();
+  const offeredToday = !!jar.get(`ob_off_${hash}`);
 
   async function light() {
     "use server";
@@ -138,6 +149,25 @@ export default async function PublicMemorialPage({
             {t(locale, memorial.light_count === 1 ? "cand.lightsOne" : "cand.lightsMany", { n: memorial.light_count })}
           </p>
         )}
+
+        {/* Family offerings — anyone with the link can set one. */}
+        <div className="mt-12 border border-[var(--border)] rounded-lg bg-[var(--surface)]/60 px-6 py-8 max-w-xl mx-auto">
+          <p className="eyebrow mb-5">{t(locale, "off.eyebrow")}</p>
+          <MakeOffering
+            name={memorial.name}
+            hash={hash}
+            offeredToday={offeredToday}
+          />
+          {(offeringCount ?? 0) > 0 && (
+            <p className="text-xs text-[var(--foreground-subtle)] mt-5">
+              {t(
+                locale,
+                offeringCount === 1 ? "off.familyOne" : "off.familyMany",
+                { n: offeringCount ?? 0 },
+              )}
+            </p>
+          )}
+        </div>
       </section>
 
       <section className="border-t border-[var(--border)] mt-12">

@@ -211,6 +211,119 @@ export async function deleteAncestorAction(formData: FormData) {
   redirect("/ancestors");
 }
 
+/* ── Offerings ─────────────────────────────────────────────────────────
+ *
+ * A second devotional act on a memorial, beside the candle: set fresh
+ * water, flowers, or black coffee on the altar, or send ancestor money.
+ * Each offering is honest about its own lineage in the UI — ancestor
+ * money is presented as a practice from Chinese folk religion embraced
+ * by many modern practitioners, never folded into the Lucumí/Espiritismo
+ * frame. Offerings are traditionally refreshed weekly; we allow one per
+ * memorial per day per person as a gentle anti-spam rhythm.
+ */
+
+export type OfferingType = "water" | "flowers" | "coffee" | "ancestor_money";
+
+const OFFERING_TYPES: OfferingType[] = [
+  "water",
+  "flowers",
+  "coffee",
+  "ancestor_money",
+];
+
+export type OfferingResult =
+  | { ok: true }
+  | { ok: false; code: "today" | "error" };
+
+/** Member offering on their own memorial. */
+export async function makeOfferingAction(
+  ancestorId: string,
+  type: string,
+): Promise<OfferingResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, code: "error" };
+
+  const sub = await getSubscriptionStatus(user.id);
+  if (!sub.isActive) return { ok: false, code: "error" };
+
+  if (!OFFERING_TYPES.includes(type as OfferingType))
+    return { ok: false, code: "error" };
+
+  // Memorial must belong to this member.
+  const { data: memorial } = await supabase
+    .from("ancestors")
+    .select("id")
+    .eq("id", ancestorId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!memorial) return { ok: false, code: "error" };
+
+  // One offering per memorial per day (rolling 24h) per member.
+  const since = new Date(Date.now() - 86_400_000).toISOString();
+  const { count } = await supabase
+    .from("ancestor_offerings")
+    .select("id", { count: "exact", head: true })
+    .eq("ancestor_id", ancestorId)
+    .eq("user_id", user.id)
+    .gte("created_at", since);
+  if ((count ?? 0) >= 1) return { ok: false, code: "today" };
+
+  const { error } = await supabase.from("ancestor_offerings").insert({
+    ancestor_id: ancestorId,
+    user_id: user.id,
+    offering_type: type,
+  });
+  if (error) return { ok: false, code: "error" };
+
+  revalidatePath(`/ancestors/${ancestorId}`);
+  return { ok: true };
+}
+
+/**
+ * Anonymous family/guest offering from the public /candle/[hash] page.
+ * Mirrors addLightAction: cookie-throttled to one per memorial per day
+ * per browser; writes through the admin client with no user attached.
+ */
+export async function makeGuestOfferingAction(
+  hash: string,
+  type: string,
+): Promise<OfferingResult> {
+  if (!hash) return { ok: false, code: "error" };
+  if (!OFFERING_TYPES.includes(type as OfferingType))
+    return { ok: false, code: "error" };
+
+  const jar = await cookies();
+  const cookieKey = `ob_off_${hash}`;
+  if (jar.get(cookieKey)) return { ok: false, code: "today" };
+
+  const admin = createAdminClient();
+  const { data: memorial } = await admin
+    .from("ancestors")
+    .select("id, is_public")
+    .eq("hash", hash)
+    .maybeSingle();
+  if (!memorial?.is_public) return { ok: false, code: "error" };
+
+  const { error } = await admin.from("ancestor_offerings").insert({
+    ancestor_id: memorial.id,
+    user_id: null,
+    offering_type: type,
+  });
+  if (error) return { ok: false, code: "error" };
+
+  jar.set(cookieKey, "1", {
+    maxAge: 60 * 60 * 24,
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
+  revalidatePath(`/candle/${hash}`);
+  return { ok: true };
+}
+
 /**
  * Anonymous "add a light" — increments the light_count on a public
  * memorial. Called from the public /candle/[hash] page so visitors

@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { Candle } from "@/components/candle";
+import { MakeOffering } from "@/components/make-offering";
 import { MemorialForm } from "@/components/memorial-form";
 import { ShareMemorialLink } from "@/components/share-memorial-link";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
@@ -62,6 +63,32 @@ export default async function MemorialDetailPage({
   const locale = await getLocale();
   const dates = formatDates(memorial.birth_date, memorial.death_date, locale);
 
+  // Offerings on this memorial: total, most recent, and whether the
+  // owner has already made today's offering (rolling 24h).
+  const [{ count: offeringCount }, { data: lastOffering }, { count: mineToday }] =
+    await Promise.all([
+      supabase
+        .from("ancestor_offerings")
+        .select("id", { count: "exact", head: true })
+        .eq("ancestor_id", id),
+      supabase
+        .from("ancestor_offerings")
+        .select("created_at")
+        .eq("ancestor_id", id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabase
+        .from("ancestor_offerings")
+        .select("id", { count: "exact", head: true })
+        .eq("ancestor_id", id)
+        .eq("user_id", user.id)
+        .gte("created_at", new Date(Date.now() - 86_400_000).toISOString()),
+    ]);
+  const lastLine = lastOffering
+    ? lastOfferingLine(lastOffering.created_at, locale)
+    : null;
+
   return (
     <main className="min-h-screen">
       <header className="border-b border-[var(--border)]">
@@ -99,6 +126,41 @@ export default async function MemorialDetailPage({
             {memorial.dedication}
           </p>
         )}
+
+        {/* Offerings — the second devotional act, beside the candle. */}
+        <div className="mt-4 mb-2 border border-[var(--border)] rounded-lg bg-[var(--surface)] px-6 py-8 max-w-xl mx-auto">
+          <p className="eyebrow mb-5">{t(locale, "off.eyebrow")}</p>
+          <MakeOffering
+            name={memorial.name}
+            ancestorId={memorial.id}
+            offeredToday={(mineToday ?? 0) >= 1}
+          />
+          {(lastLine || (offeringCount ?? 0) > 0) && (
+            <p className="text-xs text-[var(--foreground-subtle)] mt-5">
+              {lastLine}
+              {lastLine && (offeringCount ?? 0) > 0 ? " · " : ""}
+              {(offeringCount ?? 0) > 0 &&
+                t(
+                  locale,
+                  offeringCount === 1 ? "off.countOne" : "off.countMany",
+                  { n: offeringCount ?? 0 },
+                )}
+            </p>
+          )}
+          <p className="text-xs text-[var(--foreground-subtle)] mt-3 leading-relaxed">
+            {t(locale, "off.weekly")}
+          </p>
+          <p className="text-xs mt-4 leading-relaxed">
+            <a
+              href="https://originalbotanica.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--foreground-subtle)] hover:text-[var(--accent)] underline underline-offset-2"
+            >
+              {t(locale, "off.shop")}
+            </a>
+          </p>
+        </div>
 
         {memorial.is_public && memorial.hash && (
           <div className="mt-6 inline-flex flex-col items-center border border-[var(--border)] rounded-lg p-4 bg-[var(--surface)]">
@@ -144,6 +206,15 @@ export default async function MemorialDetailPage({
       </section>
     </main>
   );
+}
+
+function lastOfferingLine(createdAt: string, locale: Locale): string {
+  const days = Math.floor(
+    (Date.now() - new Date(createdAt).getTime()) / 86_400_000,
+  );
+  if (days <= 0) return t(locale, "off.lastToday");
+  if (days === 1) return t(locale, "off.lastDay");
+  return t(locale, "off.lastDays", { n: days });
 }
 
 function formatDates(birth: string | null | undefined, death: string | null | undefined, locale: Locale): string {
