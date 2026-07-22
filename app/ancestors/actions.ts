@@ -222,12 +222,18 @@ export async function deleteAncestorAction(formData: FormData) {
  * memorial per day per person as a gentle anti-spam rhythm.
  */
 
-export type OfferingType = "water" | "flowers" | "coffee" | "ancestor_money";
+export type OfferingType =
+  | "water"
+  | "flowers"
+  | "coffee"
+  | "fruit"
+  | "ancestor_money";
 
 const OFFERING_TYPES: OfferingType[] = [
   "water",
   "flowers",
   "coffee",
+  "fruit",
   "ancestor_money",
 ];
 

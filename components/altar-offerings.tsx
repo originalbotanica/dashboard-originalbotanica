@@ -21,7 +21,8 @@ const IMG: Record<OfferingType, { src: string; side: "left" | "right" }> = {
   flowers: { src: "/offerings/flowers.webp", side: "left" },
   water: { src: "/offerings/water.webp", side: "left" },
   coffee: { src: "/offerings/coffee.webp", side: "left" },
-  ancestor_money: { src: "/offerings/money.webp", side: "right" },
+  fruit: { src: "/offerings/fruit.webp", side: "left" },
+  ancestor_money: { src: "/offerings/money.webp", side: "left" },
 };
 
 const SIZE_CLS: Record<"default" | "large", Record<OfferingType, string>> = {
@@ -29,17 +30,25 @@ const SIZE_CLS: Record<"default" | "large", Record<OfferingType, string>> = {
     flowers: "h-24 md:h-28 w-auto",
     water: "h-16 md:h-20 w-auto",
     coffee: "h-12 md:h-14 w-auto",
+    fruit: "h-14 md:h-16 w-auto",
     ancestor_money: "h-10 md:h-12 w-auto",
   },
   default: {
     flowers: "h-12 w-auto",
     water: "h-9 w-auto",
     coffee: "h-7 w-auto",
+    fruit: "h-8 w-auto",
     ancestor_money: "h-6 w-auto",
   },
 };
 
-const ORDER: OfferingType[] = ["flowers", "water", "coffee", "ancestor_money"];
+const ORDER: OfferingType[] = [
+  "flowers",
+  "fruit",
+  "water",
+  "coffee",
+  "ancestor_money",
+];
 
 export function CandleWithOfferings({
   lit,

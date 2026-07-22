@@ -35,13 +35,15 @@ const LAND_H: Record<OfferingType, number> = {
   flowers: 96,
   water: 64,
   coffee: 48,
+  fruit: 56,
   ancestor_money: 40,
 };
 const LAND_SIDE: Record<OfferingType, "left" | "right"> = {
   flowers: "left",
   water: "left",
   coffee: "left",
-  ancestor_money: "right",
+  fruit: "left",
+  ancestor_money: "left",
 };
 
 type Phase =
@@ -83,6 +85,7 @@ export function MakeOffering({
     { type: "water", label: t("off.water"), lineage: t("off.waterLin"), img: "/offerings/water.webp", imgCls: "h-12 w-auto" },
     { type: "flowers", label: t("off.flowers"), lineage: t("off.flowersLin"), img: "/offerings/flowers.webp", imgCls: "h-12 w-auto" },
     { type: "coffee", label: t("off.coffee"), lineage: t("off.coffeeLin"), img: "/offerings/coffee.webp", imgCls: "h-10 w-auto" },
+    { type: "fruit", label: t("off.fruit"), lineage: t("off.fruitLin"), img: "/offerings/fruit.webp", imgCls: "h-11 w-auto" },
     { type: "ancestor_money", label: t("off.money"), lineage: t("off.moneyLin"), img: "/offerings/money.webp", imgCls: "h-8 w-auto" },
   ];
 
@@ -127,6 +130,7 @@ export function MakeOffering({
     water: "off.doneWater",
     flowers: "off.doneFlowers",
     coffee: "off.doneCoffee",
+    fruit: "off.doneFruit",
     ancestor_money: "off.doneMoney",
   };
 
@@ -255,6 +259,7 @@ function OfferingRitual({
           {type === "water" && <WaterRitual />}
           {type === "flowers" && <FlowersRitual />}
           {type === "coffee" && <CoffeeRitual still={flying} />}
+          {type === "fruit" && <FruitRitual />}
           {type === "ancestor_money" && <MoneyRitual />}
         </div>
       </div>
@@ -301,6 +306,13 @@ function CoffeeRitual({ still }: { still?: boolean }) {
         </svg>
       )}
     </div>
+  );
+}
+
+function FruitRitual() {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/offerings/fruit.webp" alt="" aria-hidden className="offer-settle h-44 w-auto" />
   );
 }
 
