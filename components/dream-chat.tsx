@@ -243,7 +243,7 @@ export function DreamChat({
         style={{ minHeight: "240px", maxHeight: "calc(100dvh - 150px)" }}
       >
         {isEmpty ? (
-          <Welcome firstName={firstName} onPick={send} />
+          <WelcomeIntro firstName={firstName} />
         ) : (
           <div className="flex flex-col gap-6">
             {messages.map((m, i) => (
@@ -317,6 +317,10 @@ export function DreamChat({
           </p>
         </form>
 
+        {/* Per Jason: the describe-your-dream box comes FIRST; the sample
+            dreams follow beneath it as the fallback. */}
+        {isEmpty && <Starters onPick={send} />}
+
         {/* "For this dream" cards close out the reading, below the box. */}
         {!streaming && recs}
       </div>
@@ -324,13 +328,18 @@ export function DreamChat({
   );
 }
 
-function Welcome({
-  firstName,
-  onPick,
-}: {
-  firstName: string;
-  onPick: (q: string) => void;
-}) {
+function WelcomeIntro({ firstName }: { firstName: string }) {
+  const t = useT();
+  return (
+    <div className="py-8">
+      <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed max-w-2xl">
+        {t("dr.welcome", { name: firstName })}
+      </p>
+    </div>
+  );
+}
+
+function Starters({ onPick }: { onPick: (q: string) => void }) {
   const t = useT();
   const starters = [
     t("dr.starter1"),
@@ -339,13 +348,7 @@ function Welcome({
     t("dr.starter4"),
   ];
   return (
-    <div className="py-8">
-      <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
-        {t("dr.welcome", { name: firstName })}
-      </p>
-      <h2 className="display text-2xl md:text-3xl leading-tight mb-2">
-        {t("dr.describeHead")}
-      </h2>
+    <div className="mt-8">
       <p className="sublabel mb-3">{t("dr.orStart")}</p>
       <div className="grid sm:grid-cols-2 gap-3">
         {starters.map((q) => (
