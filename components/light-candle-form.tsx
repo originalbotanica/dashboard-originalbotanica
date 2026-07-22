@@ -13,6 +13,7 @@ import {
   type CandleArt,
 } from "@/lib/altar/catalog";
 import { FLAME_POS } from "@/lib/altar/flame-pos";
+import { candlePrayer } from "@/lib/altar/prayers";
 import { useT, useLocale } from "@/components/locale-provider";
 
 /**
@@ -206,6 +207,14 @@ export function LightCandleForm({
         </span>
         <p className="display text-lg leading-tight mt-5">{candle.name}</p>
         <p className="text-sm text-[var(--foreground-muted)]">{candle.tagline}</p>
+        {candlePrayer(candle.slug, locale) && (
+          <div className="mt-6 max-w-xl mx-auto border border-[var(--border)] rounded-lg bg-[var(--surface)] px-6 py-5">
+            <p className="eyebrow mb-3">{t("lcf.prayerLabel")}</p>
+            <p className="invocation text-base text-[var(--foreground)] leading-relaxed">
+              {candlePrayer(candle.slug, locale)}
+            </p>
+          </div>
+        )}
         <p
           className={`invocation mt-3 ${
             armed && !lit
@@ -252,20 +261,8 @@ export function LightCandleForm({
         </p>
       </div>
 
-      <div>
-        <label htmlFor="petition" className="form-label">
-          {t("lcf.petition")}{" "}
-          <span className="normal-case text-[var(--foreground-subtle)]">{t("lcf.optional")}</span>
-        </label>
-        <textarea
-          id="petition"
-          name="petition"
-          rows={5}
-          maxLength={2000}
-          placeholder={t("lcf.petitionPh")}
-          className="form-input"
-        />
-      </div>
+      {/* The candle's own prayer replaces the old free-text petition — the
+          dedication names who the light is for; the candle speaks the rest. */}
 
       {/* All veladoras burn seven days, like the real thing — no picker. */}
       <input type="hidden" name="days" value="7" />
@@ -279,12 +276,6 @@ export function LightCandleForm({
           <input type="checkbox" name="is_public" className="mt-1" />
           <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
             {t("lcf.publicLabel")}
-          </span>
-        </label>
-        <label className="flex items-start gap-3 cursor-pointer pl-7">
-          <input type="checkbox" name="petition_public" className="mt-1" />
-          <span className="text-[var(--foreground-muted)] leading-relaxed text-sm">
-            {t("lcf.petitionPublicLabel")}
           </span>
         </label>
       </div>

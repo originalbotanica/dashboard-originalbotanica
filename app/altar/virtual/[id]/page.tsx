@@ -8,6 +8,7 @@ import { listRitualsByPurpose, getSavedRitualIds } from "@/lib/rituals/queries";
 import { RitualCard } from "@/components/ritual-card";
 import { extinguishCandleAction } from "../actions";
 import { getTendingState } from "@/lib/altar/tend";
+import { candlePrayer } from "@/lib/altar/prayers";
 import { headers } from "next/headers";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
@@ -114,6 +115,16 @@ export default async function CandleDetailPage({
               ? t(locale, left === 1 ? "altar.burningOne" : "altar.burningMany", { n: left })
               : t(locale, "altar.burnedOut")}
           </p>
+        )}
+
+        {/* The candle's prayer — read it each day you charge the flame. */}
+        {candle.candle_color && candlePrayer(candle.candle_color, locale) && (
+          <div className="mt-8 max-w-xl mx-auto border border-[var(--border)] rounded-lg bg-[var(--surface)] px-6 py-5 text-center">
+            <p className="eyebrow mb-3">{t(locale, "lcf.prayerLabel")}</p>
+            <p className="invocation text-base text-[var(--foreground)] leading-relaxed">
+              {candlePrayer(candle.candle_color, locale)}
+            </p>
+          </div>
         )}
 
         {/* Tending — return each day the candle burns to hold the intention. */}
