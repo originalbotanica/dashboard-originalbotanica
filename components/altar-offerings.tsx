@@ -20,7 +20,7 @@ import type { OfferingType } from "@/app/ancestors/actions";
 const IMG: Record<OfferingType, { src: string; side: "left" | "right" }> = {
   flowers: { src: "/offerings/flowers.webp", side: "left" },
   water: { src: "/offerings/water.webp", side: "left" },
-  coffee: { src: "/offerings/coffee.webp", side: "right" },
+  coffee: { src: "/offerings/coffee.webp", side: "left" },
   ancestor_money: { src: "/offerings/money.webp", side: "right" },
 };
 

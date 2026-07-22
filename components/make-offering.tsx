@@ -40,7 +40,7 @@ const LAND_H: Record<OfferingType, number> = {
 const LAND_SIDE: Record<OfferingType, "left" | "right"> = {
   flowers: "left",
   water: "left",
-  coffee: "right",
+  coffee: "left",
   ancestor_money: "right",
 };
 
