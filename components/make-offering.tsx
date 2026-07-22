@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useT } from "./locale-provider";
 import {
@@ -18,19 +18,37 @@ import {
  * by many modern practitioners — its own shelf, never folded into the
  * Lucumí or Espiritismo frame.
  *
- * The ritual borrows the theatrical grammar of charging the flame: the
- * room dims, the offering appears and lives its moment (water fills,
- * blossoms open, steam rises, the golden sheet catches and burns), and
- * a quiet line confirms it was received.
+ * The ritual: the room dims and the offering appears large in the
+ * center. Water, flowers, and coffee then FLY DOWN and settle in their
+ * place beside the candle (the #altar-scene rendered by
+ * CandleWithOfferings). Ancestor money instead catches from below and
+ * burns upward with rising embers — sent, not kept.
  */
 
-const RITUAL_MS = 3400;
-const DONE_MS = 5600;
+const RITUAL_MS = 2300;
+const FLY_MS = 1350;
+const BURN_MS = 3400;
+const DONE_HOLD_MS = 2200;
+
+/** Final on-altar heights (px), matching altar-offerings.tsx classes. */
+const LAND_H: Record<OfferingType, number> = {
+  flowers: 96,
+  water: 64,
+  coffee: 48,
+  ancestor_money: 40,
+};
+const LAND_SIDE: Record<OfferingType, "left" | "right"> = {
+  flowers: "left",
+  water: "left",
+  coffee: "right",
+  ancestor_money: "right",
+};
 
 type Phase =
   | { k: "idle" }
   | { k: "choosing" }
   | { k: "ritual"; type: OfferingType }
+  | { k: "fly"; type: OfferingType }
   | { k: "done"; type: OfferingType }
   | { k: "today" }
   | { k: "error" };
@@ -69,24 +87,40 @@ export function MakeOffering({
   ];
 
   async function offer(type: OfferingType) {
+    // Bring the candle into view so the offering has somewhere to land.
+    document
+      .getElementById("altar-scene")
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
     setPhase({ k: "ritual", type });
+
     const write = ancestorId
       ? makeOfferingAction(ancestorId, type)
       : makeGuestOfferingAction(hash || "", type);
-    // Let the ritual play out fully even if the write returns fast.
+    const ritualLength = type === "ancestor_money" ? BURN_MS : RITUAL_MS;
     const [res] = await Promise.all([
       write,
-      new Promise((r) => setTimeout(r, RITUAL_MS)),
+      new Promise((r) => setTimeout(r, ritualLength)),
     ]);
     if (!res.ok) {
       setPhase({ k: res.code === "today" ? "today" : "error" });
       return;
     }
-    setPhase({ k: "done", type });
-    setTimeout(() => {
-      setPhase({ k: "today" });
-      router.refresh();
-    }, DONE_MS - RITUAL_MS);
+
+    // Start fetching the refreshed page (with the offering beside the
+    // candle) while the closing animation plays over it.
+    router.refresh();
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (type === "ancestor_money" || reduced) {
+      setPhase({ k: "done", type });
+      setTimeout(() => setPhase({ k: "today" }), DONE_HOLD_MS);
+    } else {
+      setPhase({ k: "fly", type });
+      setTimeout(() => setPhase({ k: "today" }), FLY_MS + 650);
+    }
   }
 
   const doneKey: Record<OfferingType, string> = {
@@ -140,11 +174,14 @@ export function MakeOffering({
         </div>
       )}
 
-      {(phase.k === "ritual" || phase.k === "done") && (
+      {(phase.k === "ritual" || phase.k === "fly" || phase.k === "done") && (
         <OfferingRitual
-          type={phase.k === "ritual" ? phase.type : phase.type}
+          type={phase.type}
+          flying={phase.k === "fly"}
           doneLine={
-            phase.k === "done" ? t(doneKey[phase.type], { name }) : null
+            phase.k === "done" || phase.k === "fly"
+              ? t(doneKey[phase.type], { name })
+              : null
           }
         />
       )}
@@ -162,21 +199,64 @@ export function MakeOffering({
   );
 }
 
-/** Full-screen dimmed ritual moment. */
+/**
+ * Full-screen dimmed ritual moment. When `flying` flips true the dim
+ * clears and the offering glides down to its landing spot beside the
+ * candle (bottom-aligned next to the .candle-wrapper in #altar-scene).
+ */
 function OfferingRitual({
   type,
+  flying,
   doneLine,
 }: {
   type: OfferingType;
+  flying: boolean;
   doneLine: string | null;
 }) {
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!flying) return;
+    const el = itemRef.current;
+    const candle = document.querySelector<HTMLElement>(
+      "#altar-scene .candle-wrapper",
+    );
+    if (!el || !candle) return;
+
+    const r = el.getBoundingClientRect();
+    const c = candle.getBoundingClientRect();
+    const scale = LAND_H[type] / r.height;
+    const finalW = r.width * scale;
+    const gap = 14;
+    const targetCenterX =
+      LAND_SIDE[type] === "left"
+        ? c.left - gap - finalW / 2
+        : c.right + gap + finalW / 2;
+    const targetBottom = c.bottom - 4;
+
+    const dx = targetCenterX - (r.left + r.width / 2);
+    const dy = targetBottom - r.bottom;
+
+    // Two-frame handoff so the transition actually animates.
+    requestAnimationFrame(() => {
+      el.style.transition = `transform ${FLY_MS}ms cubic-bezier(0.3, 0.7, 0.25, 1)`;
+      el.style.transformOrigin = "50% 100%";
+      el.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+    });
+  }, [flying, type]);
+
   return (
-    <div className="offer-overlay" role="status">
+    <div
+      className={`offer-overlay ${flying ? "offer-overlay-clear" : ""}`}
+      role="status"
+    >
       <div className="offer-stage">
-        {type === "water" && <WaterRitual />}
-        {type === "flowers" && <FlowersRitual />}
-        {type === "coffee" && <CoffeeRitual />}
-        {type === "ancestor_money" && <MoneyRitual />}
+        <div ref={itemRef} style={{ willChange: "transform" }}>
+          {type === "water" && <WaterRitual />}
+          {type === "flowers" && <FlowersRitual />}
+          {type === "coffee" && <CoffeeRitual still={flying} />}
+          {type === "ancestor_money" && <MoneyRitual />}
+        </div>
       </div>
       {doneLine && <p className="offer-done-line invocation">{doneLine}</p>}
     </div>
@@ -202,22 +282,24 @@ function FlowersRitual() {
   );
 }
 
-function CoffeeRitual() {
+function CoffeeRitual({ still }: { still?: boolean }) {
   return (
     <div className="relative">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/offerings/coffee.webp" alt="" aria-hidden className="offer-settle h-32 w-auto" />
-      <svg
-        viewBox="0 0 160 90"
-        className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-24"
-        aria-hidden
-      >
-        <g stroke="rgba(230,223,210,0.55)" strokeWidth="3" fill="none" strokeLinecap="round">
-          <path className="offer-steam" d="M62 86 Q56 66 64 50 Q70 38 64 22" />
-          <path className="offer-steam" style={{ animationDelay: "0.5s" }} d="M82 86 Q88 64 80 48 Q74 36 80 20" />
-          <path className="offer-steam" style={{ animationDelay: "1s" }} d="M100 86 Q94 68 102 52" />
-        </g>
-      </svg>
+      {!still && (
+        <svg
+          viewBox="0 0 160 90"
+          className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-24"
+          aria-hidden
+        >
+          <g stroke="rgba(230,223,210,0.55)" strokeWidth="3" fill="none" strokeLinecap="round">
+            <path className="offer-steam" d="M62 86 Q56 66 64 50 Q70 38 64 22" />
+            <path className="offer-steam" style={{ animationDelay: "0.5s" }} d="M82 86 Q88 64 80 48 Q74 36 80 20" />
+            <path className="offer-steam" style={{ animationDelay: "1s" }} d="M100 86 Q94 68 102 52" />
+          </g>
+        </svg>
+      )}
     </div>
   );
 }

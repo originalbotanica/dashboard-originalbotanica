@@ -1171,13 +1171,33 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
   gap: 1.75rem;
+}
+/* Dim lives on a backdrop layer so it can clear while the offering
+   itself stays fully visible as it flies down to the altar. */
+.offer-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background:
     radial-gradient(ellipse at center, rgba(6, 4, 2, 0.82) 0%, rgba(2, 1, 1, 0.96) 78%);
   animation: offer-dim-in 0.7s ease both;
 }
+.offer-overlay > * {
+  position: relative;
+}
 @keyframes offer-dim-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+/* The room comes back as the offering settles into place. */
+.offer-overlay-clear {
+  pointer-events: none;
+}
+.offer-overlay-clear::before {
+  animation: offer-dim-out 0.8s ease forwards;
+}
+@keyframes offer-dim-out {
+  to { opacity: 0; }
 }
 .offer-stage {
   position: relative;

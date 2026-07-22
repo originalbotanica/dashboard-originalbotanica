@@ -41,7 +41,9 @@ export function CandleWithOfferings({
   const right = active.filter((t) => OFFERING_IMG[t].side === "right");
 
   return (
-    <div className="flex items-end justify-center gap-3 md:gap-5">
+    // The id lets the offering ritual fly the chosen item down to land
+    // beside this candle (see make-offering.tsx).
+    <div id="altar-scene" className="flex items-end justify-center gap-3 md:gap-5">
       {left.length > 0 && (
         <div className="flex items-end gap-2 md:gap-3 pb-1">
           {left.map((t) => (
