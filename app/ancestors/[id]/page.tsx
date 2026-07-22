@@ -2,8 +2,9 @@ import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { Candle } from "@/components/candle";
+import { CandleWithOfferings } from "@/components/altar-offerings";
 import { MakeOffering } from "@/components/make-offering";
+import type { OfferingType } from "@/app/ancestors/actions";
 import { MemorialForm } from "@/components/memorial-form";
 import { ShareMemorialLink } from "@/components/share-memorial-link";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
@@ -63,31 +64,46 @@ export default async function MemorialDetailPage({
   const locale = await getLocale();
   const dates = formatDates(memorial.birth_date, memorial.death_date, locale);
 
-  // Offerings on this memorial: total, most recent, and whether the
-  // owner has already made today's offering (rolling 24h).
-  const [{ count: offeringCount }, { data: lastOffering }, { count: mineToday }] =
-    await Promise.all([
-      supabase
-        .from("ancestor_offerings")
-        .select("id", { count: "exact", head: true })
-        .eq("ancestor_id", id),
-      supabase
-        .from("ancestor_offerings")
-        .select("created_at")
-        .eq("ancestor_id", id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-      supabase
-        .from("ancestor_offerings")
-        .select("id", { count: "exact", head: true })
-        .eq("ancestor_id", id)
-        .eq("user_id", user.id)
-        .gte("created_at", new Date(Date.now() - 86_400_000).toISOString()),
-    ]);
+  // Offerings on this memorial: total, most recent, what's actively on
+  // the altar (last 7 days), and whether the owner already offered today.
+  const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  const [
+    { count: offeringCount },
+    { data: lastOffering },
+    { data: recentOfferings },
+    { count: mineToday },
+  ] = await Promise.all([
+    supabase
+      .from("ancestor_offerings")
+      .select("id", { count: "exact", head: true })
+      .eq("ancestor_id", id),
+    supabase
+      .from("ancestor_offerings")
+      .select("created_at")
+      .eq("ancestor_id", id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("ancestor_offerings")
+      .select("offering_type")
+      .eq("ancestor_id", id)
+      .gte("created_at", weekAgo)
+      .order("created_at", { ascending: false })
+      .limit(40),
+    supabase
+      .from("ancestor_offerings")
+      .select("id", { count: "exact", head: true })
+      .eq("ancestor_id", id)
+      .eq("user_id", user.id)
+      .gte("created_at", new Date(Date.now() - 86_400_000).toISOString()),
+  ]);
   const lastLine = lastOffering
     ? lastOfferingLine(lastOffering.created_at, locale)
     : null;
+  const activeOfferings = [
+    ...new Set((recentOfferings ?? []).map((o) => o.offering_type as OfferingType)),
+  ];
 
   return (
     <main className="min-h-screen">
@@ -102,11 +118,11 @@ export default async function MemorialDetailPage({
 
       {/* Memorial hero */}
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-12 text-center">
-        <Candle
-          size="large"
+        <CandleWithOfferings
           lit={!!memorial.flame_lit}
           photoUrl={memorial.photo_url}
           alt={`Candle for ${memorial.name}`}
+          offerings={activeOfferings}
         />
         <h1 className="display text-3xl md:text-4xl mt-8 mb-2 leading-tight">
           {memorial.name}

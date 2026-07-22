@@ -3,9 +3,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { Candle } from "@/components/candle";
+import { CandleWithOfferings } from "@/components/altar-offerings";
 import { MakeOffering } from "@/components/make-offering";
-import { addLightAction } from "../../ancestors/actions";
+import { addLightAction, type OfferingType } from "../../ancestors/actions";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/dictionary";
@@ -66,12 +66,25 @@ export default async function PublicMemorialPage({
   const locale = await getLocale();
   const dates = formatDates(memorial.birth_date, memorial.death_date, locale);
 
-  // Family offerings: total count, plus whether this browser already
-  // offered today (same cookie the guest offering action sets).
-  const { count: offeringCount } = await admin
-    .from("ancestor_offerings")
-    .select("id", { count: "exact", head: true })
-    .eq("ancestor_id", memorial.id);
+  // Family offerings: total count, what's actively on the altar (last
+  // 7 days), plus whether this browser already offered today (same
+  // cookie the guest offering action sets).
+  const [{ count: offeringCount }, { data: recentOfferings }] = await Promise.all([
+    admin
+      .from("ancestor_offerings")
+      .select("id", { count: "exact", head: true })
+      .eq("ancestor_id", memorial.id),
+    admin
+      .from("ancestor_offerings")
+      .select("offering_type")
+      .eq("ancestor_id", memorial.id)
+      .gte("created_at", new Date(Date.now() - 7 * 86_400_000).toISOString())
+      .order("created_at", { ascending: false })
+      .limit(40),
+  ]);
+  const activeOfferings = [
+    ...new Set((recentOfferings ?? []).map((o) => o.offering_type as OfferingType)),
+  ];
   const jar = await cookies();
   const offeredToday = !!jar.get(`ob_off_${hash}`);
 
@@ -112,11 +125,11 @@ export default async function PublicMemorialPage({
       </header>
 
       <section className="max-w-2xl mx-auto px-6 pt-16 pb-16 text-center">
-        <Candle
-          size="large"
+        <CandleWithOfferings
           lit={!!memorial.flame_lit}
           photoUrl={memorial.photo_url}
           alt={`Candle for ${memorial.name}`}
+          offerings={activeOfferings}
         />
 
         <p className="eyebrow mt-10 mb-3">{t(locale, "cand.inMemoryOf")}</p>

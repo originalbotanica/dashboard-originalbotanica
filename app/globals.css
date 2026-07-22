@@ -1240,11 +1240,25 @@ h1, h2, h3, h4, h5, h6 {
   to { opacity: 1; }
 }
 
-/* Ancestor money: the sheet is consumed from the bottom up. */
+/* Any offering settling onto the altar: rises gently into place. */
+.offer-settle {
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  animation: offer-settle-in 1.6s cubic-bezier(0.2, 0.6, 0.25, 1) 0.4s forwards;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.55));
+}
+@keyframes offer-settle-in {
+  to { opacity: 1; transform: none; }
+}
+
+/* Ancestor money: the stack of bills is consumed from the bottom up. */
 .offer-money {
   position: relative;
-  width: 7rem;
-  height: 10rem;
+  width: 15rem;
+  height: 8rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 .offer-money-sheet {
   animation: offer-money-burn 2.6s cubic-bezier(0.4, 0.1, 0.7, 0.9) 0.7s forwards;
@@ -1296,6 +1310,7 @@ h1, h2, h3, h4, h5, h6 {
 @media (prefers-reduced-motion: reduce) {
   .offer-overlay,
   .offer-done-line,
+  .offer-settle,
   .offer-water,
   .offer-bloom,
   .offer-stems,
@@ -1305,6 +1320,7 @@ h1, h2, h3, h4, h5, h6 {
   .offer-ember {
     animation: none;
   }
+  .offer-settle { opacity: 1; transform: none; }
   .offer-water { transform: translateY(24px); }
   .offer-bloom { opacity: 1; transform: none; }
   .offer-stems { opacity: 1; }
