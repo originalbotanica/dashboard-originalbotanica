@@ -290,7 +290,7 @@ export default async function HomePage({
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(13,10,7,0.6) 0%, rgba(13,10,7,0.2) 45%, rgba(13,10,7,0) 100%)",
+                  "linear-gradient(90deg, rgba(13,10,7,0.9) 0%, rgba(13,10,7,0.78) 45%, rgba(13,10,7,0.4) 75%, rgba(13,10,7,0.15) 100%)",
               }}
             />
           </div>
@@ -326,14 +326,14 @@ export default async function HomePage({
                 {tr("lp.heroCta")}
               </Link>
             </div>
-            <p className="text-xs text-[#b9b0a2] mt-5 leading-relaxed max-w-xs">
+            <p className="text-xs text-[#e6dfd2] mt-5 leading-relaxed max-w-xs" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.7)" }}>
               {tr("lp.heroMicro")}{" "}
-              <Link href="/gift" className="hover:underline" style={{ color: GOLD }}>
+              <Link href="/gift" className="hover:underline" style={{ color: "#d4b578", textShadow: "0 1px 3px rgba(0,0,0,0.7)" }}>
                 {tr("lp.heroGift")}
               </Link>
             </p>
-            <p className="text-xs text-[#b9b0a2] mt-2 leading-relaxed max-w-xs">
-              <Link href="/redeem" className="hover:underline" style={{ color: GOLD }}>
+            <p className="text-xs mt-2 leading-relaxed max-w-xs">
+              <Link href="/redeem" className="hover:underline" style={{ color: "#d4b578", textShadow: "0 1px 3px rgba(0,0,0,0.7)" }}>
                 {tr("lp.heroRedeem")}
               </Link>
             </p>
