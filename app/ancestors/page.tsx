@@ -3,8 +3,9 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { Candle } from "@/components/candle";
+import { CandleWithOfferings } from "@/components/altar-offerings";
 import { MemberNav } from "@/components/member-nav";
+import type { OfferingType } from "@/app/ancestors/actions";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/dictionary";
@@ -49,6 +50,24 @@ export default async function AncestorsHubPage() {
 
   const list = memorials || [];
   const locale = await getLocale();
+
+  // Active offerings (last 7 days) for every memorial, in one query,
+  // so each candle on the altar shows what's been set beside it.
+  const offeringsByMemorial = new Map<string, OfferingType[]>();
+  if (list.length > 0) {
+    const { data: recent } = await supabase
+      .from("ancestor_offerings")
+      .select("ancestor_id, offering_type")
+      .in("ancestor_id", list.map((m) => m.id))
+      .gte("created_at", new Date(Date.now() - 7 * 86_400_000).toISOString());
+    for (const o of recent ?? []) {
+      const arr = offeringsByMemorial.get(o.ancestor_id) ?? [];
+      if (!arr.includes(o.offering_type as OfferingType)) {
+        arr.push(o.offering_type as OfferingType);
+      }
+      offeringsByMemorial.set(o.ancestor_id, arr);
+    }
+  }
 
   return (
     <main className="min-h-screen relative">
@@ -99,10 +118,12 @@ export default async function AncestorsHubPage() {
                 href={`/ancestors/${m.id}`}
                 className="group flex flex-col items-center text-center"
               >
-                <Candle
+                <CandleWithOfferings
+                  size="default"
                   lit={!!m.flame_lit}
                   photoUrl={m.photo_url}
                   alt={`Candle for ${m.name}`}
+                  offerings={offeringsByMemorial.get(m.id) ?? []}
                 />
                 <p className="display text-base mt-6 group-hover:text-[var(--accent)] transition-colors">
                   {m.name}
