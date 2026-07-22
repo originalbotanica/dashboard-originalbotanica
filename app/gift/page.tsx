@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { GiftForm } from "@/components/gift-form";
 
 export const metadata = {
@@ -19,8 +20,14 @@ export default async function GiftPage({
       {/* Light public header */}
       <header className="border-b border-[var(--border)]">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="display text-lg tracking-wide text-[var(--foreground)]">
-            Original Botanica
+          <Link href="/" className="flex items-center leading-none">
+            <Image
+              src="/logo-ob-white-banner.png"
+              alt="Original Botanica"
+              width={70}
+              height={50}
+              className="h-auto w-[60px] md:w-[70px]"
+            />
           </Link>
           <Link href="/redeem" className="nav-link text-[var(--foreground-muted)] hover:text-[var(--accent)]">
             Redeem a gift
