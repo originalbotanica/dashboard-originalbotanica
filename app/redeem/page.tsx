@@ -58,7 +58,7 @@ export default async function RedeemPage({
               Create one
             </Link>{" "}
             or{" "}
-            <Link href={`/login?next=${encodeURIComponent(next)}`} className="text-[var(--accent)] hover:underline">
+            <Link href={`/login?redirectTo=${encodeURIComponent(next)}`} className="text-[var(--accent)] hover:underline">
               sign in
             </Link>
             .

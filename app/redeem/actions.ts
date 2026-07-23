@@ -30,7 +30,9 @@ export async function redeemGift(formData: FormData) {
 
   // Must be signed in to attach the gift to an account.
   if (!user) {
-    redirect(`/login?next=${encodeURIComponent(`/redeem?code=${code}`)}`);
+    // Gift recipients are usually brand new — welcome them with a
+    // gift-flavored signup (it links to sign-in for existing members).
+    redirect(`/signup?next=${encodeURIComponent(`/redeem?code=${code}`)}`);
   }
 
   // Throttle redemption attempts to make code guessing impractical, keyed on
