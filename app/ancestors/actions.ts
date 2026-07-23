@@ -2,12 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { randomBytes } from "crypto";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { containsProhibitedLanguage } from "@/lib/moderation";
+import { localMidnight } from "@/lib/altar/altar";
 
 /** How many new memorials a member may add in a rolling 24-hour window.
  *  Memorials are lasting records, so this is purely an anti-spam guard;
@@ -267,8 +268,10 @@ export async function makeOfferingAction(
     .maybeSingle();
   if (!memorial) return { ok: false, code: "error" };
 
-  // One offering per memorial per day (rolling 24h) per member.
-  const since = new Date(Date.now() - 86_400_000).toISOString();
+  // One offering per memorial per calendar day per member — resets at
+  // the member's own midnight, like the candle-lighting limit.
+  const memberTz = (await headers()).get("x-vercel-ip-timezone");
+  const since = localMidnight(memberTz).toISOString();
   const { count } = await supabase
     .from("ancestor_offerings")
     .select("id", { count: "exact", head: true })
@@ -320,8 +323,17 @@ export async function makeGuestOfferingAction(
   });
   if (error) return { ok: false, code: "error" };
 
+  // The cookie lapses at the visitor's next local midnight, so "one a
+  // day" means the calendar day, not a rolling 24 hours.
+  const visitorTz = (await headers()).get("x-vercel-ip-timezone");
+  const untilMidnight = Math.max(
+    60,
+    Math.floor(
+      (localMidnight(visitorTz).getTime() + 86_400_000 - Date.now()) / 1000,
+    ),
+  );
   jar.set(cookieKey, "1", {
-    maxAge: 60 * 60 * 24,
+    maxAge: untilMidnight,
     httpOnly: true,
     sameSite: "lax",
     path: "/",

@@ -8,6 +8,8 @@ import type { OfferingType } from "@/app/ancestors/actions";
 import { MemorialForm } from "@/components/memorial-form";
 import { ShareMemorialLink } from "@/components/share-memorial-link";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
+import { headers } from "next/headers";
+import { localMidnight } from "@/lib/altar/altar";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/dictionary";
@@ -96,7 +98,10 @@ export default async function MemorialDetailPage({
       .select("id", { count: "exact", head: true })
       .eq("ancestor_id", id)
       .eq("user_id", user.id)
-      .gte("created_at", new Date(Date.now() - 86_400_000).toISOString()),
+      .gte(
+        "created_at",
+        localMidnight((await headers()).get("x-vercel-ip-timezone")).toISOString(),
+      ),
   ]);
   const lastLine = lastOffering
     ? lastOfferingLine(lastOffering.created_at, locale)

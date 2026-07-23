@@ -44,7 +44,7 @@ export const ALTAR_DAILY_LIMIT = 5;
 /** Midnight today in the given IANA timezone, as an absolute instant.
  *  Falls back to America/New_York (the botanica's home) if the zone is
  *  missing or invalid. */
-function localMidnight(tz?: string | null): Date {
+export function localMidnight(tz?: string | null): Date {
   const zone = tz || "America/New_York";
   const now = new Date();
   let parts: string;
