@@ -86,6 +86,12 @@ export default async function SignupPage({
             Sign in
           </Link>
         </p>
+        <p className="text-[var(--foreground-muted)] text-center text-sm mt-2">
+          Received a gift?{" "}
+          <Link href="/redeem" className="text-[var(--accent)] hover:underline">
+            Redeem your code
+          </Link>
+        </p>
       </div>
     </main>
   );
