@@ -4,12 +4,26 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { normalizeGiftCode } from "@/lib/gift";
+import { redeemCodeForUser } from "@/lib/gift-redeem";
 
 /** Only allow same-site relative paths as a post-signup destination. */
 function safeNext(raw: string): string | null {
   if (!raw) return null;
   if (!raw.startsWith("/") || raw.startsWith("//")) return null;
   return raw;
+}
+
+/** If the post-signup destination is the redeem page with a code, pull
+ *  the code out so we can redeem it for the new account automatically. */
+function giftCodeFromNext(next: string | null): string | null {
+  if (!next || !next.startsWith("/redeem")) return null;
+  try {
+    const url = new URL(next, "https://x.invalid");
+    return normalizeGiftCode(url.searchParams.get("code") || "");
+  } catch {
+    return null;
+  }
 }
 
 export async function signupAction(formData: FormData) {
@@ -45,10 +59,25 @@ export async function signupAction(formData: FormData) {
 
   revalidatePath("/", "layout");
   // Email confirmation is off, so signUp returns a session and the member is
-  // signed in immediately. Gift recipients continue straight to redeeming
-  // their code; everyone else goes into onboarding. (Profile setup still
-  // gates the member area, so gift redeemers are onboarded right after.)
+  // signed in immediately. A gift recipient arriving from the redeem flow
+  // already typed their code, so redeem it for them right here — account
+  // creation IS the claim. Then straight into onboarding. If the code turns
+  // out to be bad, land them back on the redeem page with the reason.
   if (data.session) {
+    const giftCode = giftCodeFromNext(next);
+    if (giftCode && data.session.user) {
+      const ip =
+        hdrs.get("x-forwarded-for")?.split(",")[0].trim() ||
+        hdrs.get("x-real-ip")?.trim() ||
+        "unknown";
+      const err = await redeemCodeForUser(data.session.user.id, giftCode, ip);
+      if (err) {
+        redirect(
+          `/redeem?code=${encodeURIComponent(giftCode)}&error=${encodeURIComponent(err)}`,
+        );
+      }
+      redirect("/profile-setup");
+    }
     redirect(next || "/profile-setup");
   }
   redirect(
