@@ -1,0 +1,115 @@
+"use client";
+
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useT } from "./locale-provider";
+import { submitFeedbackAction } from "@/app/feedback/actions";
+
+/**
+ * The quiet "Share your thoughts" box — a small floating link in the
+ * member area that opens a card, saves the member's words to
+ * member_feedback, and thanks them warmly.
+ *
+ * TO REMOVE AT LAUNCH: set FEEDBACK_ENABLED to false. That's it — the
+ * button disappears everywhere and all collected feedback stays safe in
+ * the database.
+ */
+const FEEDBACK_ENABLED = true;
+
+/** Member surfaces only — marketing pages never show the box. */
+const MEMBER_PREFIXES = [
+  "/dashboard",
+  "/altar",
+  "/ancestors",
+  "/tarot",
+  "/astrology",
+  "/dreams",
+  "/rituals",
+  "/calendar",
+  "/account",
+];
+
+export function FeedbackBox() {
+  const pathname = usePathname() || "/";
+  const t = useT();
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">(
+    "idle",
+  );
+
+  if (!FEEDBACK_ENABLED) return null;
+  if (!MEMBER_PREFIXES.some((p) => pathname.startsWith(p))) return null;
+
+  async function send() {
+    if (!message.trim() || state === "sending") return;
+    setState("sending");
+    const res = await submitFeedbackAction(message, pathname);
+    if (res.ok) {
+      setState("done");
+      setMessage("");
+      setTimeout(() => {
+        setOpen(false);
+        setState("idle");
+      }, 2600);
+    } else {
+      setState("error");
+    }
+  }
+
+  return (
+    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end">
+      {open && (
+        <div className="mb-2 w-[19rem] rounded-lg border border-[var(--border-strong)] bg-[var(--background)] shadow-2xl p-4">
+          {state === "done" ? (
+            <p className="invocation text-sm text-[var(--accent)] leading-relaxed py-2">
+              {t("fb.thanks")}
+            </p>
+          ) : (
+            <>
+              <p className="text-sm text-[var(--foreground-muted)] leading-relaxed mb-3">
+                {t("fb.prompt")}
+              </p>
+              <textarea
+                rows={4}
+                maxLength={4000}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder={t("fb.placeholder")}
+                className="form-input text-sm"
+                autoFocus
+              />
+              {state === "error" && (
+                <p className="form-error mt-2 text-xs">{t("fb.error")}</p>
+              )}
+              <div className="flex items-center justify-end gap-3 mt-3">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="nav-link text-xs text-[var(--foreground-subtle)] hover:text-[var(--accent)]"
+                >
+                  {t("fb.close")}
+                </button>
+                <button
+                  type="button"
+                  onClick={send}
+                  disabled={!message.trim() || state === "sending"}
+                  className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
+                >
+                  {state === "sending" ? t("fb.sending") : t("fb.send")}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="rounded-full border border-[var(--border-strong)] bg-[var(--surface)] px-4 py-2 text-xs text-[var(--foreground-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors shadow-lg"
+      >
+        {t("fb.link")}
+      </button>
+    </div>
+  );
+}

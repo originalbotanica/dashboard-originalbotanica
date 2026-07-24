@@ -188,6 +188,15 @@ const en: Dict = {
   "footer.tagline": "Spiritual products · The Bronx, since 1959",
   "footer.fromOB": "from Original Botanica",
   "footer.callPhone": "Call {phone}",
+  // member feedback box
+  "fb.link": "Share your thoughts",
+  "fb.prompt": "What's working? What's missing? We read every word, and it shapes what we build next.",
+  "fb.placeholder": "Speak freely...",
+  "fb.send": "Send",
+  "fb.sending": "Sending…",
+  "fb.close": "Not now",
+  "fb.thanks": "Received, with thanks. Your words help us tend this place.",
+  "fb.error": "That didn't go through. Please try again in a moment.",
   // moon strip
   "moon.in": "in",
   "moon.litSuffix": "% lit",
@@ -980,6 +989,15 @@ const es: Dict = {
   "footer.tagline": "Productos espirituales · El Bronx, desde 1959",
   "footer.fromOB": "de Original Botanica",
   "footer.callPhone": "Llama al {phone}",
+  // member feedback box
+  "fb.link": "Comparte tu opinión",
+  "fb.prompt": "¿Qué funciona? ¿Qué falta? Leemos cada palabra, y guía lo que construimos.",
+  "fb.placeholder": "Habla con confianza...",
+  "fb.send": "Enviar",
+  "fb.sending": "Enviando…",
+  "fb.close": "Ahora no",
+  "fb.thanks": "Recibido, con gratitud. Tus palabras nos ayudan a cuidar este lugar.",
+  "fb.error": "No se pudo enviar. Inténtalo de nuevo en un momento.",
   // moon strip
   "moon.in": "en",
   "moon.litSuffix": "% iluminada",

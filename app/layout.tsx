@@ -3,6 +3,7 @@ import { Lora, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteFooter } from "@/components/site-footer";
+import { FeedbackBox } from "@/components/feedback-box";
 import { LocaleProvider } from "@/components/locale-provider";
 import { getLocale } from "@/lib/i18n/server";
 import "./globals.css";
@@ -101,6 +102,7 @@ export default async function RootLayout({
         <LocaleProvider locale={locale}>
           {children}
           <SiteFooter />
+          <FeedbackBox />
         </LocaleProvider>
         <Analytics />
         <SpeedInsights />
