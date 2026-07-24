@@ -26,7 +26,7 @@ export async function submitFeedbackAction(
   if (!limit.ok) return { ok: false };
 
   const hdrs = await headers();
-  const safePage = (page || hdrs.get("referer") || "").slice(0, 200);
+  const safePage = (page || hdrs.get("referer") || "").slice(0, 500);
 
   const { error } = await supabase.from("member_feedback").insert({
     user_id: user.id,

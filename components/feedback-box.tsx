@@ -44,7 +44,9 @@ export function FeedbackBox() {
   async function send() {
     if (!message.trim() || state === "sending") return;
     setState("sending");
-    const res = await submitFeedbackAction(message, pathname);
+    // Record the exact URL (including the specific candle, memorial,
+    // etc.) so feedback can always be traced to the page it came from.
+    const res = await submitFeedbackAction(message, window.location.href);
     if (res.ok) {
       setState("done");
       setMessage("");
