@@ -5,7 +5,7 @@ import { t } from "@/lib/i18n/dictionary";
 export const metadata = {
   title: "Member discount",
   description:
-    "10% off everything at originalbotanica.com. Applied automatically at checkout when you sign in.",
+    "20% off everything at originalbotanica.com. Applied automatically at checkout when you sign in.",
 };
 
 const OB_CDN = "https://dlkhclkmyx18n.cloudfront.net";

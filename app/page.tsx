@@ -9,7 +9,7 @@ import { t } from "@/lib/i18n/dictionary";
 /**
  * Marketing homepage (logged out) — Jimmy's landing design.
  * Black + gold, sacred-geometry backdrop, wordmark hero, intro card,
- * six photo tiles, 10%-off banner, heritage block. EN/ES.
+ * six photo tiles, 20%-off banner, heritage block. EN/ES.
  * Photo assets are CDN stand-ins until the designer's exports arrive.
  */
 
@@ -21,7 +21,7 @@ const GOLD_SOFT = "rgba(210, 172, 102, 0.55)";
 
 const OG_IMAGE = `${OB_CDN}/Banners/original-botanica.png`;
 const OG_DESC =
-  "A 7-day free trial into Original Botanica's spiritual membership: daily tarot, your birth chart, dream interpretation, a virtual altar, an ancestors altar, hundreds of rituals, plus 10% off everything at the botanica. A real Bronx botanica, serving practitioners since 1959.";
+  "A 7-day free trial into Original Botanica's spiritual membership: daily tarot, your birth chart, dream interpretation, a virtual altar, an ancestors altar, hundreds of rituals, plus 20% off everything at the botanica. A real Bronx botanica, serving practitioners since 1959.";
 
 export const metadata = {
   title: "The Practice: your virtual spiritual home",
@@ -275,7 +275,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ── 10% off banner + primary CTA ────────────────────────────── */}
+      {/* ── 20% off banner + primary CTA ────────────────────────────── */}
       <section className="px-6 py-8">
         <div className="relative isolate max-w-[1400px] mx-auto rounded-md border border-[#b08d52]/60 overflow-hidden">
           <div className="absolute inset-0 -z-10">
