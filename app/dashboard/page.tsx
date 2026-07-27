@@ -314,16 +314,25 @@ export default async function DashboardPage() {
             priority
             sizes="100vw"
             className="object-cover"
+            style={{ objectPosition: "center 40%" }}
           />
-          {/* The photograph holds the left; the right falls to black so the
-              date and greeting read like an inscription. */}
+          {/* Desktop: the photograph holds the left and the right falls to
+              black, so the date and greeting read like an inscription. */}
           <div
             aria-hidden
-            className="absolute inset-0"
+            className="hidden md:block absolute inset-0"
             style={{
               background:
                 "linear-gradient(90deg, rgba(8,6,4,0.35) 0%, rgba(8,6,4,0.45) 38%, rgba(8,6,4,0.88) 56%, #060504 68%, #060504 100%)",
             }}
+          />
+          {/* Phones: the words stack over the photograph, so the veil is
+              even rather than side-to-side (a sideways fade would hide the
+              image entirely at that width). */}
+          <div
+            aria-hidden
+            className="md:hidden absolute inset-0"
+            style={{ background: "rgba(8,6,4,0.62)" }}
           />
           <div className="relative max-w-6xl mx-auto px-6 py-12 md:py-16 grid md:grid-cols-2 gap-10 md:gap-6 items-center">
             {/* The lockup */}
@@ -348,7 +357,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* The day */}
-            <div className="text-center">
+            <div className="text-center border-t border-[var(--accent)]/30 pt-8 md:border-t-0 md:pt-0">
               {sunSign && (
                 <p
                   className="text-4xl md:text-5xl text-[var(--accent)] mb-4 leading-none"
