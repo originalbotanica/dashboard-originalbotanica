@@ -92,7 +92,7 @@ export default async function ForecastPage() {
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{monthLabel}</p>
+          <p className="sublabel text-xs hidden sm:block">{monthLabel}</p>
         </div>
       </header>
 

@@ -60,9 +60,12 @@ export function FeedbackBox() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end">
+    <div
+      className="fixed right-3 md:right-4 z-40 flex flex-col items-end"
+      style={{ bottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+    >
       {open && (
-        <div className="mb-2 w-[19rem] rounded-lg border border-[var(--border-strong)] bg-[var(--background)] shadow-2xl p-4">
+        <div className="mb-2 w-[min(19rem,calc(100vw-1.5rem))] rounded-lg border border-[var(--border-strong)] bg-[var(--background)] shadow-2xl p-4">
           {state === "done" ? (
             <p className="invocation text-sm text-[var(--accent)] leading-relaxed py-2">
               {t("fb.thanks")}
@@ -108,9 +111,12 @@ export function FeedbackBox() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-full border border-[var(--border-strong)] bg-[var(--surface)] px-4 py-2 text-xs text-[var(--foreground-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors shadow-lg"
+        aria-label={t("fb.link")}
+        className="rounded-full border border-[var(--border-strong)] bg-[var(--surface)]/90 backdrop-blur px-3 py-1.5 md:px-4 md:py-2 text-[0.7rem] md:text-xs text-[var(--foreground-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors shadow-lg opacity-80 hover:opacity-100"
       >
-        {t("fb.link")}
+        {/* Compact on phones so it can't sit on top of a page's own button. */}
+        <span className="md:hidden">{t("fb.linkShort")}</span>
+        <span className="hidden md:inline">{t("fb.link")}</span>
       </button>
     </div>
   );

@@ -12,7 +12,7 @@ export default function TarotLoading() {
           <Link href="/dashboard" className="nav-link text-[var(--accent)]">
             ← Dashboard
           </Link>
-          <p className="sublabel text-xs">Daily tarot</p>
+          <p className="sublabel text-xs hidden sm:block">Daily tarot</p>
         </div>
       </header>
 

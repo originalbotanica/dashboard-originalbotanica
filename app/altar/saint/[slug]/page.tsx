@@ -51,7 +51,7 @@ export default async function SaintCandlePage({
           <Link href="/altar/virtual" className="nav-link text-[var(--accent)]">
             ← {t(locale, "nav.altar")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "saint.eyebrow")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "saint.eyebrow")}</p>
         </div>
       </header>
 

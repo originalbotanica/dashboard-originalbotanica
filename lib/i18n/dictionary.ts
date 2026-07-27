@@ -239,6 +239,7 @@ const en: Dict = {
   "footer.callPhone": "Call {phone}",
   // member feedback box
   "fb.link": "Share your thoughts",
+  "fb.linkShort": "Feedback",
   "fb.prompt": "What's working? What's missing? We read every word, and it shapes what we build next.",
   "fb.placeholder": "Speak freely...",
   "fb.send": "Send",
@@ -1089,6 +1090,7 @@ const es: Dict = {
   "footer.callPhone": "Llama al {phone}",
   // member feedback box
   "fb.link": "Comparte tu opinión",
+  "fb.linkShort": "Opinión",
   "fb.prompt": "¿Qué funciona? ¿Qué falta? Leemos cada palabra, y guía lo que construimos.",
   "fb.placeholder": "Habla con confianza...",
   "fb.send": "Enviar",

@@ -42,7 +42,7 @@ export default async function NewAncestorPage({
           <Link href="/ancestors" className="nav-link text-[var(--accent)]">
             ← {t(locale, "anc.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "anc.newSublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "anc.newSublabel")}</p>
         </div>
       </header>
 

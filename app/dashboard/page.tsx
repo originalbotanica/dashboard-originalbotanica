@@ -305,7 +305,10 @@ export default async function DashboardPage() {
 
       {/* ── Hero: Jimmy's band — the house on the left, the day on the
              right, one gold rule between them. ────────────────────────── */}
-      <section aria-label="Today" className="pt-16 md:pt-[4.5rem]">
+      {/* The nav floats translucent over the page, so the hero needs real
+          clearance beneath it — otherwise the lockup reads through the bar
+          on phones and looks like it's sitting above the header. */}
+      <section aria-label="Today" className="pt-24 md:pt-[4.5rem]">
         <div className="relative overflow-hidden">
           <Image
             src="/dashboard/hero.webp"

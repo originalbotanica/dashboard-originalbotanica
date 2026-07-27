@@ -117,7 +117,7 @@ export default async function MemorialDetailPage({
           <Link href="/ancestors" className="nav-link text-[var(--accent)]">
             ← {t(locale, "anc.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{memorial.name}</p>
+          <p className="sublabel text-xs hidden sm:block">{memorial.name}</p>
         </div>
       </header>
 

@@ -16,7 +16,7 @@ export default async function ForecastLoading() {
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "fc.loadSublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "fc.loadSublabel")}</p>
         </div>
       </header>
 

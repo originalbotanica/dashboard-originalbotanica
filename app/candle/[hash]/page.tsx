@@ -120,7 +120,7 @@ export default async function PublicMemorialPage({
               className="h-auto w-[60px] md:w-[70px]"
             />
           </Link>
-          <p className="sublabel text-xs">{t(locale, "cand.inMemory")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "cand.inMemory")}</p>
         </div>
       </header>
 

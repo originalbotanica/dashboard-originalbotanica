@@ -36,7 +36,7 @@ export default async function NewDreamPage() {
           <Link href="/dreams" className="nav-link text-[var(--accent)]">
             ← {t(locale, "dr.journalEyebrow")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "dr.newSublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "dr.newSublabel")}</p>
         </div>
       </header>
 

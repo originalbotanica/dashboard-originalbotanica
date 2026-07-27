@@ -82,7 +82,7 @@ export default async function CandleDetailPage({
           <Link href="/altar/virtual" className="nav-link text-[var(--accent)]">
             ← {t(locale, "altar.back")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "altar.candleSublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "altar.candleSublabel")}</p>
         </div>
       </header>
 

@@ -63,7 +63,7 @@ export default async function CompatibilityReadingPage({
           >
             ← {t(locale, "cmp.sublabel")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "cmp.youAnd", { name: reading.other_name })}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "cmp.youAnd", { name: reading.other_name })}</p>
         </div>
       </header>
 

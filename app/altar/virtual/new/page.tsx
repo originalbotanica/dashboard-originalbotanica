@@ -39,7 +39,7 @@ export default async function LightCandlePage({
           <Link href="/altar/virtual" className="nav-link text-[var(--accent)]">
             ← {t(locale, "altar.back")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "altar.lightSublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "altar.lightSublabel")}</p>
         </div>
       </header>
 

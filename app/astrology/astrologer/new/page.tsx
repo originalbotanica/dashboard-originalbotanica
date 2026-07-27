@@ -37,7 +37,7 @@ export default async function NewAstrologerReadingPage() {
           <Link href="/astrology/astrologer" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astrologer.sublabel")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "astrologer.newSublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "astrologer.newSublabel")}</p>
         </div>
       </header>
 

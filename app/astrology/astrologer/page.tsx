@@ -46,7 +46,7 @@ export default async function AstrologerHubPage() {
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "astrologer.sublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "astrologer.sublabel")}</p>
         </div>
       </header>
 

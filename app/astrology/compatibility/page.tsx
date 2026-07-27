@@ -80,7 +80,7 @@ export default async function CompatibilityHubPage({
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "cmp.sublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "cmp.sublabel")}</p>
         </div>
       </header>
 

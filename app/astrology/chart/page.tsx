@@ -64,7 +64,7 @@ export default async function ChartPage() {
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "chart.sublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "chart.sublabel")}</p>
         </div>
       </header>
 

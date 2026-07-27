@@ -73,7 +73,7 @@ export default async function RitualDetailPage({
           <Link href={backHref} className="nav-link text-[var(--accent)]">
             ← {purpose ? purposeLabel(purpose, locale) : t(locale, "rit.library")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "rit.ritualTag")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "rit.ritualTag")}</p>
         </div>
       </header>
 

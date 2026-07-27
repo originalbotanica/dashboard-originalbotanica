@@ -38,7 +38,7 @@ export default async function SavedRitualsPage() {
           <Link href="/rituals" className="nav-link text-[var(--accent)]">
             ← {t(locale, "rit.library")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "rit.savedSublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "rit.savedSublabel")}</p>
         </div>
       </header>
 

@@ -50,7 +50,7 @@ export default async function MoonGuidePage() {
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astro.eyebrow")}
           </Link>
-          <p className="sublabel text-xs">{t(locale, "moon.sublabel")}</p>
+          <p className="sublabel text-xs hidden sm:block">{t(locale, "moon.sublabel")}</p>
         </div>
       </header>
 
