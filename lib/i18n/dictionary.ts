@@ -114,6 +114,9 @@ const en: Dict = {
   "dash.lunarGuide": "The lunar guide",
   // dashboard v2 (banner cards)
   "dash2.title": "The Practice",
+  "dash2.the": "The",
+  "dash2.practice": "Practice",
+  "dash2.byOB": "by Original Botanica",
   "dash2.tagline": "Your virtual spiritual home",
   "dash2.tarotEyebrow": "Today's tarot",
   "dash2.tarotHeadline": "Your card is waiting.",
@@ -959,6 +962,9 @@ const es: Dict = {
   "dash.lunarGuide": "La guía lunar",
   // dashboard v2 (banner cards)
   "dash2.title": "The Practice",
+  "dash2.the": "The",
+  "dash2.practice": "Practice",
+  "dash2.byOB": "de Original Botanica",
   "dash2.tagline": "Tu hogar espiritual virtual",
   "dash2.tarotEyebrow": "El tarot de hoy",
   "dash2.tarotHeadline": "Tu carta te espera.",

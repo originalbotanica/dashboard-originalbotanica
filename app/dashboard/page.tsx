@@ -207,7 +207,7 @@ export default async function DashboardPage() {
     </Suspense>
   );
 
-  const restBanners = [
+  const tarotBanner = (
     <DashBanner
       key="tarot"
       image="/dashboard/tarot.webp"
@@ -217,7 +217,10 @@ export default async function DashboardPage() {
       body={tr("dash2.tarotBody")}
       href="/tarot"
       linkLabel={tr("dash2.tarotLink")}
-    />,
+    />
+  );
+
+  const dreamsBanner = (
     <DashBanner
       key="dreams"
       image="/dashboard/dreams.webp"
@@ -227,7 +230,10 @@ export default async function DashboardPage() {
       body={tr("dash2.dreamsBody")}
       href="/dreams/new"
       linkLabel={tr("dash2.dreamsLink")}
-    />,
+    />
+  );
+
+  const tailBanners = [
     <DashBanner
       key="rituals"
       image="/dashboard/rituals.webp"
@@ -262,14 +268,18 @@ export default async function DashboardPage() {
     />,
   ];
 
-  // Priority: a flame waiting to be charged outranks everything; an
-  // untended ancestor comes next; otherwise the stars lead the day.
-  const banners =
-    state.candlesToCharge > 0
-      ? [altarBanner, astrologyBanner, ancestorsBanner, ...restBanners]
-      : state.memorialsUntended > 0
-        ? [astrologyBanner, ancestorsBanner, altarBanner, ...restBanners]
-        : [astrologyBanner, altarBanner, ancestorsBanner, ...restBanners];
+  // Per Jason, a fixed order: astrologer, tarot, altar, ancestors, dreams,
+  // rituals, the discount. The cards still carry live state — what's
+  // waiting is said in the status line and colored in accent — but the
+  // page reads the same way every morning.
+  const banners = [
+    astrologyBanner,
+    tarotBanner,
+    altarBanner,
+    ancestorsBanner,
+    dreamsBanner,
+    ...tailBanners,
+  ];
 
   return (
     <main className="flex-1 relative">
@@ -295,48 +305,78 @@ export default async function DashboardPage() {
 
       <MemberNav variant="floating" />
 
-      {/* ── Hero: the day, the member, the house ─────────────────────── */}
-      <section
-        aria-label="Today"
-        className="px-6 pt-28 pb-12 md:pt-32 md:pb-16"
-      >
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-8 items-center">
-          <div className="text-center md:text-left">
-            <Image
-              src="/logo-ob-white-banner.png"
-              alt="Original Botanica"
-              width={200}
-              height={145}
-              priority
-              className="h-auto w-[150px] md:w-[190px] mx-auto md:mx-0 mb-6"
-            />
-            <p className="display text-3xl md:text-5xl leading-none tracking-wide">
-              {tr("dash2.title")}
-            </p>
-            <p className="eyebrow mt-3 text-[var(--foreground-muted)]">
-              {tr("dash2.tagline")}
-            </p>
-          </div>
-
-          <div className="text-center md:text-right md:border-l md:border-[var(--border)] md:pl-10">
-            {sunSign && (
-              <p className="display text-2xl md:text-3xl text-[var(--accent)] mb-2">
-                {signGlyph(sunSign)}
+      {/* ── Hero: Jimmy's band — the house on the left, the day on the
+             right, one gold rule between them. ────────────────────────── */}
+      <section aria-label="Today" className="pt-16 md:pt-[4.5rem]">
+        <div className="relative overflow-hidden">
+          <Image
+            src="/dashboard/hero.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          {/* The photograph holds the left; the right falls to black so the
+              date and greeting read like an inscription. */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(8,6,4,0.35) 0%, rgba(8,6,4,0.45) 38%, rgba(8,6,4,0.88) 56%, #060504 68%, #060504 100%)",
+            }}
+          />
+          <div className="relative max-w-6xl mx-auto px-6 py-12 md:py-16 grid md:grid-cols-2 gap-10 md:gap-6 items-center">
+            {/* The lockup */}
+            <div className="text-center">
+              <p className="display uppercase tracking-[0.3em] text-sm md:text-base text-[var(--accent)] flex items-center justify-center gap-4">
+                <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
+                {tr("dash2.the")}
+                <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
               </p>
-            )}
-            <p className="eyebrow text-[var(--foreground-muted)] mb-3">
-              {today}
-            </p>
-            <p className="display text-xl md:text-2xl leading-tight">
-              {greeting},
-            </p>
-            <p className="display text-xl md:text-2xl leading-tight text-[var(--accent)]">
-              {displayName}
-            </p>
+              <p
+                className="display uppercase leading-none text-[var(--accent)] text-4xl md:text-6xl tracking-[0.04em]"
+                style={{ textShadow: "0 2px 24px rgba(0,0,0,0.65)" }}
+              >
+                {tr("dash2.practice")}
+              </p>
+              <p className="display uppercase tracking-[0.22em] text-[0.6rem] md:text-xs text-[var(--accent)] mt-2">
+                {tr("dash2.byOB")}
+              </p>
+              <p className="uppercase tracking-[0.16em] text-xs md:text-sm text-white mt-4">
+                {tr("dash2.tagline")}
+              </p>
+            </div>
+
+            {/* The day */}
+            <div className="text-center">
+              {sunSign && (
+                <p
+                  className="text-4xl md:text-5xl text-[var(--accent)] mb-4 leading-none"
+                  aria-label={sunSign}
+                >
+                  {signGlyph(sunSign)}
+                </p>
+              )}
+              <p className="display uppercase tracking-[0.12em] text-lg md:text-2xl text-[var(--accent)]">
+                {today}
+              </p>
+              <span
+                aria-hidden
+                className="block h-px bg-[var(--accent)] my-3 mx-auto w-[78%]"
+              />
+              <p className="display uppercase tracking-[0.08em] text-lg md:text-2xl text-[var(--accent)]">
+                {greeting},
+              </p>
+              <p className="uppercase tracking-[0.1em] text-sm md:text-lg text-white mt-2 font-semibold">
+                {displayName}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto mt-10">
+        <div className="max-w-5xl mx-auto px-6 mt-8">
           <MembershipPrompt sub={sub} trialLeft={trialLeft} locale={locale} />
         </div>
       </section>
