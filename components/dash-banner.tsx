@@ -20,6 +20,7 @@ export function DashBanner({
   headline,
   headlineNode,
   body,
+  bodyNode,
   status,
   urgent = false,
   href,
@@ -35,6 +36,8 @@ export function DashBanner({
   headline?: string;
   headlineNode?: React.ReactNode;
   body: string;
+  /** Rich body (e.g. the reading's own words) in place of `body`. */
+  bodyNode?: React.ReactNode;
   status?: string | null;
   urgent?: boolean;
   href: string;
@@ -79,7 +82,15 @@ export function DashBanner({
       >
         <div className="w-full md:w-[52%] px-7 py-8 md:px-12 md:py-11">
           <p className="eyebrow mb-3 text-[var(--foreground-muted)]">{eyebrow}</p>
-          <h2 className="display text-xl md:text-3xl leading-tight mb-3">
+          {/* Clamped so a long line can never spill past the plate. */}
+          <h2
+            className="display text-xl md:text-3xl leading-tight mb-3 overflow-hidden"
+            style={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 3,
+            }}
+          >
             {headlineNode ?? headline}
           </h2>
           {status && (
@@ -93,9 +104,16 @@ export function DashBanner({
               {status}
             </p>
           )}
-          <p className="text-sm text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-md">
-            {body}
-          </p>
+          <div
+            className="text-sm text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-md overflow-hidden"
+            style={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 4,
+            }}
+          >
+            {bodyNode ?? body}
+          </div>
           <span className="nav-link text-[var(--accent)] inline-flex items-center gap-2">
             {linkLabel}
             <span aria-hidden>→</span>

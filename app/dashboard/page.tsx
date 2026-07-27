@@ -2,8 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Suspense } from "react";
 import { headers } from "next/headers";
-import { dailyCandle } from "@/lib/altar/daily-candle";
-import { candleImageUrl, desireLabel } from "@/lib/altar/catalog";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus, trialDaysLeft } from "@/lib/subscription";
@@ -506,12 +504,11 @@ async function AstrologyBanner({
   const tr = (k: string, vars?: Record<string, string | number>) =>
     t(locale, k, vars);
 
-  const rec = dailyHoroscope
-    ? dailyCandle(
-        dailyHoroscope.content.focus,
-        new Date().toISOString().slice(0, 10),
-      )
-    : null;
+  // Per Jason: no ritual instruction and no candle recommendation here.
+  // The card names the day's focus and gives the reading's own opening —
+  // the astrologer's voice, not a to-do. The full reading is one tap away.
+  const focus = dailyHoroscope?.content.focus?.toLowerCase() ?? null;
+  const focusLabel = focus ? tr(`focus.${focus}`) : null;
 
   return (
     <DashBanner
@@ -519,51 +516,35 @@ async function AstrologyBanner({
       photoSide="left"
       priority
       eyebrow={tr("dash.astroEyebrow")}
-      headlineNode={
+      headline={
+        focusLabel
+          ? tr("dash2.astroFocusHeadline", { focus: focusLabel })
+          : tr("dash.astroHeadline")
+      }
+      status={
+        dailyHoroscope && sunSign
+          ? tr("dash2.astroFor", { sign: sunSign })
+          : null
+      }
+      bodyNode={
         dailyHoroscope ? (
           <ProseLine
-            text={dailyHoroscope.content.action}
+            text={firstSentences(dailyHoroscope.content.summary, 2)}
             lookup={EMPTY_LOOKUP}
             optimisticBaseUrl={OB_BASE_URL}
           />
-        ) : (
-          tr("dash.astroHeadline")
-        )
-      }
-      body={
-        dailyHoroscope
-          ? tr("dash.astroBodyFrom", { sign: sunSign ?? "" })
-          : tr("dash.astroBodyAdd")
-      }
-      href="/astrology"
-      linkLabel={tr("dash.astroLink")}
-      afterNode={
-        rec ? (
-          <span className="mt-6 flex items-center gap-4 border-t border-[var(--border)] pt-5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={candleImageUrl(rec.candle.slug)}
-              alt=""
-              aria-hidden
-              className="h-16 w-auto rounded shrink-0"
-              style={{
-                filter: "drop-shadow(0 0 10px rgba(240, 176, 110, 0.35))",
-              }}
-            />
-            <span className="block">
-              <span className="eyebrow block mb-1">
-                {tr("dash.candleEyebrow")}
-              </span>
-              <span className="block text-sm text-[var(--foreground-muted)] leading-snug">
-                {tr("dash.candleLine", {
-                  purpose: desireLabel(rec.desire, locale).toLowerCase(),
-                  name: rec.candle.name,
-                })}
-              </span>
-            </span>
-          </span>
         ) : undefined
       }
+      body={dailyHoroscope ? "" : tr("dash.astroBodyAdd")}
+      href="/astrology"
+      linkLabel={tr("dash.astroLink")}
     />
   );
+}
+
+/** Keep the dashboard line short: the first sentence or two of the reading. */
+function firstSentences(text: string, count: number): string {
+  const parts = text.match(/[^.!?]+[.!?]+/g);
+  if (!parts) return text;
+  return parts.slice(0, count).join(" ").trim();
 }
