@@ -337,62 +337,54 @@ export default async function DashboardPage() {
             className="md:hidden absolute inset-0"
             style={{ background: "rgba(8,6,4,0.62)" }}
           />
-          <div className="relative max-w-6xl mx-auto px-6 py-12 md:py-16 grid md:grid-cols-2 gap-10 md:gap-6 items-center">
+          <div className="relative max-w-6xl mx-auto px-6 py-10 md:py-16 grid md:grid-cols-2 gap-8 md:gap-6 items-center">
             {/* The lockup */}
             <div className="text-center">
-              <p className="display uppercase tracking-[0.3em] text-sm md:text-base text-[var(--accent)] flex items-center justify-center gap-4">
+              <p className="display uppercase tracking-[0.3em] text-base md:text-base text-[var(--accent)] flex items-center justify-center gap-4">
                 <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
                 {tr("dash2.the")}
                 <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
               </p>
               <p
-                className="display uppercase leading-none text-[var(--accent)] text-4xl md:text-6xl tracking-[0.04em]"
+                className="display uppercase leading-none text-[var(--accent)] text-5xl md:text-6xl tracking-[0.04em]"
                 style={{ textShadow: "0 2px 24px rgba(0,0,0,0.65)" }}
               >
                 {tr("dash2.practice")}
               </p>
-              <p className="display uppercase tracking-[0.22em] text-[0.6rem] md:text-xs text-[var(--accent)] mt-2">
+              <p className="display uppercase tracking-[0.22em] text-[0.72rem] md:text-xs text-[var(--accent)] mt-2">
                 {tr("dash2.byOB")}
               </p>
-              <p className="uppercase tracking-[0.16em] text-xs md:text-sm text-white mt-4">
+              <p className="uppercase tracking-[0.16em] text-sm md:text-sm text-white mt-4">
                 {tr("dash2.tagline")}
               </p>
             </div>
 
             {/* The day */}
-            <div className="text-center border-t border-[var(--accent)]/30 pt-8 md:border-t-0 md:pt-0">
-              {sunSign && (
-                <p
-                  className="text-4xl md:text-5xl text-[var(--accent)] mb-4 leading-none"
-                  aria-label={sunSign}
-                >
-                  {signGlyph(sunSign)}
-                </p>
-              )}
-              <p className="display uppercase tracking-[0.12em] text-lg md:text-2xl text-[var(--accent)]">
+            <div className="text-center border-t border-[var(--accent)]/30 pt-7 md:border-t-0 md:pt-0">
+              <p className="display uppercase tracking-[0.12em] text-xl md:text-2xl text-[var(--accent)]">
                 {today}
               </p>
               <span
                 aria-hidden
                 className="block h-px bg-[var(--accent)] my-3 mx-auto w-[78%]"
               />
-              <p className="display uppercase tracking-[0.08em] text-lg md:text-2xl text-[var(--accent)]">
+              <p className="display uppercase tracking-[0.08em] text-xl md:text-2xl text-[var(--accent)]">
                 {greeting},
               </p>
-              <p className="uppercase tracking-[0.1em] text-sm md:text-lg text-white mt-2 font-semibold">
+              <p className="uppercase tracking-[0.1em] text-base md:text-lg text-white mt-2 font-semibold">
                 {displayName}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 mt-8">
+        <div className="max-w-5xl mx-auto px-6 empty:hidden">
           <MembershipPrompt sub={sub} trialLeft={trialLeft} locale={locale} />
         </div>
       </section>
 
-      {/* ── The banners ──────────────────────────────────────────────── */}
-      <section className="px-6 pb-16">
+      {/* ── The banners — the astrologer sits right under the greeting ── */}
+      <section className="px-6 pt-4 pb-16">
         <div className="max-w-5xl mx-auto flex flex-col gap-5">{banners}</div>
       </section>
 
@@ -480,24 +472,6 @@ function ancestorsStatus(state: DashState, locale: Locale): string | null {
     );
   }
   return parts.join(" · ");
-}
-
-const SIGN_GLYPHS: Record<string, string> = {
-  aries: "♈",
-  taurus: "♉",
-  gemini: "♊",
-  cancer: "♋",
-  leo: "♌",
-  virgo: "♍",
-  libra: "♎",
-  scorpio: "♏",
-  sagittarius: "♐",
-  capricorn: "♑",
-  aquarius: "♒",
-  pisces: "♓",
-};
-function signGlyph(sign: string): string {
-  return SIGN_GLYPHS[sign.toLowerCase()] ?? "✦";
 }
 
 /**
