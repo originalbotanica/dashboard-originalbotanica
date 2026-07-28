@@ -6,6 +6,7 @@ import { CandleWithOfferings } from "@/components/altar-offerings";
 import { MakeOffering } from "@/components/make-offering";
 import type { OfferingType } from "@/app/ancestors/actions";
 import { MemorialForm } from "@/components/memorial-form";
+import { NextSteps } from "@/components/next-steps";
 import { ShareMemorialLink } from "@/components/share-memorial-link";
 import { updateAncestorAction, deleteAncestorAction } from "../actions";
 import { headers } from "next/headers";
@@ -214,6 +215,17 @@ export default async function MemorialDetailPage({
             </button>
           </form>
         </div>
+
+        {/* Never let the page end on a delete button — close with somewhere
+            to go instead. */}
+        <NextSteps
+          locale={locale}
+          steps={[
+            { href: "/ancestors/new", labelKey: "ns.addMemorial" },
+            { href: "/altar/virtual/new", labelKey: "ns.lightCandle" },
+            { href: "/rituals", labelKey: "ns.browseRituals" },
+          ]}
+        />
       </section>
     </main>
   );

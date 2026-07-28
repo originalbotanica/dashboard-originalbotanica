@@ -9,6 +9,7 @@ import { RitualCard } from "@/components/ritual-card";
 import { extinguishCandleAction } from "../actions";
 import { getTendingState } from "@/lib/altar/tend";
 import { candlePrayer } from "@/lib/altar/prayers";
+import { NextSteps } from "@/components/next-steps";
 import { headers } from "next/headers";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
@@ -186,6 +187,17 @@ export default async function CandleDetailPage({
           </div>
         </section>
       ) : null}
+
+      <section className="max-w-3xl mx-auto px-6 pb-20">
+        <NextSteps
+          locale={locale}
+          steps={[
+            { href: "/altar/virtual/new", labelKey: "ns.lightCandle" },
+            { href: "/altar/virtual", labelKey: "ns.visitAltar" },
+            { href: "/rituals", labelKey: "ns.browseRituals" },
+          ]}
+        />
+      </section>
     </main>
   );
 }

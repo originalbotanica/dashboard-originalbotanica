@@ -4,6 +4,8 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { DreamChat } from "@/components/dream-chat";
 import { BotanicaRecs } from "@/components/botanica-recs";
+import { NextSteps } from "@/components/next-steps";
+import { getLocale } from "@/lib/i18n/server";
 
 export const metadata = {
   title: "Dream",
@@ -68,6 +70,8 @@ export default async function DreamThreadPage({
     .limit(1)
     .maybeSingle();
 
+  const locale = await getLocale();
+
   return (
     <main className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--border)]">
@@ -97,6 +101,17 @@ export default async function DreamThreadPage({
               headingKey="recs.forThisDream"
             />
           }
+        />
+
+        {/* The recommendations can come back empty, which used to leave the
+            page with no way onward at all. */}
+        <NextSteps
+          locale={locale}
+          steps={[
+            { href: "/dreams/new", labelKey: "ns.interpretDream" },
+            { href: "/altar/virtual/new", labelKey: "ns.lightCandle" },
+            { href: "/astrology", labelKey: "ns.askAstrologer" },
+          ]}
         />
       </section>
     </main>

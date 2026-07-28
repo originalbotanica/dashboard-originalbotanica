@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getPurpose, purposeLabel } from "@/lib/rituals/purposes";
+import { NextSteps } from "@/components/next-steps";
 import {
   getRitualBySlug,
   dayLabel,
@@ -192,10 +193,22 @@ export default async function RitualDetailPage({
           </div>
         </section>
       ) : null}
+
+      {/* The natural pairing: a ritual read is a candle waiting to be lit. */}
+      <section className="max-w-3xl mx-auto px-6 pb-20">
+        <NextSteps
+          locale={locale}
+          steps={[
+            { href: "/altar/virtual/new", labelKey: "ns.lightCandle" },
+            { href: "/rituals", labelKey: "ns.browseRituals" },
+          ]}
+        />
+      </section>
     </main>
   );
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 function prettyTradition(t: string): string {
   switch (t) {
     case "lucumi":

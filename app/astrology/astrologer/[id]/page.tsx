@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { AstrologerChat } from "@/components/astrologer-chat";
 import { BotanicaRecs } from "@/components/botanica-recs";
+import { NextSteps } from "@/components/next-steps";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
 
@@ -100,6 +101,15 @@ export default async function AstrologerThreadPage({
               headingKey="recs.forThisReading"
             />
           }
+        />
+
+        <NextSteps
+          locale={locale}
+          steps={[
+            { href: "/astrology/chart", labelKey: "ns.yourChart" },
+            { href: "/altar/virtual/new", labelKey: "ns.lightCandle" },
+            { href: "/astrology", labelKey: "ns.askAstrologer" },
+          ]}
         />
       </section>
     </main>
