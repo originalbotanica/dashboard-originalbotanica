@@ -283,28 +283,10 @@ export default async function DashboardPage() {
     ...tailBanners,
   ];
 
+  // Per Jimmy: below the hero graphic the page is simply black, the same
+  // as the landing page — the artwork lives in the banners themselves.
   return (
-    <main className="flex-1 relative">
-      {/* Jimmy's sacred-geometry field, held behind the whole page. */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: "url(/dashboard/bg.webp)",
-            backgroundSize: "cover",
-            backgroundPosition: "top center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(13,10,7,0.55) 0%, rgba(13,10,7,0.85) 40%, #0d0a07 78%)",
-          }}
-        />
-      </div>
-
+    <main className="flex-1 relative bg-[var(--background)]">
       <MemberNav variant="floating" />
 
       {/* ── Hero: Jimmy's band — the house on the left, the day on the

@@ -121,17 +121,20 @@ export function DashBanner({
             {status}
           </p>
         )}
-        {/* whitespace-pre-line so copy can choose its own break points
-            (the tarot line breaks after "the botanica." to clear the card). */}
-        <div
-          className="text-sm text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-md overflow-hidden whitespace-pre-line"
-          style={{
-            display: "-webkit-box",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 4,
-          }}
-        >
-          {bodyNode ?? body}
+        {/* Copy can choose its own break points — the tarot line breaks
+            after "the botanica." so it clears the card artwork. Rendered as
+            separate blocks rather than relying on white-space, which the
+            line-clamp box doesn't honor. */}
+        <div className="text-sm text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-md">
+          {bodyNode ??
+            body
+              .split("\n")
+              .filter(Boolean)
+              .map((line, i) => (
+                <span key={i} className="block">
+                  {line}
+                </span>
+              ))}
         </div>
         <span className="nav-link text-[var(--accent)] inline-flex items-center gap-2">
           {linkLabel}
