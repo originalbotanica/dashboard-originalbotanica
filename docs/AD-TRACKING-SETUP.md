@@ -27,14 +27,32 @@ blockers and iPhone privacy settings, which is where most tracking fails.
 
 ## Meta (Facebook + Instagram)
 
-1. **Events Manager → Data Sources → your pixel.** Copy the pixel ID
-   (a long number).
-2. Same page → **Settings → Conversions API → Generate access token.**
+**Use the existing store pixel: `190400753145730`** ("Original Botanica -
+Facebook Pixel"). It has been collecting since 2021, and Meta's delivery
+gets smarter with more history — a fresh pixel starts blind and makes
+early campaigns more expensive. It also lets you retarget store customers
+with membership ads.
+
+1. **Events Manager → Data Sources →** that pixel → **Settings** →
+   **Conversions API** → **Generate access token.** Copy it (starts
+   `EAA`) and paste it straight into Vercel — don't email it or paste it
+   into chat; it's a key to the ad account.
 
 ```
-NEXT_PUBLIC_META_PIXEL_ID = 1234567890
-META_CAPI_TOKEN           = EAAG...
+NEXT_PUBLIC_META_PIXEL_ID = 190400753145730
+META_CAPI_TOKEN           = EAA...
 ```
+
+### Telling membership sales apart from store sales
+
+Both use the same pixel, so every event we send is tagged
+`content_category = membership`. To report on The Practice alone:
+
+**Events Manager → Custom Conversions → Create.** Source: that pixel.
+Event: `Purchase`. Add a rule: `content_category` **contains**
+`membership`. Name it "Membership purchase." Do the same with event
+`StartTrial` for "Membership trial." Point your membership campaigns at
+those custom conversions, and store campaigns stay unaffected.
 
 ## TikTok
 

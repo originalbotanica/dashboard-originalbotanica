@@ -86,6 +86,20 @@ async function sendMeta(i: ConversionInput): Promise<void> {
         ? "Purchase"
         : "Purchase";
 
+  // Tagged so membership sales can be told apart from store sales in
+  // Meta reporting — the same pixel serves both. In Events Manager,
+  // create a Custom Conversion filtered on content_category =
+  // "membership" to see The Practice on its own.
+  const customData: Record<string, unknown> = {
+    content_category: "membership",
+    content_name:
+      i.event === "GiftPurchase" ? "Gift membership" : "The Practice membership",
+  };
+  if (i.value != null) {
+    customData.value = i.value;
+    customData.currency = i.currency ?? "USD";
+  }
+
   const body = {
     data: [
       {
@@ -95,10 +109,7 @@ async function sendMeta(i: ConversionInput): Promise<void> {
         action_source: "website",
         event_source_url: i.sourceUrl,
         user_data: userData,
-        custom_data:
-          i.value != null
-            ? { value: i.value, currency: i.currency ?? "USD" }
-            : undefined,
+        custom_data: customData,
       },
     ],
   };
@@ -140,10 +151,16 @@ async function sendTikTok(i: ConversionInput): Promise<void> {
         event_id: i.eventId,
         user,
         page: i.sourceUrl ? { url: i.sourceUrl } : undefined,
-        properties:
-          i.value != null
+        properties: {
+          content_type: "membership",
+          content_name:
+            i.event === "GiftPurchase"
+              ? "Gift membership"
+              : "The Practice membership",
+          ...(i.value != null
             ? { value: i.value, currency: i.currency ?? "USD" }
-            : undefined,
+            : {}),
+        },
       },
     ],
   };

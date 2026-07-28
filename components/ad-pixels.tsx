@@ -105,7 +105,19 @@ export function trackAdEvent(
 ) {
   const { eventId, value, currency = "USD" } = opts;
 
-  window.fbq?.("track", name, value ? { value, currency } : {}, { eventID: eventId });
+  // Tagged "membership" so these can be separated from store sales —
+  // the same Meta pixel serves originalbotanica.com and The Practice.
+  const tag = {
+    content_category: "membership",
+    content_name: "The Practice membership",
+  };
+
+  window.fbq?.(
+    "track",
+    name,
+    value ? { ...tag, value, currency } : tag,
+    { eventID: eventId },
+  );
 
   const ttName =
     name === "Purchase"
@@ -113,9 +125,13 @@ export function trackAdEvent(
       : name === "StartTrial"
         ? "Subscribe"
         : "CompleteRegistration";
-  window.ttq?.track(ttName, value ? { value, currency } : {}, {
-    event_id: eventId,
-  });
+  window.ttq?.track(
+    ttName,
+    value
+      ? { content_type: "membership", value, currency }
+      : { content_type: "membership" },
+    { event_id: eventId },
+  );
 
   if (GA4) {
     window.gtag?.("event", name.toLowerCase(), {
