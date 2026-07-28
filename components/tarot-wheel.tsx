@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { WHEEL_DECK, botanicaDayKey } from "@/lib/tarot/wheel-deck";
 import { ShareCardButton } from "./share-card-button";
@@ -712,6 +713,40 @@ export function TarotWheel({
                 Your card for {dayName(dateLabel)} · come back tomorrow to turn the
                 wheel again
               </p>
+
+              {/* The pull is once a day, so the page would otherwise dead-end
+                  here. Offer the natural next moves in the practice. */}
+              <div className="mt-10 pt-8 border-t border-[var(--border)]">
+                <p className="eyebrow mb-5 text-[var(--foreground-subtle)]">
+                  Carry it with you
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3">
+                  <Link
+                    href="/astrology"
+                    className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+                  >
+                    Ask your astrologer <span aria-hidden>→</span>
+                  </Link>
+                  <Link
+                    href="/altar/virtual/new"
+                    className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+                  >
+                    Light a candle <span aria-hidden>→</span>
+                  </Link>
+                  <Link
+                    href="/dreams/new"
+                    className="nav-link text-[var(--accent)] inline-flex items-center gap-2"
+                  >
+                    Interpret a dream <span aria-hidden>→</span>
+                  </Link>
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="nav-link text-[var(--foreground-muted)] hover:text-[var(--accent)] inline-flex items-center gap-2 mt-7"
+                >
+                  ← Back to your practice
+                </Link>
+              </div>
             </div>
           </div>
         ) : null}
