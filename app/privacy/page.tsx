@@ -101,11 +101,20 @@ export default function PrivacyPage() {
 
       <h2 className="display text-xl text-[var(--foreground)] pt-2">Cookies &amp; retention</h2>
       <p>
-        We use only the cookies needed to keep you signed in and the site
-        working — no advertising or cross-site tracking cookies. We keep your
-        information while your account is active; when you delete your account,
-        your journal, altars, and profile are removed, and we keep only what the
-        law requires us to keep (like payment records).
+        We use the cookies needed to keep you signed in and the site working. If
+        you arrived here from one of our ads, we also keep a marker from that ad
+        so we can tell which of our ads brought people to us — and we may share
+        with those advertising platforms (such as Meta, TikTok, and Google) the
+        fact that a membership started, along with a scrambled version of your
+        email that lets them match it without our ever handing over your address
+        in readable form. That is measurement of our own advertising. We never
+        sell your information, and we never share what you write here — your
+        petitions, dreams, readings, and the names on your altars stay private.
+      </p>
+      <p>
+        We keep your information while your account is active; when you delete
+        your account, your journal, altars, and profile are removed, and we keep
+        only what the law requires us to keep (like payment records).
       </p>
 
       <h2 className="display text-xl text-[var(--foreground)] pt-2">Security &amp; changes</h2>

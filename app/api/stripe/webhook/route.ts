@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { fulfillGiftPaid } from "@/lib/gift-fulfill";
+import { reportConversion, attributionForUser } from "@/lib/ads/conversions";
 
 /**
  * Stripe webhook handler.
@@ -17,7 +18,12 @@ import { fulfillGiftPaid } from "@/lib/gift-fulfill";
  *             customer.subscription.created
  *             customer.subscription.updated
  *             customer.subscription.deleted
+ *             invoice.payment_succeeded
  *             invoice.payment_failed
+ *
+ * This is also where ad conversions are reported. Browser pixels miss a
+ * third or more of conversions; reporting from here — the moment Stripe
+ * confirms the money — is what makes ad spend measurable.
  */
 
 // Stripe needs the raw request body to verify the webhook signature.
@@ -57,6 +63,15 @@ export async function POST(request: Request) {
               ? session.payment_intent
               : (session.payment_intent?.id ?? null);
           await fulfillGiftPaid(giftId, paymentIntentId);
+
+          // A gift is real revenue on the spot — report it.
+          await reportConversion({
+            event: "GiftPurchase",
+            eventId: `gift_${giftId}`,
+            value: (session.amount_total ?? 0) / 100,
+            currency: (session.currency ?? "usd").toUpperCase(),
+            email: session.customer_details?.email ?? null,
+          }).catch(() => undefined);
           break;
         }
 
@@ -66,6 +81,21 @@ export async function POST(request: Request) {
         if (subscriptionId) {
           const sub = await stripe.subscriptions.retrieve(subscriptionId);
           await upsertSubscription(sub, userId);
+
+          // Trial started: no money yet, but it's the signal the ad
+          // platforms optimize delivery on, so report it without a value.
+          if (userId && sub.status === "trialing") {
+            const { attribution, email } = await attributionForUser(userId);
+            if (attribution) {
+              await reportConversion({
+                event: "StartTrial",
+                eventId: `trial_${sub.id}`,
+                email,
+                attribution,
+                sourceUrl: process.env.NEXT_PUBLIC_SITE_URL,
+              }).catch(() => undefined);
+            }
+          }
         }
         break;
       }
@@ -75,6 +105,45 @@ export async function POST(request: Request) {
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         await upsertSubscription(sub);
+        break;
+      }
+
+      case "invoice.payment_succeeded": {
+        // The moment that decides whether ad spend was worth it: a trial
+        // converted, or a member renewed. Real money, real value.
+        const invoice = event.data.object as Stripe.Invoice;
+        const inv = invoice as unknown as {
+          id?: string;
+          subscription?: string;
+          amount_paid?: number;
+          currency?: string;
+          billing_reason?: string;
+        };
+        const amount = (inv.amount_paid ?? 0) / 100;
+        if (amount <= 0 || !inv.subscription) break;
+
+        // Resolve the member from the subscription we already mirrored.
+        const admin = createAdminClient();
+        const { data: subRow } = await admin
+          .from("subscriptions")
+          .select("user_id")
+          .eq("stripe_subscription_id", inv.subscription)
+          .maybeSingle();
+        if (!subRow?.user_id) break;
+
+        const { attribution, email } = await attributionForUser(subRow.user_id);
+        // No ad click behind this member — nothing to report.
+        if (!attribution) break;
+
+        await reportConversion({
+          event: "Purchase",
+          eventId: `inv_${inv.id}`,
+          value: amount,
+          currency: (inv.currency ?? "usd").toUpperCase(),
+          email,
+          attribution,
+          sourceUrl: process.env.NEXT_PUBLIC_SITE_URL,
+        }).catch(() => undefined);
         break;
       }
 

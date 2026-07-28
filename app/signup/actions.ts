@@ -2,10 +2,15 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { normalizeGiftCode } from "@/lib/gift";
 import { redeemCodeForUser } from "@/lib/gift-redeem";
+import {
+  ATTRIBUTION_COOKIE,
+  decodeAttribution,
+} from "@/lib/ads/attribution";
 
 /** Only allow same-site relative paths as a post-signup destination. */
 function safeNext(raw: string): string | null {
@@ -55,6 +60,28 @@ export async function signupAction(formData: FormData) {
 
   if (error) {
     return redirect(`/signup?error=${encodeURIComponent(error.message)}${back}`);
+  }
+
+  // Stamp the ad click that brought them here onto the profile, so the
+  // conversion can be credited when their first payment lands weeks later.
+  if (data.user) {
+    try {
+      const jar = await cookies();
+      const attr = decodeAttribution(jar.get(ATTRIBUTION_COOKIE)?.value);
+      if (attr) {
+        // The Meta pixel's own browser cookie improves match quality.
+        const fbp = jar.get("_fbp")?.value;
+        await createAdminClient()
+          .from("profiles")
+          .update({
+            attribution: fbp ? { ...attr, fbp } : attr,
+            attributed_at: new Date().toISOString(),
+          })
+          .eq("id", data.user.id);
+      }
+    } catch {
+      /* attribution is best-effort — never block a signup over it */
+    }
   }
 
   revalidatePath("/", "layout");

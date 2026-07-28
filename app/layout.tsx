@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteFooter } from "@/components/site-footer";
 import { FeedbackBox } from "@/components/feedback-box";
+import { AdPixels } from "@/components/ad-pixels";
 import { LocaleProvider } from "@/components/locale-provider";
 import { getLocale } from "@/lib/i18n/server";
 import "./globals.css";
@@ -106,6 +107,8 @@ export default async function RootLayout({
         </LocaleProvider>
         <Analytics />
         <SpeedInsights />
+        {/* Ad pixels load only when their IDs are configured. */}
+        <AdPixels />
       </body>
     </html>
   );
