@@ -27,32 +27,38 @@ blockers and iPhone privacy settings, which is where most tracking fails.
 
 ## Meta (Facebook + Instagram)
 
-**Use the existing store pixel: `190400753145730`** ("Original Botanica -
-Facebook Pixel"). It has been collecting since 2021, and Meta's delivery
-gets smarter with more history — a fresh pixel starts blind and makes
-early campaigns more expensive. It also lets you retarget store customers
-with membership ads.
+Instagram needs no separate setup — Meta ads on Facebook and Instagram
+share one pixel.
 
-1. **Events Manager → Data Sources →** that pixel → **Settings** →
-   **Conversions API** → **Generate access token.** Copy it (starts
-   `EAA`) and paste it straight into Vercel — don't email it or paste it
-   into chat; it's a key to the ad account.
+**Create a new pixel dedicated to The Practice.** The store's existing
+pixel (`190400753145730`) should stay on originalbotanica.com. Keeping
+them separate means membership conversions never get mixed into store
+campaign optimization, and each product's reporting stands alone.
+
+1. **Events Manager → Connect Data Sources → Web → Meta Pixel.** Name it
+   "The Practice." Copy the pixel ID.
+2. Same pixel → **Settings → Conversions API → Generate access token.**
+   Copy it (starts `EAA`) and paste it straight into Vercel — never into
+   email or chat; it's a key to the ad account.
+3. **Business Settings → Brand Safety → Domains:** add and verify
+   `members.originalbotanica.com`. Meta requires a verified domain for
+   accurate iOS reporting.
 
 ```
-NEXT_PUBLIC_META_PIXEL_ID = 190400753145730
+NEXT_PUBLIC_META_PIXEL_ID = <the new pixel ID>
 META_CAPI_TOKEN           = EAA...
 ```
 
-### Telling membership sales apart from store sales
+Events are also tagged `content_category = membership`, so even if the
+pixels are ever merged, membership can still be filtered out on its own
+via a Custom Conversion.
 
-Both use the same pixel, so every event we send is tagged
-`content_category = membership`. To report on The Practice alone:
+### Retargeting store customers
 
-**Events Manager → Custom Conversions → Create.** Source: that pixel.
-Event: `Purchase`. Add a rule: `content_category` **contains**
-`membership`. Name it "Membership purchase." Do the same with event
-`StartTrial` for "Membership trial." Point your membership campaigns at
-those custom conversions, and store campaigns stay unaffected.
+You don't need a shared pixel for this. In Meta, build a Custom Audience
+from the *store* pixel (people who viewed or purchased at
+originalbotanica.com) and target it from a Practice campaign. Best
+converting audience you have, and reporting stays clean.
 
 ## TikTok
 
@@ -128,6 +134,19 @@ have your answer on whether to scale a campaign or kill it.
 
 Give each campaign a full trial cycle plus a week before judging it —
 anything sooner and you're reading trial starts, not revenue.
+
+---
+
+## When the domain becomes members.originalbotanica.com
+
+Three things to update at the same time as the DNS switch:
+
+1. **Vercel:** `NEXT_PUBLIC_SITE_URL = https://members.originalbotanica.com`
+2. **Meta:** verify the domain (Business Settings → Brand Safety → Domains)
+3. **GA4:** the data stream URL should be the new domain
+
+Attribution itself doesn't care about the domain — click IDs are captured
+from whatever URL the ad lands on.
 
 ---
 
