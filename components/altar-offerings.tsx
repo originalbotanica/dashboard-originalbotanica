@@ -77,8 +77,17 @@ export function CandleWithOfferings({
       {left.length > 0 && (
         <div className={`flex items-end ${itemGap} pb-1`}>
           {left.map((t) => (
+            // data-offering lets the ritual measure what's already on the
+            // altar so it can open a space for an arriving offering.
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={t} src={IMG[t].src} alt="" aria-hidden className={SIZE_CLS[size][t]} />
+            <img
+              key={t}
+              data-offering={t}
+              src={IMG[t].src}
+              alt=""
+              aria-hidden
+              className={SIZE_CLS[size][t]}
+            />
           ))}
         </div>
       )}
@@ -87,7 +96,14 @@ export function CandleWithOfferings({
         <div className={`flex items-end ${itemGap} pb-1`}>
           {right.map((t) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={t} src={IMG[t].src} alt="" aria-hidden className={SIZE_CLS[size][t]} />
+            <img
+              key={t}
+              data-offering={t}
+              src={IMG[t].src}
+              alt=""
+              aria-hidden
+              className={SIZE_CLS[size][t]}
+            />
           ))}
         </div>
       )}

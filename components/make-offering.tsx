@@ -38,13 +38,16 @@ const LAND_H: Record<OfferingType, number> = {
   fruit: 56,
   ancestor_money: 40,
 };
-const LAND_SIDE: Record<OfferingType, "left" | "right"> = {
-  flowers: "left",
-  water: "left",
-  coffee: "left",
-  fruit: "left",
-  ancestor_money: "left",
-};
+/** The order offerings stand in on the altar — must match
+ *  components/altar-offerings.tsx, or an arriving offering lands in the
+ *  wrong place and jumps when the page refreshes. */
+const ALTAR_ORDER: OfferingType[] = [
+  "flowers",
+  "fruit",
+  "water",
+  "coffee",
+  "ancestor_money",
+];
 
 type Phase =
   | { k: "idle" }
@@ -222,20 +225,43 @@ function OfferingRitual({
   useEffect(() => {
     if (!flying) return;
     const el = itemRef.current;
-    const candle = document.querySelector<HTMLElement>(
-      "#altar-scene .candle-wrapper",
-    );
-    if (!el || !candle) return;
+    const scene = document.getElementById("altar-scene");
+    const candle = scene?.querySelector<HTMLElement>(".candle-wrapper");
+    if (!el || !scene || !candle) return;
 
     const r = el.getBoundingClientRect();
     const c = candle.getBoundingClientRect();
     const scale = LAND_H[type] / r.height;
     const finalW = r.width * scale;
-    const gap = 14;
-    const targetCenterX =
-      LAND_SIDE[type] === "left"
-        ? c.left - gap - finalW / 2
-        : c.right + gap + finalW / 2;
+    const gap = 12;
+
+    // The altar keeps a fixed order, so a new offering doesn't simply land
+    // beside the candle — it takes its own place in the line. Work out
+    // which of the offerings already there belong to its left, and slide
+    // them over as it arrives, so nothing is ever landed on top of.
+    const alreadyThere = Array.from(
+      scene.querySelectorAll<HTMLElement>("[data-offering]"),
+    ).filter((n) => n.dataset.offering !== type);
+
+    const rank = (n: HTMLElement) =>
+      ALTAR_ORDER.indexOf(n.dataset.offering as OfferingType);
+    const myRank = ALTAR_ORDER.indexOf(type);
+    const toMyLeft = alreadyThere.filter((n) => rank(n) < myRank);
+    const toMyRight = alreadyThere.filter((n) => rank(n) > myRank);
+
+    // Everything that belongs left of the newcomer makes room.
+    const shift = finalW + gap;
+    for (const n of toMyLeft) {
+      n.style.transition = `transform ${FLY_MS}ms cubic-bezier(0.3, 0.7, 0.25, 1)`;
+      n.style.transform = `translateX(${-shift}px)`;
+    }
+
+    // The newcomer settles just left of whatever follows it — or beside
+    // the candle when it's last in line.
+    const follower = toMyRight[0]?.getBoundingClientRect();
+    const targetCenterX = follower
+      ? follower.left - gap - finalW / 2
+      : c.left - gap - finalW / 2;
     const targetBottom = c.bottom - 4;
 
     const dx = targetCenterX - (r.left + r.width / 2);
