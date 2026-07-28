@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MemberNav } from "@/components/member-nav";
 
 /**
  * Shown while the day's personalized reading is generated on first view.
@@ -7,8 +8,10 @@ import Link from "next/link";
 export default function TarotLoading() {
   return (
     <main className="min-h-screen">
+      <MemberNav />
+
       <header className="border-b border-[var(--border)]">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
           <Link href="/dashboard" className="nav-link text-[var(--accent)]">
             ← Dashboard
           </Link>

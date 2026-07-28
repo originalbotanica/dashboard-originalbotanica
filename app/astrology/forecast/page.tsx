@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MemberNav } from "@/components/member-nav";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
@@ -87,8 +88,11 @@ export default async function ForecastPage() {
         />
       </div>
 
+      <MemberNav />
+
+
       <header className="border-b border-[var(--border)]">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
           <Link href="/astrology" className="nav-link text-[var(--accent)]">
             ← {t(locale, "astro.eyebrow")}
           </Link>

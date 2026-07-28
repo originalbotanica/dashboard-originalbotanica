@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MemberNav } from "@/components/member-nav";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
@@ -69,8 +70,10 @@ export default async function RitualDetailPage({
 
   return (
     <main className="min-h-screen">
+      <MemberNav />
+
       <header className="border-b border-[var(--border)]">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
           <Link href={backHref} className="nav-link text-[var(--accent)]">
             ← {purpose ? purposeLabel(purpose, locale) : t(locale, "rit.library")}
           </Link>
