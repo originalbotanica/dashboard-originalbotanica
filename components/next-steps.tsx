@@ -23,7 +23,9 @@ export function NextSteps({
   eyebrowKey?: string;
 }) {
   return (
-    <div className="mt-12 border-t border-[var(--border)] pt-8 text-center">
+    // Extra room at the foot so the floating feedback mark never lands on
+    // the last link.
+    <div className="mt-12 border-t border-[var(--border)] pt-8 pb-6 text-center">
       <p className="eyebrow mb-5 text-[var(--foreground-subtle)]">
         {t(locale, eyebrowKey)}
       </p>

@@ -716,7 +716,7 @@ export function TarotWheel({
 
               {/* The pull is once a day, so the page would otherwise dead-end
                   here. Offer the natural next moves in the practice. */}
-              <div className="mt-10 pt-8 border-t border-[var(--border)]">
+              <div className="mt-10 pt-8 pb-6 border-t border-[var(--border)]">
                 <p className="eyebrow mb-5 text-[var(--foreground-subtle)]">
                   Carry it with you
                 </p>

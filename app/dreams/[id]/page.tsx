@@ -85,7 +85,7 @@ export default async function DreamThreadPage({
           >
             ← Dream journal
           </Link>
-          <p className="sublabel text-xs truncate" title={thread.title}>
+          <p className="sublabel text-xs truncate hidden sm:block" title={thread.title}>
             {thread.title}
           </p>
         </div>

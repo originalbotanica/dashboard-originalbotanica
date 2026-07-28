@@ -112,10 +112,22 @@ export function FeedbackBox() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={t("fb.link")}
-        className="rounded-full border border-[var(--border-strong)] bg-[var(--surface)]/90 backdrop-blur px-3 py-1.5 md:px-4 md:py-2 text-[0.7rem] md:text-xs text-[var(--foreground-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors shadow-lg opacity-80 hover:opacity-100"
+        className="rounded-full border border-[var(--border-strong)] bg-[var(--surface)]/85 backdrop-blur text-[var(--foreground-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors shadow-lg opacity-70 hover:opacity-100 flex items-center justify-center h-10 w-10 md:h-auto md:w-auto md:px-4 md:py-2 md:text-xs"
       >
-        {/* Compact on phones so it can't sit on top of a page's own button. */}
-        <span className="md:hidden">{t("fb.linkShort")}</span>
+        {/* On phones this is a small round mark — a text pill kept landing
+            on top of the page's own links at the bottom of the screen. */}
+        <svg
+          className="md:hidden h-[18px] w-[18px]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-3.8-.9L3 21l1.9-4.1A8.4 8.4 0 0 1 12 3.5a8.4 8.4 0 0 1 9 8z" />
+        </svg>
         <span className="hidden md:inline">{t("fb.link")}</span>
       </button>
     </div>
