@@ -122,7 +122,8 @@ const en: Dict = {
   "dash2.astroFor": "Your reading for {sign}",
   "dash2.tarotEyebrow": "Today's tarot",
   "dash2.tarotHeadline": "Your card is waiting.",
-  "dash2.tarotBody": "One card, pulled for you today, read in the voice of the botanica. Step into the pull when you are ready.",
+  // The break keeps the second sentence clear of the tarot card artwork.
+  "dash2.tarotBody": "One card, pulled for you today, read in the voice of the botanica.\nStep into the pull when you are ready.",
   "dash2.tarotLink": "Reveal today's card",
   "dash2.dreamsEyebrow": "Dreams",
   "dash2.dreamsHeadline": "What did the night bring?",
@@ -973,7 +974,7 @@ const es: Dict = {
   "dash2.astroFor": "Tu lectura para {sign}",
   "dash2.tarotEyebrow": "El tarot de hoy",
   "dash2.tarotHeadline": "Tu carta te espera.",
-  "dash2.tarotBody": "Una carta, sacada para ti hoy, leída con la voz de la botánica. Entra en la tirada cuando estés listo.",
+  "dash2.tarotBody": "Una carta, sacada para ti hoy, leída con la voz de la botánica.\nEntra en la tirada cuando estés listo.",
   "dash2.tarotLink": "Revela la carta de hoy",
   "dash2.dreamsEyebrow": "Sueños",
   "dash2.dreamsHeadline": "¿Qué trajo la noche?",

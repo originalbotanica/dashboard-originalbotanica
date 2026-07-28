@@ -23,6 +23,11 @@ export const metadata = {
   description: "Today's reading, your daily card, and the work of the day.",
 };
 
+/** The brand gold from the landing wordmark — the member hero matches it
+ *  exactly, so the doorway and the house read as one place (Jimmy). */
+const GOLD = "#d2ac66";
+const GOLD_SOFT = "rgba(210, 172, 102, 0.55)";
+
 const EMPTY_LOOKUP = buildProductLookup([]);
 const OB_BASE_URL = "https://originalbotanica.com";
 
@@ -266,16 +271,15 @@ export default async function DashboardPage() {
     />,
   ];
 
-  // Per Jason, a fixed order: astrologer, tarot, altar, ancestors, dreams,
-  // rituals, the discount. The cards still carry live state — what's
-  // waiting is said in the status line and colored in accent — but the
-  // page reads the same way every morning.
+  // Fixed order, and dreams sits third so the copy alternates cleanly down
+  // the page — right, left, right, left (Jimmy's note). The cards still
+  // carry live state; the page just reads the same way every morning.
   const banners = [
     astrologyBanner,
     tarotBanner,
+    dreamsBanner,
     altarBanner,
     ancestorsBanner,
-    dreamsBanner,
     ...tailBanners,
   ];
 
@@ -310,14 +314,15 @@ export default async function DashboardPage() {
           on phones and looks like it's sitting above the header. */}
       <section aria-label="Today" className="pt-24 md:pt-[4.5rem]">
         <div className="relative overflow-hidden">
+          {/* Per Jimmy: the same photograph as the landing hero, scaled the
+              same way, so the doorway and the house match. */}
           <Image
-            src="/dashboard/hero.webp"
+            src="/landing/hero.jpg"
             alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover"
-            style={{ objectPosition: "center 40%" }}
+            className="object-cover opacity-95"
           />
           {/* Desktop: the photograph holds the left and the right falls to
               black, so the date and greeting read like an inscription. */}
@@ -338,37 +343,61 @@ export default async function DashboardPage() {
             style={{ background: "rgba(8,6,4,0.62)" }}
           />
           <div className="relative max-w-6xl mx-auto px-6 py-10 md:py-16 grid md:grid-cols-2 gap-8 md:gap-6 items-center">
-            {/* The lockup */}
+            {/* The lockup — same gold as the landing wordmark. */}
             <div className="text-center">
-              <p className="display uppercase tracking-[0.3em] text-base md:text-base text-[var(--accent)] flex items-center justify-center gap-4">
-                <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
+              <p
+                className="display uppercase tracking-[0.3em] text-base flex items-center justify-center gap-4"
+                style={{ color: GOLD }}
+              >
+                <span
+                  aria-hidden
+                  className="h-px w-10 md:w-14"
+                  style={{ backgroundColor: GOLD_SOFT }}
+                />
                 {tr("dash2.the")}
-                <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
+                <span
+                  aria-hidden
+                  className="h-px w-10 md:w-14"
+                  style={{ backgroundColor: GOLD_SOFT }}
+                />
               </p>
               <p
-                className="display uppercase leading-none text-[var(--accent)] text-5xl md:text-6xl tracking-[0.04em]"
-                style={{ textShadow: "0 2px 24px rgba(0,0,0,0.65)" }}
+                className="display uppercase leading-none text-5xl md:text-6xl tracking-[0.06em]"
+                style={{ color: GOLD, textShadow: "0 2px 24px rgba(0,0,0,0.65)" }}
               >
                 {tr("dash2.practice")}
               </p>
-              <p className="display uppercase tracking-[0.22em] text-[0.72rem] md:text-xs text-[var(--accent)] mt-2">
+              <p
+                className="display uppercase tracking-[0.3em] text-[0.72rem] md:text-xs mt-2"
+                style={{ color: GOLD }}
+              >
                 {tr("dash2.byOB")}
               </p>
-              <p className="uppercase tracking-[0.16em] text-sm md:text-sm text-white mt-4">
+              <p className="uppercase tracking-[0.22em] text-sm text-white mt-4">
                 {tr("dash2.tagline")}
               </p>
             </div>
 
             {/* The day */}
-            <div className="text-center border-t border-[var(--accent)]/30 pt-7 md:border-t-0 md:pt-0">
-              <p className="display uppercase tracking-[0.12em] text-xl md:text-2xl text-[var(--accent)]">
+            <div
+              className="text-center border-t md:border-t-0 pt-7 md:pt-0"
+              style={{ borderColor: GOLD_SOFT }}
+            >
+              <p
+                className="display uppercase tracking-[0.12em] text-xl md:text-2xl"
+                style={{ color: GOLD }}
+              >
                 {today}
               </p>
               <span
                 aria-hidden
-                className="block h-px bg-[var(--accent)] my-3 mx-auto w-[78%]"
+                className="block h-px my-3 mx-auto w-[78%]"
+                style={{ backgroundColor: GOLD }}
               />
-              <p className="display uppercase tracking-[0.08em] text-xl md:text-2xl text-[var(--accent)]">
+              <p
+                className="display uppercase tracking-[0.08em] text-xl md:text-2xl"
+                style={{ color: GOLD }}
+              >
                 {greeting},
               </p>
               <p className="uppercase tracking-[0.1em] text-base md:text-lg text-white mt-2 font-semibold">

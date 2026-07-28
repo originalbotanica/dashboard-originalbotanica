@@ -121,8 +121,10 @@ export function DashBanner({
             {status}
           </p>
         )}
+        {/* whitespace-pre-line so copy can choose its own break points
+            (the tarot line breaks after "the botanica." to clear the card). */}
         <div
-          className="text-sm text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-md overflow-hidden"
+          className="text-sm text-[var(--foreground-muted)] leading-relaxed mb-5 max-w-md overflow-hidden whitespace-pre-line"
           style={{
             display: "-webkit-box",
             WebkitBoxOrient: "vertical",
