@@ -123,15 +123,83 @@ export async function getNatalChart(input: BirthInput): Promise<ChartData> {
 }
 
 /**
- * Geocode a city string to lat/lon/timezone.
- * Uses AstrologyAPI's geo_details if credentials are set, otherwise
- * a small built-in fallback table (covers a handful of common cities).
+ * The UTC offset a timezone was actually using on a given date — which
+ * is the whole ballgame for a birth chart.
+ *
+ * A birth at 10:40 PM on June 9, 1989 in New Jersey happened at UTC-4
+ * (daylight time), not UTC-5. Feed the chart engine -5 and you've moved
+ * the birth an hour later: the rising sign shifts by up to half a sign
+ * and every house cusp is wrong. Two-thirds of birthdays fall inside
+ * daylight time, so this is not an edge case.
+ *
+ * Intl carries the full historical timezone database, so this is correct
+ * for old DST rules too (the US moved its dates in 1987 and 2007).
+ */
+function offsetForZoneAt(
+  iana: string,
+  y: number,
+  mo: number,
+  d: number,
+  hh: number,
+  mn: number,
+): number | null {
+  const read = (at: Date): number | null => {
+    try {
+      const s = new Intl.DateTimeFormat("en-US", {
+        timeZone: iana,
+        timeZoneName: "longOffset",
+      }).format(at);
+      const m = s.match(/GMT([+-])(\d{1,2}):(\d{2})/);
+      if (!m) return 0; // "GMT" with no offset = UTC
+      const sign = m[1] === "-" ? -1 : 1;
+      return sign * (Number(m[2]) + Number(m[3]) / 60);
+    } catch {
+      return null;
+    }
+  };
+  // The local time is known but the instant isn't yet, so read the
+  // offset once to approximate the instant, then read it again there.
+  const naive = Date.UTC(y, mo - 1, d, hh, mn);
+  const first = read(new Date(naive));
+  if (first === null) return null;
+  return read(new Date(naive - first * 3_600_000));
+}
+
+/**
+ * Common birthplaces with their IANA timezone, so the offset can be
+ * resolved for the actual birth date rather than assumed.
+ */
+const PLACES: Record<
+  string,
+  { lat: number; lon: number; zone: string }
+> = {
+  "the bronx": { lat: 40.8448, lon: -73.8648, zone: "America/New_York" },
+  bronx: { lat: 40.8448, lon: -73.8648, zone: "America/New_York" },
+  "new york": { lat: 40.7128, lon: -74.006, zone: "America/New_York" },
+  brooklyn: { lat: 40.6782, lon: -73.9442, zone: "America/New_York" },
+  queens: { lat: 40.7282, lon: -73.7949, zone: "America/New_York" },
+  manhattan: { lat: 40.7831, lon: -73.9712, zone: "America/New_York" },
+  "los angeles": { lat: 34.0522, lon: -118.2437, zone: "America/Los_Angeles" },
+  chicago: { lat: 41.8781, lon: -87.6298, zone: "America/Chicago" },
+  miami: { lat: 25.7617, lon: -80.1918, zone: "America/New_York" },
+  havana: { lat: 23.1136, lon: -82.3666, zone: "America/Havana" },
+  "san juan": { lat: 18.4655, lon: -66.1057, zone: "America/Puerto_Rico" },
+  "mexico city": { lat: 19.4326, lon: -99.1332, zone: "America/Mexico_City" },
+  "santo domingo": { lat: 18.4861, lon: -69.9312, zone: "America/Santo_Domingo" },
+  "port-au-prince": { lat: 18.5944, lon: -72.3074, zone: "America/Port-au-Prince" },
+};
+
+/**
+ * Geocode a city string to lat/lon and the UTC offset in force on the
+ * birth date (daylight saving included).
  */
 export async function geocode(
   city: string,
-  date: { year: number; month: number; day: number },
+  date: { year: number; month: number; day: number; hour?: number; min?: number },
 ): Promise<{ lat: number; lon: number; tzone: number } | null> {
   if (!city) return null;
+  const hour = date.hour ?? 12;
+  const min = date.min ?? 0;
 
   if (authHeader()) {
     try {
@@ -139,12 +207,43 @@ export async function geocode(
         latitude: number;
         longitude: number;
         timezone: number;
+        timezone_name?: string;
       }>("geo_details", { place: city });
+
       if (result?.latitude != null) {
+        // Prefer a real timezone name so DST is resolved for the birth
+        // date. Some responses include one; when they don't, ask the
+        // API's own DST-aware endpoint before trusting the raw number.
+        let tzone: number | null = null;
+
+        if (result.timezone_name) {
+          tzone = offsetForZoneAt(
+            result.timezone_name,
+            date.year,
+            date.month,
+            date.day,
+            hour,
+            min,
+          );
+        }
+
+        if (tzone === null) {
+          try {
+            const dst = await call<{ timezone: number }>("timezone_with_dst", {
+              latitude: result.latitude,
+              longitude: result.longitude,
+              date: `${date.day}-${date.month}-${date.year}`,
+            });
+            if (typeof dst?.timezone === "number") tzone = dst.timezone;
+          } catch {
+            /* fall through to the raw offset */
+          }
+        }
+
         return {
           lat: result.latitude,
           lon: result.longitude,
-          tzone: result.timezone,
+          tzone: tzone ?? result.timezone,
         };
       }
     } catch (err) {
@@ -152,21 +251,18 @@ export async function geocode(
     }
   }
 
-  // Fallback table for common places. Real geocoding lands when we have
-  // the API key wired in.
-  const fallbacks: Record<string, { lat: number; lon: number; tzone: number }> = {
-    "the bronx": { lat: 40.8448, lon: -73.8648, tzone: -5 },
-    "bronx": { lat: 40.8448, lon: -73.8648, tzone: -5 },
-    "new york": { lat: 40.7128, lon: -74.006, tzone: -5 },
-    "los angeles": { lat: 34.0522, lon: -118.2437, tzone: -8 },
-    "chicago": { lat: 41.8781, lon: -87.6298, tzone: -6 },
-    "miami": { lat: 25.7617, lon: -80.1918, tzone: -5 },
-    "havana": { lat: 23.1136, lon: -82.3666, tzone: -5 },
-    "san juan": { lat: 18.4655, lon: -66.1057, tzone: -4 },
-    "mexico city": { lat: 19.4326, lon: -99.1332, tzone: -6 },
-  };
   const key = city.toLowerCase().split(",")[0].trim();
-  return fallbacks[key] || null;
+  const place = PLACES[key];
+  if (!place) return null;
+  const tzone = offsetForZoneAt(
+    place.zone,
+    date.year,
+    date.month,
+    date.day,
+    hour,
+    min,
+  );
+  return { lat: place.lat, lon: place.lon, tzone: tzone ?? -5 };
 }
 
 /**

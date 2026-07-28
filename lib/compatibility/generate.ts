@@ -151,10 +151,13 @@ async function computeOtherChart(args: {
 }): Promise<ChartData | null> {
   const [yyyy, mm, dd] = args.birthDate.split("-").map(Number);
   const [hh, mn] = (args.birthTime || "12:00").split(":").map(Number);
+  // Birth time included so daylight saving resolves correctly.
   const geo = await geocode(args.birthCity, {
     year: yyyy,
     month: mm,
     day: dd,
+    hour: args.birthTime ? hh : 12,
+    min: args.birthTime ? mn : 0,
   });
   const input: BirthInput = {
     day: dd,

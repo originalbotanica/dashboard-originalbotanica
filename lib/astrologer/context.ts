@@ -85,10 +85,14 @@ async function computeChart(
 ): Promise<ChartData> {
   const [yyyy, mm, dd] = birthDate.split("-").map(Number);
   const [hh, mn] = (birthTime || "12:00").split(":").map(Number);
+  // The birth time goes to the geocoder too: the UTC offset depends on
+  // the exact moment (daylight saving), not just the date.
   const geo = await geocode(birthPlace, {
     year: yyyy,
     month: mm,
     day: dd,
+    hour: birthTime ? hh : 12,
+    min: birthTime ? mn : 0,
   });
 
   const input: BirthInput = {
@@ -102,7 +106,21 @@ async function computeChart(
     tzone: geo?.tzone ?? -5,
   };
 
-  return await getNatalChart(input);
+  const chart = await getNatalChart(input);
+
+  // Without a birth time there is no honest rising sign — the chart was
+  // computed for noon, and the ascendant moves a full sign every two
+  // hours. Better to say nothing than to name the wrong one.
+  if (!birthTime) {
+    return {
+      ...chart,
+      risingSign: null,
+      placements: chart.placements.filter(
+        (p) => !/^(ascendant|asc)$/i.test(p.name),
+      ),
+    };
+  }
+  return chart;
 }
 
 const CHART_BUCKET = "chart-wheels";
