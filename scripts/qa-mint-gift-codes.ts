@@ -15,8 +15,9 @@ function part(): string {
 }
 
 async function main() {
+  const count = Number(process.argv[2] || 10);
   const codes: string[] = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < count; i++) {
     const code = `OB-GIFT-${part()}-${part()}`;
     const { error } = await admin.from("gift_purchases").insert({
       code,
