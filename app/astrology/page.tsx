@@ -135,8 +135,10 @@ export default async function AstrologyHubPage() {
 
             {hasChart && (
               <div className="invocation text-base text-[var(--foreground-muted)] mb-12 border-l-2 border-[var(--accent)] pl-4 py-2">
-                {t(locale, "astro.sunIn", { sign: signName(profile.sun_sign, locale) })}{" "}
-                {t(locale, "astro.moonIn", { sign: signName(profile.moon_sign, locale) })}
+                {t(locale, "astro.sunIn", { sign: signName(profile.sun_sign, locale) })}
+                {profile.moon_sign
+                  ? " " + t(locale, "astro.moonIn", { sign: signName(profile.moon_sign, locale) })
+                  : ""}
                 {profile.rising_sign
                   ? " " + t(locale, "astro.risingIn", { sign: signName(profile.rising_sign, locale) })
                   : ""}

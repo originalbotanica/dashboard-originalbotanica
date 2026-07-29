@@ -47,7 +47,9 @@ export function SiteFooter() {
   if (!isFull) {
     return (
       <footer className="border-t border-[var(--border)] mt-auto">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col xl:flex-row items-center justify-between gap-3 text-center xl:text-left">
+        {/* Extra bottom padding on phones keeps the last link row clear of the
+            floating feedback mark in the corner. */}
+        <div className="max-w-7xl mx-auto px-6 pt-6 pb-20 sm:pb-10 flex flex-col xl:flex-row items-center justify-between gap-3 text-center xl:text-left">
           <p className="text-xs text-[var(--foreground-subtle)] xl:whitespace-nowrap">
             © {year} Original Botanica · 2486-88 Webster Avenue, The Bronx, NY 10458 · since 1959
           </p>
@@ -75,7 +77,7 @@ export function SiteFooter() {
 
   return (
     <footer className="border-t border-[var(--border)] mt-auto">
-      <div className="max-w-5xl mx-auto px-6 py-14">
+      <div className="max-w-5xl mx-auto px-6 pt-14 pb-20 sm:pb-14">
         <div className="flex flex-col items-center text-center mb-10">
           <Link href="/" className="display text-2xl text-[var(--foreground)]">
             The Practice
