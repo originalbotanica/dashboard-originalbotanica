@@ -101,7 +101,7 @@ export default async function SignupPage({
             ) : (
               <>
                 . After your 7-day free trial, the membership is $29.95/month or
-                $299.95/year and renews automatically until you cancel.
+                $199.95/year and renews automatically until you cancel.
               </>
             )}
           </p>

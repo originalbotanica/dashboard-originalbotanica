@@ -14,7 +14,7 @@ each one is independent.
 | Moment | What's reported | Value |
 |---|---|---|
 | Someone starts a free trial | `StartTrial` | no money yet |
-| Trial converts to a paying member | `Purchase` | $29.95 (or $299.95 annual) |
+| Trial converts to a paying member | `Purchase` | $29.95 (or $199.95 annual) |
 | Every renewal after that | `Purchase` | the amount charged |
 | Someone buys a gift membership | `Purchase` | the gift price |
 

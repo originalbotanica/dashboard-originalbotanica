@@ -8,7 +8,7 @@ No credentials or secrets appear in this document; it is safe to share.*
 **The Practice** is Original Botanica's digital membership — a virtual
 spiritual home at what will be **members.originalbotanica.com** (currently in
 final testing at dashboard-originalbotanica.vercel.app). Members pay
-**$29.95/month** (or $199/year, both with a 7-day free trial) for a private
+**$29.95/month** (or $199.95/year, both with a 7-day free trial) for a private
 dashboard of daily spiritual tools. The tagline: **"Your virtual spiritual
 home."**
 
@@ -109,7 +109,7 @@ dreams, prayers, and personal data are private to their accounts.
 
 ## Numbers worth knowing
 
-- $29.95/month or $199/year, 7-day free trial on both
+- $29.95/month or $199.95/year, 7-day free trial on both
 - 20% member discount at originalbotanica.com (store side handled by
   Lighthaus)
 - Store context: ~135K sessions/month, $147 average order, 70K email list,

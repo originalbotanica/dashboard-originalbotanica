@@ -60,7 +60,7 @@ export default async function SubscribePage() {
         </p>
         <p className="mt-1.5 text-xs text-[var(--foreground-muted)]">
           After the trial, your plan renews automatically ($29.95/month or
-          $299.95/year) until you cancel — which you can do any time, in a
+          $199.95/year) until you cancel — which you can do any time, in a
           couple of clicks. We&apos;ll email you before your trial ends, so
           nothing is a surprise.
         </p>

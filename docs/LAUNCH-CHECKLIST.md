@@ -36,6 +36,15 @@ the developer; the rest Jason can do (with Claude walking through them).
 ## 3. Payments — the go-live switch
 
 - Stripe: move from **Sandbox to Live mode**.
+- **PRICE CHANGE (Aug 2):** the annual plan is now **$199.95/yr** (was
+  $299.95). All app copy is updated, but the Stripe **price object** must
+  match: create a new recurring price of $199.95/year (7-day trial) on the
+  membership product — in the current test mode AND in live mode at launch —
+  and point `STRIPE_PRICE_ANNUAL` in Vercel at the new price ID. Until the
+  test-mode price is swapped, annual checkout will still charge the old
+  $299.95 test price while the pages say $199.95. The 12-month gift also
+  dropped to $199.95 (code change, nothing to do in Stripe — gift prices are
+  created on the fly).
 - Replace in Vercel: `STRIPE_SECRET_KEY`,
   `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`,
   `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_ANNUAL` (live-mode price IDs).
