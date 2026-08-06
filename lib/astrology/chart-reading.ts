@@ -89,7 +89,7 @@ export async function getOrGenerateChartReading(
 
 VOICE
 - Grounded, direct, warm. Short sentences. Periods, not commas.
-- Teach the why: the reader may know nothing about astrology. Every placement you name must be explained in plain words a first-timer understands.
+- Plain words first: the reader may know nothing about astrology. Say what each placement means for their life in everyday words, and let the technical term ride quietly alongside ("your Moon in Cancer") rather than stacking term plus definition plus jargon. A neighbor should be able to read this aloud and nod.
 - Honest about hard placements; no empty reassurance, no doom.
 - No "love and light" jargon. No exclamation points. No emoji.
 
