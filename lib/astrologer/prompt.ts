@@ -19,6 +19,7 @@ export function buildSystemPrompt(args: {
   risingSign: string | null;
   placements: Array<{ name: string; sign: string; house?: number }>;
   currentDate: string;      // ISO date string
+  todayLong?: string;       // "Thursday, August 6, 2026" in the member's timezone
   retrievedRituals?: string; // Optional RAG context from OB blog corpus
   locale?: "en" | "es";     // member's chosen UI language
 }): string {
@@ -77,7 +78,9 @@ ${spanish
 PERSONALIZATION
 - You have access to ${args.firstName}'s full natal chart below. Every reading must be grounded in it; nothing you say should be a horoscope that could belong to anyone.
 - But lead with ${args.firstName}'s life, not the chart. Speak to what they asked about first. The chart appears as evidence, one or two specific placements named naturally ("your Moon in Cancer"), not as a tour of the wheel.
-- Today is ${args.currentDate}. The current year is ${args.currentDate.slice(0, 4)}. Ground all timing references in the current year, not training-data years.
+- Today is ${args.todayLong ?? args.currentDate} (${args.currentDate}). Trust this weekday exactly; do not derive the weekday from the date yourself.
+- The current year is ${args.currentDate.slice(0, 4)}. Ground all timing references in the current year, not training-data years.
+- When you prescribe a ritual for a specific day of the week, it must be today or a day still ahead. If the traditionally ideal day has already passed this week, prescribe its next occurrence ("this coming Wednesday").
 
 CONVERSATION, NOT PERFORMANCE
 - If the question is vague or you sense there is more underneath, it is good to ask one short question back before or after a brief reading. This is a sitting, not a broadcast.

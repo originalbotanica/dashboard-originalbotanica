@@ -67,7 +67,11 @@ export const BURN_GEOM: Record<string, { cx: number; top: number; bot: number }>
   "san-deshacedor": { cx: 47.4, top: 11, bot: 92 },
   "steady-work": { cx: 47.7, top: 11, bot: 91.7 },
   "success": { cx: 48.9, top: 11, bot: 92 },
-  "uncrossing": { cx: 51.5, top: 11, bot: 93 },
+  // Pullout pillar: the stage art keeps a solid base and melts on a gentler
+  // slope than the glass candles. bot here is the EFFECTIVE bottom the art
+  // melts toward, measured from the d4 (36.4%) and d7 (62%) stage images,
+  // not the pixel bottom of the wax.
+  "uncrossing": { cx: 51.5, top: 11, bot: 70.7 },
   "unlock-my-path": { cx: 65.9, top: 5.9, bot: 93 },
   "white-candle": { cx: 50, top: 10, bot: 87.9 },
 };

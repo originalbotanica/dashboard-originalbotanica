@@ -198,7 +198,31 @@ export async function POST(request: Request) {
 
   // Build the system prompt with the user's chart and the retrieved
   // archive context inline.
-  const currentDate = new Date().toISOString().slice(0, 10);
+  // Date in the member's own timezone, with the weekday spelled out.
+  // Models are unreliable at deriving weekdays from bare ISO dates, and a
+  // ritual prescribed "for Wednesday" on a Thursday reads as broken.
+  const tz = request.headers.get("x-vercel-ip-timezone") || "America/New_York";
+  let currentDate: string;
+  let todayLong: string;
+  try {
+    currentDate = new Date().toLocaleDateString("en-CA", { timeZone: tz });
+    todayLong = new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: tz,
+    });
+  } catch {
+    currentDate = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    todayLong = new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "America/New_York",
+    });
+  }
   const system = buildSystemPrompt({
     firstName: context.firstName,
     birthDate: context.birthDate,
@@ -209,6 +233,7 @@ export async function POST(request: Request) {
     risingSign: context.chart.risingSign,
     placements: context.chart.placements,
     currentDate,
+    todayLong,
     retrievedRituals: ritualsContext,
     locale: await getLocale(),
   });

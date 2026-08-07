@@ -23,7 +23,7 @@ export const FLAME_POS: Record<string, { x: number; y: number }> = {
   "court-case": { x: 49.5, y: 4.1 },
   "domination": { x: 43.5, y: 6.6 },
   "don-dinero": { x: 50, y: 3 }, // hand-tuned from audit
-  "double-action-evil-eye": { x: 50, y: 8.6 },
+  "double-action-evil-eye": { x: 42.5, y: 14.8 }, // hand-tuned: wick leans left, wax surface sits low in the glass
   "double-action-heart": { x: 50.8, y: 6.7 },
   "double-action-money": { x: 45.1, y: 6 },
   "elegua": { x: 50, y: 9.6 },
