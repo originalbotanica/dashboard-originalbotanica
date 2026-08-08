@@ -34,6 +34,25 @@ export function AstrologerChat({
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  // A glossary card's "Ask about your Saturn" link lands here with the
+  // question in ?ask=. Prefill the composer once, then clean the URL so
+  // refreshes don't re-fill it.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ask = params.get("ask");
+    if (ask) {
+      setInput(ask);
+      params.delete("ask");
+      const qs = params.toString();
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + (qs ? `?${qs}` : ""),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // The reading arrives in one piece: the full response is buffered while the
   // "consulting" indicator plays, then settles in as a complete block with
   // the view positioned at its top — no word-by-word reveal, and no scrolling

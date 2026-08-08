@@ -12,6 +12,8 @@
  */
 
 import { Fragment } from "react";
+import { detectTerms } from "@/lib/astrology/detect-terms";
+import { AstroTerm } from "@/components/astro-term";
 
 export type ProductLookup = {
   /** slug → { url, name } */
@@ -95,7 +97,29 @@ export function ProseLine({
   return (
     <>
       {tokens.map((t, i) => {
-        if (t.type === "text") return <Fragment key={i}>{t.text}</Fragment>;
+        if (t.type === "text") {
+          // Astrology terms inside plain text become tappable glossary
+          // entries (components/astro-term.tsx). Product links and bold
+          // spans are left alone.
+          const segs = detectTerms(t.text);
+          return (
+            <Fragment key={i}>
+              {segs.map((s, j) =>
+                s.type === "text" ? (
+                  <Fragment key={j}>{s.text}</Fragment>
+                ) : s.type === "term" ? (
+                  <AstroTerm key={j} termKey={s.termKey}>
+                    {s.text}
+                  </AstroTerm>
+                ) : (
+                  <AstroTerm key={j} house={s.house}>
+                    {s.text}
+                  </AstroTerm>
+                ),
+              )}
+            </Fragment>
+          );
+        }
         if (t.type === "bold") {
           return (
             <strong key={i} className="text-foreground font-semibold">
