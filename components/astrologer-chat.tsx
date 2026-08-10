@@ -268,6 +268,10 @@ export function AstrologerChat({
           </p>
         </form>
 
+        {/* On a fresh sitting the starters wait BELOW the box: ask in
+            your own words first; borrow one of these if you need it. */}
+        {isEmpty && <Starters onPick={send} />}
+
         {/* "For this reading" cards close out the reading, below the box. */}
         {!streaming && recs}
       </div>
@@ -291,9 +295,25 @@ function Welcome({
   ];
   return (
     <div className="py-8">
-      <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed mb-8 max-w-2xl">
+      <p className="invocation text-lg md:text-xl text-[var(--foreground-muted)] leading-relaxed max-w-2xl">
         {t("achat.welcome", { name: firstName })}
       </p>
+    </div>
+  );
+}
+
+/** Starter questions, offered BELOW the composer: ask in your own words
+ *  first; these are here if you need a place to start. */
+function Starters({ onPick }: { onPick: (q: string) => void }) {
+  const t = useT();
+  const starters = [
+    t("achat.starter1"),
+    t("achat.starter2"),
+    t("achat.starter3"),
+    t("achat.starter4"),
+  ];
+  return (
+    <div className="mt-8">
       <p className="sublabel mb-3">{t("achat.startWith")}</p>
       <div className="grid sm:grid-cols-2 gap-3">
         {starters.map((q) => (
