@@ -33,7 +33,26 @@ the developer; the rest Jason can do (with Claude walking through them).
 - **Google Analytics → Admin → Data streams:** stream URL should be the
   new domain.
 
-## 3. Payments — the go-live switch
+## 3. Transactional email — REQUIRED BEFORE GO-LIVE
+
+⚠️ **The Resend account was canceled during the tester phase (Aug 2026).**
+The app needs a transactional email service at launch or two things fail
+SILENTLY (the code skips sending without erroring):
+
+- **Gift delivery** — recipients of purchased gift memberships never get
+  their code email (daily cron `/api/gift/deliver-due`).
+- **Trial-ending reminders** — members are charged after their 7-day trial
+  with no warning email (`/api/trial/remind-due`). This one protects you
+  from chargebacks and complaints; do not launch without it.
+
+To reactivate: sign up at resend.com (free tier, 3,000 emails/mo, is
+plenty at launch volume), verify the sending domain, create an API key,
+set `RESEND_API_KEY` and `EMAIL_FROM` in Vercel, redeploy, and send one
+test gift to confirm the email arrives. Any equivalent service (Postmark,
+SendGrid) also works but requires a small code change in `lib/email.ts`;
+Resend needs none.
+
+## 4. Payments — the go-live switch
 
 - Stripe: move from **Sandbox to Live mode**.
 - **PRICING (verified Aug 5):** $29.95/mo + **$199.95/yr**. Test mode is
@@ -53,7 +72,7 @@ the developer; the rest Jason can do (with Claude walking through them).
 - Run one real card through checkout and confirm the subscription appears
   in Supabase.
 
-## 4. The store side
+## 5. The store side
 
 - **[Lighthaus]** Craft Commerce: change the member discount rule from
   **10% to 20%** off. *The site now promises 20% everywhere — this must
@@ -63,7 +82,7 @@ the developer; the rest Jason can do (with Claude walking through them).
 - **[Lighthaus]** Mailchimp e-commerce is still not connected to Craft
   Commerce (long-standing item).
 
-## 5. Email
+## 6. Email
 
 - **[Lighthaus]** If transactional email sends from an
   `originalbotanica.com` address, confirm SPF/DKIM cover the sender so
@@ -71,14 +90,14 @@ the developer; the rest Jason can do (with Claude walking through them).
 - Mailchimp: stage the launch emails (notes in `launch-notes.md`). Every
   email mentions **20% off**; the altar email teaches charging the flame.
 
-## 6. Content sign-off
+## 7. Content sign-off
 
 - In-house spiritualists to bless: the **offerings menu** and its lineage
   labels, and the two new prayers (**Peace**, **San Deshacedor**).
 - Decide whether the member **feedback box** stays after launch — one
   flag in `components/feedback-box.tsx` (`FEEDBACK_ENABLED`).
 
-## 7. Housekeeping
+## 8. Housekeeping
 
 - Take the next Next.js patch release (two low-severity advisories in a
   build dependency).
@@ -93,7 +112,7 @@ the developer; the rest Jason can do (with Claude walking through them).
 |---|---|
 | Meta pixel `1223585932980843` ("The Practice") | **Live** — browser events confirmed 7/28 |
 | Meta Conversions API | Installed; fires on first real trial/purchase |
-| Google Analytics 4 | Pending — needs `G-` measurement ID |
+| Google Analytics 4 | **Live** — `G-8SPEJEE73V`, realtime verified 8/1 |
 | TikTok | Pending — needs pixel ID + Events API token |
 | Google Ads | Pending — needs `AW-` conversion ID |
 

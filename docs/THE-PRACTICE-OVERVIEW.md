@@ -91,8 +91,10 @@ A modern web app (Next.js/React) hosted on Vercel, with a Supabase database
 handling accounts, member data, and uploaded photos. Stripe runs the
 subscriptions and gift purchases. The AI readings (astrologer, tarot, dreams)
 are powered by Anthropic's Claude, grounded in real astrological calculations
-and the botanica's own ritual archive. Transactional email goes through
-Resend. Conversion tracking is wired for Meta and Google Analytics. Members'
+and the botanica's own ritual archive. Transactional email (gift delivery,
+trial reminders) needs its sending service reconnected before launch — see
+the launch checklist. Conversion tracking is wired for Meta and Google
+Analytics. Members'
 dreams, prayers, and personal data are private to their accounts.
 
 ## Current status (August 2026)
