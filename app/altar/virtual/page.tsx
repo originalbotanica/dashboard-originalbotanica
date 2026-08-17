@@ -13,6 +13,7 @@ import {
   type Candle,
 } from "@/lib/altar/altar";
 import { AltarCandle } from "@/components/altar-candle";
+import { CandleCounter } from "@/components/candle-counter";
 import { Candle as FlameCandle } from "@/components/candle";
 import { getLocale } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/dictionary";
@@ -92,6 +93,12 @@ export default async function VirtualAltarPage({
         <Link href="/altar/virtual/new" className="btn-primary inline-flex">
           {t(locale, "altar.lightCta")}
         </Link>
+      </section>
+
+      {/* The counter: say what you need, the house picks the candle —
+          the digital version of asking at the register. */}
+      <section className="max-w-5xl mx-auto px-6 pb-16">
+        <CandleCounter />
       </section>
 
       {/* Your candles */}
