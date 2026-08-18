@@ -13,7 +13,6 @@
 
 import { useState } from "react";
 import { candleImageUrl, DESIRES, desireLabel } from "@/lib/altar/catalog";
-import { CANDLE_STORE_URLS } from "@/lib/altar/store-links";
 import { useLocale } from "./locale-provider";
 
 type Pick = { slug: string; name: string; tagline: string; why: string };
@@ -26,7 +25,6 @@ const STR = {
     go: "Ask",
     thinking: "Choosing from the shelf...",
     light: "Light this candle",
-    store: "Get the real candle · members save 20%",
     err: "The counter is busy right now. Please try again in a moment.",
   },
   es: {
@@ -36,7 +34,6 @@ const STR = {
     go: "Preguntar",
     thinking: "Eligiendo de la repisa...",
     light: "Enciende esta vela",
-    store: "Consigue la vela real · miembros ahorran 20%",
     err: "El mostrador está ocupado. Intenta de nuevo en un momento.",
   },
 };
@@ -141,20 +138,9 @@ export function CandleCounter() {
               </p>
               <a
                 href={`/altar/virtual/new?candle=${encodeURIComponent(p.slug)}&intention=${encodeURIComponent(need.trim())}`}
-                className="btn-primary text-sm mb-2"
+                className="btn-primary text-sm"
               >
                 {t.light}
-              </a>
-              <a
-                href={
-                  CANDLE_STORE_URLS[p.slug] ??
-                  `https://originalbotanica.com/search?q=${encodeURIComponent(p.name)}`
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-link text-xs text-[var(--foreground-subtle)] hover:text-[var(--accent)]"
-              >
-                {t.store}
               </a>
             </div>
           ))}
