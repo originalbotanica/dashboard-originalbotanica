@@ -19,7 +19,7 @@ type Pick = { slug: string; name: string; tagline: string; why: string };
 
 const STR = {
   en: {
-    eyebrow: "Ask at the counter",
+    eyebrow: "Not sure which candle?",
     lead: "Whatever you're carrying, there's a candle for it. Share what's on your heart, and we'll help you choose.",
     ph: "I need to find a new job...",
     go: "Ask",
@@ -29,7 +29,7 @@ const STR = {
     err: "The counter is busy right now. Please try again in a moment.",
   },
   es: {
-    eyebrow: "Pregunta en el mostrador",
+    eyebrow: "¿No sabes qué vela?",
     lead: "Sea lo que sea que cargas, hay una vela para eso. Cuéntanos qué llevas en el corazón y te ayudamos a elegir.",
     ph: "Necesito encontrar un nuevo trabajo...",
     go: "Preguntar",

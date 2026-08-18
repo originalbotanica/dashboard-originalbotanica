@@ -95,11 +95,6 @@ export default async function VirtualAltarPage({
         </Link>
       </section>
 
-      {/* The counter: say what you need, the house picks the candle —
-          the digital version of asking at the register. */}
-      <section className="max-w-5xl mx-auto px-6 pb-16">
-        <CandleCounter />
-      </section>
 
       {/* Your candles */}
       {mine.length > 0 && (
@@ -164,6 +159,12 @@ export default async function VirtualAltarPage({
         ) : (
           <CandleGrid candles={community} locale={locale} />
         )}
+      </section>
+
+      {/* Not sure which candle: say what you need, the house helps you
+          choose — the way it works at the store in person. */}
+      <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-14">
+        <CandleCounter />
       </section>
     </main>
   );
