@@ -518,6 +518,7 @@ const en: Dict = {
   "altar.deepenIntro": "Rituals from the library for {purpose}.",
   // light-a-candle form
   "lcf.chooseIntention": "Choose your intention",
+  "lcf.browseAll": "Or browse every candle",
   "lcf.chooseCandle": "Choose your candle",
   "lcf.flameLit": "The flame is lit.",
   "lcf.tapWick": "↑ Tap the wick to light the candle.",
@@ -1380,6 +1381,7 @@ const es: Dict = {
   "altar.deepenIntro": "Rituales de la biblioteca para {purpose}.",
   // light-a-candle form
   "lcf.chooseIntention": "Elige tu intención",
+  "lcf.browseAll": "O mira todas las velas",
   "lcf.chooseCandle": "Elige tu vela",
   "lcf.flameLit": "La llama está encendida.",
   "lcf.tapWick": "↑ Toca la mecha para encender la vela.",

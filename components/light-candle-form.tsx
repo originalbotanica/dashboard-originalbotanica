@@ -23,20 +23,28 @@ import { useT, useLocale } from "@/components/locale-provider";
 export function LightCandleForm({
   initialIntention,
   initialCandle,
+  initialDesire,
 }: {
   initialIntention?: string;
   /** Candle slug to pre-select (e.g. the astrologer's candle of the day):
    *  lands the member on step 3 with desire + candle already chosen. */
   initialCandle?: string;
+  /** Desire slug to open on (category chips on the altar page): lands the
+   *  member on step 2, browsing that section of the shelf. */
+  initialDesire?: string;
 }) {
   const presetArt = initialCandle ? getCandleArt(initialCandle) : undefined;
   const presetDesire = initialCandle ? desireForCandle(initialCandle) : undefined;
+  const linkedDesire = initialDesire
+    ? DESIRES.find((d) => d.slug === initialDesire) ?? null
+    : null;
   const [desire, setDesire] = useState<Desire | null>(
-    presetArt && presetDesire ? presetDesire : null,
+    presetArt && presetDesire ? presetDesire : linkedDesire,
   );
   const [candle, setCandle] = useState<CandleArt | null>(
     presetArt && presetDesire ? presetArt : null,
   );
+  const [browseAll, setBrowseAll] = useState(false);
   const [lit, setLit] = useState(false);
   // "armed" = the member has filled the details and pressed "Light the
   // candle"; now we send them up to tap the wick. The wick tap lights the
@@ -65,8 +73,8 @@ export function LightCandleForm({
     setTimeout(() => formRef.current?.requestSubmit(), 650);
   }
 
-  // Step 1 — choose a desire
-  if (!desire) {
+  // Step 1 — choose a desire, or browse the whole shelf
+  if (!desire && !browseAll) {
     return (
       <div>
         <p className="form-label mb-4">{t("lcf.chooseIntention")}</p>
@@ -82,9 +90,65 @@ export function LightCandleForm({
             </button>
           ))}
         </div>
+        <div className="text-center mt-6">
+          <button
+            type="button"
+            onClick={() => setBrowseAll(true)}
+            className="nav-link text-[var(--accent)]"
+          >
+            {t("lcf.browseAll")} →
+          </button>
+        </div>
       </div>
     );
   }
+
+  // Browse-all — the whole shelf, grouped by section
+  if (!candle && browseAll) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={() => setBrowseAll(false)}
+          className="nav-link text-[var(--accent)] mb-6"
+        >
+          ← {t("lcf.chooseIntention")}
+        </button>
+        {DESIRES.map((d) => (
+          <div key={d.slug} className="mb-10">
+            <p className="form-label mb-4">{desireLabel(d, locale)}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {d.candles.map((c) => (
+                <button
+                  key={c.slug}
+                  type="button"
+                  onClick={() => {
+                    setDesire(d);
+                    setCandle(c);
+                  }}
+                  className="text-left rounded-xl border border-[var(--border-strong)] p-3 hover:border-[var(--accent)] hover:bg-[var(--surface)] transition-colors flex flex-col items-center text-center"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={candleImageUrl(c.slug)}
+                    alt={c.name}
+                    className="rounded-lg mb-3"
+                    style={{ height: 150, width: "auto" }}
+                  />
+                  <span className="display text-sm leading-tight">{c.name}</span>
+                  <span className="text-xs text-[var(--foreground-subtle)] mt-1 leading-snug">
+                    {c.tagline}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!desire) return null; /* unreachable; satisfies narrowing */
 
   // Step 2 — choose a candle for that desire
   if (!candle) {
@@ -231,7 +295,10 @@ export function LightCandleForm({
         <button
           type="button"
           onClick={() => {
+            // Open the whole shelf, not just this candle's section — the
+            // member may have arrived with a candle chosen for them.
             setCandle(null);
+            setBrowseAll(true);
             setLit(false);
             setArmed(false);
           }}

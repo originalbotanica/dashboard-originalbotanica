@@ -12,7 +12,8 @@
  */
 
 import { useState } from "react";
-import { candleImageUrl } from "@/lib/altar/catalog";
+import { candleImageUrl, DESIRES, desireLabel } from "@/lib/altar/catalog";
+import { CANDLE_STORE_URLS } from "@/lib/altar/store-links";
 import { useLocale } from "./locale-provider";
 
 type Pick = { slug: string; name: string; tagline: string; why: string };
@@ -99,6 +100,22 @@ export function CandleCounter() {
         </button>
       </form>
 
+      {/* Or browse by category — every shelf section, one tap into the
+          candle picker for that need. */}
+      {!picks && (
+        <div className="flex flex-wrap justify-center gap-2 mt-6">
+          {DESIRES.map((d) => (
+            <a
+              key={d.slug}
+              href={`/altar/virtual/new?desire=${d.slug}`}
+              className="eyebrow rounded-full px-3 py-1 border border-[var(--border-strong)] text-[var(--foreground-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+            >
+              {desireLabel(d, locale)}
+            </a>
+          ))}
+        </div>
+      )}
+
       {busy && (
         <p className="text-sm text-[var(--foreground-subtle)] italic mt-5">{t.thinking}</p>
       )}
@@ -129,7 +146,10 @@ export function CandleCounter() {
                 {t.light}
               </a>
               <a
-                href={`https://originalbotanica.com/search?q=${encodeURIComponent(p.name)}`}
+                href={
+                  CANDLE_STORE_URLS[p.slug] ??
+                  `https://originalbotanica.com/search?q=${encodeURIComponent(p.name)}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="nav-link text-xs text-[var(--foreground-subtle)] hover:text-[var(--accent)]"

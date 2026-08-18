@@ -12,9 +12,9 @@ export const metadata = { title: "Light a candle" };
 export default async function LightCandlePage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; intention?: string; candle?: string }>;
+  searchParams: Promise<{ error?: string; intention?: string; candle?: string; desire?: string }>;
 }) {
-  const { error, intention, candle } = await searchParams;
+  const { error, intention, candle, desire } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -57,7 +57,11 @@ export default async function LightCandlePage({
 
         {error ? <p className="form-error mb-8">{error}</p> : null}
 
-        <LightCandleForm initialIntention={intention} initialCandle={candle} />
+        <LightCandleForm
+          initialIntention={intention}
+          initialCandle={candle}
+          initialDesire={desire}
+        />
       </section>
     </main>
   );
