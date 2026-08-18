@@ -20,7 +20,7 @@ type Pick = { slug: string; name: string; tagline: string; why: string };
 const STR = {
   en: {
     eyebrow: "Not sure which candle?",
-    lead: "Whatever you're carrying, there's a candle for it. Share what's on your heart, and we'll help you choose.",
+    lead: "Whatever you're carrying, there's a candle for it. Share what's in your heart, and we'll help you choose.",
     ph: "I need to find a new job...",
     go: "Ask",
     thinking: "Choosing from the shelf...",
