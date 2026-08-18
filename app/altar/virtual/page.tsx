@@ -104,6 +104,12 @@ export default async function VirtualAltarPage({
         </section>
       )}
 
+      {/* Not sure which candle: say what you need, the house helps you
+          choose — the way it works at the store in person. */}
+      <section className="max-w-5xl mx-auto px-6 pb-16 border-t border-[var(--border)] pt-14">
+        <CandleCounter />
+      </section>
+
       {/* Community altar */}
       <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-14">
         <p className="eyebrow mb-2 text-center">{t(locale, "altar.communityEyebrow")}</p>
@@ -159,12 +165,6 @@ export default async function VirtualAltarPage({
         ) : (
           <CandleGrid candles={community} locale={locale} />
         )}
-      </section>
-
-      {/* Not sure which candle: say what you need, the house helps you
-          choose — the way it works at the store in person. */}
-      <section className="max-w-5xl mx-auto px-6 pb-24 border-t border-[var(--border)] pt-14">
-        <CandleCounter />
       </section>
     </main>
   );
