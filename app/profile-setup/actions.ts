@@ -63,7 +63,15 @@ export async function saveProfileAction(formData: FormData) {
   }
 
   revalidatePath("/dashboard");
-  // Next step of onboarding: start the free trial (Stripe checkout).
-  // Already-subscribed members are bounced straight to the dashboard there.
+  revalidatePath("/astrology");
+  // A member completing their birth details later (from the Astrology tool)
+  // goes back to see their chart. Strict allowlist — never redirect to
+  // arbitrary form input.
+  if (String(formData.get("next") || "") === "/astrology") {
+    redirect("/astrology");
+  }
+  // Next step of first-time onboarding: start the free trial (Stripe
+  // checkout). Already-subscribed members are bounced straight to the
+  // dashboard there.
   redirect("/subscribe");
 }

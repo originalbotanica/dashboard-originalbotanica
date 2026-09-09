@@ -35,13 +35,20 @@ export default async function ProfileSetupPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  // If first_name is already set, profile setup has been done — go to dashboard.
+  // Two jobs, one page: first-time setup after signup, AND completing the
+  // birth details later (the Astrology tool links here when they're missing).
+  // Only bounce to the dashboard when there is nothing left to collect —
+  // bouncing on first_name alone locked existing members out of ever adding
+  // their birth data (the "it just brings me back to the dashboard" loop).
   const { data: existing } = await supabase
     .from("profiles")
-    .select("first_name")
+    .select("first_name, birth_date, birth_place, locale")
     .eq("id", user.id)
     .maybeSingle();
-  if (existing?.first_name) redirect("/dashboard");
+  const completing = !!existing?.first_name;
+  if (existing?.first_name && existing?.birth_date && existing?.birth_place) {
+    redirect("/dashboard");
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-16">
@@ -58,14 +65,16 @@ export default async function ProfileSetupPage({
         </Link>
 
         <h1 className="display text-2xl md:text-3xl mb-2 text-center">
-          Welcome to the practice.
+          {completing ? "Your chart is waiting." : "Welcome to the practice."}
         </h1>
         <p className="text-foreground-muted text-center text-sm mb-8 max-w-md mx-auto">
-          A few details so we can personalize your daily horoscope, your birth
-          chart, and your readings. Birth time is the only optional part.
+          {completing
+            ? "Your birth details are all the astrologer needs to draw your chart. Birth time is the only optional part."
+            : "A few details so we can personalize your daily horoscope, your birth chart, and your readings. Birth time is the only optional part."}
         </p>
 
         <form action={saveProfileAction} className="flex flex-col gap-5">
+          {completing && <input type="hidden" name="next" value="/astrology" />}
           <div>
             <label htmlFor="first_name" className="form-label">First name</label>
             <input
@@ -73,6 +82,7 @@ export default async function ProfileSetupPage({
               name="first_name"
               type="text"
               required
+              defaultValue={existing?.first_name ?? ""}
               className="form-input"
               placeholder="What should we call you?"
             />
@@ -83,7 +93,7 @@ export default async function ProfileSetupPage({
             <select
               id="locale"
               name="locale"
-              defaultValue="en"
+              defaultValue={existing?.locale === "es" ? "es" : "en"}
               className="form-input"
             >
               <option value="en">English</option>
@@ -124,7 +134,7 @@ export default async function ProfileSetupPage({
           {params.error && <p className="form-error">{params.error}</p>}
 
           <button type="submit" className="btn-primary mt-3">
-            Enter the dashboard
+            {completing ? "Save and see your chart" : "Enter the dashboard"}
           </button>
         </form>
       </div>
