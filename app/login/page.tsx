@@ -9,10 +9,16 @@ export const metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; redirectTo?: string; message?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    redirectTo?: string;
+    message?: string;
+    confirm?: string;
+  }>;
 }) {
   const params = await searchParams;
   const redirectTo = params.redirectTo || "/dashboard";
+  const awaitingConfirm = params.confirm === "1";
 
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-16">
@@ -28,13 +34,27 @@ export default async function LoginPage({
           />
         </Link>
 
-        <h1 className="display text-2xl mb-2 text-center">Welcome back.</h1>
-        <p className="text-foreground-muted text-center text-sm mb-8">
-          Sign in to your spiritual home.
-        </p>
+        <h1 className={`display text-2xl text-center ${awaitingConfirm ? "mb-5" : "mb-2"}`}>
+          {awaitingConfirm ? "Check your email." : "Welcome back."}
+        </h1>
+        {awaitingConfirm ? (
+          <div className="auth-notice mb-8">
+            We sent a confirmation link to your inbox. Please confirm your
+            email address to continue.
+          </div>
+        ) : (
+          <p className="text-foreground-muted text-center text-sm mb-8">
+            Sign in to your spiritual home.
+          </p>
+        )}
 
         <form action={loginAction} className="flex flex-col gap-5">
           <input type="hidden" name="redirectTo" value={redirectTo} />
+
+          {params.error && (
+            <div className="auth-notice">{params.error}</div>
+          )}
+          {params.message && <p className="form-success">{params.message}</p>}
 
           <div>
             <label htmlFor="email" className="form-label">Email</label>
@@ -61,9 +81,6 @@ export default async function LoginPage({
               placeholder="••••••••"
             />
           </div>
-
-          {params.error && <p className="form-error">{params.error}</p>}
-          {params.message && <p className="form-success">{params.message}</p>}
 
           <button type="submit" className="btn-primary mt-2">
             Sign In
