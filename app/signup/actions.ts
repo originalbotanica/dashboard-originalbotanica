@@ -107,7 +107,5 @@ export async function signupAction(formData: FormData) {
     }
     redirect(next || "/profile-setup");
   }
-  redirect(
-    "/login?message=Check%20your%20email%20to%20confirm%20your%20account.",
-  );
+  redirect("/login?confirm=1");
 }

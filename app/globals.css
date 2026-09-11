@@ -1067,6 +1067,16 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0.5rem;
 }
 
+.auth-notice {
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--foreground);
+  border-radius: 0.5rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 /* Auth card — centered container for signup / login / reset / setup pages. */
 .auth-card {
   width: 100%;
