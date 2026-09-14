@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // \"\"'); b=$(basename \"$f\"); case \"$b\" in .env.example) ;; .env|.env.*) printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Blocked edit to %s — .env* files hold secrets. Update via: npx vercel env pull .env.local\"}}\\n' \"$f\" ;; esac"
+          }
+        ]
+      }
+    ]
+  }
+}
