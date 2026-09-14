@@ -4,6 +4,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { getStripe } from "@/lib/stripe";
 import { giftTerm, generateGiftCode, termLabel } from "@/lib/gift";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { siteUrl } from "@/lib/site-url";
 
 /**
  * Create a one-time Stripe Checkout Session for a gift membership.
@@ -108,10 +109,7 @@ export async function POST(request: Request) {
   }
 
   const stripe = getStripe();
-  const siteUrl =
-    request.headers.get("origin") ||
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://members.originalbotanica.com";
+  const site = siteUrl();
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -131,8 +129,8 @@ export async function POST(request: Request) {
     ],
     metadata: { gift_id: giftId, kind: "gift" },
     payment_intent_data: { metadata: { gift_id: giftId, kind: "gift" } },
-    success_url: `${siteUrl}/gift/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${siteUrl}/gift?canceled=1`,
+    success_url: `${site}/gift/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${site}/gift?canceled=1`,
   });
 
   await admin

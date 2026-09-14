@@ -1,13 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { siteUrl } from "@/lib/site-url";
 
 export async function requestResetAction(formData: FormData) {
   const supabase = await createClient();
-  const hdrs = await headers();
-  const origin = hdrs.get("origin") || "";
 
   const email = String(formData.get("email") || "").trim();
   if (!email) {
@@ -15,7 +13,7 @@ export async function requestResetAction(formData: FormData) {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?next=/reset-password/update`,
+    redirectTo: `${siteUrl()}/auth/callback?next=/reset-password/update`,
   });
 
   if (error) {
