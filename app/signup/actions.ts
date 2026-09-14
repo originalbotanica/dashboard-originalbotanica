@@ -11,6 +11,7 @@ import {
   ATTRIBUTION_COOKIE,
   decodeAttribution,
 } from "@/lib/ads/attribution";
+import { siteUrl } from "@/lib/site-url";
 
 /** Only allow same-site relative paths as a post-signup destination. */
 function safeNext(raw: string): string | null {
@@ -34,7 +35,6 @@ function giftCodeFromNext(next: string | null): string | null {
 export async function signupAction(formData: FormData) {
   const supabase = await createClient();
   const hdrs = await headers();
-  const origin = hdrs.get("origin") || "";
 
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
@@ -54,7 +54,7 @@ export async function signupAction(formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next || "/profile-setup")}`,
+      emailRedirectTo: `${siteUrl()}/auth/callback?next=${encodeURIComponent(next || "/profile-setup")}`,
     },
   });
 

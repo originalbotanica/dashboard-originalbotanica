@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getStripe, priceIdFor, type PlanKey } from "@/lib/stripe";
+import { siteUrl } from "@/lib/site-url";
 
 /**
  * Create a Stripe Checkout Session for the membership.
@@ -33,13 +34,7 @@ export async function POST(request: Request) {
   }
 
   const stripe = getStripe();
-  // Prefer the request's own origin so the post-checkout redirect always
-  // returns to the same deployment the member is on (robust even if the
-  // NEXT_PUBLIC_SITE_URL env var is unset or stale).
-  const siteUrl =
-    request.headers.get("origin") ||
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://members.originalbotanica.com";
+  const site = siteUrl();
 
   // Look up the user's existing Stripe customer ID, if any.
   const { data: existingSub } = await supabase
@@ -68,8 +63,8 @@ export async function POST(request: Request) {
       metadata: { supabase_user_id: user.id },
     },
     metadata: { supabase_user_id: user.id, plan },
-    success_url: `${siteUrl}/dashboard?welcome=1`,
-    cancel_url: `${siteUrl}/?canceled=1`,
+    success_url: `${site}/dashboard?welcome=1`,
+    cancel_url: `${site}/?canceled=1`,
     allow_promotion_codes: true,
   });
 
